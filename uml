@@ -1,0 +1,103 @@
+@startuml
+GameState o-- Map
+GameState o-- Player
+MapReader - Map : reads >
+Map o-- GameField
+GameField o-- Building
+GameField o-- Unit
+Unit o-- Position
+Player o-- Unit
+Player <|-- ComputerPlayer
+
+
+class GameState {
+      -Map map
+      -List<Player> players
+      -int turns
+      +int getTurns()
+      +void advanceTurn()
+      +void advancePlayer()
+}
+
+class Map {
+      -GameField[][] fields
+      +GameField getField(Position)
+}
+
+class Position {
+      -int x
+      -int y
+      +int getX()
+      +int getY()
+}
+
+class MapReader {
+      +Map readMap(File)
+}
+
+abstract class Unit {	 
+      -int health
+      -int attack
+      -int meleeDefense
+      -int rangeDefense
+      -Postition position
+      +int getHealth()
+      +int getAttack()
+      +int getMovement()			 	 
+      +int getMeleeDefense()
+      +int getRangeDefense()
+      +Position getPosition()
+      +Position setPosition(Position)
+      +boolean canMoveTo(Position)
+}
+
+
+class Player {
+      -String name
+      -Color color
+      -boolean playerOwned
+      -List<Unit> unitsOwned
+      +boolean isHumanPlayer()
+      +String getName()
+      +boolean hasLost()
+      +boolean hasMoveableUnits()
+}
+
+class ComputerPlayer {
+      +void takeTurn()
+}
+
+abstract class Building {
+      -int captureDifficulty
+      -int remainingCaptureTime
+      -double attackBonus
+      -double defenseBonus
+      -Player ownedByPlayer
+      -boolean goalBuilding
+      +double getAttackBonus()
+      +double getDefenseBonus()
+      +int getRemainingCaptureTime()
+      +int setOwner(Player)
+      +boolean isGoalBuilding()      
+}
+
+abstract class GameField {
+      -Unit unitStanding
+      -Building hostedBuilding
+      -double movementModifier
+      +double getAttackModifier()
+      +double getMovementModifier()
+      +boolean doesAcceptUnit(? extends Unit)
+      +boolean isOccupied()
+      +Unit getUnit()
+      +Building getBuilding()
+      +Unit setUnit()
+}
+
+interface RangedUnit<? extends Unit> {
+      +double getRange()
+}
+
+
+
+@enduml
