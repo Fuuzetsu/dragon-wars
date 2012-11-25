@@ -1,5 +1,7 @@
 package wars.dragon.engine;
 
+import java.util.*;
+
 public class Map {
 
     List< List<GameField> > fields;
