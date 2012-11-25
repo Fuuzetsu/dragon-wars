@@ -6,6 +6,7 @@ public abstract class Unit {
     private Double maxHealth, health;
     private Double attack, meleeDefense, rangeDefense;
     private Position position;
+    private Boolean hasFinishedTurn = false;
 
     public Unit(Integer maxHealth, Integer maxMovement, Double attack, 
 		Double meleeDefense, Double rangeDefense) {
@@ -44,6 +45,10 @@ public abstract class Unit {
     public void restoreHealth(Double heal) {
 	Double newHealth = this.health = heal;
 	this.health = (newHealth <= maxHealth) ? newHealth : maxHealth;
+    }
+
+    private Boolean hasFinishedTurn() {
+	return this.hasFinishedTurn;
     }
     
 
