@@ -8,7 +8,7 @@ public class Position {
 	this.pair = new Pair<Integer, Integer>(x, y);
     }
 
-    public Integer getX() { return pair.getLeft(); }
-    public Integer getY() { return pair.getRight(); )
+    public Integer getX() { return this.pair.getLeft(); }
+    public Integer getY() { return this.pair.getRight(); )
 
 }

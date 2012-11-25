@@ -10,7 +10,7 @@ public class Pair<T, R> {
 	this.right = right;
     }
 
-    public L getLeft() { return L; }
-    public R getRight() { return R; }
+    public L getLeft() { return this.left; }
+    public R getRight() { return this.right; }
 
 }
