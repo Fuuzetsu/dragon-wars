@@ -1,7 +1,7 @@
 package wars.dragon.engine;
 /* Generates a GameField based on a flat text file. Test solution. */
 
-import java.util.*
+import java.util.*;
 
 public class MapReader {
     
@@ -16,8 +16,8 @@ public class MapReader {
 	    new ArrayList< List<Tile> >(longestLine);
 	
 	/* Initialize (height x width) grid */
-	for (Integer x = 0; x < mapLines.size(); x++) {
-	    List<Tile> inner = new ArrayList<Tile>(longestLine);
+	for (Integer y = 0; y < mapLines.size(); y++) {
+	    List<Tile> inner = new ArrayList<Tile>(mapLines.size());
 	    grid.add(inner);
 	}
 
