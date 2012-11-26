@@ -1,6 +1,6 @@
 package wars.dragon.engine;
 
-public class Pair<T, R> {
+public class Pair<L, R> {
 
     private L left;
     private R right;
