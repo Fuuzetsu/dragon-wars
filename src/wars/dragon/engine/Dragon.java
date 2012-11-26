@@ -3,7 +3,7 @@ package wars.dragon.engine;
 public class Dragon extends Unit implements RangedUnit {
     private String name = "Dragon";
 
-    public Soldier() {
+    public Dragon() {
 	super(10, 5, 3, 3, 2);
     }
 
