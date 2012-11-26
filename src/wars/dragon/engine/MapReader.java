@@ -13,7 +13,7 @@ public class MapReader {
 	}
 
 	List< List<Tile> > grid = 
-	    new ArrayList< List<Tile> >(mapLines.size());
+	    new ArrayList< List<Tile> >(longestLine);
 	
 	/* Initialize (height x width) grid */
 	for (Integer x = 0; x < mapLines.size(); x++) {
