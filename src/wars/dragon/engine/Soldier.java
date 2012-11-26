@@ -6,3 +6,4 @@ public class Soldier extends Unit {
     public Soldier() {
 	super(10, 5, 3, 3, 2);
     }
+}
