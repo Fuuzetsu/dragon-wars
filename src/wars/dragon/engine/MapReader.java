@@ -1,4 +1,4 @@
-package wars.dragon.engine;
+//package wars.dragon.engine;
 /* Generates a GameField based on a flat text file. Test solution. */
 
 import java.util.*;

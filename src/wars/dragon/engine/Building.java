@@ -1,4 +1,4 @@
-package wars.dragon.engine;
+//package wars.dragon.engine;
 
 public abstract class Building {
 

@@ -1,4 +1,4 @@
-package wars.dragon.engine;
+//package wars.dragon.engine;
 
 public class Soldier extends Unit {
     private String name = "Soldier";

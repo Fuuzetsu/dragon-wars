@@ -1,4 +1,4 @@
-package wars.dragon.engine;
+//package wars.dragon.engine;
 
 /* Test class */
 public class Water extends GameField {
