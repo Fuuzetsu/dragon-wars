@@ -9,6 +9,6 @@ public class Position {
     }
 
     public Integer getX() { return this.pair.getLeft(); }
-    public Integer getY() { return this.pair.getRight(); )
+    public Integer getY() { return this.pair.getRight(); }
 
 }
