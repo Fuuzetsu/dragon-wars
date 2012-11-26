@@ -21,4 +21,15 @@ public class Map {
     public GameField getField(Integer x, Integer y) {
 	return fields.get(x).get(y);
     }
+
+    public String toString() {
+	String m = "";
+	for (ArrayList<GameField> agf : this.fields) {
+	    for (GameField gf : agf) {
+		m += gf.toString().charAt(0);
+	    }
+	    m += '\n';
+	}
+	return m;
+    }
 }

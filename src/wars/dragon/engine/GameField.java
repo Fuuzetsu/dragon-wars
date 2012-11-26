@@ -39,4 +39,8 @@ public abstract class GameField {
     public void setUnit(Unit unit) {
 	this.hostedUnit = unit;
     }
+
+    public String toString() {
+	return this.fieldName;
+    }
 }
