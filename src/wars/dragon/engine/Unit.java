@@ -47,7 +47,7 @@ public abstract class Unit {
 	this.health = (newHealth <= maxHealth) ? newHealth : maxHealth;
     }
 
-    private Boolean hasFinishedTurn() {
+    public Boolean hasFinishedTurn() {
 	return this.hasFinishedTurn;
     }
     
