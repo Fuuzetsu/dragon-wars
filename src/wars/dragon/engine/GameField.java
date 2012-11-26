@@ -7,7 +7,7 @@ public abstract class GameField {
     Building hostedBuilding;
     Double movementModifier;
 
-    public abstract Boolean doesAcceptUnit(Unit);
+    public abstract Boolean doesAcceptUnit(Unit unit);
 
     public GameField(String fieldName, Double movementModifier) {
 	this.fieldName = fieldName;
@@ -32,11 +32,11 @@ public abstract class GameField {
     }
 
     /* This will clobber old units/buildings as it is now. */
-    public setBuilding(Building building) {
+    public void setBuilding(Building building) {
 	this.hostedBuilding = building;
     }
 
-    public setUnit(Unit unit) {
+    public void setUnit(Unit unit) {
 	this.hostedUnit = unit;
     }
 }
