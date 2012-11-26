@@ -11,7 +11,7 @@ public class Map {
     }
     
     public Boolean isInstantiated() {
-	return fields =! null;
+	return fields != null;
     }
     
     public GameField getField(Position position) {
