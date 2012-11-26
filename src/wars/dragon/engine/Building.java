@@ -67,3 +67,4 @@ public abstract class Building {
     public void resetCaptureTime() {
 	this.remainingCaptureTime = this.captureDifficulty;
     }
+}
