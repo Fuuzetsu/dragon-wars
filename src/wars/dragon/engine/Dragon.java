@@ -8,6 +8,6 @@ public class Dragon extends Unit implements RangedUnit {
     }
 
     public Double getRange() {
-	return 5;
+	return 5.0;
     }
 }
