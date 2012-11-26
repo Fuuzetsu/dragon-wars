@@ -12,12 +12,12 @@ public class MapReader {
 		longestLine = s.length();
 	}
 
-	List< List<Tile> > grid = 
-	    new ArrayList< List<Tile> >(longestLine);
+	List< List<GameField> > grid = 
+	    new ArrayList< List<GameField> >(longestLine);
 	
 	/* Initialize (height x width) grid */
 	for (Integer y = 0; y < mapLines.size(); y++) {
-	    List<Tile> inner = new ArrayList<Tile>(mapLines.size());
+	    List<GameField> inner = new ArrayList<GameField>(mapLines.size());
 	    grid.add(inner);
 	}
 
@@ -26,10 +26,10 @@ public class MapReader {
 	    for (Integer width = 0; width < longestLine; width++) {
 		if (mapLines.get(height).length() > width) {
 		    Character symbol = mapLines.get(height).charAt(width);
-		    grid.get(height).add(getTile(symbol));
+		    grid.get(height).add(getGameField(symbol));
 		}
 		else {
-		    grid.get(height).add(getTile(null));
+		    grid.get(height).add(getGameField(null));
 		}
 	    }
 	}
@@ -38,7 +38,7 @@ public class MapReader {
 
     }
 
-    private static Tile getTile(Character symbol) {
+    private static GameField getGameField(Character symbol) {
 	if (symbol == null || symbol == ' ')
 	    return new Pit();
 	switch(symbol) {
