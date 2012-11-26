@@ -1,6 +1,6 @@
 package wars.dragon.engine;
 
-public interface RangeUnit {
+public interface RangedUnit {
     
     Double getRange();
 
