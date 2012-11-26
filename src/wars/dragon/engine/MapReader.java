@@ -6,7 +6,7 @@ import java.io.*;
 
 public class MapReader {
     
-    public static GameField readMap(List<String> mapLines) {
+    public static Map readMap(List<String> mapLines) {
 	int longestLine = -1;
 	for (String s : mapLines) {
 	    if (s.length() > longestLine)
@@ -35,7 +35,7 @@ public class MapReader {
 	    }
 	}
 	
-	return new GameField(grid);
+	return new Map(grid);
 
     }
 
