@@ -4,7 +4,7 @@ package wars.dragon.engine;
 public class Pit extends GameField {
     
     public Pit() {
-	super("Pit", 1);
+	super("Pit", 1.0);
     }
 
     public Boolean doesAcceptUnit(Unit unit) {
