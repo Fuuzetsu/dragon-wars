@@ -8,7 +8,7 @@ public abstract class Unit {
     private Position position;
     private Boolean hasFinishedTurn = false;
 
-    public Unit(Integer maxHealth, Integer maxMovement, Double attack, 
+    public Unit(Double maxHealth, Integer maxMovement, Double attack, 
 		Double meleeDefense, Double rangeDefense) {
 	this.maxHealth = maxHealth;
 	this.health = this.maxHealth;
