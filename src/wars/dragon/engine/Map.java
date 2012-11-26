@@ -24,7 +24,7 @@ public class Map {
 
     public String toString() {
 	String m = "";
-	for (ArrayList<GameField> agf : this.fields) {
+	for (List<GameField> agf : this.fields) {
 	    for (GameField gf : agf) {
 		m += gf.toString().charAt(0);
 	    }
