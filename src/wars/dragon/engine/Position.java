@@ -15,4 +15,9 @@ public class Position {
 	return this.getX() == other.getX() && this.getY() == other.getY();
     }
 
+    public String toString() {
+	return String.format("(%d, %d)", 
+			     this.pair.getLeft(), this.pair.getRight());
+    }
+
 }
