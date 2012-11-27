@@ -94,10 +94,11 @@ abstract class GameField {
       +Unit setUnit()
 }
 
-interface RangedUnit<? extends Unit> {
-      +double getRange()
+abstract class RangedUnit<? extends Unit> {
+      +double getMinRange()
+      +double getMaxRange()
 }
 
-
+hide empty members
 
 @enduml
