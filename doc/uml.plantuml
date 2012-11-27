@@ -5,6 +5,8 @@ GameState o-- Player
 Building o-- Player
 MapReader - Map : reads >
 Map o-- GameField
+Map <|.. Iterable
+Logic <|.. Comparator
 GameField o-- Building
 GameField o-- Unit
 Position o-- Pair
@@ -42,6 +44,18 @@ class Map {
       +Boolean isInsantiated()
       +Boolean isValidField(Integer, Integer)
       +Boolean isValidField(Position)
+}
+
+namespace java.util #DDDDDD {
+      interface Comparator<T> {
+            +int compare(T, T)
+      }     
+}
+
+
+namespace java.lang #DDDDDD {
+      interface Iterable<T> {
+            +Iterator<T> iterator()
 }
 
 class Position {
