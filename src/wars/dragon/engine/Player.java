@@ -26,4 +26,8 @@ public class Player {
 		return true;
 	return false;
     }
+
+    public void removeUnit(Unit unit) {
+	ownedUnits.remove(unit);
+    }
 }
