@@ -12,12 +12,12 @@ Unit o-- Position
 Unit o-- Player
 Player o-- Unit
 Player <|-- ComputerPlayer
-RangedUnit <|-- Unit
-Dragon <|-- RangedUnit
-Soldier <|-- Unit
-Grass <|-- GameField
-Water <|-- GameField
-Pit <|-- GameField
+Unit <|-- RangedUnit
+RangedUnit <|-- Dragon
+Unit <|-- Soldier
+GameField <|-- Grass
+GameField <|-- Water
+GameField <|-- Pit
 
 
 class GameState {
