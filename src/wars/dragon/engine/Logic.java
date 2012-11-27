@@ -34,7 +34,7 @@ public class Logic {
     }
 
     public Double calculateCounterDamage(Map map, Unit attacker, Unit defender) {
-	Double initialDamage = calculateDamage(map, attacker, defender);
+	Double initialDamage = calculateRawDamage(map, attacker, defender);
 	Double defenderHealth = defender.getHealth() - initialDamage;
 	defenderHealth = (defenderHealth < 0) ? 0 : defenderHealth;
 
