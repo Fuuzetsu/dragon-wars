@@ -9,7 +9,7 @@ public abstract class Unit {
     private Position position;
     private Boolean hasFinishedTurn = false;
 
-    public Unit(String name,Double maxHealth, Integer maxMovement, 
+    public Unit(String name, Double maxHealth, Integer maxMovement, 
 		Double attack, Double meleeDefense, Double rangeDefense) {
 	this.name = name;
 	
@@ -56,7 +56,10 @@ public abstract class Unit {
 
     public String toString() {
 	return this.name;
-    }    
+    }
 
-}
+    public Boolean isRanged() {
+	return false;
+    }
     
+}
