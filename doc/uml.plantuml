@@ -175,7 +175,7 @@ abstract class GameField {
       +Double getAttackModifier()
       +Double getMovementModifier()
       +Boolean hostsUnit()
-      *Boolean hostsBuilding()
+      +Boolean hostsBuilding()
       +Unit getUnit()
       +Building getBuilding()
       +Unit setUnit()
