@@ -2,6 +2,7 @@
 
 public interface RangedUnit {
     
-    Double getRange();
+    Double getMaxRange();
+    Double getMinRange();
 
 }

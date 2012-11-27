@@ -6,8 +6,12 @@ public class Dragon extends Unit implements RangedUnit {
 	super("Dragon", 10.0, 5, 3.0, 3.0, 2.0);
     }
 
-    public Double getRange() {
+    public Double getMaxRange() {
 	return 5.0;
+    }
+
+    public Double getMinRange() {
+	return 2.0;
     }
 
 
