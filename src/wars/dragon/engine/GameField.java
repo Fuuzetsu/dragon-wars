@@ -15,7 +15,7 @@ public abstract class GameField {
     }
 
     public Double getMovementModifier() {
-	return this.movementModifier();
+	return this.movementModifier;
     }
 
     public Boolean hostsUnit() {
