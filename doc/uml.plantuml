@@ -2,13 +2,22 @@
 GameState o-- Map
 GameState o-- Logic
 GameState o-- Player
+Building o-- Player
 MapReader - Map : reads >
 Map o-- GameField
 GameField o-- Building
 GameField o-- Unit
+Position o-- Pair
 Unit o-- Position
+Unit o-- Player
 Player o-- Unit
 Player <|-- ComputerPlayer
+RangedUnit <|-- Unit
+Dragon <|-- RangedUnit
+Soldier <|-- Unit
+Grass <|-- GameField
+Water <|-- GameField
+Pit <|-- GameField
 
 
 class GameState {
@@ -43,6 +52,14 @@ class Position {
 
 class MapReader {
       +Map readMap(File)
+}
+
+class Pair {
+      -L left
+      -R right
+      +Pair<L, R>
+      +L getLeft()
+      +R getRight()
 }
 
 abstract class Unit {	 
