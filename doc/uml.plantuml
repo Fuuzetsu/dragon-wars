@@ -1,5 +1,6 @@
 @startuml
 GameState o-- Map
+GameState o-- Logic
 GameState o-- Player
 MapReader - Map : reads >
 Map o-- GameField
@@ -12,23 +13,32 @@ Player <|-- ComputerPlayer
 
 class GameState {
       -Map map
+      -Logic logic
       -List<Player> players
-      -int turns
-      +int getTurns()
+      -Integer turns
+      +Integer getTurns()
       +void advanceTurn()
       +void advancePlayer()
+      +Map getMap()
+      +void attack(Unit, Unit)
+      +void play()
+      -void updateBuildingCaptureCounters()
+      -void removeUnitIfDead(Unit)
+      
 }
 
 class Map {
       -GameField[][] fields
       +GameField getField(Position)
+      +Boolean isInsantiated()
+      +Boolean isValidField(Integer, Integer)
+      +Boolean isValidField(Position)
 }
 
 class Position {
-      -int x
-      -int y
-      +int getX()
-      +int getY()
+      -Pair<Integer, Integer> pair
+      +Integer getX()
+      +Integer getY()
 }
 
 class MapReader {
@@ -36,19 +46,34 @@ class MapReader {
 }
 
 abstract class Unit {	 
-      -int health
-      -int attack
-      -int meleeDefense
-      -int rangeDefense
+      -Double health
+      -Double maxHealth
+      -Integer attack
+      -Integer meleeDefense
+      -Integer rangeDefense
       -Postition position
-      +int getHealth()
-      +int getAttack()
-      +int getMovement()			 	 
-      +int getMeleeDefense()
-      +int getRangeDefense()
+      -Player owner
+      -String name
+      -Integer movement
+      -Integer maxMovement
+      -Boolean hasFinishedTurn
+      +Boolean isDead()
+      +Integer getHealth()
+      +Integer getMaxHealth()
+      +Integer getAttack()
+      +Integer getRemainingMovement()			 	 
+      +Integer getMaxMovement()			 	 
+      +Integer getMeleeDefense()
+      +Integer getRangeDefense()
+      +Player getOwner()
+      +void setOwner
       +Position getPosition()
-      +Position setPosition(Position)
-      +boolean canMoveTo(Position)
+      +void setPosition(Position)
+      +void restortHealth(Double)
+      +void reduceHealth(Double)
+      +Boolean hasFinishedTurn()
+      +Boolean canMoveTo(Position)
+      +Boolean isRanged()
 }
 
 
@@ -68,25 +93,25 @@ class ComputerPlayer {
 }
 
 abstract class Building {
-      -int captureDifficulty
-      -int remainingCaptureTime
-      -double attackBonus
-      -double defenseBonus
+      -Integer captureDifficulty
+      -Integer remainingCaptureTime
+      -DoubleattackBonus
+      -DoubledefenseBonus
       -Player ownedByPlayer
       -boolean goalBuilding
-      +double getAttackBonus()
-      +double getDefenseBonus()
-      +int getRemainingCaptureTime()
-      +int setOwner(Player)
+      +DoublegetAttackBonus()
+      +DoublegetDefenseBonus()
+      +Integer getRemainingCaptureTime()
+      +Integer setOwner(Player)
       +boolean isGoalBuilding()      
 }
 
 abstract class GameField {
       -Unit unitStanding
       -Building hostedBuilding
-      -double movementModifier
-      +double getAttackModifier()
-      +double getMovementModifier()
+      -DoublemovementModifier
+      +DoublegetAttackModifier()
+      +DoublegetMovementModifier()
       +boolean doesAcceptUnit(? extends Unit)
       +boolean isOccupied()
       +Unit getUnit()
@@ -95,8 +120,8 @@ abstract class GameField {
 }
 
 abstract class RangedUnit<? extends Unit> {
-      +double getMinRange()
-      +double getMaxRange()
+      +DoublegetMinRange()
+      +DoublegetMaxRange()
 }
 
 hide empty members
