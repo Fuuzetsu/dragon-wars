@@ -19,8 +19,6 @@ public class Map {
     }
     
     public GameField getField(Integer x, Integer y) {
-	System.out.println(x);
-	System.out.println(y);
 	return fields.get(x).get(y);
     }
 
