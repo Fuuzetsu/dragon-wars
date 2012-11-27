@@ -11,16 +11,29 @@ public class Logic {
     }
 
     private List<Position> AStar(Map map, Unit unit, Position destination) {
+	if (!map.isValidField(destination)) {
+	    List<Position> dummy = new ArrayList<Position>(0);
+	    return dummy;
+	}
 	Set<Position> expanded = new HashSet<Position>();
 	Comparator< Pair<List<Position>, Double> > comp = new AStarComparator();
 	PriorityQueue< Pair<List<Position>, Double> > queue = 
 	    new PriorityQueue< Pair<List<Position>, Double> >(10, comp);
 	List<Position> root = new ArrayList<Position>();
 	root.add(unit.getPosition());
+
 	queue.add(new Pair<List<Position>, Double>(root, 0.0));
 	while (queue.size() != 0) {
 	    Pair<List<Position>, Double> posP = queue.poll();
 	    List<Position> poss = posP.getLeft();
+	    /*
+	    String debug = "[ ";
+	    for (Position p : poss) {
+		debug += p.toString() + " ";
+	    }
+	    debug += "]";
+	    System.out.println(debug);
+	    */
 	    Position lastPos = poss.get(poss.size() - 1);
 	    if (lastPos.equals(destination))
 		return poss;
