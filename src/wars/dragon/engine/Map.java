@@ -32,4 +32,19 @@ public class Map {
 	}
 	return m;
     }
+
+    public String dumpMobMap() {
+	String m = "";
+	for (List<GameField> agf : this.fields) {
+	    for (GameField gf : agf) {
+		if (gf.hostsUnit())
+		    m += gf.getUnit().toString().charAt(0);
+		else
+		    m += ' ';
+	    }
+	    m += '\n';
+	}
+	return m;
+
+    }
 }

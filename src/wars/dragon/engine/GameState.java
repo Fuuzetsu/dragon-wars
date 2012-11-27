@@ -11,8 +11,11 @@ public class GameState {
 
 
     public static void main(String[] argv) {
-	if (argv.length == 1) 
-	    System.out.println(MapReader.readMap(GameState.readFile(argv[0])));
+	if (argv.length == 1) {
+	    Map m = MapReader.readMap(GameState.readFile(argv[0]));
+	    System.out.println(m);
+	    System.out.println(m.dumpMobMap());
+	}
 	else {
 	    System.err.println("USAGE: java Game <mapName>");
 	    System.exit(1);

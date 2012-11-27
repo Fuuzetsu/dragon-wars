@@ -44,6 +44,14 @@ public class MapReader {
 	switch(symbol) {
 	case 'G': return new Grass();
 	case 'W': return new Water();
+	case 'D':
+	    GameField fa = new Grass();
+	    fa.setUnit(new Dragon());
+	    return fa;
+	case 'S':
+	    GameField fu = new Grass();
+	    fu.setUnit(new Soldier());
+	    return fu;
 	default: 
 	    System.err.println("MapReader doesn't know the symbol " + symbol);
 	    System.exit(1);

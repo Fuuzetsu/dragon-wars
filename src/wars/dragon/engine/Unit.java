@@ -2,14 +2,17 @@
 
 public abstract class Unit {
 
+    private String name;
     private Integer maxMovement, movement;
     private Double maxHealth, health;
     private Double attack, meleeDefense, rangeDefense;
     private Position position;
     private Boolean hasFinishedTurn = false;
 
-    public Unit(Double maxHealth, Integer maxMovement, Double attack, 
-		Double meleeDefense, Double rangeDefense) {
+    public Unit(String name,Double maxHealth, Integer maxMovement, 
+		Double attack, Double meleeDefense, Double rangeDefense) {
+	this.name = name;
+	
 	this.maxHealth = maxHealth;
 	this.health = this.maxHealth;
 
@@ -50,7 +53,10 @@ public abstract class Unit {
     public Boolean hasFinishedTurn() {
 	return this.hasFinishedTurn;
     }
-    
+
+    public String toString() {
+	return this.name;
+    }    
 
 }
     
