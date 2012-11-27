@@ -28,6 +28,33 @@ public class Logic {
 	return (defense < 0) ? 0 : damage;
     }
 
+    public Double calculateCounterDamage(Map map, Unit attacker, Unit defender) {
+	Double initialDamage = calculateDamage(map, attacker, defender);
+	Double defenderHealth = defender.getHealth() - initialDamage;
+	defenderHealth = (defenderHealth < 0) ? 0 : defenderHealth;
+
+	return calculateTheoreticalCounterDamage(map, defender, 
+						 attacker, defenderHealth);
+    }
+
+    private Double calculateTheoreticalCounterDamage(Map map, Unit attacker, 
+						     Unit defender, Double atkHealth) {
+	/* No defense disadvantage on a counter. */
+	GameField attackerField = map.getField(attacker.getPosition());
+	GameField defenderField = map.getField(defender.getPosition());
+
+	Double attackerMod = attackerField.getAttackModifier();
+	Double defenderMod = defenderField.getDefenseModifier();
+
+	Double defense = defender.getHealth() * (defenderMod / 100);
+
+	Double rawDamage = atkHealth * (attackerMod / 100);
+
+	Double damage = rawDamage - defense;
+
+	return (defense < 0) ? 0 : damage;
+    }
+
     private List<Position> AStar(Map map, Unit unit, Position destination) {
 	if (!map.isValidField(destination)) {
 	    List<Position> dummy = new ArrayList<Position>(0);
