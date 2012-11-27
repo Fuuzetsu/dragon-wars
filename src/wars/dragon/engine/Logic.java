@@ -10,6 +10,24 @@ public class Logic {
 	return AStar(map, unit, destination);
     }
 
+    public Double calculateDamage(Map map, Unit attacker, Unit defender) {
+	final Double DEFENDER_DISADVANTAGE = 0.75;
+	GameField attackerField = map.getField(attacker.getPosition());
+	GameField defenderField = map.getField(defender.getPosition());
+
+	Double attackerMod = attackerField.getAttackModifier();
+	Double defenderMod = defenderField.getDefenseModifier();
+
+	Double defense = defender.getHealth() * (defenderMod / 100);
+	defense *= DEFENDER_DISADVANTAGE;
+
+	Double rawDamage = attacker.getHealth() * (attackerMod / 100);
+
+	Double damage = rawDamage - defense;
+
+	return (defense < 0) ? 0 : damage;
+    }
+
     private List<Position> AStar(Map map, Unit unit, Position destination) {
 	if (!map.isValidField(destination)) {
 	    List<Position> dummy = new ArrayList<Position>(0);
@@ -49,7 +67,7 @@ public class Logic {
 	    Double g = getMovementCost(map, unit, lastPos);
 	    Double pathCost = h + g + posP.getRight();
 	    for (Position p : getAdjacentPositions(lastPos)) {
-		if (map.isValidField(p)) {
+		if (map.isValidField(p) && map.getField(p).doesAcceptUnit(unit)) {
 		    List<Position> plan = new ArrayList<Position>(poss);
 		    plan.add(p);
 		    queue.add(new Pair<List<Position>, Double>(plan, pathCost));

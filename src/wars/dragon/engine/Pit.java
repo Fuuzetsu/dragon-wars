@@ -4,7 +4,7 @@
 public class Pit extends GameField {
     
     public Pit() {
-	super("Pit", 1.0);
+	super("Pit", 1.0, 0.0, 0.0);
     }
 
     public Boolean doesAcceptUnit(Unit unit) {

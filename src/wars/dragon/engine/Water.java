@@ -4,7 +4,7 @@
 public class Water extends GameField {
     
     public Water() {
-	super("Water", 50.0);
+	super("Water", 50.0, 120.0, 80.0);
     }
 
     public Boolean doesAcceptUnit(Unit unit) {
