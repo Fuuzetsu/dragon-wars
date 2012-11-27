@@ -8,6 +8,7 @@ public abstract class Unit {
     private Double attack, meleeDefense, rangeDefense;
     private Position position;
     private Boolean hasFinishedTurn = false;
+    private Player owner;
 
     public Unit(String name, Double maxHealth, Integer maxMovement, 
 		Double attack, Double meleeDefense, Double rangeDefense) {
@@ -36,6 +37,11 @@ public abstract class Unit {
     public Position getPosition() { return this.position; }
     public Integer getRemainingMovement() { return this.movement; }
     public Integer getMaxMovement() { return this.maxMovement; }
+    public Player getOwner() { return this.owner; }
+
+    public void setOwner(Player player) {
+	this.owner = player;
+    }
 
     public void reduceHealth(Double damage) {
 	this.health -= damage;

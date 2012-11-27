@@ -10,7 +10,12 @@ public class Logic {
 	return AStar(map, unit, destination);
     }
 
-    public Double calculateDamage(Map map, Unit attacker, Unit defender) {
+    public Pair<Double, Double> calculateDamage(Map map, Unit attacker, Unit defender) {
+	return new Pair<Double, Double>(calculateRawDamage(map, attacker, defender),
+					calculateCounterDamage(map, attacker, defender));
+    }
+
+    public Double calculateRawDamage(Map map, Unit attacker, Unit defender) {
 	final Double DEFENDER_DISADVANTAGE = 0.75;
 	GameField attackerField = map.getField(attacker.getPosition());
 	GameField defenderField = map.getField(defender.getPosition());
@@ -131,7 +136,7 @@ public class Logic {
 	return (100 / map.getField(origin).getMovementModifier());
     }
     
-    public Set<Position> getAttackableUnits(Map map, Unit unit) {
+    public Set<Position> getAttackableUnitPositions(Map map, Unit unit) {
 	Set<Position> atkFields = getAttackableFields(map, unit);
 	Set<Position> atkUnits = new HashSet<Position>();
 	for (Position p : atkFields)

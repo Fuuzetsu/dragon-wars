@@ -22,9 +22,11 @@ public class GameState {
 	}	    
     }
 
-    public GameState(Map map) {
+    public GameState(Map map, Logic logic) {
 	this.map = map;
+	this.logic = logic;
 
+	// Test data
 	this.players = new ArrayList<Player>(2);
 	players.add(new Player("Shana"));
 	players.add(new Player("Yukari"));
@@ -58,7 +60,6 @@ public class GameState {
 
 
     public void play() {
-	Logic logic = new Logic();
 	Position p = new Position(0, 0);
 	Dragon d = new Dragon();
 	d.setPosition(p);
@@ -76,6 +77,32 @@ public class GameState {
 	if (playersInGame < 2)
 	    System.exit(0); /* Announce winner etc. */	
 	
+    }
+
+    public void attack(Unit attacker, Unit defender) {
+	Set<Position> attackable = logic.getAttackableUnitPositions(map, attacker);
+	if (!attackable.contains(defender.getPosition()))
+	    return;
+
+	Pair<Double, Double> damage = logic.calculateDamage(map, attacker, defender);
+
+	defender.reduceHealth(damage.getLeft());
+
+	Boolean died = removeUnitIfDead(defender);
+	if (died)
+	    return;
+
+	/* Possibly counter */
+	attacker.reduceHealth(damage.getRight());
+	removeUnitIfDead(attacker);
+
+    }
+
+    private Boolean removeUnitIfDead(Unit unit) {
+	if (unit.isDead()) {
+	    map.getField(unit.getPosition()).setUnit(null);
+	    unit.getOwner().removeUnit(unit);
+	}
     }
 
     public void advanceTurn() {
