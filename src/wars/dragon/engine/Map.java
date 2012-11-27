@@ -19,7 +19,27 @@ public class Map {
     }
     
     public GameField getField(Integer x, Integer y) {
+	System.out.println(x);
+	System.out.println(y);
 	return fields.get(x).get(y);
+    }
+
+    public Boolean isValidField(Position position) {
+	return isValidField(position.getX(), position.getY());
+    }
+
+    public Boolean isValidField(Integer x, Integer y) {
+	if (this.fields == null)
+	    return false;
+
+	if (x < 0 || y < 0)
+	    return false;
+
+	if (x > this.fields.size() || this.fields.get(0) == null || 
+	    this.fields.get(0).size() > y)
+	    return false;
+
+	return true;
     }
 
     public String toString() {
@@ -45,6 +65,5 @@ public class Map {
 	    m += '\n';
 	}
 	return m;
-
     }
 }
