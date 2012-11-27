@@ -11,4 +11,8 @@ public class Position {
     public Integer getX() { return this.pair.getLeft(); }
     public Integer getY() { return this.pair.getRight(); }
 
+    public Boolean equals(Position other) {
+	return this.getX() == other.getX() && this.getY() == other.getY();
+    }
+
 }
