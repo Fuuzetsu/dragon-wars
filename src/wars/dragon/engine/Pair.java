@@ -13,4 +13,8 @@ public class Pair<L, R> {
     public L getLeft() { return this.left; }
     public R getRight() { return this.right; }
 
+    public String toString() {
+	return "(%s, %s)".format(left, right);
+    }
+
 }
