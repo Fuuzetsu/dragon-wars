@@ -27,15 +27,17 @@ public class Map {
     }
 
     public Boolean isValidField(Integer x, Integer y) {
-	if (this.fields == null)
+	if (this.fields == null || this.fields.get(0) == null) {
 	    return false;
+	}
 
-	if (x < 0 || y < 0)
+	if (x < 0 || y < 0) {
 	    return false;
+	}
 
-	if (x > this.fields.size() || this.fields.get(0) == null || 
-	    this.fields.get(0).size() > y)
+	if (x >= this.fields.size() || y >= this.fields.get(0).size()) {
 	    return false;
+	}
 
 	return true;
     }
