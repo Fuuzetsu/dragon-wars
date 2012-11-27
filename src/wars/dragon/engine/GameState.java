@@ -105,8 +105,42 @@ public class GameState {
 	}
     }
 
+    private void updateBuildingCaptureCounters() {
+	for (GameField gf : Map) {
+
+	    /* No building. */
+	    if (!gf.hostsBuilding())
+		continue;
+
+	    Building b = gf.getBuilding();
+	    
+	    /* Unit on the building. */
+	    if (gf.hostsUnit()) {
+		Unit unit = gf.getUnit();
+		/* Unit already owns the building or is capturing for >1 turn. */
+		if (unit.getOwner().equals(b.getLastCapturer())) {
+		    b.reduceCaptureTime(((Integer) unit.getHealth()));
+		    continue;
+		}
+		else {
+		    b.resetCaptureTime();
+		    b.setLastCapturer(unit.getOwner());
+		    b.reduceCaptureTime(((Integer) unit.getHealth()));		    
+		}
+	    }
+	    /* No unit on the building. */
+	    else {
+		if (b.hasOwner())
+		    continue;
+		else
+		    b.resetCaptureTime();
+	    }
+	}
+    }
+
     public void advanceTurn() {
-	this.turns += 1;
+	updateBuildingCaptureCounters();
+	++this.turns;
     }
 
 
