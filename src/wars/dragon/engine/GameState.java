@@ -6,6 +6,7 @@ import java.io.*;
 public class GameState {
     
     Map map;
+    Logic logic;
     List<Player> players = new ArrayList<Player>();
     Integer turns = 0;
 
@@ -13,7 +14,8 @@ public class GameState {
     public static void main(String[] argv) {
 	if (argv.length == 1) {
 	    Map m = MapReader.readMap(GameState.readFile(argv[0]));
-	    GameState game = new GameState(m);
+	    Logic l = new Logic();
+	    GameState game = new GameState(m, l);
 	    game.play();
 	}
 	else {
@@ -102,11 +104,13 @@ public class GameState {
 	if (unit.isDead()) {
 	    map.getField(unit.getPosition()).setUnit(null);
 	    unit.getOwner().removeUnit(unit);
+	    return true;
 	}
+	return false;
     }
 
     private void updateBuildingCaptureCounters() {
-	for (GameField gf : Map) {
+	for (GameField gf : map) {
 
 	    /* No building. */
 	    if (!gf.hostsBuilding())
@@ -117,15 +121,16 @@ public class GameState {
 	    /* Unit on the building. */
 	    if (gf.hostsUnit()) {
 		Unit unit = gf.getUnit();
+		Integer turnReduce = unit.getHealth().intValue();
 		/* Unit already owns the building or is capturing for >1 turn. */
 		if (unit.getOwner().equals(b.getLastCapturer())) {
-		    b.reduceCaptureTime(((Integer) unit.getHealth()));
+		    b.reduceCaptureTime(turnReduce);
 		    continue;
 		}
 		else {
 		    b.resetCaptureTime();
 		    b.setLastCapturer(unit.getOwner());
-		    b.reduceCaptureTime(((Integer) unit.getHealth()));		    
+		    b.reduceCaptureTime(turnReduce);
 		}
 	    }
 	    /* No unit on the building. */
