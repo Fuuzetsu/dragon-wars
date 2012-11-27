@@ -14,6 +14,10 @@ public abstract class GameField {
 	this.movementModifier = movementModifier;
     }
 
+    public Double getMovementModifier() {
+	return this.movementModifier();
+    }
+
     public Boolean hostsUnit() {
 	return this.hostedUnit != null;
     }
