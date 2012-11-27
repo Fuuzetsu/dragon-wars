@@ -2,7 +2,7 @@
 
 import java.util.*;
 
-public class Map {
+public class Map implements Iterable<GameField> {
 
     List< List<GameField> > fields;
     
@@ -10,6 +10,17 @@ public class Map {
 	this.fields = fields;
     }
     
+    public Iterator<GameField> iterator() {
+	/* This really isn't ideal as we will iterate twice. */
+	List<GameField> flat = new ArrayList<GameField>();
+	for (List<GameField> row : this.fields)
+	    for (GameField gf : row)
+		flat.add(gf);
+
+	return flat.iterator();
+
+    }
+
     public Boolean isInstantiated() {
 	return fields != null;
     }
