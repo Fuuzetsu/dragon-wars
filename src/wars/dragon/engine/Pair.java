@@ -14,7 +14,7 @@ public class Pair<L, R> {
     public R getRight() { return this.right; }
 
     public String toString() {
-	return "(%s, %s)".format(left, right);
+	return String.format("(%s, %s)", left, right);
     }
 
 }
