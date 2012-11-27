@@ -76,16 +76,33 @@ abstract class Unit {
       +Boolean isRanged()
 }
 
+class Logic {
+      +List<Position> findPath(Map, Unit, Position)
+      +Pair<Double, Double> calculateDamage(Map, Unit, Unit)
+      +Double calculateCounterDamage(Map, Unit, Unit)
+      -Double calculateTheoreticalCounterDamage(Map, Unit, Unit, Double)
+      -List<Position> AStar(Map, Unit, Position)
+      -List<Position> getAdjacentPositions(Position)
+      -class AStarComparator
+      -Double getMovementCost(Map, Unit, Position)
+      +Set<Position> getAttackableUnitPositions(Map, Unit)
+      -Set<Position> getAttackableFields(Map, Unit)
+      -Set<Position> getPositionsInRange(Map, Position, Double)
+      -Integer getManhattanDistance(Position, Position)
+      -Pair<Integer, Integer> getDistanceAway(Position, Position)
+      
+}
 
 class Player {
       -String name
       -Color color
-      -boolean playerOwned
+      -Boolean playerOwned
       -List<Unit> unitsOwned
-      +boolean isHumanPlayer()
+      +Boolean isHumanPlayer()
       +String getName()
-      +boolean hasLost()
-      +boolean hasMoveableUnits()
+      +Boolean hasLost()
+      +Boolean hasMoveableUnits()
+      +void removeUnit(unit)
 }
 
 class ComputerPlayer {
@@ -93,35 +110,64 @@ class ComputerPlayer {
 }
 
 abstract class Building {
+      -String buildingName
       -Integer captureDifficulty
       -Integer remainingCaptureTime
-      -DoubleattackBonus
-      -DoubledefenseBonus
-      -Player ownedByPlayer
-      -boolean goalBuilding
-      +DoublegetAttackBonus()
-      +DoublegetDefenseBonus()
+      -Double attackBonus
+      -Double defenseBonus
+      -Player owner
+      -Player lastCapturer
+      -Boolean goalBuilding
+      +Double getAttackBonus()
+      +Double getDefenseBonus()
+      +Player getLastCapturer()
+      +void setLastCapturer()
+      +Player getOwner()
+      +String getName()
+      +Boolean hasOwner()
+      +void reduceCaptureTime(Integer)
+      +void resetCaptureTime()
+      +Integer getCaptureDifficulty()
       +Integer getRemainingCaptureTime()
       +Integer setOwner(Player)
-      +boolean isGoalBuilding()      
+      +Boolean isGoalBuilding()      
 }
 
 abstract class GameField {
-      -Unit unitStanding
+      -String fieldName
+      -Unit hostedUnit
       -Building hostedBuilding
-      -DoublemovementModifier
-      +DoublegetAttackModifier()
-      +DoublegetMovementModifier()
-      +boolean doesAcceptUnit(? extends Unit)
-      +boolean isOccupied()
+      -Double movementModifier
+      -Double defenseModifier
+      -Double attackModifier
+      +Double getAttackModifier()
+      +Double getMovementModifier()
+      +Boolean hostsUnit()
+      *Boolean hostsBuilding()
       +Unit getUnit()
       +Building getBuilding()
       +Unit setUnit()
+      +Building setBuilding()
 }
 
-abstract class RangedUnit<? extends Unit> {
-      +DoublegetMinRange()
-      +DoublegetMaxRange()
+abstract class RangedUnit {
+      +Double getMinRange()
+      +Double getMaxRange()
+}
+
+class Dragon {
+}
+
+class Soldier {
+}
+
+class Grass {
+}
+
+class Pit {
+}
+
+class Water {
 }
 
 hide empty members
