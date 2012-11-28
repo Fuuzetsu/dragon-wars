@@ -99,8 +99,12 @@ public class Logic {
 	    Double g = getMovementCost(map, unit, lastPos);
 	    Double pathCost = h + g + posP.getRight();
 	    for (Position p : getAdjacentPositions(lastPos)) {
-		if (map.isValidField(p) && map.getField(p).doesAcceptUnit(unit) && 
-		    !map.getField(p).hostsUnit()) {
+		if (map.isValidField(p) && map.getField(p).doesAcceptUnit(unit)) {
+		    if (!map.getField(p).hostsUnit()) { 
+			Player op = map.getField(p).getUnit().getOwner();
+			if (!op.equals(unit.getOwner()))
+			    continue;
+		    }
 		    List<Position> plan = new ArrayList<Position>(poss);
 		    plan.add(p);
 		    queue.add(new Pair<List<Position>, Double>(plan, pathCost));
