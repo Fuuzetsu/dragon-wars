@@ -139,9 +139,13 @@ public class Logic {
     public Set<Position> getAttackableUnitPositions(Map map, Unit unit) {
 	Set<Position> atkFields = getAttackableFields(map, unit);
 	Set<Position> atkUnits = new HashSet<Position>();
-	for (Position p : atkFields)
-	    if (map.getField(p).hostsUnit())
-		atkUnits.add(p);
+	for (Position p : atkFields) {
+	    if (map.getField(p).hostsUnit()) {
+		Player uOwner = map.getField(p).getUnit().getOwner(); 
+		if (!uOwner.equals(unit.getOwner()))
+		    atkUnits.add(p);
+	    } 
+	}
 
 	return atkUnits;
     }
