@@ -3,35 +3,36 @@ package com.group7.dragonwars.engine;
 import java.util.*;
 
 public class Player {
-	private String name;
-	private Boolean lost;
-	List<Unit> ownedUnits = new ArrayList<Unit>();
+    private String name;
+    private Boolean lost;
+    List<Unit> ownedUnits = new ArrayList<Unit>();
 
-	public Player(String name) {
-		this.name = name;
-		this.lost = false;
-	}
+    public Player(String name) {
+        this.name = name;
+        this.lost = false;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public Boolean hasLost() {
-		return this.lost || ownedUnits.isEmpty();
-	}
+    public Boolean hasLost() {
+        return this.lost || ownedUnits.isEmpty();
+    }
 
-	public Boolean hasMoveableUnits() {
-		for (Unit u : ownedUnits)
-			if (!u.hasFinishedTurn())
-				return true;
-		return false;
-	}
+    public Boolean hasMoveableUnits() {
+        for (Unit u : ownedUnits)
+            if (!u.hasFinishedTurn())
+                return true;
 
-	public void removeUnit(Unit unit) {
-		ownedUnits.remove(unit);
-	}
+        return false;
+    }
 
-	public List<Unit> getOwnedUnits() {
-		return this.ownedUnits;
-	}
+    public void removeUnit(Unit unit) {
+        ownedUnits.remove(unit);
+    }
+
+    public List<Unit> getOwnedUnits() {
+        return this.ownedUnits;
+    }
 }

@@ -10,61 +10,63 @@ public abstract class GameField {
 
     public abstract Boolean doesAcceptUnit(Unit unit);
 
-    public GameField(String fieldName, Double movementModifier, 
-		     Double attackModifier, Double defenseModifier) {
-	this.fieldName = fieldName;
-	this.movementModifier = movementModifier;
+    public GameField(String fieldName, Double movementModifier,
+                     Double attackModifier, Double defenseModifier) {
+        this.fieldName = fieldName;
+        this.movementModifier = movementModifier;
     }
 
     public Double getDefenseModifier() {
-	if (this.hostsBuilding()) {
-	    Double mod = this.hostedBuilding.getDefenseBonus();
-	    mod += this.defenseModifier;
-	    return mod / 2;
-	}
-	return this.defenseModifier;
+        if (this.hostsBuilding()) {
+            Double mod = this.hostedBuilding.getDefenseBonus();
+            mod += this.defenseModifier;
+            return mod / 2;
+        }
+
+        return this.defenseModifier;
     }
 
     public Double getAttackModifier() {
-	if (this.hostsBuilding()) {
-	    Double mod = this.hostedBuilding.getAttackBonus();
-	    mod += this.attackModifier;
-	    return mod / 2;
-	}
-	return this.attackModifier;
+        if (this.hostsBuilding()) {
+            Double mod = this.hostedBuilding.getAttackBonus();
+            mod += this.attackModifier;
+            return mod / 2;
+        }
+
+        return this.attackModifier;
     }
-    
+
     public Double getMovementModifier() {
-	return this.movementModifier;
+        return this.movementModifier;
     }
 
     public Boolean hostsUnit() {
-	return this.hostedUnit != null;
+        return this.hostedUnit != null;
     }
 
     public Boolean hostsBuilding() {
-	/* Could be used by the drawing routine. */
-	return this.hostedBuilding != null;
+        /* Could be used by the drawing routine. */
+        return this.hostedBuilding != null;
     }
-    
+
     public Unit getUnit() {
-	return this.hostedUnit;
+        return this.hostedUnit;
     }
 
     public Building getBuilding() {
-	return this.hostedBuilding;
+        return this.hostedBuilding;
     }
 
     /* This will clobber old units/buildings as it is now. */
     public void setBuilding(Building building) {
-	this.hostedBuilding = building;
+        this.hostedBuilding = building;
     }
 
     public void setUnit(Unit unit) {
-	this.hostedUnit = unit;
+        this.hostedUnit = unit;
     }
 
     public String toString() {
-	return this.fieldName;
+        return this.fieldName;
     }
 }

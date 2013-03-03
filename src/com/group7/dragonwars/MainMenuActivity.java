@@ -12,8 +12,8 @@ import android.widget.Toast;
 
 public class MainMenuActivity extends Activity implements OnClickListener {
 
-	private Button btnBattle;
-	
+    private Button btnBattle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,18 +21,18 @@ public class MainMenuActivity extends Activity implements OnClickListener {
         this.btnBattle = (Button)this.findViewById(R.id.btnBattle);
         this.btnBattle.setOnClickListener(this);
     }
-    
+
     @Override
     protected void onStart() {
-    	// app lifecycle
-    	// 1. onCreate
-    	// 2. onStart
-    	// 3. onResume (can interact now)
-    	// 4. onPause (could -> onResume) (state not lost)
-    	// 5. onStop (could -> onStart) (state not lost)
-    	// 6. onDestroy (state lost)
-    	Toast.makeText(getApplicationContext(), "If the user had a game in progress when they quit the app (without properly saving and exiting), we will offer to resume it now (we are nice like that)", Toast.LENGTH_LONG).show();
-    	super.onStart();
+        // app lifecycle
+        // 1. onCreate
+        // 2. onStart
+        // 3. onResume (can interact now)
+        // 4. onPause (could -> onResume) (state not lost)
+        // 5. onStop (could -> onStart) (state not lost)
+        // 6. onDestroy (state lost)
+        Toast.makeText(getApplicationContext(), "If the user had a game in progress when they quit the app (without properly saving and exiting), we will offer to resume it now (we are nice like that)", Toast.LENGTH_LONG).show();
+        super.onStart();
     }
 
     @Override
@@ -41,24 +41,25 @@ public class MainMenuActivity extends Activity implements OnClickListener {
         getMenuInflater().inflate(R.menu.activity_main_menu, menu);
         return true;
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-    	switch (item.getItemId()) {
-    	case R.id.menu_settings:
-    		Intent intent = new Intent(this, SettingsActivity.class);
-    		startActivity(intent);
-    		return true;
-    	default:
-    		return super.onOptionsItemSelected(item);
-    	}
+        switch (item.getItemId()) {
+        case R.id.menu_settings:
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+            return true;
+
+        default:
+            return super.onOptionsItemSelected(item);
+        }
     }
 
-	@Override
-	public void onClick(View v) {
-		if (v == this.btnBattle) {
-			Intent intent = new Intent(this, GameActivity.class);
-    		startActivity(intent);
-		}
-	}
+    @Override
+    public void onClick(View v) {
+        if (v == this.btnBattle) {
+            Intent intent = new Intent(this, GameActivity.class);
+            startActivity(intent);
+        }
+    }
 }

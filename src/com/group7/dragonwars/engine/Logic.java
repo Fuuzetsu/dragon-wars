@@ -10,226 +10,240 @@ import java.util.Set;
 /* Class containing things like damage calculation and path finding. */
 public class Logic {
 
-	public List<Position> findPath(Map map, Unit unit, Position destination) {
-		return AStar(map, unit, destination);
-	}
+    public List<Position> findPath(Map map, Unit unit, Position destination) {
+        return AStar(map, unit, destination);
+    }
 
-	public Pair<Double, Double> calculateDamage(Map map, Unit attacker,
-			Unit defender) {
-		return new Pair<Double, Double>(calculateRawDamage(map, attacker,
-				defender), calculateCounterDamage(map, attacker, defender));
-	}
+    public Pair<Double, Double> calculateDamage(Map map, Unit attacker,
+            Unit defender) {
+        return new Pair<Double, Double>
+            (calculateRawDamage(map, attacker, defender),
+             calculateCounterDamage(map, attacker, defender));
+    }
 
-	public Double calculateRawDamage(Map map, Unit attacker, Unit defender) {
-		final Double DEFENDER_DISADVANTAGE = 0.75;
-		GameField attackerField = map.getField(attacker.getPosition());
-		GameField defenderField = map.getField(defender.getPosition());
+    public Double calculateRawDamage(Map map, Unit attacker, Unit defender) {
+        final Double DEFENDER_DISADVANTAGE = 0.75;
+        GameField attackerField = map.getField(attacker.getPosition());
+        GameField defenderField = map.getField(defender.getPosition());
 
-		Double attackerMod = attackerField.getAttackModifier();
-		Double defenderMod = defenderField.getDefenseModifier();
+        Double attackerMod = attackerField.getAttackModifier();
+        Double defenderMod = defenderField.getDefenseModifier();
 
-		Double defense = defender.getHealth() * (defenderMod / 100);
-		defense *= DEFENDER_DISADVANTAGE;
+        Double defense = defender.getHealth() * (defenderMod / 100);
+        defense *= DEFENDER_DISADVANTAGE;
 
-		Double rawDamage = attacker.getHealth() * (attackerMod / 100);
+        Double rawDamage = attacker.getHealth() * (attackerMod / 100);
 
-		Double damage = rawDamage - defense;
+        Double damage = rawDamage - defense;
 
-		return (defense < 0) ? 0 : damage;
-	}
+        return (defense < 0) ? 0 : damage;
+    }
 
-	public Double calculateCounterDamage(Map map, Unit attacker, Unit defender) {
-		Double initialDamage = calculateRawDamage(map, attacker, defender);
-		Double defenderHealth = defender.getHealth() - initialDamage;
-		defenderHealth = (defenderHealth < 0) ? 0 : defenderHealth;
+    public Double calculateCounterDamage(Map map, Unit attacker, Unit defender) {
+        Double initialDamage = calculateRawDamage(map, attacker, defender);
+        Double defenderHealth = defender.getHealth() - initialDamage;
+        defenderHealth = (defenderHealth < 0) ? 0 : defenderHealth;
 
-		return calculateTheoreticalCounterDamage(map, defender, attacker,
-				defenderHealth);
-	}
+        return calculateTheoreticalCounterDamage(map, defender, attacker,
+                defenderHealth);
+    }
 
-	private Double calculateTheoreticalCounterDamage(Map map, Unit attacker,
-			Unit defender, Double atkHealth) {
-		/* No defense disadvantage on a counter. */
-		GameField attackerField = map.getField(attacker.getPosition());
-		GameField defenderField = map.getField(defender.getPosition());
+    private Double calculateTheoreticalCounterDamage(Map map, Unit attacker,
+            Unit defender, Double atkHealth) {
+        /* No defense disadvantage on a counter. */
+        GameField attackerField = map.getField(attacker.getPosition());
+        GameField defenderField = map.getField(defender.getPosition());
 
-		Double attackerMod = attackerField.getAttackModifier();
-		Double defenderMod = defenderField.getDefenseModifier();
+        Double attackerMod = attackerField.getAttackModifier();
+        Double defenderMod = defenderField.getDefenseModifier();
 
-		Double defense = defender.getHealth() * (defenderMod / 100);
+        Double defense = defender.getHealth() * (defenderMod / 100);
 
-		Double rawDamage = atkHealth * (attackerMod / 100);
+        Double rawDamage = atkHealth * (attackerMod / 100);
 
-		Double damage = rawDamage - defense;
+        Double damage = rawDamage - defense;
 
-		return (defense < 0) ? 0 : damage;
-	}
+        return (defense < 0) ? 0 : damage;
+    }
 
-	private List<Position> AStar(Map map, Unit unit, Position destination) {
-		if (!map.isValidField(destination)) {
-			List<Position> dummy = new ArrayList<Position>(0);
-			return dummy;
-		}
-		Set<Position> expanded = new HashSet<Position>();
-		Comparator<Pair<List<Position>, Double>> comp = new AStarComparator();
-		PriorityQueue<Pair<List<Position>, Double>> queue = new PriorityQueue<Pair<List<Position>, Double>>(
-				10, comp);
-		List<Position> root = new ArrayList<Position>();
-		root.add(unit.getPosition());
+    private List<Position> AStar(Map map, Unit unit, Position destination) {
+        if (!map.isValidField(destination)) {
+            List<Position> dummy = new ArrayList<Position>(0);
+            return dummy;
+        }
 
-		queue.add(new Pair<List<Position>, Double>(root, 0.0));
-		while (queue.size() != 0) {
-			Pair<List<Position>, Double> posP = queue.poll();
-			List<Position> poss = posP.getLeft();
-			/*
-			 * String debug = "[ "; for (Position p : poss) { debug +=
-			 * p.toString() + " "; } debug += "]"; System.out.println(debug);
-			 */
-			Position lastPos = poss.get(poss.size() - 1);
-			if (lastPos.equals(destination))
-				return poss;
+        Set<Position> expanded = new HashSet<Position>();
+        Comparator<Pair<List<Position>, Double>> comp = new AStarComparator();
+        PriorityQueue<Pair<List<Position>, Double>> queue = new PriorityQueue<Pair<List<Position>, Double>>(
+            10, comp);
+        List<Position> root = new ArrayList<Position>();
+        root.add(unit.getPosition());
 
-			if (expanded.contains(lastPos))
-				continue;
+        queue.add(new Pair<List<Position>, Double>(root, 0.0));
 
-			expanded.add(lastPos);
+        while (queue.size() != 0) {
+            Pair<List<Position>, Double> posP = queue.poll();
+            List<Position> poss = posP.getLeft();
+            /*
+             * String debug = "[ "; for (Position p : poss) { debug +=
+             * p.toString() + " "; } debug += "]"; System.out.println(debug);
+             */
+            Position lastPos = poss.get(poss.size() - 1);
 
-			/* Get heuristic */
-			Integer h = getManhattanDistance(lastPos, destination);
-			/* Get cost */
-			Double g = getMovementCost(map, unit, lastPos);
-			Double pathCost = h + g + posP.getRight();
+            if (lastPos.equals(destination))
+                return poss;
 
-			if (pathCost > unit.getRemainingMovement())
-				continue;
+            if (expanded.contains(lastPos))
+                continue;
 
-			for (Position p : getAdjacentPositions(lastPos)) {
-				if (map.isValidField(p) && map.getField(p).doesAcceptUnit(unit)) {
-					if (!map.getField(p).hostsUnit()) {
-						Player op = map.getField(p).getUnit().getOwner();
-						if (!op.equals(unit.getOwner()))
-							continue;
-					}
+            expanded.add(lastPos);
 
-					List<Position> plan = new ArrayList<Position>(poss);
-					plan.add(p);
-					queue.add(new Pair<List<Position>, Double>(plan, pathCost));
-				}
-			}
-		}
-		List<Position> dummy = new ArrayList<Position>();
-		return dummy; /* Search failed */
-	}
+            /* Get heuristic */
+            Integer h = getManhattanDistance(lastPos, destination);
+            /* Get cost */
+            Double g = getMovementCost(map, unit, lastPos);
+            Double pathCost = h + g + posP.getRight();
 
-	private List<Position> getAdjacentPositions(Position pos) {
-		List<Position> positions = new ArrayList<Position>();
-		positions.add(new Position(pos.getX(), pos.getY() + 1));
-		positions.add(new Position(pos.getX(), pos.getY() - 1));
-		positions.add(new Position(pos.getX() + 1, pos.getY()));
-		positions.add(new Position(pos.getX() - 1, pos.getY()));
-		return positions;
-	}
+            if (pathCost > unit.getRemainingMovement())
+                continue;
 
-	private class AStarComparator implements
-			Comparator<Pair<List<Position>, Double>> {
-		public int compare(Pair<List<Position>, Double> p1,
-				Pair<List<Position>, Double> p2) {
-			if (p1.getRight() < p2.getRight())
-				return -1;
-			if (p1.getRight() > p2.getRight())
-				return 1;
+            for (Position p : getAdjacentPositions(lastPos)) {
+                if (map.isValidField(p) && map.getField(p).doesAcceptUnit(unit)) {
+                    if (!map.getField(p).hostsUnit()) {
+                        Player op = map.getField(p).getUnit().getOwner();
 
-			return 0;
-		}
-	}
+                        if (!op.equals(unit.getOwner()))
+                            continue;
+                    }
 
-	private Double getMovementCost(Map map, Unit unit, Position origin) {
-		/* g(x) for search */
-		// flying units ignore this; always 1
-		return (100 / map.getField(origin).getMovementModifier());
-	}
+                    List<Position> plan = new ArrayList<Position>(poss);
+                    plan.add(p);
+                    queue.add(new Pair<List<Position>, Double>(plan, pathCost));
+                }
+            }
+        }
 
-	public Set<Position> getAttackableUnitPositions(Map map, Unit unit) {
-		Set<Position> atkFields = getAttackableFields(map, unit);
-		Set<Position> atkUnits = new HashSet<Position>();
-		for (Position p : atkFields) {
-			if (map.getField(p).hostsUnit()) {
-				Player uOwner = map.getField(p).getUnit().getOwner();
-				if (!uOwner.equals(unit.getOwner()))
-					atkUnits.add(p);
-			}
-		}
+        List<Position> dummy = new ArrayList<Position>();
+        return dummy; /* Search failed */
+    }
 
-		return atkUnits;
-	}
+    private List<Position> getAdjacentPositions(Position pos) {
+        List<Position> positions = new ArrayList<Position>();
+        positions.add(new Position(pos.getX(), pos.getY() + 1));
+        positions.add(new Position(pos.getX(), pos.getY() - 1));
+        positions.add(new Position(pos.getX() + 1, pos.getY()));
+        positions.add(new Position(pos.getX() - 1, pos.getY()));
+        return positions;
+    }
 
-	private Set<Position> getAttackableFields(Map map, Unit unit) {
-		if (!unit.isRanged())
-			return getPositionsInRange(map, unit.getPosition(), 1.0);
+    private class AStarComparator implements
+        Comparator<Pair<List<Position>, Double>> {
+        public int compare(Pair<List<Position>, Double> p1,
+                           Pair<List<Position>, Double> p2) {
+            if (p1.getRight() < p2.getRight())
+                return -1;
 
-		RangedUnit ru = (RangedUnit) unit;
-		return getPositionsInRange(map, ru.getPosition(), ru.getMinRange(),
-				ru.getMaxRange());
-	}
+            if (p1.getRight() > p2.getRight())
+                return 1;
 
-	private Set<Position> getPositionsInRange(Map map, Position origin,
-			Double range) {
-		Set<Position> positions = new HashSet<Position>();
-		Double maxr = Math.ceil(range);
+            return 0;
+        }
+    }
 
-		for (Integer x = 0; x < maxr * 2; x++) {
-			for (Integer y = 0; y < maxr * 2; y++) {
-				Position newP = new Position(x, y);
-				// Pair<Integer, Integer> dist = getManhattanDistance(origin,
-				// newP);
-				if (x < maxr)
-					newP = new Position(newP.getX() - x, newP.getY());
-				else if (x > maxr)
-					newP = new Position(newP.getX() + x, newP.getY());
+    private Double getMovementCost(Map map, Unit unit, Position origin) {
+        /* g(x) for search */
+        // flying units ignore this; always 1
+        return (100 / map.getField(origin).getMovementModifier());
+    }
 
-				if (y < maxr)
-					newP = new Position(newP.getX(), newP.getY() - x);
-				else if (y > maxr)
-					newP = new Position(newP.getX(), newP.getY() + y);
+    public Set<Position> getAttackableUnitPositions(Map map, Unit unit) {
+        Set<Position> atkFields = getAttackableFields(map, unit);
+        Set<Position> atkUnits = new HashSet<Position>();
 
-				if (newP.equals(origin) || !map.isValidField(newP))
-					continue;
+        for (Position p : atkFields) {
+            if (map.getField(p).hostsUnit()) {
+                Player uOwner = map.getField(p).getUnit().getOwner();
 
-				positions.add(newP);
+                if (!uOwner.equals(unit.getOwner()))
+                    atkUnits.add(p);
+            }
+        }
 
-			}
-		}
-		return positions;
-	}
+        return atkUnits;
+    }
 
-	private Set<Position> getPositionsInRange(Map map, Position origin,
-			Double minRange, Double maxRange) {
-		Set<Position> positions = getPositionsInRange(map, origin, maxRange);
-		Set<Position> filtered = new HashSet<Position>();
-		for (Position p : positions) {
-			Pair<Integer, Integer> dist;
-			dist = getDistanceAway(origin, p);
-			if (Math.hypot(dist.getLeft(), dist.getRight()) < minRange)
-				continue;
-			filtered.add(p);
-		}
+    private Set<Position> getAttackableFields(Map map, Unit unit) {
+        if (!unit.isRanged())
+            return getPositionsInRange(map, unit.getPosition(), 1.0);
 
-		return filtered;
-	}
+        RangedUnit ru = (RangedUnit) unit;
+        return getPositionsInRange(map, ru.getPosition(), ru.getMinRange(),
+                                   ru.getMaxRange());
+    }
 
-	/* Used as a heuristic for A* */
-	private Integer getManhattanDistance(Position origin, Position destination) {
-		/* h(x) */
-		Pair<Integer, Integer> distance = getDistanceAway(origin, destination);
+    private Set<Position> getPositionsInRange(Map map, Position origin,
+            Double range) {
+        Set<Position> positions = new HashSet<Position>();
+        Double maxr = Math.ceil(range);
 
-		return distance.getLeft() + distance.getRight();
-	}
+        for (Integer x = 0; x < maxr * 2; x++) {
+            for (Integer y = 0; y < maxr * 2; y++) {
+                Position newP = new Position(x, y);
 
-	private Pair<Integer, Integer> getDistanceAway(Position origin,
-			Position destination) {
-		Integer x = Math.abs(origin.getX() - destination.getX());
-		Integer y = Math.abs(origin.getY() - destination.getY());
-		return new Pair<Integer, Integer>(x, y);
-	}
+                // Pair<Integer, Integer> dist = getManhattanDistance(origin,
+                // newP);
+                if (x < maxr)
+                    newP = new Position(newP.getX() - x, newP.getY());
+                else if (x > maxr)
+                    newP = new Position(newP.getX() + x, newP.getY());
+
+                if (y < maxr)
+                    newP = new Position(newP.getX(), newP.getY() - x);
+                else if (y > maxr)
+                    newP = new Position(newP.getX(), newP.getY() + y);
+
+                if (newP.equals(origin) || !map.isValidField(newP))
+                    continue;
+
+                positions.add(newP);
+
+            }
+        }
+
+        return positions;
+    }
+
+    private Set<Position> getPositionsInRange(Map map, Position origin,
+            Double minRange, Double maxRange) {
+        Set<Position> positions = getPositionsInRange(map, origin, maxRange);
+        Set<Position> filtered = new HashSet<Position>();
+
+        for (Position p : positions) {
+            Pair<Integer, Integer> dist;
+            dist = getDistanceAway(origin, p);
+
+            if (Math.hypot(dist.getLeft(), dist.getRight()) < minRange)
+                continue;
+
+            filtered.add(p);
+        }
+
+        return filtered;
+    }
+
+    /* Used as a heuristic for A* */
+    private Integer getManhattanDistance(Position origin, Position destination) {
+        /* h(x) */
+        Pair<Integer, Integer> distance = getDistanceAway(origin, destination);
+
+        return distance.getLeft() + distance.getRight();
+    }
+
+    private Pair<Integer, Integer> getDistanceAway(Position origin,
+            Position destination) {
+        Integer x = Math.abs(origin.getX() - destination.getX());
+        Integer y = Math.abs(origin.getY() - destination.getY());
+        return new Pair<Integer, Integer>(x, y);
+    }
 
 }

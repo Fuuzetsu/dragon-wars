@@ -4,83 +4,91 @@ import java.util.*;
 
 public class Map implements Iterable<GameField> {
 
-	List<List<GameField>> fields;
+    List<List<GameField>> fields;
 
-	public Map(List<List<GameField>> fields) {
-		this.fields = fields;
-	}
+    public Map(List<List<GameField>> fields) {
+        this.fields = fields;
+    }
 
-	public Iterator<GameField> iterator() {
-		/* This really isn't ideal as we will iterate twice. */
-		List<GameField> flat = new ArrayList<GameField>();
-		for (List<GameField> row : this.fields)
-			for (GameField gf : row)
-				flat.add(gf);
-		return flat.iterator();
-	}
+    public Iterator<GameField> iterator() {
+        /* This really isn't ideal as we will iterate twice. */
+        List<GameField> flat = new ArrayList<GameField>();
 
-	public Boolean isInstantiated() {
-		return fields != null;
-	}
+        for (List<GameField> row : this.fields)
+            for (GameField gf : row)
+                flat.add(gf);
 
-	public Integer getWidth() {
-		return fields.size();
-	}
+        return flat.iterator();
+    }
 
-	public Integer getHeight() {
-		return fields.get(0).size();
-	}
+    public Boolean isInstantiated() {
+        return fields != null;
+    }
 
-	public GameField getField(Position position) {
-		return getField(position.getX(), position.getY());
-	}
+    public Integer getWidth() {
+        return fields.size();
+    }
 
-	public GameField getField(Integer x, Integer y) {
-		return fields.get(x).get(y);
-	}
+    public Integer getHeight() {
+        return fields.get(0).size();
+    }
 
-	public Boolean isValidField(Position position) {
-		return isValidField(position.getX(), position.getY());
-	}
+    public GameField getField(Position position) {
+        return getField(position.getX(), position.getY());
+    }
 
-	public Boolean isValidField(Integer x, Integer y) {
-		if (this.fields == null || this.fields.get(0) == null) {
-			return false;
-		}
+    public GameField getField(Integer x, Integer y) {
+        return fields.get(x).get(y);
+    }
 
-		if (x < 0 || y < 0) {
-			return false;
-		}
+    public Boolean isValidField(Position position) {
+        return isValidField(position.getX(), position.getY());
+    }
 
-		if (x >= this.fields.size() || y >= this.fields.get(0).size()) {
-			return false;
-		}
+    public Boolean isValidField(Integer x, Integer y) {
+        if (this.fields == null || this.fields.get(0) == null) {
+            return false;
+        }
 
-		return true;
-	}
+        if (x < 0 || y < 0) {
+            return false;
+        }
 
-	public String toString() {
-		String m = "";
-		for (List<GameField> agf : this.fields) {
-			for (GameField gf : agf) {
-				m += gf.toString().charAt(0);
-			}
-			m += '\n';
-		}
-		return m;
-	}
+        if (x >= this.fields.size() || y >= this.fields.get(0).size()) {
+            return false;
+        }
 
-	public String dumpMobMap() {
-		String m = "";
-		for (List<GameField> agf : this.fields) {
-			for (GameField gf : agf) {
-				if (gf.hostsUnit())
-					m += gf.getUnit().toString().charAt(0);
-				else
-					m += ' ';
-			}
-			m += '\n';
-		}
-		return m;
-	}
+        return true;
+    }
+
+    public String toString() {
+        String m = "";
+
+        for (List<GameField> agf : this.fields) {
+            for (GameField gf : agf) {
+                m += gf.toString().charAt(0);
+            }
+
+            m += '\n';
+        }
+
+        return m;
+    }
+
+    public String dumpMobMap() {
+        String m = "";
+
+        for (List<GameField> agf : this.fields) {
+            for (GameField gf : agf) {
+                if (gf.hostsUnit())
+                    m += gf.getUnit().toString().charAt(0);
+                else
+                    m += ' ';
+            }
+
+            m += '\n';
+        }
+
+        return m;
+    }
 }
