@@ -30,4 +30,8 @@ public class Player {
 	public void removeUnit(Unit unit) {
 		ownedUnits.remove(unit);
 	}
+
+	public List<Unit> getOwnedUnits() {
+		return this.ownedUnits;
+	}
 }

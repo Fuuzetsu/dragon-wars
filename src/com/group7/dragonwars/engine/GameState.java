@@ -153,4 +153,8 @@ public class GameState {
 		return this.map;
 	}
 
+	public List<Player> getPlayers() {
+		return this.players;
+	}
+
 }
