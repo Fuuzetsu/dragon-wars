@@ -1,0 +1,33 @@
+package com.group7.dragonwars.engine.GoalArbitration;
+
+import com.group7.dragonwars.engine.GameState;
+import com.group7.dragonwars.engine.Unit;
+
+
+
+
+//abstract class from which "AttackUnit, DefendTile, MoveTo, CaptureTile" etc are derived from
+public abstract class AtomicAction
+{	
+	private float actionValue = 0;
+	protected GameState gameState;
+	private Unit actionUnit;
+	
+	public AtomicAction(GameState gamestate, Unit unit, float value)
+	{
+		actionValue = value;
+		gameState = gamestate;
+		actionUnit = unit;
+	}
+	
+	public abstract void Perform();
+	
+	public Unit getUnit()
+	{
+		return actionUnit;
+	}
+	public float getActionValue()
+	{
+		return actionValue;
+	}
+}
