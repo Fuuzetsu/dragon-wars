@@ -1,4 +1,4 @@
-//package wars.dragon.engine;
+package com.group7.dragonwars.engine;
 
 public class Dragon extends RangedUnit {
 
