@@ -1,0 +1,23 @@
+UI
+==
+
+All by Friday (basic functionality)
+----------------------------------
+* Scrollable map
+* Selectable units/tiles
+* Turns
+* Attack command
+* Move command
+
+Other
+-----
+* Menu appear
+* See selected unit info
+
+
+Engine
+=====
+
+* Game saving
+* Map format
+
