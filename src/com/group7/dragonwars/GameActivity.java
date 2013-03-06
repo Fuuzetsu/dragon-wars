@@ -4,8 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import android.app.Activity;
 import android.content.Context;
@@ -101,7 +100,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
     Map gm;
     DrawingThread dt;
     Context context;
-    List<Bitmap> tiles;
+    HashMap<String, Bitmap> tiles;
 
     //
     public GameView(Context ctx, AttributeSet attrset) {
@@ -112,14 +111,14 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
         SurfaceHolder holder = getHolder();
         holder.addCallback(this);
         tiles = new ArrayList<Bitmap>();
-        tiles.add(BitmapFactory.decodeResource(context.getResources(),
-                                               R.raw.grass));
-        tiles.add(BitmapFactory.decodeResource(context.getResources(),
-                                               R.raw.sea));
-        tiles.add(BitmapFactory.decodeResource(context.getResources(),
-                                               R.raw.small_dragon));
-        tiles.add(BitmapFactory.decodeResource(context.getResources(),
-                                               R.raw.soldier));
+        tiles.put("Grass", BitmapFactory.decodeResource(context.getResources(),
+														R.raw.grass));
+        tiles.put("Sea", BitmapFactory.decodeResource(context.getResources(),
+													  R.raw.sea));
+        tiles.put("Small_Dragon", BitmapFactory.decodeResource(context.getResources(),
+															   R.raw.small_dragon));
+        tiles.put("Soldier", BitmapFactory.decodeResource(context.getResources(),
+														  R.raw.soldier));
     }
 
     public void setMap(Map newmap) {
@@ -168,11 +167,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 GameField gf = gm.getField(i, j);
                 String gfn = gf.toString();
 
-                if (gfn.equals("Water")) { // No switch for you, String!
-                    canvas.drawBitmap(tiles.get(1), size * j, size * i, null);
-                } else if (gfn.equals("Grass")) { // No == for you, String!
-                    // Surprise, grass has already been drawn.
-                }
+				canvas.drawBitmap(tiles.get(gfn), size * j, size * i, null);
 
                 if (gf.hostsBuilding()) {
                     // Draw the building, however the current engine does not
@@ -187,15 +182,12 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
                     if (unit != null) {
                         String un = unit.toString();
 
-                        if (un.equals("Dragon")) {
-                            canvas.drawBitmap(tiles.get(2), size * j, size * i,
+                        if (un.equals("Dragon"))
+                            canvas.drawBitmap(tiles.get("Small_Dragon"), size * j, size * i,
                                               null);
-                        } else if (un.equals("Soldier")) {
-                            canvas.drawBitmap(tiles.get(3), size * j, size * i,
-                                              null);
-                        }
+						else
+							canvas.drawBitmap(tiles.get(un), size * j, size * i, null);
 
-                        //Log.v(null, i + ", " + j + " has a " + un);
                     }
                 }
             }
