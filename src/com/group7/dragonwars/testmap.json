@@ -2,7 +2,7 @@
     "mapName": "testfirst",
     "sizeX": 10,
     "sizeY": 5,
-    "players": 2
+    "players": 2,
     "fields": {
         "G": {
             "name": "Grass",
