@@ -1,0 +1,69 @@
+{
+    "mapName": "testfirst",
+    "sizeX": 10,
+    "sizeY": 5,
+    "players": 2,
+    "fields": {
+        "G": {
+            "name": "Grass",
+            "file": "grass.png",
+            "package": "raw",
+            "path": "com.group7.res"
+        },
+        "W": {
+            "name": "Water",
+            "file": "sea.png",
+            "package": "raw",
+            "path": "com.group7.res"
+        }
+    },
+    "units": {
+        "S": {
+            "name": "Soldier",
+            "file": "soldier.png",
+            "package": "raw",
+            "path": "com.group7.res"
+        },
+        "D": {
+            "name": "Dragon",
+            "file": "dragon.png",
+            "package": "raw",
+            "path": "com.group7.res"
+        }
+    },
+    "buildings": {
+        "C": {
+            "name": "Castle",
+            "file": "castle.png",
+            "package": "raw",
+            "path": "com.group7.res"
+        },
+        "V": {
+            "name": "Village",
+            "file": "village.png",
+            "package": "raw",
+            "path": "com.group7.res"
+        }
+    },
+    "terrain": [
+        "WWWWWWWWWW",
+        "WWWGGGWGWW",
+        "WWWGWGGWWW",
+        "WWWGGGWGWW",
+        "WWWWWWWWWW"
+    ],
+    "buildingPos": [
+        "          ",
+        "          ",
+        "   V  C   ",
+        "          ",
+        "          "
+    ],
+    "starting": [
+        "          ",
+        "   1      ",
+        "      2   ",
+        "   1  2   ",
+        "          "
+    ]
+}

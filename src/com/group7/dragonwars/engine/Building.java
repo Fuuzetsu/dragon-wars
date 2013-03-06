@@ -1,6 +1,6 @@
 package com.group7.dragonwars.engine;
 
-public abstract class Building {
+public class Building {
 
     private String buildingName;
     private Integer captureDifficulty, remainingCaptureTime;

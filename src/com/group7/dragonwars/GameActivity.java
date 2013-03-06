@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
+import org.json.*;
+
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -22,6 +24,7 @@ import android.view.View;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
+import com.group7.dragonwars.engine.Building;
 import com.group7.dragonwars.engine.GameField;
 import com.group7.dragonwars.engine.GameState;
 import com.group7.dragonwars.engine.Unit;
@@ -67,7 +70,18 @@ public class GameActivity extends Activity {
         mSystemUiHider.setup();
         mSystemUiHider.hide();
         GameView game_view = (GameView) this.findViewById(R.id.game_view);
-        Map map = MapReader.readMap(readFile(R.raw.map2)); // ugh
+        Map map = null;
+		try {
+			map = MapReader.readMap(readFile(R.raw.testmap)); // ugh
+		}
+		catch (JSONException e) {
+			System.out.println("Failed to load the map!");
+			System.out.println(e.getMessage());
+		}
+
+		if (map == null)
+			System.exit(1);
+
         game_view.setMap(map);
     }
 
@@ -119,6 +133,10 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 															   R.raw.small_dragon));
         tiles.put("Soldier", BitmapFactory.decodeResource(context.getResources(),
 														  R.raw.soldier));
+		tiles.put("Castle", BitmapFactory.decodeResource(context.getResources(),
+														 R.raw.castle));
+        tiles.put("Village", BitmapFactory.decodeResource(context.getResources(),
+														  R.raw.village));
     }
 
     public void setMap(Map newmap) {
@@ -170,10 +188,12 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 				canvas.drawBitmap(tiles.get(gfn), size * j, size * i, null);
 
                 if (gf.hostsBuilding()) {
-                    // Draw the building, however the current engine does not
-                    // currently do this
-                    // Well techinically the classes and string IDs of the
-                    // buildings currently do not do exist, and the engine does
+					Building b = gf.getBuilding();
+					String n = b.getName();
+					if (n.equals("Castle"))
+						canvas.drawBitmap(tiles.get(4), size * j, size * i, null);
+					else if (n.equals("Village"))
+						canvas.drawBitmap(tiles.get(5), size * j, size * i, null);
                 }
 
                 if (gf.hostsUnit()) {
