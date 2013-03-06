@@ -190,10 +190,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 if (gf.hostsBuilding()) {
 					Building b = gf.getBuilding();
 					String n = b.getName();
-					if (n.equals("Castle"))
-						canvas.drawBitmap(tiles.get(4), size * j, size * i, null);
-					else if (n.equals("Village"))
-						canvas.drawBitmap(tiles.get(5), size * j, size * i, null);
+					if (tiles.containsKey(n))
+						canvas.drawBitmap(tiles.get(n), size * j, size * i, null);
                 }
 
                 if (gf.hostsUnit()) {
@@ -205,7 +203,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
                         if (un.equals("Dragon"))
                             canvas.drawBitmap(tiles.get("Small_Dragon"), size * j, size * i,
                                               null);
-						else
+						else if (tiles.containsKey(un))
 							canvas.drawBitmap(tiles.get(un), size * j, size * i, null);
 
                     }
