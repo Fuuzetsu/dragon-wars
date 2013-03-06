@@ -3,6 +3,7 @@ package com.group7.dragonwars.engine;
 public abstract class GameField {
 
     String fieldName;
+	String resourcePath;
     Unit hostedUnit;
     Building hostedBuilding;
     Double movementModifier;
@@ -39,6 +40,10 @@ public abstract class GameField {
     public Double getMovementModifier() {
         return this.movementModifier;
     }
+
+	public String getResourcePath() {
+		return this.resourcePath;
+	}
 
     public Boolean hostsUnit() {
         return this.hostedUnit != null;
