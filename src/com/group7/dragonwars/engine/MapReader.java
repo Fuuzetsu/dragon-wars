@@ -8,35 +8,22 @@ import org.json.*;
 public class MapReader {
 
     public static Map readMap(List<String> mapLines) throws JSONException {
-        int longestLine = -1;
 		String jsonSource = "";
 
-        for (String s : mapLines) {
-            if (s.length() > longestLine)
-                longestLine = s.length();
+        for (String s : mapLines)
 			jsonSource += s + "\n";
-        }
 
-		System.out.println("Starting loads");
 		JSONObject m = new JSONObject(jsonSource);
-		System.out.println("After m = new JSONObject");
 		String mapName = m.getString("mapName");
-		System.out.println("after mapName");
 		Integer sizeX = m.getInt("sizeX");
-		System.out.println("after sizeX");
 		Integer sizeY = m.getInt("sizeY");
-		System.out.println("after sizeY");
 		Integer players = m.getInt("players");
-		System.out.println("after players");
 
 		HashMap<Character, GameField> fields = new HashMap<Character, GameField>();
 
 		JSONObject fs = m.getJSONObject("fields");
-		System.out.println("after fs");
 		JSONArray terrain = m.getJSONArray("terrain");
-		System.out.println("after terrain");
 		JSONArray buildingPos = m.getJSONArray("buildingPos");
-		System.out.println("after buildingPos");
 
 		// Iterator<?> iter = fs.keys();
 		// while (iter.hasNext()) {
@@ -45,31 +32,18 @@ public class MapReader {
 		// }
 		// System.out.println("after gameFields");
 
-        // List<List<GameField>> grid = new ArrayList<List<GameField>>(longestLine);
+
 		List<List<GameField>> grid = MapReader.listifyJSONArray(new MapReader.TerrainGetter(), terrain);
 		List<List<Building>> buildingGrid = MapReader.listifyJSONArray(new MapReader.BuildingGetter(), buildingPos);
 
-        // /* Initialize (height x width) grid */
-        // for (Integer y = 0; y < mapLines.size(); y++) {
-        //     List<GameField> inner = new ArrayList<GameField>(mapLines.size());
-		// 	List<Building> innerb = new ArrayList<Building>(buildingGrid.size());
-        //     grid.add(inner);
-		// 	buildingGrid.add(innerb);
-        // }
-		// System.out.println("after list init");
-
-		System.out.println("Grid size: " + grid.size());
-		System.out.println("GridBuilding size: " + buildingGrid.size());
-		System.out.println("longestline size: " + longestLine);
 
 		Integer gSize = -1;
 		for (List<GameField> x : grid)
 			if (x.size() > gSize)
 				gSize = x.size();
 
-		System.out.println("gSize: " + gSize);
-
 		JSONArray starting = m.getJSONArray("starting");
+
         /* Fill out the grid with buildings */
         for (Integer height = 0; height < grid.size(); height++) {
             for (Integer width = 0; width < gSize; width++) {
@@ -79,7 +53,6 @@ public class MapReader {
 			}
 		}
 
-		System.out.println("after fill-out");
         return new Map(grid);
 
     }
