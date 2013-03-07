@@ -66,47 +66,8 @@ public class GameActivity extends Activity {
         mSystemUiHider.setup();
         mSystemUiHider.hide();
 
-        // GameView game_view = (GameView) this.findViewById(R.id.game_view);
-        // GameMap map = null;
-		// Log.d(TAG, "nulling GameMap");
-        // try {
-        //     map = MapReader.readMap(readFile(R.raw.testmap)); // ugh
-        // } catch (JSONException e) {
-        //     System.out.println("Failed to load the map!");
-        //     System.out.println(e.getMessage());
-        // }
-
-        // if (map == null) {
-		// 	Log.d(TAG, "map is null");
-        //     System.exit(1);
-		// }
-
-		// Log.d(TAG, "before setMap");
-        // game_view.setMap(map);
     }
 
-    private List<String> readFile(int resourceid) {
-        List<String> text = new ArrayList<String>();
-
-        try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(this
-                                                   .getResources().openRawResource(resourceid)));
-            String line;
-
-            while ((line = in.readLine()) != null)
-                text.add(line);
-
-            in.close();
-        } catch (FileNotFoundException fnf) {
-            System.err.println("Couldn't find " + fnf.getMessage());
-            System.exit(1);
-        } catch (IOException ioe) {
-            System.err.println("Couldn't read " + ioe.getMessage());
-            System.exit(1);
-        }
-
-        return text;
-    }
 }
 
 class GameView extends SurfaceView implements SurfaceHolder.Callback {
@@ -122,7 +83,6 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		final String TAG = "GameView";
 		Log.d(TAG, "GameView ctor");
 
-		/***********************************/
         GameView game_view = (GameView) this.findViewById(R.id.game_view);
         GameMap map = null;
 		Log.d(TAG, "nulling GameMap");
@@ -140,7 +100,6 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		Log.d(TAG, "before setMap");
         game_view.setMap(map);
 
-		/***********************************/
         context = ctx;
         bm = BitmapFactory.decodeResource(context.getResources(),
                                           R.drawable.ic_launcher);
