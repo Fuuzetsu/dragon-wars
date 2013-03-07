@@ -131,8 +131,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 															  f.getSpriteDir(),
 															  f.getSpritePack());
 			this.graphics.get("Fields").put(f.getFieldName(),
-											BitmapFactory.decodeResource(context.getResources()),
-											resourceID);
+											BitmapFactory.decodeResource(context.getResources(),
+																		 resourceID));
 		}
 
 		/* Register units */
@@ -143,8 +143,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 															  f.getSpriteDir(),
 															  f.getSpritePack());
 			this.graphics.get("Units").put(f.getFieldName(),
-										   BitmapFactory.decodeResource(context.getResources()),
-										   resourceID);
+										   BitmapFactory.decodeResource(context.getResources(),
+																		resourceID));
 		}
 
 		/* Register buildings */
@@ -155,8 +155,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 															  f.getSpriteDir(),
 															  f.getSpritePack());
 			this.graphics.get("Buildings").put(f.getFieldName(),
-											   BitmapFactory.decodeResource(context.getResources()),
-											   resourceID);
+											   BitmapFactory.decodeResource(context.getResources(),
+																			resourceID));
 		}
 
         holder.addCallback(this);
