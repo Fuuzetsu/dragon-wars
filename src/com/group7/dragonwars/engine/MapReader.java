@@ -34,19 +34,33 @@ public class MapReader {
         	fields.put(key.charAt(0), fs.getJSONObject(key));
         }
 
+        HashMap<Character, GameField> fieldsInfo = new HashMap<Character, GameField>();
+        iter = fs.keys();
+        while (iter.hasNext()) {
+        	String key = (String) iter.next();
+			fieldsInfo.put(key.charAt(0), new MapReader.TerrainGetter(fields).apply(key.charAt(0)));
+        }
+
 		/* HashMap for buildings */
         HashMap<Character, JSONObject> buildings = new HashMap<Character, JSONObject>();
         Iterator<?> bIter = bs.keys();
         while (bIter.hasNext()) {
-        	String key = (String) bIter.next(); /* We have to cast ;_; */
+        	String key = (String) bIter.next();
         	buildings.put(key.charAt(0), bs.getJSONObject(key));
+        }
+
+        HashMap<Character, Building> buildingsInfo = new HashMap<Character, Building>();
+		bIter = bs.keys();
+        while (bIter.hasNext()) {
+        	String key = (String) bIter.next();
+			buildingsInfo.put(key.charAt(0), new MapReader.BuildingGetter(buildings).apply(key.charAt(0)));
         }
 
 		/* HashMap for units to be used for the current map throughout the game */
         HashMap<Character, Unit> units = new HashMap<Character, Unit>();
         Iterator<?> uIter = us.keys();
         while (uIter.hasNext()) {
-        	String key = (String) uIter.next(); /* We have to cast ;_; */
+        	String key = (String) uIter.next();
         	units.put(key.charAt(0), new MapReader.UnitGetter().apply(us.getJSONObject(key)));
         }
 
@@ -71,7 +85,7 @@ public class MapReader {
             }
         }
 
-        return new GameMap(grid, units, buildings, fields);
+        return new GameMap(grid, units, buildingsInfo, fieldsInfo);
 
     }
 

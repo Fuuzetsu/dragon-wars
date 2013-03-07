@@ -12,7 +12,9 @@ public class GameState {
 
     public static void main(String[] argv) {
         if (argv.length == 1) {
-            GameMap m = MapReader.readMap(GameState.readFile(argv[0]));
+			System.exit(1); // We don't need this now anyway, I'll get rid of it later
+            //GameMap m = MapReader.readMap(GameState.readFile(argv[0]));
+			GameMap m = null;
             Logic l = new Logic();
             GameState game = new GameState(m, l);
             game.play();
