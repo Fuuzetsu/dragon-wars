@@ -73,11 +73,10 @@ public class MapReader {
 
         return new Map(grid);
 
-
     }
 
     private static <O> List<List<O>> listifyJSONArray
-    (Func<Character, O> f, JSONArray xs) throws JSONException {
+		(FuncEx<Character, O, JSONException> f, JSONArray xs) throws JSONException {
         List<List<O>> v = new ArrayList<List<O>>();
         List<List<Character>> cs = new ArrayList<List<Character>>();
 
@@ -97,7 +96,7 @@ public class MapReader {
         return v;
     }
 
-    private static class BuildingGetter implements Func<Character, Building> {
+    private static class BuildingGetter implements FuncEx<Character, Building, JSONException> {
 
 		private HashMap<Character, JSONObject> map;
 
@@ -105,61 +104,53 @@ public class MapReader {
 			this.map = m;
 		}
 
-        public Building apply(Character c) {
+        public Building apply(Character c) throws JSONException {
 			if (!this.map.containsKey(c))
 				return null; /* TODO throw MapException */
 
-			try {
+			JSONObject f = this.map.get(c);
 
-				JSONObject f = this.map.get(c);
+			String name = f.getString("name");
+			String file = f.getString("file");
+			String pack = f.getString("package");
+			String path = f.getString("path");
+			Integer captureDifficulty = f.getInt("captureDifficulty");
+			Double attackBonus = f.getDouble("attackBonus");
+			Double defenseBonus = f.getDouble("defenseBonus");
+			Boolean goalBuilding = f.getBoolean("goalBuilding");
 
-				String name = f.getString("name");
-				String file = f.getString("file");
-				String pack = f.getString("package");
-				String path = f.getString("path");
-				Integer captureDifficulty = f.getInt("captureDifficulty");
-				Double attackBonus = f.getDouble("attackBonus");
-				Double defenseBonus = f.getDouble("defenseBonus");
-				Boolean goalBuilding = f.getBoolean("goalBuilding");
+			return new Building(name, captureDifficulty, attackBonus,
+								defenseBonus, goalBuilding, file);
 
-				return new Building(name, captureDifficulty, attackBonus,
-									defenseBonus, goalBuilding, file);
 			}
-			catch (JSONException e) {
-				throw new RuntimeException("Could not generate a building " + e);
-			}
-        }
-    }
+	}
 
-	private static class UnitGetter implements Func<JSONObject, Unit> {
-		public Unit apply(JSONObject f) {
-			try {
-				String name = f.getString("name");
-				String file = f.getString("file");
-				String pack = f.getString("package");
-				String path = f.getString("path");
-				Boolean flying = f.getBoolean("flying");
-				Double maxHealth = f.getDouble("maxHealth");
-				Integer maxMovement = f.getInt("maxMovement");
-				Double attack = f.getDouble("attack");
-				Double meleeDefense = f.getDouble("meleeDefense");
-				Double rangeDefense = f.getDouble("rangeDefense");
+	private static class UnitGetter implements FuncEx<JSONObject, Unit, JSONException> {
+		public Unit apply(JSONObject f) throws JSONException {
 
-				if (f.getBoolean("ranged"))
-					return new RangedUnit(name, maxHealth, maxMovement, attack, meleeDefense,
-										  rangeDefense, f.getDouble("minRange"), f.getDouble("maxRange"),
-										  flying, file);
+			String name = f.getString("name");
+			String file = f.getString("file");
+			String pack = f.getString("package");
+			String path = f.getString("path");
+			Boolean flying = f.getBoolean("flying");
+			Double maxHealth = f.getDouble("maxHealth");
+			Integer maxMovement = f.getInt("maxMovement");
+			Double attack = f.getDouble("attack");
+			Double meleeDefense = f.getDouble("meleeDefense");
+			Double rangeDefense = f.getDouble("rangeDefense");
 
-				return new Unit(name, maxHealth, maxMovement, attack, meleeDefense,
-								rangeDefense, flying, file);
-			}
-			catch (JSONException e) {
-				throw new RuntimeException("Could not generate a unit " + e);
-			}
+			if (f.getBoolean("ranged"))
+				return new RangedUnit(name, maxHealth, maxMovement, attack, meleeDefense,
+									  rangeDefense, f.getDouble("minRange"), f.getDouble("maxRange"),
+									  flying, file);
+
+			return new Unit(name, maxHealth, maxMovement, attack, meleeDefense,
+							rangeDefense, flying, file);
+
 		}
 	}
 
-    private static <I, O> List<O> map(Func<I, O> f, List<I> ls) {
+    private static <I, O, E extends Exception> List<O> map(FuncEx<I, O, E> f, List<I> ls) throws E {
         List<O> os = new ArrayList<O>();
 
         for (I l : ls)
@@ -168,7 +159,7 @@ public class MapReader {
         return os;
     }
 
-    private static class TerrainGetter implements Func<Character, GameField> {
+    private static class TerrainGetter implements FuncEx<Character, GameField, JSONException> {
 
 		private HashMap<Character, JSONObject> map;
 
@@ -176,31 +167,24 @@ public class MapReader {
 			this.map = m;
 		}
 
-        public GameField apply(Character c) {
+        public GameField apply(Character c) throws JSONException {
 			if (!this.map.containsKey(c))
 				return null; /* TODO throw MapException */
 
+			JSONObject f = this.map.get(c);
 
-			try {
-				JSONObject f = this.map.get(c);
+			String name = f.getString("name");
+			String file = f.getString("file");
+			String pack = f.getString("package");
+			String path = f.getString("path");
+			Boolean accessible = f.getBoolean("accessible");
+			Boolean flightOnly = accessible ? f.getBoolean("flightOnly") : false;
+			Double movementModifier = f.getDouble("movementModifier");
+			Double attackModifier = f.getDouble("attackModifier");
+			Double defenseModifier = f.getDouble("defenseModifier");
 
-				String name = f.getString("name");
-				String file = f.getString("file");
-				String pack = f.getString("package");
-				String path = f.getString("path");
-				Boolean accessible = f.getBoolean("accessible");
-				Boolean flightOnly = accessible ? f.getBoolean("flightOnly") : false;
-				Double movementModifier = f.getDouble("movementModifier");
-				Double attackModifier = f.getDouble("attackModifier");
-				Double defenseModifier = f.getDouble("defenseModifier");
-
-				return new GameField(name, movementModifier, attackModifier, defenseModifier,
-									 accessible, flightOnly, file);
-			}
-			catch (JSONException e) {
-				throw new RuntimeException("Could not generate a game field " + e);
-			}
-
+			return new GameField(name, movementModifier, attackModifier, defenseModifier,
+								 accessible, flightOnly, file);
         }
     }
 }
