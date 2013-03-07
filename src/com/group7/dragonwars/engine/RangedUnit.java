@@ -1,6 +1,6 @@
 package com.group7.dragonwars.engine;
 
-public abstract class RangedUnit extends Unit {
+public class RangedUnit extends Unit {
 
     private Double minRange, maxRange;
 

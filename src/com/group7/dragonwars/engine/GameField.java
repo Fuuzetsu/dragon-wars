@@ -1,6 +1,6 @@
 package com.group7.dragonwars.engine;
 
-public abstract class GameField {
+public class GameField {
 
     String fieldName;
     String resourcePath;
@@ -8,8 +8,16 @@ public abstract class GameField {
     Building hostedBuilding;
     Double movementModifier;
     Double defenseModifier, attackModifier;
+	Boolean flightOnly, accessible;
 
-    public abstract Boolean doesAcceptUnit(Unit unit);
+    public  Boolean doesAcceptUnit(Unit unit) {
+		Boolean canStep = true;
+
+		if (this.flightOnly)
+			canStep = unit.isFlying();
+
+		return this.accessible && canStep;
+	}
 
     public GameField(String fieldName, Double movementModifier,
                      Double attackModifier, Double defenseModifier) {

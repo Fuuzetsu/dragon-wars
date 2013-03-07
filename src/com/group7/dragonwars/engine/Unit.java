@@ -1,6 +1,6 @@
 package com.group7.dragonwars.engine;
 
-public abstract class Unit {
+public class Unit {
 
     private String name;
     private Integer maxMovement, movement;
@@ -9,9 +9,11 @@ public abstract class Unit {
     private Position position;
     private Boolean hasFinishedTurn = false;
     private Player owner;
+	private Boolean isFlying;
 
     public Unit(String name, Double maxHealth, Integer maxMovement,
-                Double attack, Double meleeDefense, Double rangeDefense) {
+                Double attack, Double meleeDefense, Double rangeDefense,
+				Boolean isFlying) {
         this.name = name;
 
         this.maxHealth = maxHealth;
@@ -23,6 +25,8 @@ public abstract class Unit {
         this.attack = attack;
         this.meleeDefense = meleeDefense;
         this.rangeDefense = rangeDefense;
+
+		this.isFlying = isFlying;
     }
 
     public Boolean isDead() {
