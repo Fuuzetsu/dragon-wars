@@ -6,6 +6,9 @@ public class Map implements Iterable<GameField> {
 
     List<List<GameField>> fields;
 	HashMap<Character, Unit> units;
+	HashMap<Character, Building> buildings;
+	HashMap<Character, GameField> gameFields;
+
 
     public Map(List<List<GameField>> fields, HashMap<Character, Unit> units,
 			   HashMap<Character, Building> buildings, HashMap<Character, GameField> gameFields) {
