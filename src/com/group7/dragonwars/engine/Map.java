@@ -5,9 +5,11 @@ import java.util.*;
 public class Map implements Iterable<GameField> {
 
     List<List<GameField>> fields;
+	HashMap<Character, Unit> units;
 
-    public Map(List<List<GameField>> fields) {
+    public Map(List<List<GameField>> fields, HashMap<Character, Unit> units) {
         this.fields = fields;
+		this.units = units;
     }
 
     public Iterator<GameField> iterator() {
@@ -91,4 +93,8 @@ public class Map implements Iterable<GameField> {
 
         return m;
     }
+
+	public HashMap<Character, Unit> getUnitMap() {
+		return this.units;
+	}
 }
