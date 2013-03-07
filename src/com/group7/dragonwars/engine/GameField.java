@@ -52,8 +52,8 @@ public class GameField {
         return this.movementModifier;
     }
 
-    public String getResourcePath() {
-        return this.resourcePath;
+    public String getSpriteLocation() {
+        return this.spriteLocation;
     }
 
     public Boolean hostsUnit() {
