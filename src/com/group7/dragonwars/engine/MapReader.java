@@ -113,14 +113,14 @@ public class MapReader {
 			String name = f.getString("name");
 			String file = f.getString("file");
 			String pack = f.getString("package");
-			String path = f.getString("path");
+			String dir = f.getString("dir");
 			Integer captureDifficulty = f.getInt("captureDifficulty");
 			Double attackBonus = f.getDouble("attackBonus");
 			Double defenseBonus = f.getDouble("defenseBonus");
 			Boolean goalBuilding = f.getBoolean("goalBuilding");
 
 			return new Building(name, captureDifficulty, attackBonus,
-								defenseBonus, goalBuilding, file);
+								defenseBonus, goalBuilding, file, dir, pack);
 
 			}
 	}
@@ -131,7 +131,7 @@ public class MapReader {
 			String name = f.getString("name");
 			String file = f.getString("file");
 			String pack = f.getString("package");
-			String path = f.getString("path");
+			String dir = f.getString("dir");
 			Boolean flying = f.getBoolean("flying");
 			Double maxHealth = f.getDouble("maxHealth");
 			Integer maxMovement = f.getInt("maxMovement");
@@ -142,10 +142,10 @@ public class MapReader {
 			if (f.getBoolean("ranged"))
 				return new RangedUnit(name, maxHealth, maxMovement, attack, meleeDefense,
 									  rangeDefense, f.getDouble("minRange"), f.getDouble("maxRange"),
-									  flying, file);
+									  flying, file, dir, pack);
 
 			return new Unit(name, maxHealth, maxMovement, attack, meleeDefense,
-							rangeDefense, flying, file);
+							rangeDefense, flying, file, dir, pack);
 
 		}
 	}
@@ -176,7 +176,7 @@ public class MapReader {
 			String name = f.getString("name");
 			String file = f.getString("file");
 			String pack = f.getString("package");
-			String path = f.getString("path");
+			String dir = f.getString("dir");
 			Boolean accessible = f.getBoolean("accessible");
 			Boolean flightOnly = accessible ? f.getBoolean("flightOnly") : false;
 			Double movementModifier = f.getDouble("movementModifier");
@@ -184,7 +184,7 @@ public class MapReader {
 			Double defenseModifier = f.getDouble("defenseModifier");
 
 			return new GameField(name, movementModifier, attackModifier, defenseModifier,
-								 accessible, flightOnly, file);
+								 accessible, flightOnly, file, dir, pack);
         }
     }
 }

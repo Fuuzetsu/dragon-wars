@@ -15,7 +15,8 @@ public class Unit {
 
     public Unit(String name, Double maxHealth, Integer maxMovement,
                 Double attack, Double meleeDefense, Double rangeDefense,
-				Boolean isFlying, String spriteLocation) {
+				Boolean isFlying, String spriteLocation,
+				String spriteDir, String spritePack) {
         this.name = name;
 
         this.maxHealth = maxHealth;
@@ -30,6 +31,8 @@ public class Unit {
 
 		this.isFlying = isFlying;
 		this.spriteLocation = spriteLocation;
+		this.spriteDir = spriteDir;
+		this.spritePack = spritePack;
     }
 
     public Boolean isDead() {
