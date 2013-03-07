@@ -8,7 +8,7 @@ public class Building {
     private Player owner;
     private Boolean goalBuilding;
     private Player lastCapturer;
-	private String spriteLocation;
+    private String spriteLocation;
 
     public Building(String name, Integer captureDifficulty, Double attackBonus,
                     Double defenseBonus, Boolean goalBuilding, String spriteLocation) {
@@ -22,7 +22,7 @@ public class Building {
 
         this.goalBuilding = goalBuilding;
 
-		this.spriteLocation = spriteLocation;
+        this.spriteLocation = spriteLocation;
     }
 
     public Player getLastCapturer() {
@@ -82,7 +82,7 @@ public class Building {
         this.remainingCaptureTime = this.captureDifficulty;
     }
 
-	public String getSpriteLocation() {
-		return this.spriteLocation;
-	}
+    public String getSpriteLocation() {
+        return this.spriteLocation;
+    }
 }

@@ -8,24 +8,24 @@ public class GameField {
     Building hostedBuilding;
     Double movementModifier;
     Double defenseModifier, attackModifier;
-	Boolean flightOnly, accessible;
+    Boolean flightOnly, accessible;
 
     public  Boolean doesAcceptUnit(Unit unit) {
-		Boolean canStep = true;
+        Boolean canStep = true;
 
-		if (this.flightOnly)
-			canStep = unit.isFlying();
+        if (this.flightOnly)
+            canStep = unit.isFlying();
 
-		return this.accessible && canStep;
-	}
+        return this.accessible && canStep;
+    }
 
     public GameField(String fieldName, Double movementModifier, Double attackModifier,
-					 Double defenseModifier, Boolean accessible, Boolean flightOnly,
-					 String spriteLocation) {
+                     Double defenseModifier, Boolean accessible, Boolean flightOnly,
+                     String spriteLocation) {
         this.fieldName = fieldName;
         this.movementModifier = movementModifier;
 
-		this.spriteLocation = spriteLocation;
+        this.spriteLocation = spriteLocation;
     }
 
     public Double getDefenseModifier() {

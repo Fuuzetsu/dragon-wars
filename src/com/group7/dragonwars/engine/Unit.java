@@ -9,13 +9,13 @@ public class Unit {
     private Position position;
     private Boolean hasFinishedTurn = false;
     private Player owner;
-	private Boolean isFlying;
-	private String spriteLocation;
+    private Boolean isFlying;
+    private String spriteLocation;
 
 
     public Unit(String name, Double maxHealth, Integer maxMovement,
                 Double attack, Double meleeDefense, Double rangeDefense,
-				Boolean isFlying, String spriteLocation) {
+                Boolean isFlying, String spriteLocation) {
         this.name = name;
 
         this.maxHealth = maxHealth;
@@ -28,8 +28,8 @@ public class Unit {
         this.meleeDefense = meleeDefense;
         this.rangeDefense = rangeDefense;
 
-		this.isFlying = isFlying;
-		this.spriteLocation = spriteLocation;
+        this.isFlying = isFlying;
+        this.spriteLocation = spriteLocation;
     }
 
     public Boolean isDead() {
