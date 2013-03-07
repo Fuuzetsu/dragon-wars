@@ -20,9 +20,12 @@ public class MapReader {
         Integer players = m.getInt("players");
 
         JSONObject fs = m.getJSONObject("fields");
+		JSONObject bs = m.getJSONObject("buildings");
         JSONArray terrain = m.getJSONArray("terrain");
         JSONArray buildingPos = m.getJSONArray("buildingPos");
 
+
+		/* Fill in a HashMap for look-up */
         HashMap<Character, JSONObject> fields = new HashMap<Character, JSONObject>();
         Iterator<?> iter = fs.keys();
         while (iter.hasNext()) {
@@ -30,9 +33,16 @@ public class MapReader {
         	fields.put(key.charAt(0), fs.getJSONObject(key));
         }
 
+		/* HashMap for buildings */
+        HashMap<Character, JSONObject> buildings = new HashMap<Character, JSONObject>();
+        Iterator<?> bIter = bs.keys();
+        while (bIter.hasNext()) {
+        	String key = (String) bIter.next(); /* We have to cast ;_; */
+        	fields.put(key.charAt(0), bs.getJSONObject(key));
+        }
 
         List<List<GameField>> grid = MapReader.listifyJSONArray(new MapReader.TerrainGetter(fields), terrain);
-        List<List<Building>> buildingGrid = MapReader.listifyJSONArray(new MapReader.BuildingGetter(), buildingPos);
+        List<List<Building>> buildingGrid = MapReader.listifyJSONArray(new MapReader.BuildingGetter(buildings), buildingPos);
 
 
         Integer gSize = -1;
@@ -79,17 +89,30 @@ public class MapReader {
     }
 
     private static class BuildingGetter implements Func<Character, Building> {
+
+		private HashMap<Character, JSONObject> map;
+
+		public BuildingGetter(HashMap<Character, JSONObject> m) {
+			this.map = m;
+		}
+
         public Building apply(Character c) {
-            switch (c) {
-            case 'C':
-                return new Building("Castle", 2, 3.0, 4.0, true);
+			if (!this.map.containsKey(c))
+				return null; /* TODO throw MapException */
 
-            case 'V':
-                return new Building("Village", 2, 3.0, 4.0, false);
+			JSONObject f = this.map.get(c);
 
-            default:
-                return null; /* Temporary for testing */
-            }
+			String name = f.getString("name");
+			String file = f.getString("file");
+			String pack = f.getString("package");
+			String path = f.getString("path");
+			Integer captureDifficulty = f.getInt("captureDifficulty");
+			Double attackBonus = f.getInt("attackBonus");
+			Double defenseBonus = f.getInt("defenseBonus");
+			Boolean goalBuilding = f.getBoolean("goalBuilding");
+
+			return new Building(name, captureDifficulty, attackBonus,
+								defenseBonus, goalBuilding, file);
         }
     }
 
