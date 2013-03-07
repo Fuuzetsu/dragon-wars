@@ -19,10 +19,13 @@ public class GameField {
 		return this.accessible && canStep;
 	}
 
-    public GameField(String fieldName, Double movementModifier,
-                     Double attackModifier, Double defenseModifier) {
+    public GameField(String fieldName, Double movementModifier, Double attackModifier,
+					 Double defenseModifier, Boolean accessible, Boolean flightOnly,
+					 String spriteLocation) {
         this.fieldName = fieldName;
         this.movementModifier = movementModifier;
+
+		this.spriteLocation = spriteLocation;
     }
 
     public Double getDefenseModifier() {

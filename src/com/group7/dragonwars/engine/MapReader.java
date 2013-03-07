@@ -19,21 +19,19 @@ public class MapReader {
         Integer sizeY = m.getInt("sizeY");
         Integer players = m.getInt("players");
 
-        HashMap<Character, GameField> fields = new HashMap<Character, GameField>();
-
         JSONObject fs = m.getJSONObject("fields");
         JSONArray terrain = m.getJSONArray("terrain");
         JSONArray buildingPos = m.getJSONArray("buildingPos");
 
-        // Iterator<?> iter = fs.keys();
-        // while (iter.hasNext()) {
-        // 	String key = (String) iter.next(); /* We have to cast ;_; */
-        // 	fields.put(key.charAt(0), MapReader.getGameField(key.charAt(0))); /* TODO GF handling */
-        // }
-        // System.out.println("after gameFields");
+        HashMap<Character, JSONObject> fields = new HashMap<Character, JSONObject>();
+        Iterator<?> iter = fs.keys();
+        while (iter.hasNext()) {
+        	String key = (String) iter.next(); /* We have to cast ;_; */
+        	fields.put(key.charAt(0), fs.getJSONObject(key));
+        }
 
 
-        List<List<GameField>> grid = MapReader.listifyJSONArray(new MapReader.TerrainGetter(), terrain);
+        List<List<GameField>> grid = MapReader.listifyJSONArray(new MapReader.TerrainGetter(fields), terrain);
         List<List<Building>> buildingGrid = MapReader.listifyJSONArray(new MapReader.BuildingGetter(), buildingPos);
 
 
@@ -105,32 +103,32 @@ public class MapReader {
     }
 
     private static class TerrainGetter implements Func<Character, GameField> {
+
+		private HashMap<Character, JSONObject> map;
+
+		public TerrainGetter(HashMap<Character, JSONObject> m) {
+			this.map = m;
+		}
+
         public GameField apply(Character c) {
-            if (c == null || c == ' ')
-                return new Pit();
+			if (!this.map.containsKey(c))
+				return null; /* TODO throw MapException */
 
-            switch (c) {
-            case 'G':
-                return new Grass();
+			JSONObject f = this.map.get(c);
 
-            case 'W':
-                return new Water();
+			String name = f.getString("name");
+			String file = f.getString("file");
+			String pack = f.getString("package");
+			String path = f.getString("path");
+			Boolean accessible = f.getBoolean("accessible");
+			Boolean flightOnly = accessible ? f.getBoolean("flightOnly") : false;
+			Double movementModifier = f.getDouble("movementModifier");
+			Double attackModifier = f.getDouble("attackModifier");
+			Double defenseModifier = f.getDouble("defenseModifier");
 
-            case 'D':
-                GameField fa = new Grass();
-                fa.setUnit(new Dragon());
-                return fa;
+			return new GameField(name, movementModifier, attackModifier, defenseModifier,
+								 accessible, flightOnly, file);
 
-            case 'S':
-                GameField fu = new Grass();
-                fu.setUnit(new Soldier());
-                return fu;
-
-            default:
-                System.err.println("MapReader doesn't know the symbol " + c);
-                System.exit(1);
-                return null; /* Java, please. */
-            }
         }
     }
 }
