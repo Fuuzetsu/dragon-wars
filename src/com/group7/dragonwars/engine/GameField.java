@@ -83,7 +83,7 @@ public class GameField {
     }
 
     public String toString() {
-        this.getFieldName();
+        return this.getFieldName();
     }
 
 	public String getFieldName() {
