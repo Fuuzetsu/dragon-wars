@@ -7,9 +7,12 @@ public class Map implements Iterable<GameField> {
     List<List<GameField>> fields;
 	HashMap<Character, Unit> units;
 
-    public Map(List<List<GameField>> fields, HashMap<Character, Unit> units) {
+    public Map(List<List<GameField>> fields, HashMap<Character, Unit> units,
+			   HashMap<Character, Building> buildings, HashMap<Character, GameField> gameFields) {
         this.fields = fields;
 		this.units = units;
+		this.buildings = buildings;
+		this.gameFields = gameFields;
     }
 
     public Iterator<GameField> iterator() {
@@ -96,5 +99,13 @@ public class Map implements Iterable<GameField> {
 
 	public HashMap<Character, Unit> getUnitMap() {
 		return this.units;
+	}
+
+	public HashMap<Character, Building> getBuildingMap() {
+		return this.buildings;
+	}
+
+	public HashMap<Character, GameField> getGameFieldMap() {
+		return this.gameFields();
 	}
 }

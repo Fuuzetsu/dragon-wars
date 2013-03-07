@@ -71,7 +71,7 @@ public class MapReader {
             }
         }
 
-        return new Map(grid);
+        return new Map(grid, units, buildings, fields);
 
     }
 
