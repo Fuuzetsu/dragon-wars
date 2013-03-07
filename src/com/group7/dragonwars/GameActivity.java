@@ -74,9 +74,12 @@ public class GameActivity extends Activity {
             System.out.println(e.getMessage());
         }
 
-        if (map == null)
+        if (map == null) {
+			System.out.println("LOG: " + "Map is null! Quitting!");
             System.exit(1);
+		}
 
+		System.out.println("LOG: " + "Just before setMap");
         game_view.setMap(map);
     }
 
@@ -122,7 +125,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 		/* Register game fields */
 		this.graphics.put("Fields", new HashMap<String, Bitmap>());
-		for (Map.Entry<Character, GameField> ent : this.gm.getGameFields().entrySet()) {
+		for (Map.Entry<Character, GameField> ent : this.gm.getGameFieldMap().entrySet()) {
 			GameField f = ent.getValue();
 			Integer resourceID = getResources().getIdentifier(f.getSpriteLocation(),
 															  f.getSpriteDir(),
@@ -134,7 +137,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 		/* Register units */
 		this.graphics.put("Units", new HashMap<String, Bitmap>());
-		for (Map.Entry<Character, GameField> ent : this.gm.getUnits().entrySet()) {
+		for (Map.Entry<Character, GameField> ent : this.gm.getUnitMap().entrySet()) {
 			Unit f = ent.getValue();
 			Integer resourceID = getResources().getIdentifier(f.getSpriteLocation(),
 															  f.getSpriteDir(),
@@ -146,7 +149,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 		/* Register buildings */
 		this.graphics.put("Buildings", new HashMap<String, Bitmap>());
-		for (Map.Entry<Character, GameField> ent : this.gm.getUnits().entrySet()) {
+		for (Map.Entry<Character, GameField> ent : this.gm.getBuildingMap().entrySet()) {
 			Building f = ent.getValue();
 			Integer resourceID = getResources().getIdentifier(f.getSpriteLocation(),
 															  f.getSpriteDir(),
