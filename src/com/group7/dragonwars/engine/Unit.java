@@ -10,7 +10,7 @@ public class Unit {
     private Boolean hasFinishedTurn = false;
     private Player owner;
 	private Boolean isFlying;
-	private String spriteLocation;
+	private String spriteLocation, spriteDir, spritePack;
 
 
     public Unit(String name, Double maxHealth, Integer maxMovement,

@@ -8,7 +8,7 @@ public class Building {
     private Player owner;
     private Boolean goalBuilding;
     private Player lastCapturer;
-	private String spriteLocation;
+	private String spriteLocation, spriteDir, spritePack;
 
     public Building(String name, Integer captureDifficulty, Double attackBonus,
                     Double defenseBonus, Boolean goalBuilding, String spriteLocation,

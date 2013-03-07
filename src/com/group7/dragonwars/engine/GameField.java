@@ -2,13 +2,13 @@ package com.group7.dragonwars.engine;
 
 public class GameField {
 
-    String fieldName;
-    String spriteLocation;
-    Unit hostedUnit;
-    Building hostedBuilding;
-    Double movementModifier;
-    Double defenseModifier, attackModifier;
-	Boolean flightOnly, accessible;
+    private String fieldName;
+    private Unit hostedUnit;
+    private Building hostedBuilding;
+    private Double movementModifier;
+    private Double defenseModifier, attackModifier;
+	private Boolean flightOnly, accessible;
+	private String spriteLocation, spriteDir, spritePack;
 
     public  Boolean doesAcceptUnit(Unit unit) {
 		Boolean canStep = true;
