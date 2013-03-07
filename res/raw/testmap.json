@@ -8,13 +8,23 @@
             "name": "Grass",
             "file": "grass.png",
             "package": "raw",
-            "path": "com.group7.res"
+            "path": "com.group7.res",
+            "movementModifier": 1.0,
+            "attackModifier": 0.0,
+            "defenseModifier": 0.0,
+            "accessible": true,
+            "flightOnly": false
         },
         "W": {
             "name": "Water",
             "file": "sea.png",
             "package": "raw",
             "path": "com.group7.res"
+            "movementModifier": 1.0,
+            "attackModifier": 0.0,
+            "defenseModifier": 0.0,
+            "accessible": true,
+            "flightOnly": true
         }
     },
     "units": {
@@ -22,13 +32,29 @@
             "name": "Soldier",
             "file": "soldier.png",
             "package": "raw",
-            "path": "com.group7.res"
+            "path": "com.group7.res",
+            "ranged": false,
+            "flying": false,
+            "maxHealth": 10,
+            "maxMovement": 5,
+            "attack": 2.0,
+            "meleeDefense": 1.0,
+            "rangeDefense": 2.0
         },
         "D": {
             "name": "Dragon",
             "file": "dragon.png",
             "package": "raw",
-            "path": "com.group7.res"
+            "path": "com.group7.res",
+            "ranged": true,
+            "minRange": 2,
+            "maxRange": 4,
+            "flying": true,
+            "maxHealth": 30,
+            "maxMovement": 7,
+            "attack": 3.0,
+            "meleeDefense": 2.0,
+            "rangeDefense": 2.0
         }
     },
     "buildings": {
@@ -36,13 +62,21 @@
             "name": "Castle",
             "file": "castle.png",
             "package": "raw",
-            "path": "com.group7.res"
+            "path": "com.group7.res",
+            "captureDifficulty": 4,
+            "attackBonus": 3.0,
+            "defenseBonus": 4.0,
+            "goalBuilding": true
         },
         "V": {
             "name": "Village",
             "file": "village.png",
             "package": "raw",
             "path": "com.group7.res"
+            "captureDifficulty": 2,
+            "attackBonus": 1.0,
+            "defenseBonus": 1.0,
+            "goalBuilding": false
         }
     },
     "terrain": [
