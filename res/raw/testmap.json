@@ -83,14 +83,14 @@
         "WWWWWWWWWW",
         "WWWGGGWGWW",
         "WWWGWGGWWW",
-        "WWWGGGWGWW",
+        "WGGGGGWGWW",
         "WWWWWWWWWW"
     ],
     "buildingPos": [
         "          ",
-        "          ",
-        "   V  C   ",
-        "          ",
+        "   C      ",
+        "  CV  C   ",
+        "   C      ",
         "          "
     ],
     "starting": [
