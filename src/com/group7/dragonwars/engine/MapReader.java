@@ -21,6 +21,7 @@ public class MapReader {
 
         JSONObject fs = m.getJSONObject("fields");
 		JSONObject bs = m.getJSONObject("buildings");
+		JSONObject us = m.getJSONObject("units");
         JSONArray terrain = m.getJSONArray("terrain");
         JSONArray buildingPos = m.getJSONArray("buildingPos");
 
@@ -38,11 +39,21 @@ public class MapReader {
         Iterator<?> bIter = bs.keys();
         while (bIter.hasNext()) {
         	String key = (String) bIter.next(); /* We have to cast ;_; */
-        	fields.put(key.charAt(0), bs.getJSONObject(key));
+        	buildings.put(key.charAt(0), bs.getJSONObject(key));
         }
+
+		/* HashMap for units to be used for the current map throughout the game */
+        HashMap<Character, Unit> units = new HashMap<Character, Unit>();
+        Iterator<?> uIter = us.keys();
+        while (uIter.hasNext()) {
+        	String key = (String) uIter.next(); /* We have to cast ;_; */
+        	units.put(key.charAt(0), new MapReader.UnitGetter.apply(us.getJSONObject(key)));
+        }
+
 
         List<List<GameField>> grid = MapReader.listifyJSONArray(new MapReader.TerrainGetter(fields), terrain);
         List<List<Building>> buildingGrid = MapReader.listifyJSONArray(new MapReader.BuildingGetter(buildings), buildingPos);
+		HashMap<Character, Unit> =
 
 
         Integer gSize = -1;
@@ -115,6 +126,30 @@ public class MapReader {
 								defenseBonus, goalBuilding, file);
         }
     }
+
+	private static class UnitGetter implements Func<JSONObject, Unit> {
+		public Unit apply(JSONObject f) {
+			String name = f.getString("name");
+			String file = f.getString("file");
+			String pack = f.getString("package");
+			String path = f.getString("path");
+			Boolean flying = f.getBoolean("flying");
+			Integer maxHealth = f.getInt("maxHealth");
+			Integer maxMovement = f.getInt("maxMovement");
+			Double attack = f.getDouble("attack");
+			Double meleeDefense = f.getDouble("meleeDefense");
+			Double rangeDefense = f.getDouble("rangeDefense");
+
+			if (f.getBoolean("ranged"))
+				return new RangedUnit(name, maxHealth, maxMovement, attack, meleeDefense,
+									  rangeDefense, f.getDouble("minRange"), f.getDouble("maxRange"),
+									  flying, file);
+
+			return new Unit(name, maxHealth, maxMovement, attack, meleeDefense,
+							rangeDefense, flying, file);
+
+		}
+	}
 
     private static <I, O> List<O> map(Func<I, O> f, List<I> ls) {
         List<O> os = new ArrayList<O>();
