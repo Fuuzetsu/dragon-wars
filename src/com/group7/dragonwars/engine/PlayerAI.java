@@ -18,7 +18,7 @@ public class PlayerAI extends Player {
     public void takeTurn() {
         UpdateActions();
 
-        for(AtomicAction action : actions) {
+        for (AtomicAction action : actions) {
             action.Perform();
         }
 

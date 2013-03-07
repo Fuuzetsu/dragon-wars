@@ -17,8 +17,8 @@ public class Logic {
     public Pair<Double, Double> calculateDamage(Map map, Unit attacker,
             Unit defender) {
         return new Pair<Double, Double>
-            (calculateRawDamage(map, attacker, defender),
-             calculateCounterDamage(map, attacker, defender));
+               (calculateRawDamage(map, attacker, defender),
+                calculateCounterDamage(map, attacker, defender));
     }
 
     public Double calculateRawDamage(Map map, Unit attacker, Unit defender) {

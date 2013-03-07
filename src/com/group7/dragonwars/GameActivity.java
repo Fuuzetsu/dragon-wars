@@ -71,16 +71,16 @@ public class GameActivity extends Activity {
         mSystemUiHider.hide();
         GameView game_view = (GameView) this.findViewById(R.id.game_view);
         Map map = null;
-		try {
-			map = MapReader.readMap(readFile(R.raw.testmap)); // ugh
-		}
-		catch (JSONException e) {
-			System.out.println("Failed to load the map!");
-			System.out.println(e.getMessage());
-		}
 
-		if (map == null)
-			System.exit(1);
+        try {
+            map = MapReader.readMap(readFile(R.raw.testmap)); // ugh
+        } catch (JSONException e) {
+            System.out.println("Failed to load the map!");
+            System.out.println(e.getMessage());
+        }
+
+        if (map == null)
+            System.exit(1);
 
         game_view.setMap(map);
     }
@@ -126,17 +126,17 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
         holder.addCallback(this);
         tiles = new ArrayList<Bitmap>();
         tiles.put("Grass", BitmapFactory.decodeResource(context.getResources(),
-														R.raw.grass));
+                  R.raw.grass));
         tiles.put("Sea", BitmapFactory.decodeResource(context.getResources(),
-													  R.raw.sea));
+                  R.raw.sea));
         tiles.put("Small_Dragon", BitmapFactory.decodeResource(context.getResources(),
-															   R.raw.small_dragon));
+                  R.raw.small_dragon));
         tiles.put("Soldier", BitmapFactory.decodeResource(context.getResources(),
-														  R.raw.soldier));
-		tiles.put("Castle", BitmapFactory.decodeResource(context.getResources(),
-														 R.raw.castle));
+                  R.raw.soldier));
+        tiles.put("Castle", BitmapFactory.decodeResource(context.getResources(),
+                  R.raw.castle));
         tiles.put("Village", BitmapFactory.decodeResource(context.getResources(),
-														  R.raw.village));
+                  R.raw.village));
     }
 
     public void setMap(Map newmap) {
@@ -185,13 +185,14 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 GameField gf = gm.getField(i, j);
                 String gfn = gf.toString();
 
-				canvas.drawBitmap(tiles.get(gfn), size * j, size * i, null);
+                canvas.drawBitmap(tiles.get(gfn), size * j, size * i, null);
 
                 if (gf.hostsBuilding()) {
-					Building b = gf.getBuilding();
-					String n = b.getName();
-					if (tiles.containsKey(n))
-						canvas.drawBitmap(tiles.get(n), size * j, size * i, null);
+                    Building b = gf.getBuilding();
+                    String n = b.getName();
+
+                    if (tiles.containsKey(n))
+                        canvas.drawBitmap(tiles.get(n), size * j, size * i, null);
                 }
 
                 if (gf.hostsUnit()) {
@@ -203,8 +204,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
                         if (un.equals("Dragon"))
                             canvas.drawBitmap(tiles.get("Small_Dragon"), size * j, size * i,
                                               null);
-						else if (tiles.containsKey(un))
-							canvas.drawBitmap(tiles.get(un), size * j, size * i, null);
+                        else if (tiles.containsKey(un))
+                            canvas.drawBitmap(tiles.get(un), size * j, size * i, null);
 
                     }
                 }
