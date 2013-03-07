@@ -85,7 +85,15 @@ public class Building {
         this.remainingCaptureTime = this.captureDifficulty;
     }
 
-	public String getSpriteLocation() {
-		return this.spriteLocation;
+    public String getSpriteLocation() {
+        return this.spriteLocation;
+    }
+
+	public String getSpriteDir() {
+		return this.spriteDir;
+	}
+
+	public String getSpritePack() {
+		return this.spritePack;
 	}
 }

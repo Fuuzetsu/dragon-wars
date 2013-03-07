@@ -112,4 +112,12 @@ public class Unit {
         return this.spriteLocation;
     }
 
+	public String getSpriteDir() {
+		return this.spriteDir;
+	}
+
+	public String getSpritePack() {
+		return this.spritePack;
+	}
+
 }

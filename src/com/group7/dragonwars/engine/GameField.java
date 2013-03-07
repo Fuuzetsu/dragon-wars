@@ -88,4 +88,16 @@ public class GameField {
     public String toString() {
         return this.fieldName;
     }
+
+    public String getSpriteLocation() {
+        return this.spriteLocation;
+    }
+
+	public String getSpriteDir() {
+		return this.spriteDir;
+	}
+
+	public String getSpritePack() {
+		return this.spritePack;
+	}
 }
