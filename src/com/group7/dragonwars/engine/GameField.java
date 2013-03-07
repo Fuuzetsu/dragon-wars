@@ -3,7 +3,7 @@ package com.group7.dragonwars.engine;
 public class GameField {
 
     String fieldName;
-    String resourcePath;
+    String spriteLocation;
     Unit hostedUnit;
     Building hostedBuilding;
     Double movementModifier;

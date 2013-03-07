@@ -10,10 +10,12 @@ public class Unit {
     private Boolean hasFinishedTurn = false;
     private Player owner;
 	private Boolean isFlying;
+	private String spriteLocation;
+
 
     public Unit(String name, Double maxHealth, Integer maxMovement,
                 Double attack, Double meleeDefense, Double rangeDefense,
-				Boolean isFlying) {
+				Boolean isFlying, String spriteLocation) {
         this.name = name;
 
         this.maxHealth = maxHealth;
@@ -27,6 +29,7 @@ public class Unit {
         this.rangeDefense = rangeDefense;
 
 		this.isFlying = isFlying;
+		this.spriteLocation = spriteLocation;
     }
 
     public Boolean isDead() {
@@ -96,6 +99,14 @@ public class Unit {
 
     public Boolean isRanged() {
         return false;
+    }
+
+    public Boolean isFlying() {
+        return this.isFlying();
+    }
+
+    public String getSpriteLocation() {
+        return this.spriteLocation;
     }
 
 }

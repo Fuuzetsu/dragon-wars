@@ -6,8 +6,8 @@ public class RangedUnit extends Unit {
 
     public RangedUnit(String name, Double maxHealth, Integer maxMovement,
                       Double attack, Double meleeDefense, Double rangeDefense,
-                      Double minRange, Double maxRange) {
-        super(name, maxHealth, maxMovement, attack, meleeDefense, rangeDefense);
+                      Double minRange, Double maxRange, Boolean flying, String spriteLocation) {
+        super(name, maxHealth, maxMovement, attack, meleeDefense, rangeDefense, flying, spriteLocation);
         this.minRange = minRange;
         this.maxRange = maxRange;
     }
@@ -21,7 +21,7 @@ public class RangedUnit extends Unit {
     }
 
     public Boolean isRanged() {
-        return false;
+        return true;
     }
 
 }
