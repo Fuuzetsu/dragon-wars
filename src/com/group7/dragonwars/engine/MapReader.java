@@ -7,7 +7,7 @@ import org.json.*;
 
 public class MapReader {
 
-    public static Map readMap(List<String> mapLines) throws JSONException {
+    public static GameMap readMap(List<String> mapLines) throws JSONException {
         String jsonSource = "";
 
         for (String s : mapLines)

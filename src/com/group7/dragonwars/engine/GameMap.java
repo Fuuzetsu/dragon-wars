@@ -2,7 +2,7 @@ package com.group7.dragonwars.engine;
 
 import java.util.*;
 
-public class Map implements Iterable<GameField> {
+public class GameMap implements Iterable<GameField> {
 
     List<List<GameField>> fields;
 	HashMap<Character, Unit> units;

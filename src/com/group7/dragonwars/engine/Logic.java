@@ -10,18 +10,18 @@ import java.util.Set;
 /* Class containing things like damage calculation and path finding. */
 public class Logic {
 
-    public List<Position> findPath(Map map, Unit unit, Position destination) {
+    public List<Position> findPath(GameMap map, Unit unit, Position destination) {
         return AStar(map, unit, destination);
     }
 
-    public Pair<Double, Double> calculateDamage(Map map, Unit attacker,
+    public Pair<Double, Double> calculateDamage(GameMap map, Unit attacker,
             Unit defender) {
         return new Pair<Double, Double>
                (calculateRawDamage(map, attacker, defender),
                 calculateCounterDamage(map, attacker, defender));
     }
 
-    public Double calculateRawDamage(Map map, Unit attacker, Unit defender) {
+    public Double calculateRawDamage(GameMap map, Unit attacker, Unit defender) {
         final Double DEFENDER_DISADVANTAGE = 0.75;
         GameField attackerField = map.getField(attacker.getPosition());
         GameField defenderField = map.getField(defender.getPosition());
@@ -39,7 +39,7 @@ public class Logic {
         return (defense < 0) ? 0 : damage;
     }
 
-    public Double calculateCounterDamage(Map map, Unit attacker, Unit defender) {
+    public Double calculateCounterDamage(GameMap map, Unit attacker, Unit defender) {
         Double initialDamage = calculateRawDamage(map, attacker, defender);
         Double defenderHealth = defender.getHealth() - initialDamage;
         defenderHealth = (defenderHealth < 0) ? 0 : defenderHealth;
@@ -48,7 +48,7 @@ public class Logic {
                 defenderHealth);
     }
 
-    private Double calculateTheoreticalCounterDamage(Map map, Unit attacker,
+    private Double calculateTheoreticalCounterDamage(GameMap map, Unit attacker,
             Unit defender, Double atkHealth) {
         /* No defense disadvantage on a counter. */
         GameField attackerField = map.getField(attacker.getPosition());
@@ -66,7 +66,7 @@ public class Logic {
         return (defense < 0) ? 0 : damage;
     }
 
-    private List<Position> AStar(Map map, Unit unit, Position destination) {
+    private List<Position> AStar(GameMap map, Unit unit, Position destination) {
         if (!map.isValidField(destination)) {
             List<Position> dummy = new ArrayList<Position>(0);
             return dummy;
@@ -150,13 +150,13 @@ public class Logic {
         }
     }
 
-    private Double getMovementCost(Map map, Unit unit, Position origin) {
+    private Double getMovementCost(GameMap map, Unit unit, Position origin) {
         /* g(x) for search */
         // flying units ignore this; always 1
         return (100 / map.getField(origin).getMovementModifier());
     }
 
-    public Set<Position> getAttackableUnitPositions(Map map, Unit unit) {
+    public Set<Position> getAttackableUnitPositions(GameMap map, Unit unit) {
         Set<Position> atkFields = getAttackableFields(map, unit);
         Set<Position> atkUnits = new HashSet<Position>();
 
@@ -172,7 +172,7 @@ public class Logic {
         return atkUnits;
     }
 
-    private Set<Position> getAttackableFields(Map map, Unit unit) {
+    private Set<Position> getAttackableFields(GameMap map, Unit unit) {
         if (!unit.isRanged())
             return getPositionsInRange(map, unit.getPosition(), 1.0);
 
@@ -181,7 +181,7 @@ public class Logic {
                                    ru.getMaxRange());
     }
 
-    private Set<Position> getPositionsInRange(Map map, Position origin,
+    private Set<Position> getPositionsInRange(GameMap map, Position origin,
             Double range) {
         Set<Position> positions = new HashSet<Position>();
         Double maxr = Math.ceil(range);
@@ -213,7 +213,7 @@ public class Logic {
         return positions;
     }
 
-    private Set<Position> getPositionsInRange(Map map, Position origin,
+    private Set<Position> getPositionsInRange(GameMap map, Position origin,
             Double minRange, Double maxRange) {
         Set<Position> positions = getPositionsInRange(map, origin, maxRange);
         Set<Position> filtered = new HashSet<Position>();

@@ -5,14 +5,14 @@ import java.io.*;
 
 public class GameState {
 
-    Map map;
+    GameMap map;
     Logic logic;
     List<Player> players = new ArrayList<Player>();
     Integer turns = 0;
 
     public static void main(String[] argv) {
         if (argv.length == 1) {
-            Map m = MapReader.readMap(GameState.readFile(argv[0]));
+            GameMap m = MapReader.readMap(GameState.readFile(argv[0]));
             Logic l = new Logic();
             GameState game = new GameState(m, l);
             game.play();
@@ -22,7 +22,7 @@ public class GameState {
         }
     }
 
-    public GameState(Map map, Logic logic) {
+    public GameState(GameMap map, Logic logic) {
         this.map = map;
         this.logic = logic;
 
@@ -32,7 +32,7 @@ public class GameState {
         players.add(new Player("Yukari"));
     }
 
-    private static void printMap(Map m) {
+    private static void printMap(GameMap m) {
         System.out.println(m);
         System.out.println(m.dumpMobMap());
     }
@@ -157,7 +157,7 @@ public class GameState {
         return this.turns;
     }
 
-    public Map getMap() {
+    public GameMap getMap() {
         return this.map;
     }
 
