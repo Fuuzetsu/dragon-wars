@@ -10,8 +10,8 @@ public class GameMap implements Iterable<GameField> {
 	HashMap<Character, GameField> gameFields;
 
 
-    public Map(List<List<GameField>> fields, HashMap<Character, Unit> units,
-			   HashMap<Character, Building> buildings, HashMap<Character, GameField> gameFields) {
+    public GameMap(List<List<GameField>> fields, HashMap<Character, Unit> units,
+				   HashMap<Character, Building> buildings, HashMap<Character, GameField> gameFields) {
         this.fields = fields;
 		this.units = units;
 		this.buildings = buildings;
@@ -109,6 +109,6 @@ public class GameMap implements Iterable<GameField> {
 	}
 
 	public HashMap<Character, GameField> getGameFieldMap() {
-		return this.gameFields();
+		return this.gameFields;
 	}
 }

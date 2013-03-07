@@ -71,7 +71,7 @@ public class MapReader {
             }
         }
 
-        return new Map(grid, units, buildings, fields);
+        return new GameMap(grid, units, buildings, fields);
 
     }
 

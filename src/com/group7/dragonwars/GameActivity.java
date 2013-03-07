@@ -24,12 +24,7 @@ import android.view.View;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
-import com.group7.dragonwars.engine.Building;
-import com.group7.dragonwars.engine.GameField;
-import com.group7.dragonwars.engine.GameState;
-import com.group7.dragonwars.engine.Unit;
-import com.group7.dragonwars.engine.Map;
-import com.group7.dragonwars.engine.MapReader;
+import com.group7.dragonwars.engine.*;
 import com.group7.dragonwars.util.SystemUiHider;
 
 /**
