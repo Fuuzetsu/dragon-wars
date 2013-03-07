@@ -21,11 +21,14 @@ public class GameField {
 
     public GameField(String fieldName, Double movementModifier, Double attackModifier,
 					 Double defenseModifier, Boolean accessible, Boolean flightOnly,
-					 String spriteLocation) {
+					 String spriteLocation, String spriteDir, String spritePack) {
         this.fieldName = fieldName;
         this.movementModifier = movementModifier;
 
 		this.spriteLocation = spriteLocation;
+		this.spriteDir = spriteDir;
+		this.spritePack = spritePack;
+
     }
 
     public Double getDefenseModifier() {
