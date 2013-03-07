@@ -62,24 +62,25 @@ public class GameState {
     }
 
     public void play() {
-        Position p = new Position(0, 0);
-        Dragon d = new Dragon();
-        d.setPosition(p);
-        map.getField(p).setUnit(d);
-        printMap(map);
-        // System.out.println(logic.getAttackableUnits(map, d));
-        Position dest = new Position(4, 4);
-        System.out.println(String.format("Getting a %s from %s to %s", d,
-                                         d.getPosition(), dest));
-        System.out.println(logic.findPath(map, d, dest));
-        int playersInGame = 0;
+		return;
+        // Position p = new Position(0, 0);
+        // Dragon d = new Dragon();
+        // d.setPosition(p);
+        // map.getField(p).setUnit(d);
+        // printMap(map);
+        // // System.out.println(logic.getAttackableUnits(map, d));
+        // Position dest = new Position(4, 4);
+        // System.out.println(String.format("Getting a %s from %s to %s", d,
+        //                                  d.getPosition(), dest));
+        // System.out.println(logic.findPath(map, d, dest));
+        // int playersInGame = 0;
 
-        for (Player player : this.players)
-            if (!player.hasLost())
-                playersInGame += 1;
+        // for (Player player : this.players)
+        //     if (!player.hasLost())
+        //         playersInGame += 1;
 
-        if (playersInGame < 2)
-            System.exit(0); /* Announce winner etc. */
+        // if (playersInGame < 2)
+        //     System.exit(0); /* Announce winner etc. */
 
     }
 
