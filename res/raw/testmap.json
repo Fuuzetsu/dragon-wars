@@ -6,9 +6,9 @@
     "fields": {
         "G": {
             "name": "Grass",
-            "file": "grass.png",
-            "package": "raw",
-            "path": "com.group7.res",
+            "file": "grass",
+            "dir": "raw",
+            "package": "com.group7.dragonwars",
             "movementModifier": 1.0,
             "attackModifier": 0.0,
             "defenseModifier": 0.0,
@@ -17,9 +17,9 @@
         },
         "W": {
             "name": "Water",
-            "file": "sea.png",
-            "package": "raw",
-            "path": "com.group7.res"
+            "file": "sea",
+            "dir": "raw",
+            "package": "com.group7.dragonwars",
             "movementModifier": 1.0,
             "attackModifier": 0.0,
             "defenseModifier": 0.0,
@@ -30,9 +30,9 @@
     "units": {
         "S": {
             "name": "Soldier",
-            "file": "soldier.png",
-            "package": "raw",
-            "path": "com.group7.res",
+            "file": "soldier",
+            "dir": "raw",
+            "package": "com.group7.dragonwars",
             "ranged": false,
             "flying": false,
             "maxHealth": 10,
@@ -43,9 +43,9 @@
         },
         "D": {
             "name": "Dragon",
-            "file": "dragon.png",
-            "package": "raw",
-            "path": "com.group7.res",
+            "file": "dragon",
+            "dir": "raw",
+            "package": "com.group7.dragonwars",
             "ranged": true,
             "minRange": 2.0,
             "maxRange": 4.0,
@@ -60,9 +60,9 @@
     "buildings": {
         "C": {
             "name": "Castle",
-            "file": "castle.png",
-            "package": "raw",
-            "path": "com.group7.res",
+            "file": "castle",
+            "dir": "raw",
+            "package": "com.group7.dragonwars",
             "captureDifficulty": 4,
             "attackBonus": 3.0,
             "defenseBonus": 4.0,
@@ -70,9 +70,9 @@
         },
         "V": {
             "name": "Village",
-            "file": "village.png",
-            "package": "raw",
-            "path": "com.group7.res"
+            "file": "village",
+            "dir": "raw",
+            "package": "com.group7.dragonwars",
             "captureDifficulty": 2,
             "attackBonus": 1.0,
             "defenseBonus": 1.0,
