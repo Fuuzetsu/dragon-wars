@@ -36,7 +36,7 @@ public class Building {
         this.lastCapturer = player;
     }
 
-    public String getName() {
+    public String getBuildingName() {
         return this.buildingName;
     }
 

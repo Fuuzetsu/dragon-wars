@@ -137,24 +137,24 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 		/* Register units */
 		this.graphics.put("Units", new HashMap<String, Bitmap>());
-		for (Map.Entry<Character, GameField> ent : this.gm.getUnitMap().entrySet()) {
+		for (Map.Entry<Character, Unit> ent : this.gm.getUnitMap().entrySet()) {
 			Unit f = ent.getValue();
 			Integer resourceID = getResources().getIdentifier(f.getSpriteLocation(),
 															  f.getSpriteDir(),
 															  f.getSpritePack());
-			this.graphics.get("Units").put(f.getFieldName(),
+			this.graphics.get("Units").put(f.getUnitName(),
 										   BitmapFactory.decodeResource(context.getResources(),
 																		resourceID));
 		}
 
 		/* Register buildings */
 		this.graphics.put("Buildings", new HashMap<String, Bitmap>());
-		for (Map.Entry<Character, GameField> ent : this.gm.getBuildingMap().entrySet()) {
+		for (Map.Entry<Character, Building> ent : this.gm.getBuildingMap().entrySet()) {
 			Building f = ent.getValue();
 			Integer resourceID = getResources().getIdentifier(f.getSpriteLocation(),
 															  f.getSpriteDir(),
 															  f.getSpritePack());
-			this.graphics.get("Buildings").put(f.getFieldName(),
+			this.graphics.get("Buildings").put(f.getBuildingName(),
 											   BitmapFactory.decodeResource(context.getResources(),
 																			resourceID));
 		}
@@ -212,7 +212,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
                 if (gf.hostsBuilding()) {
                     Building b = gf.getBuilding();
-                    String n = b.getName();
+                    String n = b.getBuildingName();
 
 					canvas.drawBitmap(graphics.get("Buildings").get(n), size * j, size * i, null);
                 }

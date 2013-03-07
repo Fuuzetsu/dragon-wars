@@ -120,4 +120,8 @@ public class Unit {
 		return this.spritePack;
 	}
 
+	public String getUnitName() {
+		return this.name;
+	}
+
 }
