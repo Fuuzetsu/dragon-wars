@@ -38,7 +38,7 @@ import com.group7.dragonwars.util.SystemUiHider;
  *      however now we only want it gone. it was also incredibly boring.
  */
 public class GameActivity extends Activity {
-
+	private static final String TAG = "GameActivity";
     /**
      * The flags to pass to {@link SystemUiHider#getInstance}.
      */
@@ -54,6 +54,7 @@ public class GameActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+		Log.d(TAG, "in onCreate");
         setContentView(R.layout.activity_game);
 
         final View contentView = findViewById(R.id.game_view);
@@ -64,23 +65,24 @@ public class GameActivity extends Activity {
                          HIDER_FLAGS);
         mSystemUiHider.setup();
         mSystemUiHider.hide();
-        GameView game_view = (GameView) this.findViewById(R.id.game_view);
-        GameMap map = null;
 
-        try {
-            map = MapReader.readMap(readFile(R.raw.testmap)); // ugh
-        } catch (JSONException e) {
-            System.out.println("Failed to load the map!");
-            System.out.println(e.getMessage());
-        }
+        // GameView game_view = (GameView) this.findViewById(R.id.game_view);
+        // GameMap map = null;
+		// Log.d(TAG, "nulling GameMap");
+        // try {
+        //     map = MapReader.readMap(readFile(R.raw.testmap)); // ugh
+        // } catch (JSONException e) {
+        //     System.out.println("Failed to load the map!");
+        //     System.out.println(e.getMessage());
+        // }
 
-        if (map == null) {
-			System.out.println("LOG: " + "Map is null! Quitting!");
-            System.exit(1);
-		}
+        // if (map == null) {
+		// 	Log.d(TAG, "map is null");
+        //     System.exit(1);
+		// }
 
-		System.out.println("LOG: " + "Just before setMap");
-        game_view.setMap(map);
+		// Log.d(TAG, "before setMap");
+        // game_view.setMap(map);
     }
 
     private List<String> readFile(int resourceid) {
@@ -117,24 +119,53 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
     //
     public GameView(Context ctx, AttributeSet attrset) {
         super(ctx, attrset);
+		final String TAG = "GameView";
+		Log.d(TAG, "GameView ctor");
+
+		/***********************************/
+        GameView game_view = (GameView) this.findViewById(R.id.game_view);
+        GameMap map = null;
+		Log.d(TAG, "nulling GameMap");
+        try {
+            map = MapReader.readMap(readFile(R.raw.testmap)); // ugh
+        } catch (JSONException e) {
+			Log.d(TAG, "Failed to load the map: " + e.getMessage());
+        }
+
+        if (map == null) {
+			Log.d(TAG, "map is null");
+            System.exit(1);
+		}
+
+		Log.d(TAG, "before setMap");
+        game_view.setMap(map);
+
+		/***********************************/
         context = ctx;
         bm = BitmapFactory.decodeResource(context.getResources(),
                                           R.drawable.ic_launcher);
         SurfaceHolder holder = getHolder();
 		this.graphics = new HashMap<String, HashMap<String, Bitmap>>();
-
+		Log.d(TAG, "this.graphics new");
 		/* Register game fields */
 		this.graphics.put("Fields", new HashMap<String, Bitmap>());
+		Log.d(TAG, "after putting empty Fields");
+		Boolean b = gm == null;
+		Log.d(TAG, "gm is current null?: " + b.toString());
 		for (Map.Entry<Character, GameField> ent : this.gm.getGameFieldMap().entrySet()) {
+			Log.d(TAG, "inside for loop, about to ent.getValue()");
 			GameField f = ent.getValue();
+			Log.d(TAG, "about to getResources()");
 			Integer resourceID = getResources().getIdentifier(f.getSpriteLocation(),
 															  f.getSpriteDir(),
 															  f.getSpritePack());
+			Log.d(TAG, "after getResources()");
 			this.graphics.get("Fields").put(f.getFieldName(),
 											BitmapFactory.decodeResource(context.getResources(),
 																		 resourceID));
+			Log.d(TAG, "after putting decoded resource into Fields");
 		}
-
+		Log.d(TAG, "after fields");
 		/* Register units */
 		this.graphics.put("Units", new HashMap<String, Bitmap>());
 		for (Map.Entry<Character, Unit> ent : this.gm.getUnitMap().entrySet()) {
@@ -146,7 +177,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 										   BitmapFactory.decodeResource(context.getResources(),
 																		resourceID));
 		}
-
+		Log.d(TAG, "after units");
 		/* Register buildings */
 		this.graphics.put("Buildings", new HashMap<String, Bitmap>());
 		for (Map.Entry<Character, Building> ent : this.gm.getBuildingMap().entrySet()) {
@@ -158,8 +189,31 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 											   BitmapFactory.decodeResource(context.getResources(),
 																			resourceID));
 		}
-
+		Log.d(TAG, "after buildings");
         holder.addCallback(this);
+    }
+
+    private List<String> readFile(int resourceid) {
+        List<String> text = new ArrayList<String>();
+
+        try {
+            BufferedReader in = new BufferedReader(new InputStreamReader(this
+																		 .getResources().openRawResource(resourceid)));
+            String line;
+
+            while ((line = in.readLine()) != null)
+                text.add(line);
+
+            in.close();
+        } catch (FileNotFoundException fnf) {
+            System.err.println("Couldn't find " + fnf.getMessage());
+            System.exit(1);
+        } catch (IOException ioe) {
+            System.err.println("Couldn't read " + ioe.getMessage());
+            System.exit(1);
+        }
+
+        return text;
     }
 
     public void setMap(GameMap newmap) {
