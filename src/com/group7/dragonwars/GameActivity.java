@@ -38,7 +38,7 @@ import com.group7.dragonwars.util.SystemUiHider;
  *      however now we only want it gone. it was also incredibly boring.
  */
 public class GameActivity extends Activity {
-	private static final String TAG = "GameActivity";
+    private static final String TAG = "GameActivity";
     /**
      * The flags to pass to {@link SystemUiHider#getInstance}.
      */
@@ -54,7 +54,7 @@ public class GameActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-		Log.d(TAG, "in onCreate");
+        Log.d(TAG, "in onCreate");
         setContentView(R.layout.activity_game);
 
         final View contentView = findViewById(R.id.game_view);
@@ -75,80 +75,87 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
     GameMap gm;
     DrawingThread dt;
     Context context;
-	HashMap<String, HashMap<String, Bitmap>> graphics;
+    HashMap<String, HashMap<String, Bitmap>> graphics;
 
     //
     public GameView(Context ctx, AttributeSet attrset) {
         super(ctx, attrset);
-		final String TAG = "GameView";
-		Log.d(TAG, "GameView ctor");
+        final String TAG = "GameView";
+        Log.d(TAG, "GameView ctor");
 
         GameView game_view = (GameView) this.findViewById(R.id.game_view);
         GameMap map = null;
-		Log.d(TAG, "nulling GameMap");
+        Log.d(TAG, "nulling GameMap");
+
         try {
             map = MapReader.readMap(readFile(R.raw.testmap)); // ugh
         } catch (JSONException e) {
-			Log.d(TAG, "Failed to load the map: " + e.getMessage());
+            Log.d(TAG, "Failed to load the map: " + e.getMessage());
         }
 
         if (map == null) {
-			Log.d(TAG, "map is null");
+            Log.d(TAG, "map is null");
             System.exit(1);
-		}
+        }
 
-		Log.d(TAG, "before setMap");
+        Log.d(TAG, "before setMap");
         game_view.setMap(map);
 
         context = ctx;
         bm = BitmapFactory.decodeResource(context.getResources(),
                                           R.drawable.ic_launcher);
         SurfaceHolder holder = getHolder();
-		this.graphics = new HashMap<String, HashMap<String, Bitmap>>();
-		Log.d(TAG, "this.graphics new");
-		/* Register game fields */
-		this.graphics.put("Fields", new HashMap<String, Bitmap>());
-		Log.d(TAG, "after putting empty Fields");
-		Boolean b = gm == null;
-		Log.d(TAG, "gm is current null?: " + b.toString());
-		for (Map.Entry<Character, GameField> ent : this.gm.getGameFieldMap().entrySet()) {
-			Log.d(TAG, "inside for loop, about to ent.getValue()");
-			GameField f = ent.getValue();
-			Log.d(TAG, "about to getResources()");
-			Integer resourceID = getResources().getIdentifier(f.getSpriteLocation(),
-															  f.getSpriteDir(),
-															  f.getSpritePack());
-			Log.d(TAG, "after getResources()");
-			this.graphics.get("Fields").put(f.getFieldName(),
-											BitmapFactory.decodeResource(context.getResources(),
-																		 resourceID));
-			Log.d(TAG, "after putting decoded resource into Fields");
-		}
-		Log.d(TAG, "after fields");
-		/* Register units */
-		this.graphics.put("Units", new HashMap<String, Bitmap>());
-		for (Map.Entry<Character, Unit> ent : this.gm.getUnitMap().entrySet()) {
-			Unit f = ent.getValue();
-			Integer resourceID = getResources().getIdentifier(f.getSpriteLocation(),
-															  f.getSpriteDir(),
-															  f.getSpritePack());
-			this.graphics.get("Units").put(f.getUnitName(),
-										   BitmapFactory.decodeResource(context.getResources(),
-																		resourceID));
-		}
-		Log.d(TAG, "after units");
-		/* Register buildings */
-		this.graphics.put("Buildings", new HashMap<String, Bitmap>());
-		for (Map.Entry<Character, Building> ent : this.gm.getBuildingMap().entrySet()) {
-			Building f = ent.getValue();
-			Integer resourceID = getResources().getIdentifier(f.getSpriteLocation(),
-															  f.getSpriteDir(),
-															  f.getSpritePack());
-			this.graphics.get("Buildings").put(f.getBuildingName(),
-											   BitmapFactory.decodeResource(context.getResources(),
-																			resourceID));
-		}
-		Log.d(TAG, "after buildings");
+        this.graphics = new HashMap<String, HashMap<String, Bitmap>>();
+        Log.d(TAG, "this.graphics new");
+        /* Register game fields */
+        this.graphics.put("Fields", new HashMap<String, Bitmap>());
+        Log.d(TAG, "after putting empty Fields");
+        Boolean b = gm == null;
+        Log.d(TAG, "gm is current null?: " + b.toString());
+
+        for (Map.Entry<Character, GameField> ent : this.gm.getGameFieldMap().entrySet()) {
+            Log.d(TAG, "inside for loop, about to ent.getValue()");
+            GameField f = ent.getValue();
+            Log.d(TAG, "about to getResources()");
+            Integer resourceID = getResources().getIdentifier(f.getSpriteLocation(),
+                                 f.getSpriteDir(),
+                                 f.getSpritePack());
+            Log.d(TAG, "after getResources()");
+            this.graphics.get("Fields").put(f.getFieldName(),
+                                            BitmapFactory.decodeResource(context.getResources(),
+                                                    resourceID));
+            Log.d(TAG, "after putting decoded resource into Fields");
+        }
+
+        Log.d(TAG, "after fields");
+        /* Register units */
+        this.graphics.put("Units", new HashMap<String, Bitmap>());
+
+        for (Map.Entry<Character, Unit> ent : this.gm.getUnitMap().entrySet()) {
+            Unit f = ent.getValue();
+            Integer resourceID = getResources().getIdentifier(f.getSpriteLocation(),
+                                 f.getSpriteDir(),
+                                 f.getSpritePack());
+            this.graphics.get("Units").put(f.getUnitName(),
+                                           BitmapFactory.decodeResource(context.getResources(),
+                                                   resourceID));
+        }
+
+        Log.d(TAG, "after units");
+        /* Register buildings */
+        this.graphics.put("Buildings", new HashMap<String, Bitmap>());
+
+        for (Map.Entry<Character, Building> ent : this.gm.getBuildingMap().entrySet()) {
+            Building f = ent.getValue();
+            Integer resourceID = getResources().getIdentifier(f.getSpriteLocation(),
+                                 f.getSpriteDir(),
+                                 f.getSpritePack());
+            this.graphics.get("Buildings").put(f.getBuildingName(),
+                                               BitmapFactory.decodeResource(context.getResources(),
+                                                       resourceID));
+        }
+
+        Log.d(TAG, "after buildings");
         holder.addCallback(this);
     }
 
@@ -157,7 +164,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(this
-																		 .getResources().openRawResource(resourceid)));
+                                                   .getResources().openRawResource(resourceid)));
             String line;
 
             while ((line = in.readLine()) != null)
@@ -227,7 +234,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
                     Building b = gf.getBuilding();
                     String n = b.getBuildingName();
 
-					canvas.drawBitmap(graphics.get("Buildings").get(n), size * j, size * i, null);
+                    canvas.drawBitmap(graphics.get("Buildings").get(n), size * j, size * i, null);
                 }
 
                 if (gf.hostsUnit()) {
@@ -235,7 +242,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
                     if (unit != null) {
                         String un = unit.toString();
-						canvas.drawBitmap(graphics.get("Units").get(un), size * j, size * i, null);
+                        canvas.drawBitmap(graphics.get("Units").get(un), size * j, size * i, null);
 
                     }
                 }

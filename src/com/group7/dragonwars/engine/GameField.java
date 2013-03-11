@@ -7,27 +7,27 @@ public class GameField {
     private Building hostedBuilding;
     private Double movementModifier;
     private Double defenseModifier, attackModifier;
-	private Boolean flightOnly, accessible;
-	private String spriteLocation, spriteDir, spritePack;
+    private Boolean flightOnly, accessible;
+    private String spriteLocation, spriteDir, spritePack;
 
     public  Boolean doesAcceptUnit(Unit unit) {
-		Boolean canStep = true;
+        Boolean canStep = true;
 
-		if (this.flightOnly)
-			canStep = unit.isFlying();
+        if (this.flightOnly)
+            canStep = unit.isFlying();
 
-		return this.accessible && canStep;
-	}
+        return this.accessible && canStep;
+    }
 
     public GameField(String fieldName, Double movementModifier, Double attackModifier,
-					 Double defenseModifier, Boolean accessible, Boolean flightOnly,
-					 String spriteLocation, String spriteDir, String spritePack) {
+                     Double defenseModifier, Boolean accessible, Boolean flightOnly,
+                     String spriteLocation, String spriteDir, String spritePack) {
         this.fieldName = fieldName;
         this.movementModifier = movementModifier;
 
-		this.spriteLocation = spriteLocation;
-		this.spriteDir = spriteDir;
-		this.spritePack = spritePack;
+        this.spriteLocation = spriteLocation;
+        this.spriteDir = spriteDir;
+        this.spritePack = spritePack;
 
     }
 
@@ -86,19 +86,19 @@ public class GameField {
         return this.getFieldName();
     }
 
-	public String getFieldName() {
-		return this.fieldName;
-	}
+    public String getFieldName() {
+        return this.fieldName;
+    }
 
     public String getSpriteLocation() {
         return this.spriteLocation;
     }
 
-	public String getSpriteDir() {
-		return this.spriteDir;
-	}
+    public String getSpriteDir() {
+        return this.spriteDir;
+    }
 
-	public String getSpritePack() {
-		return this.spritePack;
-	}
+    public String getSpritePack() {
+        return this.spritePack;
+    }
 }

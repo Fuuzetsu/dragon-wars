@@ -8,11 +8,11 @@ public class Building {
     private Player owner;
     private Boolean goalBuilding;
     private Player lastCapturer;
-	private String spriteLocation, spriteDir, spritePack;
+    private String spriteLocation, spriteDir, spritePack;
 
     public Building(String name, Integer captureDifficulty, Double attackBonus,
                     Double defenseBonus, Boolean goalBuilding, String spriteLocation,
-					String spriteDir, String spritePack) {
+                    String spriteDir, String spritePack) {
         this.buildingName = name;
 
         this.captureDifficulty = captureDifficulty;
@@ -23,9 +23,9 @@ public class Building {
 
         this.goalBuilding = goalBuilding;
 
-		this.spriteLocation = spriteLocation;
-		this.spriteDir = spriteDir;
-		this.spritePack = spritePack;
+        this.spriteLocation = spriteLocation;
+        this.spriteDir = spriteDir;
+        this.spritePack = spritePack;
     }
 
     public Player getLastCapturer() {
@@ -89,11 +89,11 @@ public class Building {
         return this.spriteLocation;
     }
 
-	public String getSpriteDir() {
-		return this.spriteDir;
-	}
+    public String getSpriteDir() {
+        return this.spriteDir;
+    }
 
-	public String getSpritePack() {
-		return this.spritePack;
-	}
+    public String getSpritePack() {
+        return this.spritePack;
+    }
 }

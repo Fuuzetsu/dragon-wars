@@ -20,48 +20,53 @@ public class MapReader {
         Integer players = m.getInt("players");
 
         JSONObject fs = m.getJSONObject("fields");
-		JSONObject bs = m.getJSONObject("buildings");
-		JSONObject us = m.getJSONObject("units");
+        JSONObject bs = m.getJSONObject("buildings");
+        JSONObject us = m.getJSONObject("units");
         JSONArray terrain = m.getJSONArray("terrain");
         JSONArray buildingPos = m.getJSONArray("buildingPos");
 
 
-		/* Fill in a HashMap for look-up */
+        /* Fill in a HashMap for look-up */
         HashMap<Character, JSONObject> fields = new HashMap<Character, JSONObject>();
         Iterator<?> iter = fs.keys();
+
         while (iter.hasNext()) {
-        	String key = (String) iter.next(); /* We have to cast ;_; */
-        	fields.put(key.charAt(0), fs.getJSONObject(key));
+            String key = (String) iter.next(); /* We have to cast ;_; */
+            fields.put(key.charAt(0), fs.getJSONObject(key));
         }
 
         HashMap<Character, GameField> fieldsInfo = new HashMap<Character, GameField>();
         iter = fs.keys();
+
         while (iter.hasNext()) {
-        	String key = (String) iter.next();
-			fieldsInfo.put(key.charAt(0), new MapReader.TerrainGetter(fields).apply(key.charAt(0)));
+            String key = (String) iter.next();
+            fieldsInfo.put(key.charAt(0), new MapReader.TerrainGetter(fields).apply(key.charAt(0)));
         }
 
-		/* HashMap for buildings */
+        /* HashMap for buildings */
         HashMap<Character, JSONObject> buildings = new HashMap<Character, JSONObject>();
         Iterator<?> bIter = bs.keys();
+
         while (bIter.hasNext()) {
-        	String key = (String) bIter.next();
-        	buildings.put(key.charAt(0), bs.getJSONObject(key));
+            String key = (String) bIter.next();
+            buildings.put(key.charAt(0), bs.getJSONObject(key));
         }
 
         HashMap<Character, Building> buildingsInfo = new HashMap<Character, Building>();
-		bIter = bs.keys();
+        bIter = bs.keys();
+
         while (bIter.hasNext()) {
-        	String key = (String) bIter.next();
-			buildingsInfo.put(key.charAt(0), new MapReader.BuildingGetter(buildings).apply(key.charAt(0)));
+            String key = (String) bIter.next();
+            buildingsInfo.put(key.charAt(0), new MapReader.BuildingGetter(buildings).apply(key.charAt(0)));
         }
 
-		/* HashMap for units to be used for the current map throughout the game */
+        /* HashMap for units to be used for the current map throughout the game */
         HashMap<Character, Unit> units = new HashMap<Character, Unit>();
         Iterator<?> uIter = us.keys();
+
         while (uIter.hasNext()) {
-        	String key = (String) uIter.next();
-        	units.put(key.charAt(0), new MapReader.UnitGetter().apply(us.getJSONObject(key)));
+            String key = (String) uIter.next();
+            units.put(key.charAt(0), new MapReader.UnitGetter().apply(us.getJSONObject(key)));
         }
 
         List<List<GameField>> grid = MapReader.listifyJSONArray(new MapReader.TerrainGetter(fields), terrain);
@@ -90,7 +95,7 @@ public class MapReader {
     }
 
     private static <O> List<List<O>> listifyJSONArray
-		(FuncEx<Character, O, JSONException> f, JSONArray xs) throws JSONException {
+    (FuncEx<Character, O, JSONException> f, JSONArray xs) throws JSONException {
         List<List<O>> v = new ArrayList<List<O>>();
         List<List<Character>> cs = new ArrayList<List<Character>>();
 
@@ -112,57 +117,57 @@ public class MapReader {
 
     private static class BuildingGetter implements FuncEx<Character, Building, JSONException> {
 
-		private HashMap<Character, JSONObject> map;
+        private HashMap<Character, JSONObject> map;
 
-		public BuildingGetter(HashMap<Character, JSONObject> m) {
-			this.map = m;
-		}
+        public BuildingGetter(HashMap<Character, JSONObject> m) {
+            this.map = m;
+        }
 
         public Building apply(Character c) throws JSONException {
-			if (!this.map.containsKey(c))
-				return null; /* TODO throw MapException */
+            if (!this.map.containsKey(c))
+                return null; /* TODO throw MapException */
 
-			JSONObject f = this.map.get(c);
+            JSONObject f = this.map.get(c);
 
-			String name = f.getString("name");
-			String file = f.getString("file");
-			String pack = f.getString("package");
-			String dir = f.getString("dir");
-			Integer captureDifficulty = f.getInt("captureDifficulty");
-			Double attackBonus = f.getDouble("attackBonus");
-			Double defenseBonus = f.getDouble("defenseBonus");
-			Boolean goalBuilding = f.getBoolean("goalBuilding");
+            String name = f.getString("name");
+            String file = f.getString("file");
+            String pack = f.getString("package");
+            String dir = f.getString("dir");
+            Integer captureDifficulty = f.getInt("captureDifficulty");
+            Double attackBonus = f.getDouble("attackBonus");
+            Double defenseBonus = f.getDouble("defenseBonus");
+            Boolean goalBuilding = f.getBoolean("goalBuilding");
 
-			return new Building(name, captureDifficulty, attackBonus,
-								defenseBonus, goalBuilding, file, dir, pack);
+            return new Building(name, captureDifficulty, attackBonus,
+                                defenseBonus, goalBuilding, file, dir, pack);
 
-			}
-	}
+        }
+    }
 
-	private static class UnitGetter implements FuncEx<JSONObject, Unit, JSONException> {
-		public Unit apply(JSONObject f) throws JSONException {
+    private static class UnitGetter implements FuncEx<JSONObject, Unit, JSONException> {
+        public Unit apply(JSONObject f) throws JSONException {
 
-			String name = f.getString("name");
-			String file = f.getString("file");
-			String pack = f.getString("package");
-			String dir = f.getString("dir");
-			Boolean flying = f.getBoolean("flying");
-			Double maxHealth = f.getDouble("maxHealth");
-			Integer maxMovement = f.getInt("maxMovement");
-			Double attack = f.getDouble("attack");
-			Double meleeDefense = f.getDouble("meleeDefense");
-			Double rangeDefense = f.getDouble("rangeDefense");
+            String name = f.getString("name");
+            String file = f.getString("file");
+            String pack = f.getString("package");
+            String dir = f.getString("dir");
+            Boolean flying = f.getBoolean("flying");
+            Double maxHealth = f.getDouble("maxHealth");
+            Integer maxMovement = f.getInt("maxMovement");
+            Double attack = f.getDouble("attack");
+            Double meleeDefense = f.getDouble("meleeDefense");
+            Double rangeDefense = f.getDouble("rangeDefense");
 
-			if (f.getBoolean("ranged"))
-				return new RangedUnit(name, maxHealth, maxMovement, attack, meleeDefense,
-									  rangeDefense, f.getDouble("minRange"), f.getDouble("maxRange"),
-									  flying, file, dir, pack);
+            if (f.getBoolean("ranged"))
+                return new RangedUnit(name, maxHealth, maxMovement, attack, meleeDefense,
+                                      rangeDefense, f.getDouble("minRange"), f.getDouble("maxRange"),
+                                      flying, file, dir, pack);
 
-			return new Unit(name, maxHealth, maxMovement, attack, meleeDefense,
-							rangeDefense, flying, file, dir, pack);
+            return new Unit(name, maxHealth, maxMovement, attack, meleeDefense,
+                            rangeDefense, flying, file, dir, pack);
 
-		}
-	}
+        }
+    }
 
     private static <I, O, E extends Exception> List<O> map(FuncEx<I, O, E> f, List<I> ls) throws E {
         List<O> os = new ArrayList<O>();
@@ -175,30 +180,30 @@ public class MapReader {
 
     private static class TerrainGetter implements FuncEx<Character, GameField, JSONException> {
 
-		private HashMap<Character, JSONObject> map;
+        private HashMap<Character, JSONObject> map;
 
-		public TerrainGetter(HashMap<Character, JSONObject> m) {
-			this.map = m;
-		}
+        public TerrainGetter(HashMap<Character, JSONObject> m) {
+            this.map = m;
+        }
 
         public GameField apply(Character c) throws JSONException {
-			if (!this.map.containsKey(c))
-				return null; /* TODO throw MapException */
+            if (!this.map.containsKey(c))
+                return null; /* TODO throw MapException */
 
-			JSONObject f = this.map.get(c);
+            JSONObject f = this.map.get(c);
 
-			String name = f.getString("name");
-			String file = f.getString("file");
-			String pack = f.getString("package");
-			String dir = f.getString("dir");
-			Boolean accessible = f.getBoolean("accessible");
-			Boolean flightOnly = accessible ? f.getBoolean("flightOnly") : false;
-			Double movementModifier = f.getDouble("movementModifier");
-			Double attackModifier = f.getDouble("attackModifier");
-			Double defenseModifier = f.getDouble("defenseModifier");
+            String name = f.getString("name");
+            String file = f.getString("file");
+            String pack = f.getString("package");
+            String dir = f.getString("dir");
+            Boolean accessible = f.getBoolean("accessible");
+            Boolean flightOnly = accessible ? f.getBoolean("flightOnly") : false;
+            Double movementModifier = f.getDouble("movementModifier");
+            Double attackModifier = f.getDouble("attackModifier");
+            Double defenseModifier = f.getDouble("defenseModifier");
 
-			return new GameField(name, movementModifier, attackModifier, defenseModifier,
-								 accessible, flightOnly, file, dir, pack);
+            return new GameField(name, movementModifier, attackModifier, defenseModifier,
+                                 accessible, flightOnly, file, dir, pack);
         }
     }
 }
