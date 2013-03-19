@@ -9,18 +9,14 @@ import java.util.*;
 import org.json.*;
 
 import android.app.Activity;
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
+import android.content.*;
+import android.content.res.*;
+import android.graphics.*;
+import android.graphics.PorterDuff.*;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.MotionEvent;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
-import android.view.View;
+import android.view.*;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
@@ -49,6 +45,8 @@ public class GameActivity extends Activity {
      */
     private SystemUiHider mSystemUiHider;
     private ScrollView map_scroller;
+    private Integer orientation;
+    private Boolean orientationChanged = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,16 +69,17 @@ public class GameActivity extends Activity {
 }
 
 class GameView extends SurfaceView implements SurfaceHolder.Callback {
+    final private String TAG = "GameView";
     Bitmap bm;
     GameMap gm;
     DrawingThread dt;
     Context context;
     HashMap<String, HashMap<String, Bitmap>> graphics;
+    private Integer orientation;
 
     //
     public GameView(Context ctx, AttributeSet attrset) {
         super(ctx, attrset);
-        final String TAG = "GameView";
         Log.d(TAG, "GameView ctor");
 
         GameView game_view = (GameView) this.findViewById(R.id.game_view);
@@ -222,6 +221,14 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     public void doDraw(Canvas canvas) {
         int size = 64;
+        Configuration c = getResources().getConfiguration();
+
+        if (orientation == null || orientation != c.orientation) {
+            orientation = c.orientation;
+            canvas.drawColor(Color.BLACK);
+            Log.d(TAG, "Painted canvas black due to orientation change.");
+        }
+
 
         for (int i = 0; i < gm.getWidth(); ++i) {
             for (int j = 0; j < gm.getHeight(); j++) {
