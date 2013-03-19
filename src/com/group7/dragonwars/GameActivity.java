@@ -221,7 +221,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 
     public void doDraw(Canvas canvas) {
-        int size = 90;
+        int size = 64;
 
         for (int i = 0; i < gm.getWidth(); ++i) {
             for (int j = 0; j < gm.getHeight(); j++) {
