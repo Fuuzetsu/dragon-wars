@@ -43,7 +43,7 @@
         },
         "D": {
             "name": "Dragon",
-            "file": "dragon",
+            "file": "small_dragon",
             "dir": "raw",
             "package": "com.group7.dragonwars",
             "ranged": true,
