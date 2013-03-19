@@ -116,7 +116,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
         for (Map.Entry<Character, GameField> ent : this.gm.getGameFieldMap().entrySet()) {
             Log.d(TAG, "inside for loop, about to ent.getValue()");
             GameField f = ent.getValue();
-            Log.d(TAG, "about to getResources()");
+            Log.d(TAG, "about to getResources() for " + f.getFieldName());
             Integer resourceID = getResources().getIdentifier(f.getSpriteLocation(),
                                  f.getSpriteDir(),
                                  f.getSpritePack());
@@ -133,6 +133,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         for (Map.Entry<Character, Unit> ent : this.gm.getUnitMap().entrySet()) {
             Unit f = ent.getValue();
+            Log.d(TAG, "about to getResources() for " + f.getUnitName());
             Integer resourceID = getResources().getIdentifier(f.getSpriteLocation(),
                                  f.getSpriteDir(),
                                  f.getSpritePack());
@@ -147,6 +148,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         for (Map.Entry<Character, Building> ent : this.gm.getBuildingMap().entrySet()) {
             Building f = ent.getValue();
+            Log.d(TAG, "about to getResources() for " + f.getBuildingName());
             Integer resourceID = getResources().getIdentifier(f.getSpriteLocation(),
                                  f.getSpriteDir(),
                                  f.getSpritePack());
