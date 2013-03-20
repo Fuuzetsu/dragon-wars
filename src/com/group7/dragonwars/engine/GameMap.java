@@ -34,11 +34,11 @@ public class GameMap implements Iterable<GameField> {
     }
 
     public Integer getWidth() {
-        return fields.size();
+        return fields.get(0).size();
     }
 
     public Integer getHeight() {
-        return fields.get(0).size();
+        return fields.size();
     }
 
     public GameField getField(Position position) {
@@ -46,7 +46,7 @@ public class GameMap implements Iterable<GameField> {
     }
 
     public GameField getField(Integer x, Integer y) {
-        return fields.get(x).get(y);
+        return fields.get(y).get(x);
     }
 
     public Boolean isValidField(Position position) {

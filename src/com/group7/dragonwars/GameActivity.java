@@ -215,13 +215,9 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
         //Log.v(null, "Touched at: (" + touchX + ", " + touchY + ")");
     	// TODO: if ( this is a tap ) {
         	if (event.getAction() == MotionEvent.ACTION_UP) {
-                Log.v(null, "Touch ended at: (" + touchX + ", " + touchY + ") (dimensions are: (" + this.gm.getWidth() + ", " + this.gm.getHeight() + "))");
+                Log.v(null, "Touch ended at: (" + touchX + ", " + touchY + ") (dimensions are: (" + this.gm.getWidth() + "x" + this.gm.getHeight() + "))");
 		        Position newselected = new Position(touchX, touchY);
 		        if (this.gm.isValidField(touchX, touchY)) {
-		        	// FIXME: this seems to be incorrectly swapping x and y when deciding whether a given (touchX, touchY) is in the grid
-		        	// (for example,  whilst (10, 0) should be a valid and (0, 10) should not be
-		        	// this acts as if it is the opposite)
-		        	// however as far as I can tell, there is never a point in which x and y are mixed up
 		        	Log.v(null, "Setting selection");
 		        	this.selected = newselected;
 		        }
@@ -248,13 +244,13 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 GameField gf = gm.getField(i, j);
                 String gfn = gf.getFieldName();
 
-                canvas.drawBitmap(graphics.get("Fields").get(gfn), tilesize * j, tilesize * i, null);
+                canvas.drawBitmap(graphics.get("Fields").get(gfn), tilesize * i, tilesize * j, null);
 
                 if (gf.hostsBuilding()) {
                     Building b = gf.getBuilding();
                     String n = b.getBuildingName();
 
-                    canvas.drawBitmap(graphics.get("Buildings").get(n), tilesize * j, tilesize * i, null);
+                    canvas.drawBitmap(graphics.get("Buildings").get(n), tilesize * i, tilesize * j, null);
                 }
 
                 if (gf.hostsUnit()) {
@@ -262,7 +258,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
                     if (unit != null) {
                         String un = unit.toString();
-                        canvas.drawBitmap(graphics.get("Units").get(un), tilesize * j, tilesize * i, null);
+                        canvas.drawBitmap(graphics.get("Units").get(un), tilesize * i, tilesize * j, null);
                     }
                 }
             }
