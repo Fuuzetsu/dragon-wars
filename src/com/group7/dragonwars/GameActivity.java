@@ -35,15 +35,6 @@ import com.group7.dragonwars.util.SystemUiHider;
  */
 public class GameActivity extends Activity {
     private static final String TAG = "GameActivity";
-    /**
-     * The flags to pass to {@link SystemUiHider#getInstance}.
-     */
-    private static final int HIDER_FLAGS = SystemUiHider.FLAG_FULLSCREEN;
-
-    /**
-     * The instance of the {@link SystemUiHider} for this activity.
-     */
-    private SystemUiHider mSystemUiHider;
     private ScrollView map_scroller;
     private Integer orientation;
     private Boolean orientationChanged = false;
@@ -61,16 +52,6 @@ public class GameActivity extends Activity {
         
         Log.d(TAG, "in onCreate");
         setContentView(R.layout.activity_game);
-
-        /*final View contentView = findViewById(R.id.game_view);
-
-        // Set up an instance of SystemUiHider to control the system UI for
-        // this activity.
-        mSystemUiHider = SystemUiHider.getInstance(this, contentView,
-                         HIDER_FLAGS);
-        //mSystemUiHider.setup();
-        mSystemUiHider.hide();*/
-
     }
 
 }
