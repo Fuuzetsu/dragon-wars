@@ -62,7 +62,7 @@ public class GameMap implements Iterable<GameField> {
             return false;
         }
 
-        if (x >= this.fields.size() || y >= this.fields.get(0).size()) {
+        if (x >= this.getWidth() || y >= this.getHeight()) {
             return false;
         }
 

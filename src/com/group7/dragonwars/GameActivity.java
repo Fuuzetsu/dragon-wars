@@ -60,12 +60,17 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
     final private String TAG = "GameView";
     Bitmap bm;
     GameMap gm;
+    Position selected; // the (coordinates of the) currently selected position
+    
     DrawingThread dt;
+    Paint circle_paint; // used to draw the selection circles (to show which tile is selected)
+    
     Context context;
     HashMap<String, HashMap<String, Bitmap>> graphics;
     private Integer orientation;
+    int tilesize = 64; // the size (in pixels) to draw the square tiles
 
-    //
+    
     public GameView(Context ctx, AttributeSet attrset) {
         super(ctx, attrset);
         Log.d(TAG, "GameView ctor");
@@ -146,6 +151,10 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         Log.d(TAG, "after buildings");
         holder.addCallback(this);
+        selected = new Position(0, 0); // I really hope that it's ok to assume that the map is at least 1*1
+        circle_paint = new Paint();
+        circle_paint.setStyle(Paint.Style.FILL);
+        circle_paint.setARGB(200, 255, 255, 255); // semi-transparent white
     }
 
     private List<String> readFile(int resourceid) {
@@ -201,15 +210,28 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-    	
-        Log.v(null, "Touched at: (" + event.getX() + ", " + event.getY()
-              + ")");
+    	int touchX = (int)(event.getX() / tilesize); // the coordinates of the pressed tile
+    	int touchY = (int)(event.getY() / tilesize);
+        //Log.v(null, "Touched at: (" + touchX + ", " + touchY + ")");
+    	// TODO: if ( this is a tap ) {
+        	if (event.getAction() == MotionEvent.ACTION_UP) {
+                Log.v(null, "Touch ended at: (" + touchX + ", " + touchY + ") (dimensions are: (" + this.gm.getWidth() + ", " + this.gm.getHeight() + "))");
+		        Position newselected = new Position(touchX, touchY);
+		        if (this.gm.isValidField(touchX, touchY)) {
+		        	// FIXME: this seems to be incorrectly swapping x and y when deciding whether a given (touchX, touchY) is in the grid
+		        	// (for example,  whilst (10, 0) should be a valid and (0, 10) should not be
+		        	// this acts as if it is the opposite)
+		        	// however as far as I can tell, there is never a point in which x and y are mixed up
+		        	Log.v(null, "Setting selection");
+		        	this.selected = newselected;
+		        }
+        	}
+		// TODO: } else { scroll the map }
         return true;
     }
 
 
     public void doDraw(Canvas canvas) {
-        int size = 64;
         Configuration c = getResources().getConfiguration();
 
         if (orientation == null || orientation != c.orientation) {
@@ -226,13 +248,13 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 GameField gf = gm.getField(i, j);
                 String gfn = gf.getFieldName();
 
-                canvas.drawBitmap(graphics.get("Fields").get(gfn), size * j, size * i, null);
+                canvas.drawBitmap(graphics.get("Fields").get(gfn), tilesize * j, tilesize * i, null);
 
                 if (gf.hostsBuilding()) {
                     Building b = gf.getBuilding();
                     String n = b.getBuildingName();
 
-                    canvas.drawBitmap(graphics.get("Buildings").get(n), size * j, size * i, null);
+                    canvas.drawBitmap(graphics.get("Buildings").get(n), tilesize * j, tilesize * i, null);
                 }
 
                 if (gf.hostsUnit()) {
@@ -240,12 +262,17 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
                     if (unit != null) {
                         String un = unit.toString();
-                        canvas.drawBitmap(graphics.get("Units").get(un), size * j, size * i, null);
-
+                        canvas.drawBitmap(graphics.get("Units").get(un), tilesize * j, tilesize * i, null);
                     }
                 }
             }
         }
+        // draw the selection shower (bad name)
+        int circle_radius = 10;
+        canvas.drawCircle(tilesize * selected.getX(), tilesize * selected.getY(), circle_radius, circle_paint); // top left
+        canvas.drawCircle(tilesize * selected.getX(), tilesize * selected.getY() + tilesize, circle_radius, circle_paint); // bottom left
+        canvas.drawCircle(tilesize * selected.getX() + tilesize, tilesize * selected.getY(), circle_radius, circle_paint); // top right
+        canvas.drawCircle(tilesize * selected.getX() + tilesize, tilesize * selected.getY() + tilesize, circle_radius, circle_paint); // bottom right
     }
 }
 
