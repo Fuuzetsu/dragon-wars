@@ -52,17 +52,24 @@ public class GameActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // remove the title bar (it would normally say something like "Dragon Wars" or "Battle"
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        
+        // remove the status bar (the top bar containing things such as the time, and notifications)
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        
         Log.d(TAG, "in onCreate");
         setContentView(R.layout.activity_game);
 
-        final View contentView = findViewById(R.id.game_view);
+        /*final View contentView = findViewById(R.id.game_view);
 
         // Set up an instance of SystemUiHider to control the system UI for
         // this activity.
         mSystemUiHider = SystemUiHider.getInstance(this, contentView,
                          HIDER_FLAGS);
-        mSystemUiHider.setup();
-        mSystemUiHider.hide();
+        //mSystemUiHider.setup();
+        mSystemUiHider.hide();*/
 
     }
 
@@ -213,6 +220,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+    	
         Log.v(null, "Touched at: (" + event.getX() + ", " + event.getY()
               + ")");
         return true;
