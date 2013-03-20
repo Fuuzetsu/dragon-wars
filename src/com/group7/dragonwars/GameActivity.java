@@ -243,14 +243,14 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
                 GameField gf = gm.getField(i, j);
                 String gfn = gf.getFieldName();
-
-                canvas.drawBitmap(graphics.get("Fields").get(gfn), tilesize * i, tilesize * j, null);
+                Rect dest = new Rect(tilesize * i, tilesize * j, tilesize * i + tilesize, tilesize * j + tilesize);
+                canvas.drawBitmap(graphics.get("Fields").get(gfn), null, dest, null);
 
                 if (gf.hostsBuilding()) {
                     Building b = gf.getBuilding();
                     String n = b.getBuildingName();
 
-                    canvas.drawBitmap(graphics.get("Buildings").get(n), tilesize * i, tilesize * j, null);
+                    canvas.drawBitmap(graphics.get("Buildings").get(n), null, dest, null);
                 }
 
                 if (gf.hostsUnit()) {
@@ -258,7 +258,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
                     if (unit != null) {
                         String un = unit.toString();
-                        canvas.drawBitmap(graphics.get("Units").get(un), tilesize * i, tilesize * j, null);
+                        canvas.drawBitmap(graphics.get("Units").get(un), null, dest, null);
                     }
                 }
             }
