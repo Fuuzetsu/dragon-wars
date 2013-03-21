@@ -146,8 +146,6 @@ public class Logic {
 
             expanded.add(lastPos);
 
-            if (queue.size() > 100)
-                System.exit(1);
             /* Get heuristic */
             Integer h = getManhattanDistance(lastPos, destination);
             /* Get cost */
