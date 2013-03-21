@@ -15,10 +15,10 @@ public class Logic {
     public List<Position> findPath(GameMap map, Unit unit, Position destination) {
         return AStar(map, unit, destination);
     }
-    
+
     public List<Position> destinations(GameMap map, Unit unit) {
     	// return AStar(map, unit, null, false);
-	return List<Position>(0);
+        return new ArrayList<Position>(0);
     }
 
     public Pair<Double, Double> calculateDamage(GameMap map, Unit attacker,
@@ -93,18 +93,18 @@ public class Logic {
         while (queue.size() != 0) {
             Pair<List<Position>, Double> posP = queue.poll();
             List<Position> poss = posP.getLeft();
-            
+
              //String debug = "[ "; for (Position p : poss) { debug +=
              //p.toString() + " "; } debug += "]"; Log.v(null, debug);
-             
+
             Position lastPos = poss.get(poss.size() - 1);
 
-            if (lastPos.equals(destination)) 
+            if (lastPos.equals(destination))
                 return poss;
-            
+
             if (expanded.contains(lastPos))
                 continue;
-            
+
             expanded.add(lastPos);
             /* Get heuristic */
             Integer h = getManhattanDistance(lastPos, destination);
