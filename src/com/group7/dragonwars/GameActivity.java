@@ -45,11 +45,11 @@ public class GameActivity extends Activity {
 
         // remove the title bar (it would normally say something like "Dragon Wars" or "Battle"
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        
+
         // remove the status bar (the top bar containing things such as the time, and notifications)
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        
+
         Log.d(TAG, "in onCreate");
         setContentView(R.layout.activity_game);
     }
@@ -64,28 +64,28 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
     GameMap map;
     Position selected; // the (coordinates of the) currently selected position
     ScrollOffset scroll_offset; // the offset caused by scrolling, in pixels
-    
+
     DrawingThread dt;
     Paint circle_paint; // used to draw the selection circles (to show which tile is selected)
     Paint move_high_paint; // used to highlight movements
-    
+
     boolean unit_selected; // true if there is a unit at selection
-    
+
     // List<Position> unit_destinations; // probably not best to recompute this every time, or maybe it is, treat as Undefined if !unit_selected
-    
+
     Context context;
     HashMap<String, HashMap<String, Bitmap>> graphics;
     private Integer orientation;
     int tilesize = 64; // the size (in pixels) to draw the square tiles
 
-    
+
     public GameView(Context ctx, AttributeSet attrset) {
         super(ctx, attrset);
         Log.d(TAG, "GameView ctor");
 
         GameView game_view = (GameView) this.findViewById(R.id.game_view);
         GameMap gm = null;
-        
+
         Log.d(TAG, "nulling GameMap");
 
         try {
@@ -132,7 +132,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         Log.d(TAG, "after fields");
         /* Register units */
-        
+
         this.graphics.put("Units", new HashMap<String, Bitmap>());
 
         for (Map.Entry<Character, Unit> ent : this.map.getUnitMap().entrySet()) {
@@ -145,7 +145,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
                                            BitmapFactory.decodeResource(context.getResources(),
                                                    resourceID));
         }
-        
+
 
         Log.d(TAG, "after units");
         /* Register buildings */
@@ -164,17 +164,17 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         Log.d(TAG, "after buildings");
         holder.addCallback(this);
-        
+
         selected = new Position(0, 0); // I really hope that it's ok to assume that the map is at least 1*1
-        
+
         unit_selected = map.getField(selected).hostsUnit();
-        
+
         scroll_offset = new ScrollOffset(0f, 0f);
-        
+
         circle_paint = new Paint();
         circle_paint.setStyle(Paint.Style.FILL);
         circle_paint.setARGB(200, 255, 255, 255); // semi-transparent white
-        
+
         move_high_paint = new Paint();
         move_high_paint.setStyle(Paint.Style.FILL);
         move_high_paint.setARGB(150, 0, 0, 255); // semi-transparent white
@@ -253,7 +253,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public RectF getSquare(float x, float y, float length) {
     	return new RectF(x, y, x + length, y + length);
     }
-    
+
     public void doDraw(Canvas canvas) {
         Configuration c = getResources().getConfiguration();
 
@@ -263,10 +263,10 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
             Log.d(TAG, "Painted canvas black due to orientation change.");
         }
         // canvas.drawColor(Color.BLACK); // Draw black anyway, in order to ensure that there are no leftover graphics
-        
+
         GameField selected_field = map.getField(selected);
         List<Position> unit_destinations = selected_field.hostsUnit() ? logic.destinations(map, selected_field.getUnit()) : new ArrayList<Position>(0);
-        
+
         for (int i = 0; i < map.getWidth(); ++i) {
             for (int j = 0; j < map.getHeight(); j++) {
                 // canvas.drawBitmap(tiles.get(0), size * j, size * i, null); // Draw
@@ -296,8 +296,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 }
             }
         }
-        
-        
+
+
         // perform highlighting
         for (Position pos : unit_destinations) {
         	RectF dest = getSquare(
@@ -306,7 +306,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
             		tilesize);
         	canvas.drawRect(dest, move_high_paint);
         }
-        
+
         // draw the selection shower (bad name)
         int circle_radius = 10;
         RectF select_rect = getSquare(
@@ -325,7 +325,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     public void drawInfoBox(Canvas canvas, Unit unit, GameField field, boolean left) {
         String info = field.getFieldName();
-        if (field.hostsBuilding) {
+        if (field.hostsBuilding()) {
             info = info + " : " + field.getBuilding().getBuildingName();
         }
         Paint text_paint = new Paint();
@@ -340,7 +340,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         canvas.drawRect(back_rect, back_paint);
         canvas.drawText(info, 0, info.length(), (float)back_rect.left, (float)back_rect.top, text_paint);
-   } 
+   }
 
 }
 
