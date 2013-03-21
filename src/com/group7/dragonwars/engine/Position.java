@@ -18,6 +18,7 @@ public class Position {
 
     public Boolean equals(Position other) {
         return this.getX() == other.getX() && this.getY() == other.getY();
+
     }
 
     public String toString() {
