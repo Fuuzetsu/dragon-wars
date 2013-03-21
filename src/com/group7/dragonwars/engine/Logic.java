@@ -1,24 +1,41 @@
 package com.group7.dragonwars.engine;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Set;
+import java.util.*;
 
 import android.util.Log;
 
 /* Class containing things like damage calculation and path finding. */
 public class Logic {
 
+    public final static String TAG = "Logic";
+
     public List<Position> findPath(GameMap map, Unit unit, Position destination) {
         return AStar(map, unit, destination);
     }
 
     public List<Position> destinations(GameMap map, Unit unit) {
-    	// return AStar(map, unit, null, false);
-        return new ArrayList<Position>(0);
+        Log.d(TAG, "Fetching destinations for " + unit.getUnitName());
+        List<Position> reachable = new ArrayList<Position>();
+        List<Position> mapPositions = new ArrayList<Position>();
+        Log.d(TAG, "Creating map positions");
+        for (int x = 0; x < map.getWidth(); ++x)
+            for (int y = 0; y < map.getHeight(); y++)
+                mapPositions.add(new Position(x, y));
+
+        Log.d(TAG, "after position init");
+        for (Position p : mapPositions) {
+            if (!map.isValidField(p))
+                continue;
+
+            Log.d(TAG, "Calling AStar with position " + p.toString());
+            List<Position> path = AStar(map, unit, p);
+            if (path.size() >= 1)
+                reachable.add(path.get(path.size() - 1));
+            Log.d(TAG, "Finished AStar");
+
+        }
+        Log.d(TAG, "destinations returning " + reachable.toString());
+        return reachable;
     }
 
     public Pair<Double, Double> calculateDamage(GameMap map, Unit attacker,
@@ -76,6 +93,7 @@ public class Logic {
     private List<Position> AStar(GameMap map, Unit unit, Position destination) {
     	// setting path to true will cause the original behaviour, the path between unit and destination will be returned
     	// otherwise destination is ignored and the list of possible destinations for unit (based on the unit's maxMovement) is instead returned
+        Log.d(TAG, "Checking for validity of " + destination.toString());
         if (!map.isValidField(destination)) {
             List<Position> dummy = new ArrayList<Position>(0);
             return dummy;
@@ -86,6 +104,7 @@ public class Logic {
         PriorityQueue<Pair<List<Position>, Double>> queue = new PriorityQueue<Pair<List<Position>, Double>>(
             10, comp);
         List<Position> root = new ArrayList<Position>();
+        Log.d(TAG, "Getting unit position and adding it to root");
         root.add(unit.getPosition());
 
         queue.add(new Pair<List<Position>, Double>(root, 0.0));
