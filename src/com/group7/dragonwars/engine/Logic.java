@@ -13,11 +13,12 @@ import android.util.Log;
 public class Logic {
 
     public List<Position> findPath(GameMap map, Unit unit, Position destination) {
-        return AStar(map, unit, destination, true);
+        return AStar(map, unit, destination);
     }
     
     public List<Position> destinations(GameMap map, Unit unit) {
-    	return AStar(map, unit, null, false);
+    	// return AStar(map, unit, null, false);
+	return List<Position>(0);
     }
 
     public Pair<Double, Double> calculateDamage(GameMap map, Unit attacker,
@@ -72,10 +73,10 @@ public class Logic {
         return (defense < 0) ? 0 : damage;
     }
 
-    private List<Position> AStar(GameMap map, Unit unit, Position destination, boolean path) {
+    private List<Position> AStar(GameMap map, Unit unit, Position destination) {
     	// setting path to true will cause the original behaviour, the path between unit and destination will be returned
     	// otherwise destination is ignored and the list of possible destinations for unit (based on the unit's maxMovement) is instead returned
-        if (path && !map.isValidField(destination)) {
+        if (!map.isValidField(destination)) {
             List<Position> dummy = new ArrayList<Position>(0);
             return dummy;
         }
@@ -98,15 +99,15 @@ public class Logic {
              
             Position lastPos = poss.get(poss.size() - 1);
 
-            if (path && lastPos.equals(destination)) { // only return the path if we're looking for one
+            if (lastPos.equals(destination)) 
                 return poss;
-            }
             
             if (expanded.contains(lastPos))
                 continue;
+            
             expanded.add(lastPos);
             /* Get heuristic */
-            Integer h = path ? getManhattanDistance(lastPos, destination) : 0; // act like Dijkstra's alg (no heuristic) when not attempting to pathfind
+            Integer h = getManhattanDistance(lastPos, destination);
             /* Get cost */
             Double g = getMovementCost(map, unit, lastPos);
             Double pathCost = h + g + posP.getRight();
@@ -129,11 +130,9 @@ public class Logic {
                 }
             }
         }
-        if (path) {
-	        List<Position> dummy = new ArrayList<Position>(0);
-	        return dummy; /* Search failed */
-        }
-        return new ArrayList<Position>(expanded); // afaik expanded contains the "explored" nodes
+
+	List<Position> dummy = new ArrayList<Position>();
+	return dummy; /* Search failed */
     }
 
     private List<Position> getAdjacentPositions(Position pos) {
