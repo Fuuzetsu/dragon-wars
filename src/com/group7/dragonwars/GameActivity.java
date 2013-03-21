@@ -61,6 +61,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
     Bitmap bm;
     GameMap gm;
     Position selected; // the (coordinates of the) currently selected position
+    ScrollOffset scroll_offset; // the offset caused by scrolling, in pixels
     
     DrawingThread dt;
     Paint circle_paint; // used to draw the selection circles (to show which tile is selected)
@@ -151,7 +152,11 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         Log.d(TAG, "after buildings");
         holder.addCallback(this);
+        
         selected = new Position(0, 0); // I really hope that it's ok to assume that the map is at least 1*1
+        
+        scroll_offset = new ScrollOffset(0f, 0f);
+        
         circle_paint = new Paint();
         circle_paint.setStyle(Paint.Style.FILL);
         circle_paint.setARGB(200, 255, 255, 255); // semi-transparent white
@@ -210,8 +215,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-    	int touchX = (int)(event.getX() / tilesize); // the coordinates of the pressed tile
-    	int touchY = (int)(event.getY() / tilesize);
+    	int touchX = (int)((event.getX() - scroll_offset.getX()) / tilesize); // the coordinates of the pressed tile
+    	int touchY = (int)((event.getY() - scroll_offset.getY()) / tilesize); // taking into account scrolling
         //Log.v(null, "Touched at: (" + touchX + ", " + touchY + ")");
     	// TODO: if ( this is a tap ) {
         	if (event.getAction() == MotionEvent.ACTION_UP) {
@@ -227,6 +232,10 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
 
+    public RectF getSquare(float x, float y, float length) {
+    	return new RectF(x, y, x + length, y + length);
+    }
+    
     public void doDraw(Canvas canvas) {
         Configuration c = getResources().getConfiguration();
 
@@ -235,7 +244,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
             canvas.drawColor(Color.BLACK);
             Log.d(TAG, "Painted canvas black due to orientation change.");
         }
-
+        // canvas.drawColor(Color.BLACK); // Draw black anyway, in order to ensure that there are no leftover graphics
 
         for (int i = 0; i < gm.getWidth(); ++i) {
             for (int j = 0; j < gm.getHeight(); j++) {
@@ -243,7 +252,10 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
                 GameField gf = gm.getField(i, j);
                 String gfn = gf.getFieldName();
-                Rect dest = new Rect(tilesize * i, tilesize * j, tilesize * i + tilesize, tilesize * j + tilesize);
+                RectF dest = getSquare(
+                		tilesize * i + scroll_offset.getX(),
+                		tilesize * j + scroll_offset.getY(),
+                		tilesize);
                 canvas.drawBitmap(graphics.get("Fields").get(gfn), null, dest, null);
 
                 if (gf.hostsBuilding()) {
@@ -265,10 +277,14 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
         // draw the selection shower (bad name)
         int circle_radius = 10;
-        canvas.drawCircle(tilesize * selected.getX(), tilesize * selected.getY(), circle_radius, circle_paint); // top left
-        canvas.drawCircle(tilesize * selected.getX(), tilesize * selected.getY() + tilesize, circle_radius, circle_paint); // bottom left
-        canvas.drawCircle(tilesize * selected.getX() + tilesize, tilesize * selected.getY(), circle_radius, circle_paint); // top right
-        canvas.drawCircle(tilesize * selected.getX() + tilesize, tilesize * selected.getY() + tilesize, circle_radius, circle_paint); // bottom right
+        RectF select_rect = getSquare(
+        		tilesize * selected.getX() + scroll_offset.getX(),
+        		tilesize * selected.getY() + scroll_offset.getY(),
+        		tilesize);
+        canvas.drawCircle(select_rect.left, select_rect.top, circle_radius, circle_paint); // top left
+        canvas.drawCircle(select_rect.left, select_rect.bottom, circle_radius, circle_paint); // bottom left
+        canvas.drawCircle(select_rect.right, select_rect.top, circle_radius, circle_paint); // top right
+        canvas.drawCircle(select_rect.right, select_rect.bottom, circle_radius, circle_paint); // bottom right
     }
 }
 
@@ -303,4 +319,30 @@ class DrawingThread extends Thread {
             }
         }
     }
+}
+
+class ScrollOffset { // the Position code, but with Floats
+    private Pair<Float, Float> pair;
+
+    public ScrollOffset(Float x, Float y) {
+        this.pair = new Pair<Float, Float>(x, y);
+    }
+
+    public Float getX() {
+        return this.pair.getLeft();
+    }
+
+    public Float getY() {
+        return this.pair.getRight();
+    }
+
+    public Boolean equals(ScrollOffset other) {
+        return this.getX() == other.getX() && this.getY() == other.getY();
+    }
+
+    public String toString() {
+        return String.format("(%d, %d)", this.pair.getLeft(),
+                             this.pair.getRight());
+    }
+
 }
