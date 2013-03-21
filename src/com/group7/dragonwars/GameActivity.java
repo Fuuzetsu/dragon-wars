@@ -323,13 +323,13 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	drawInfoBox(canvas, null, selected_field, true);
     }
 
-    public LayerDrawable drawInfoBox(Canvas canvas, Unit unit, Field field, bool left) {
+    public void drawInfoBox(Canvas canvas, Unit unit, Field field, boolean left) {
         String info = field.getFieldName();
         if (field.hostsBuilding) {
             info = info + " : " + field.getBuilding().getBuildingName();
         }
         Paint text_paint = new Paint();
-        text_paint.setARGB(255, 255, 255);
+        text_paint.setARGB(255, 255, 255, 255);
         Rect text_bounds = new Rect();
         text_paint.getTextBounds(info, 0, info.length(), text_bounds);
 
