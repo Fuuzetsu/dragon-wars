@@ -257,12 +257,13 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void doDraw(Canvas canvas) {
         Configuration c = getResources().getConfiguration();
 
-        if (orientation == null || orientation != c.orientation) {
-            orientation = c.orientation;
-            canvas.drawColor(Color.BLACK);
-            Log.d(TAG, "Painted canvas black due to orientation change.");
-        }
-        // canvas.drawColor(Color.BLACK); // Draw black anyway, in order to ensure that there are no leftover graphics
+        /* TODO figure out why this doesn't just work */
+        // if (orientation == null || orientation != c.orientation) {
+        //     orientation = c.orientation;
+        //     canvas.drawColor(Color.BLACK);
+        //     Log.d(TAG, "Painted canvas black due to orientation change.");
+        // }
+        canvas.drawColor(Color.BLACK); // Draw black anyway, in order to ensure that there are no leftover graphics
 
         GameField selected_field = map.getField(selected);
         List<Position> unit_destinations = selected_field.hostsUnit() ? logic.destinations(map, selected_field.getUnit()) : new ArrayList<Position>(0);
