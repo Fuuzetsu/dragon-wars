@@ -167,7 +167,7 @@ public class Logic {
             }
         }
 
-        return new ArrayList<Position>();; /* Search failed */
+        return new ArrayList<Position>(); /* Search failed */
     }
 
     private List<Position> getAdjacentPositions(Position pos) {
