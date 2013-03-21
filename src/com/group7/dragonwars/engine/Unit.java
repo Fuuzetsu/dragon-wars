@@ -1,5 +1,7 @@
 package com.group7.dragonwars.engine;
 
+import java.util.LinkedList;
+
 public class Unit {
 
     private String name;
@@ -123,5 +125,4 @@ public class Unit {
     public String getUnitName() {
         return this.name;
     }
-
 }

@@ -7,11 +7,17 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
 
+import android.util.Log;
+
 /* Class containing things like damage calculation and path finding. */
 public class Logic {
 
     public List<Position> findPath(GameMap map, Unit unit, Position destination) {
-        return AStar(map, unit, destination);
+        return AStar(map, unit, destination, true);
+    }
+    
+    public List<Position> destinations(GameMap map, Unit unit) {
+    	return AStar(map, unit, null, false);
     }
 
     public Pair<Double, Double> calculateDamage(GameMap map, Unit attacker,
@@ -66,8 +72,10 @@ public class Logic {
         return (defense < 0) ? 0 : damage;
     }
 
-    private List<Position> AStar(GameMap map, Unit unit, Position destination) {
-        if (!map.isValidField(destination)) {
+    private List<Position> AStar(GameMap map, Unit unit, Position destination, boolean path) {
+    	// setting path to true will cause the original behaviour, the path between unit and destination will be returned
+    	// otherwise destination is ignored and the list of possible destinations for unit (based on the unit's maxMovement) is instead returned
+        if (path && !map.isValidField(destination)) {
             List<Position> dummy = new ArrayList<Position>(0);
             return dummy;
         }
@@ -84,28 +92,27 @@ public class Logic {
         while (queue.size() != 0) {
             Pair<List<Position>, Double> posP = queue.poll();
             List<Position> poss = posP.getLeft();
-            /*
-             * String debug = "[ "; for (Position p : poss) { debug +=
-             * p.toString() + " "; } debug += "]"; System.out.println(debug);
-             */
+            
+             //String debug = "[ "; for (Position p : poss) { debug +=
+             //p.toString() + " "; } debug += "]"; Log.v(null, debug);
+             
             Position lastPos = poss.get(poss.size() - 1);
 
-            if (lastPos.equals(destination))
+            if (path && lastPos.equals(destination)) { // only return the path if we're looking for one
                 return poss;
-
+            }
+            
             if (expanded.contains(lastPos))
                 continue;
-
             expanded.add(lastPos);
-
             /* Get heuristic */
-            Integer h = getManhattanDistance(lastPos, destination);
+            Integer h = path ? getManhattanDistance(lastPos, destination) : 0; // act like Dijkstra's alg (no heuristic) when not attempting to pathfind
             /* Get cost */
             Double g = getMovementCost(map, unit, lastPos);
             Double pathCost = h + g + posP.getRight();
 
             if (pathCost > unit.getRemainingMovement())
-                continue;
+            	continue;
 
             for (Position p : getAdjacentPositions(lastPos)) {
                 if (map.isValidField(p) && map.getField(p).doesAcceptUnit(unit)) {
@@ -122,9 +129,11 @@ public class Logic {
                 }
             }
         }
-
-        List<Position> dummy = new ArrayList<Position>();
-        return dummy; /* Search failed */
+        if (path) {
+	        List<Position> dummy = new ArrayList<Position>(0);
+	        return dummy; /* Search failed */
+        }
+        return new ArrayList<Position>(expanded); // afaik expanded contains the "explored" nodes
     }
 
     private List<Position> getAdjacentPositions(Position pos) {

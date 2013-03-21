@@ -59,12 +59,19 @@ public class GameActivity extends Activity {
 class GameView extends SurfaceView implements SurfaceHolder.Callback {
     final private String TAG = "GameView";
     Bitmap bm;
-    GameMap gm;
+    GameState state;
+    Logic logic;
+    GameMap map;
     Position selected; // the (coordinates of the) currently selected position
     ScrollOffset scroll_offset; // the offset caused by scrolling, in pixels
     
     DrawingThread dt;
     Paint circle_paint; // used to draw the selection circles (to show which tile is selected)
+    Paint move_high_paint; // used to highlight movements
+    
+    boolean unit_selected; // true if there is a unit at selection
+    
+    // List<Position> unit_destinations; // probably not best to recompute this every time, or maybe it is, treat as Undefined if !unit_selected
     
     Context context;
     HashMap<String, HashMap<String, Bitmap>> graphics;
@@ -77,22 +84,25 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
         Log.d(TAG, "GameView ctor");
 
         GameView game_view = (GameView) this.findViewById(R.id.game_view);
-        GameMap map = null;
+        GameMap gm = null;
+        
         Log.d(TAG, "nulling GameMap");
 
         try {
-            map = MapReader.readMap(readFile(R.raw.testmap)); // ugh
+            gm = MapReader.readMap(readFile(R.raw.testmap)); // ugh
         } catch (JSONException e) {
             Log.d(TAG, "Failed to load the map: " + e.getMessage());
         }
 
-        if (map == null) {
-            Log.d(TAG, "map is null");
+        if (gm == null) {
+            Log.d(TAG, "gm is null");
             System.exit(1);
         }
 
         Log.d(TAG, "before setMap");
-        game_view.setMap(map);
+        game_view.setMap(gm);
+        this.logic = new Logic();
+        this.state = new GameState(map, logic);
 
         context = ctx;
         bm = BitmapFactory.decodeResource(context.getResources(),
@@ -103,10 +113,10 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
         /* Register game fields */
         this.graphics.put("Fields", new HashMap<String, Bitmap>());
         Log.d(TAG, "after putting empty Fields");
-        Boolean b = gm == null;
-        Log.d(TAG, "gm is current null?: " + b.toString());
+        Boolean b = map == null;
+        Log.d(TAG, "map is current null?: " + b.toString());
 
-        for (Map.Entry<Character, GameField> ent : this.gm.getGameFieldMap().entrySet()) {
+        for (Map.Entry<Character, GameField> ent : this.map.getGameFieldMap().entrySet()) {
             Log.d(TAG, "inside for loop, about to ent.getValue()");
             GameField f = ent.getValue();
             Log.d(TAG, "about to getResources() for " + f.getFieldName());
@@ -122,9 +132,10 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         Log.d(TAG, "after fields");
         /* Register units */
+        
         this.graphics.put("Units", new HashMap<String, Bitmap>());
 
-        for (Map.Entry<Character, Unit> ent : this.gm.getUnitMap().entrySet()) {
+        for (Map.Entry<Character, Unit> ent : this.map.getUnitMap().entrySet()) {
             Unit f = ent.getValue();
             Log.d(TAG, "about to getResources() for " + f.getUnitName());
             Integer resourceID = getResources().getIdentifier(f.getSpriteLocation(),
@@ -134,12 +145,13 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
                                            BitmapFactory.decodeResource(context.getResources(),
                                                    resourceID));
         }
+        
 
         Log.d(TAG, "after units");
         /* Register buildings */
         this.graphics.put("Buildings", new HashMap<String, Bitmap>());
 
-        for (Map.Entry<Character, Building> ent : this.gm.getBuildingMap().entrySet()) {
+        for (Map.Entry<Character, Building> ent : this.map.getBuildingMap().entrySet()) {
             Building f = ent.getValue();
             Log.d(TAG, "about to getResources() for " + f.getBuildingName());
             Integer resourceID = getResources().getIdentifier(f.getSpriteLocation(),
@@ -155,11 +167,17 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
         
         selected = new Position(0, 0); // I really hope that it's ok to assume that the map is at least 1*1
         
+        unit_selected = map.getField(selected).hostsUnit();
+        
         scroll_offset = new ScrollOffset(0f, 0f);
         
         circle_paint = new Paint();
         circle_paint.setStyle(Paint.Style.FILL);
         circle_paint.setARGB(200, 255, 255, 255); // semi-transparent white
+        
+        move_high_paint = new Paint();
+        move_high_paint.setStyle(Paint.Style.FILL);
+        move_high_paint.setARGB(150, 0, 0, 255); // semi-transparent white
     }
 
     private List<String> readFile(int resourceid) {
@@ -186,7 +204,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void setMap(GameMap newmap) {
-        this.gm = newmap;
+        this.map = newmap;
     }
 
     @Override
@@ -220,9 +238,9 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
         //Log.v(null, "Touched at: (" + touchX + ", " + touchY + ")");
     	// TODO: if ( this is a tap ) {
         	if (event.getAction() == MotionEvent.ACTION_UP) {
-                Log.v(null, "Touch ended at: (" + touchX + ", " + touchY + ") (dimensions are: (" + this.gm.getWidth() + "x" + this.gm.getHeight() + "))");
+                Log.v(null, "Touch ended at: (" + touchX + ", " + touchY + ") (dimensions are: (" + this.map.getWidth() + "x" + this.map.getHeight() + "))");
 		        Position newselected = new Position(touchX, touchY);
-		        if (this.gm.isValidField(touchX, touchY)) {
+		        if (this.map.isValidField(touchX, touchY)) {
 		        	Log.v(null, "Setting selection");
 		        	this.selected = newselected;
 		        }
@@ -245,12 +263,15 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
             Log.d(TAG, "Painted canvas black due to orientation change.");
         }
         // canvas.drawColor(Color.BLACK); // Draw black anyway, in order to ensure that there are no leftover graphics
-
-        for (int i = 0; i < gm.getWidth(); ++i) {
-            for (int j = 0; j < gm.getHeight(); j++) {
+        
+        GameField selected_field = map.getField(selected);
+        List<Position> unit_destinations = selected_field.hostsUnit() ? logic.destinations(map, selected_field.getUnit()) : new ArrayList<Position>(0);
+        
+        for (int i = 0; i < map.getWidth(); ++i) {
+            for (int j = 0; j < map.getHeight(); j++) {
                 // canvas.drawBitmap(tiles.get(0), size * j, size * i, null); // Draw
-
-                GameField gf = gm.getField(i, j);
+            	Position pos = new Position(i, j);
+                GameField gf = map.getField(i, j);
                 String gfn = gf.getFieldName();
                 RectF dest = getSquare(
                 		tilesize * i + scroll_offset.getX(),
@@ -275,6 +296,17 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 }
             }
         }
+        
+        
+        // perform highlighting
+        for (Position pos : unit_destinations) {
+        	RectF dest = getSquare(
+            		tilesize * pos.getX() + scroll_offset.getX(),
+            		tilesize * pos.getY() + scroll_offset.getY(),
+            		tilesize);
+        	canvas.drawRect(dest, move_high_paint);
+        }
+        
         // draw the selection shower (bad name)
         int circle_radius = 10;
         RectF select_rect = getSquare(
