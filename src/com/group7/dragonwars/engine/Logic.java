@@ -48,11 +48,7 @@ public class Logic {
                     checked.add(y);
 
             }
-            Log.d(TAG, "The list is now " + checked);
-
         }
-        Log.d(TAG, "destinations returning " + checked);
-
         return checked;
     }
 
