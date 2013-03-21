@@ -24,7 +24,7 @@ public class GameField {
                      String spriteLocation, String spriteDir, String spritePack) {
         this.fieldName = fieldName;
         this.movementModifier = movementModifier;
-        this.attackMedifier = attackModifier;
+        this.attackModifier = attackModifier;
         this.defenseModifier = defenseModifier;
         this.accessible = accessible;
         this.flightOnly = flightOnly;
