@@ -323,7 +323,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	drawInfoBox(canvas, null, selected_field, true);
     }
 
-    public void drawInfoBox(Canvas canvas, Unit unit, Field field, boolean left) {
+    public void drawInfoBox(Canvas canvas, Unit unit, GameField field, boolean left) {
         String info = field.getFieldName();
         if (field.hostsBuilding) {
             info = info + " : " + field.getBuilding().getBuildingName();
@@ -339,7 +339,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
         Rect back_rect = new Rect(0, canvas.getHeight() - text_bounds.bottom, text_bounds.right, canvas.getHeight());
 
         canvas.drawRect(back_rect, back_paint);
-        canvas.drawText(info, 0, info.length(), back_rect.left, back_rect.top);
+        canvas.drawText(info, 0, info.length(), (float)back_rect.left, (float)back_rect.top, text_paint);
    } 
 
 }
@@ -403,4 +403,3 @@ class ScrollOffset { // the Position code, but with Floats
     }
 
 }
-
