@@ -317,7 +317,31 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
         canvas.drawCircle(select_rect.left, select_rect.bottom, circle_radius, circle_paint); // bottom left
         canvas.drawCircle(select_rect.right, select_rect.top, circle_radius, circle_paint); // top right
         canvas.drawCircle(select_rect.right, select_rect.bottom, circle_radius, circle_paint); // bottom right
+
+
+	// draw the information box
+	drawInfoBox(canvas, null, selected_field, true);
     }
+
+    public LayerDrawable drawInfoBox(Canvas canvas, Unit unit, Field field, bool left) {
+        String info = field.getFieldName();
+        if (field.hostsBuilding) {
+            info = info + " : " + field.getBuilding().getBuildingName();
+        }
+        Paint text_paint = new Paint();
+        text_paint.setARGB(255, 255, 255);
+        Rect text_bounds = new Rect();
+        text_paint.getTextBounds(info, 0, info.length(), text_bounds);
+
+        Paint back_paint = new Paint();
+	back_paint.setStyle(Paint.Style.FILL);
+        back_paint.setARGB(150, 0, 0, 0);
+        Rect back_rect = new Rect(0, canvas.getHeight() - text_bounds.bottom, text_bounds.right, canvas.getHeight());
+
+        canvas.drawRect(back_rect, back_paint);
+        canvas.drawText(info, 0, info.length(), back_rect.left, back_rect.top);
+   } 
+
 }
 
 class DrawingThread extends Thread {
@@ -351,6 +375,7 @@ class DrawingThread extends Thread {
             }
         }
     }
+
 }
 
 class ScrollOffset { // the Position code, but with Floats
@@ -378,3 +403,4 @@ class ScrollOffset { // the Position code, but with Floats
     }
 
 }
+
