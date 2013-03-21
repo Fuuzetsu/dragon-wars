@@ -112,8 +112,9 @@ public class Logic {
             Pair<List<Position>, Double> posP = queue.poll();
             List<Position> poss = posP.getLeft();
 
-             //String debug = "[ "; for (Position p : poss) { debug +=
-             //p.toString() + " "; } debug += "]"; Log.v(null, debug);
+            // String debug = "[ "; for (Position p : poss)
+            //     debug += p.toString() + " ";
+            // debug += "]"; Log.v(null, debug);
 
             Position lastPos = poss.get(poss.size() - 1);
 
@@ -126,12 +127,21 @@ public class Logic {
             expanded.add(lastPos);
             /* Get heuristic */
             Integer h = getManhattanDistance(lastPos, destination);
+            Log.d(TAG, "Manhattan distance: " + h);
             /* Get cost */
             Double g = getMovementCost(map, unit, lastPos);
-            Double pathCost = h + g + posP.getRight();
+            Log.d(TAG, "Movement cost: " + g);
+            Double pathCost = (h + g) * posP.getRight();
+            Log.d(TAG, "Path cost so far: " + pathCost);
 
-            if (pathCost > unit.getRemainingMovement())
+            if (pathCost > unit.getRemainingMovement()) {
+                Log.d(TAG, "It would cost " + pathCost
+                      + " for " + unit.getUnitName()
+                      + " to get to " + lastPos.toString()
+                      + " and the unit only has " + unit.getRemainingMovement()
+                      + " movement points remaining.");
             	continue;
+            }
 
             for (Position p : getAdjacentPositions(lastPos)) {
                 if (map.isValidField(p) && map.getField(p).doesAcceptUnit(unit)) {
@@ -179,7 +189,10 @@ public class Logic {
     private Double getMovementCost(GameMap map, Unit unit, Position origin) {
         /* g(x) for search */
         // flying units ignore this; always 1
-        return (100 / map.getField(origin).getMovementModifier());
+        if (unit.isFlying())
+            return 1.0;
+
+        return map.getField(origin).getMovementModifier();
     }
 
     public Set<Position> getAttackableUnitPositions(GameMap map, Unit unit) {
