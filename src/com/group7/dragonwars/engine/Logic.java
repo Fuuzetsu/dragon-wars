@@ -14,7 +14,6 @@ public class Logic {
     }
 
     public List<Position> destinations(GameMap map, Unit unit) {
-        Log.d(TAG, "Fetching destinations for " + unit.getUnitName());
         List<Position> checked = new ArrayList<Position>();
 
         List<Position> mapPositions = new ArrayList<Position>();
