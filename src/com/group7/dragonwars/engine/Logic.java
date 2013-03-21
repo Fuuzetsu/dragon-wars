@@ -27,15 +27,12 @@ public class Logic {
             if (!map.isValidField(p))
                 continue;
 
-            Log.d(TAG, "Calling AStar with position " + p.toString());
             List<Position> path = AStar(map, unit, p);
             if (path.size() > 0)
                 reachable.add(path.get(path.size() - 1));
             // Integer cost = getManhattanDistance(unit.getPosition(), p);
             // if (cost <= unit.getMaxMovement())
             //     reachable.add(p);
-            Log.d(TAG, "Finished AStar");
-
         }
         Log.d(TAG, "destinations returning " + reachable.toString());
 
