@@ -14,7 +14,6 @@ public class Logic {
     }
 
     public List<Position> destinations(GameMap map, Unit unit) {
-        Log.d(TAG, "Fetching destinations for " + unit.getUnitName());
         List<Position> checked = new ArrayList<Position>();
 
         List<Position> mapPositions = new ArrayList<Position>();
@@ -48,11 +47,7 @@ public class Logic {
                     checked.add(y);
 
             }
-            Log.d(TAG, "The list is now " + checked);
-
         }
-        Log.d(TAG, "destinations returning " + checked);
-
         return checked;
     }
 
@@ -111,10 +106,8 @@ public class Logic {
     private List<Position> AStar(GameMap map, Unit unit, Position destination) {
     	// setting path to true will cause the original behaviour, the path between unit and destination will be returned
     	// otherwise destination is ignored and the list of possible destinations for unit (based on the unit's maxMovement) is instead returned
-        if (!map.isValidField(destination)) {
-            List<Position> dummy = new ArrayList<Position>(0);
-            return dummy;
-        }
+        if (!map.isValidField(destination))
+            return new ArrayList<Position>(0);
 
         List<Position> expanded = new ArrayList<Position>();
         Comparator<Pair<List<Position>, Double>> comp = new AStarComparator();
@@ -174,8 +167,7 @@ public class Logic {
             }
         }
 
-	List<Position> dummy = new ArrayList<Position>();
-	return dummy; /* Search failed */
+        return new ArrayList<Position>(); /* Search failed */
     }
 
     private List<Position> getAdjacentPositions(Position pos) {

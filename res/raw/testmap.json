@@ -23,7 +23,7 @@
             "movementModifier": 1.0,
             "attackModifier": 0.0,
             "defenseModifier": 0.0,
-            "accessible": true,
+            "accessible": false,
             "flightOnly": true
         }
     },
