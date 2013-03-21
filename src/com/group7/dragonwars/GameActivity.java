@@ -335,8 +335,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
         text_paint.getTextBounds(info, 0, info.length(), text_bounds);
 
         Paint back_paint = new Paint();
-        //back_paint.setStyle(Paint.Style.FILL);
-        back_paint.setColor(Color.RED);
+        back_paint.setColor(Color.BLACK);
         Rect back_rect = new Rect(0, canvas.getHeight() + text_bounds.top, text_bounds.right, canvas.getHeight());
 
         canvas.drawRect(back_rect, back_paint);
