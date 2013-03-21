@@ -15,28 +15,45 @@ public class Logic {
 
     public List<Position> destinations(GameMap map, Unit unit) {
         Log.d(TAG, "Fetching destinations for " + unit.getUnitName());
-        List<Position> reachable = new ArrayList<Position>();
+        List<Position> checked = new ArrayList<Position>();
+
         List<Position> mapPositions = new ArrayList<Position>();
-        Log.d(TAG, "Creating map positions");
         for (int x = 0; x < map.getWidth(); ++x)
             for (int y = 0; y < map.getHeight(); y++)
                 mapPositions.add(new Position(x, y));
 
-        Log.d(TAG, "after position init");
         for (Position p : mapPositions) {
-            if (!map.isValidField(p))
+            Boolean c = false;
+
+            for (Position x : checked)
+                if (p.equals(x)) {
+                    c = true;
+                    break;
+                }
+
+            if (!map.isValidField(p) || c)
                 continue;
 
             List<Position> path = AStar(map, unit, p);
-            if (path.size() > 0)
-                reachable.add(path.get(path.size() - 1));
-            // Integer cost = getManhattanDistance(unit.getPosition(), p);
-            // if (cost <= unit.getMaxMovement())
-            //     reachable.add(p);
-        }
-        Log.d(TAG, "destinations returning " + reachable.toString());
 
-        return reachable;
+            for (Position y : path){
+                Boolean b = false;
+                for (Position x : checked)
+                    if (y.equals(x)) {
+                        b = true;
+                        break;
+                    }
+
+                if (!b)
+                    checked.add(y);
+
+            }
+            Log.d(TAG, "The list is now " + checked);
+
+        }
+        Log.d(TAG, "destinations returning " + checked);
+
+        return checked;
     }
 
     public Pair<Double, Double> calculateDamage(GameMap map, Unit attacker,
@@ -99,7 +116,7 @@ public class Logic {
             return dummy;
         }
 
-        Set<Position> expanded = new HashSet<Position>();
+        List<Position> expanded = new ArrayList<Position>();
         Comparator<Pair<List<Position>, Double>> comp = new AStarComparator();
         PriorityQueue<Pair<List<Position>, Double>> queue = new PriorityQueue<Pair<List<Position>, Double>>(
             10, comp);
@@ -112,44 +129,44 @@ public class Logic {
             Pair<List<Position>, Double> posP = queue.poll();
             List<Position> poss = posP.getLeft();
 
-            // String debug = "[ "; for (Position p : poss)
-            //     debug += p.toString() + " ";
-            // debug += "]"; Log.v(null, debug);
-
             Position lastPos = poss.get(poss.size() - 1);
 
             if (lastPos.equals(destination))
                 return poss;
 
-            if (expanded.contains(lastPos))
+            Boolean c = false;
+            for (Position x : expanded)
+                if (lastPos.equals(x)) {
+                    c = true;
+                    break;
+                }
+
+            if (c)
                 continue;
 
             expanded.add(lastPos);
+
+            if (queue.size() > 100)
+                System.exit(1);
             /* Get heuristic */
             Integer h = getManhattanDistance(lastPos, destination);
-            Log.d(TAG, "Manhattan distance: " + h);
             /* Get cost */
             Double g = getMovementCost(map, unit, lastPos);
-            Log.d(TAG, "Movement cost: " + g);
-            Double pathCost = (h + g) * posP.getRight();
-            Log.d(TAG, "Path cost so far: " + pathCost);
+            Double pathCost = posP.getRight() + h * g;
 
-            if (pathCost > unit.getRemainingMovement()) {
-                Log.d(TAG, "It would cost " + pathCost
-                      + " for " + unit.getUnitName()
-                      + " to get to " + lastPos.toString()
-                      + " and the unit only has " + unit.getRemainingMovement()
-                      + " movement points remaining.");
+            if (pathCost > unit.getRemainingMovement())
             	continue;
-            }
 
             for (Position p : getAdjacentPositions(lastPos)) {
                 if (map.isValidField(p) && map.getField(p).doesAcceptUnit(unit)) {
-                    if (!map.getField(p).hostsUnit()) {
-                        Player op = map.getField(p).getUnit().getOwner();
+                    if (map.getField(p).hostsUnit()) {
+                        /* Assume all units are from a different player */
+                        /* TODO fix this */
+                        // Player op = map.getField(p).getUnit().getOwner();
 
-                        if (!op.equals(unit.getOwner()))
-                            continue;
+                        // if (!op.equals(unit.getOwner()))
+                        //     continue;
+                        continue;
                     }
 
                     List<Position> plan = new ArrayList<Position>(poss);
