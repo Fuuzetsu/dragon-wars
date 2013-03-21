@@ -107,7 +107,7 @@ public class Unit {
     }
 
     public Boolean isFlying() {
-        return this.isFlying();
+        return this.isFlying;
     }
 
     public String getSpriteLocation() {
