@@ -17,7 +17,8 @@ import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.*;
-import android.widget.ScrollView;
+import android.view.GestureDetector.OnDoubleTapListener;
+import android.view.GestureDetector.OnGestureListener;
 import android.widget.Toast;
 
 import com.group7.dragonwars.engine.*;
@@ -35,7 +36,6 @@ import com.group7.dragonwars.util.SystemUiHider;
  */
 public class GameActivity extends Activity {
     private static final String TAG = "GameActivity";
-    private ScrollView map_scroller;
     private Integer orientation;
     private Boolean orientationChanged = false;
 
@@ -56,15 +56,17 @@ public class GameActivity extends Activity {
 
 }
 
-class GameView extends SurfaceView implements SurfaceHolder.Callback {
+class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureListener, OnDoubleTapListener {
     final private String TAG = "GameView";
     Bitmap bm;
     GameState state;
     Logic logic;
     GameMap map;
     Position selected; // the (coordinates of the) currently selected position
-    ScrollOffset scroll_offset; // the offset caused by scrolling, in pixels
-
+    
+    FloatPair scroll_offset; // the offset caused by scrolling, in pixels
+    GestureDetector gesture_detector; // used to receive onScroll and onSingleTapConfirmed
+    
     DrawingThread dt;
     Paint circle_paint; // used to draw the selection circles (to show which tile is selected)
     Paint move_high_paint; // used to highlight movements
@@ -169,7 +171,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         unit_selected = map.getField(selected).hostsUnit();
 
-        scroll_offset = new ScrollOffset(0f, 0f);
+        gesture_detector = new GestureDetector(this.getContext(), this);
+        scroll_offset = new FloatPair(0f, 0f);
 
         circle_paint = new Paint();
         circle_paint.setStyle(Paint.Style.FILL);
@@ -233,22 +236,10 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-    	int touchX = (int)((event.getX() - scroll_offset.getX()) / tilesize); // the coordinates of the pressed tile
-    	int touchY = (int)((event.getY() - scroll_offset.getY()) / tilesize); // taking into account scrolling
-        //Log.v(null, "Touched at: (" + touchX + ", " + touchY + ")");
-    	// TODO: if ( this is a tap ) {
-        	if (event.getAction() == MotionEvent.ACTION_UP) {
-                Log.v(null, "Touch ended at: (" + touchX + ", " + touchY + ") (dimensions are: (" + this.map.getWidth() + "x" + this.map.getHeight() + "))");
-		        Position newselected = new Position(touchX, touchY);
-		        if (this.map.isValidField(touchX, touchY)) {
-		        	Log.v(null, "Setting selection");
-		        	this.selected = newselected;
-		        }
-        	}
-		// TODO: } else { scroll the map }
+    	// all of the functionality that was previously here is now in onSingleTapConfirmed()
+    	gesture_detector.onTouchEvent(event);
         return true;
     }
-
 
     public RectF getSquare(float x, float y, float length) {
     	return new RectF(x, y, x + length, y + length);
@@ -256,7 +247,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     public void doDraw(Canvas canvas) {
         Configuration c = getResources().getConfiguration();
-
+        
         /* TODO figure out why this doesn't just work */
         // if (orientation == null || orientation != c.orientation) {
         //     orientation = c.orientation;
@@ -309,6 +300,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         // draw the selection shower (bad name)
+        // alternate appearance suggestions welcomed
         int circle_radius = 10;
         RectF select_rect = getSquare(
         		tilesize * selected.getX() + scroll_offset.getX(),
@@ -322,6 +314,16 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 	// draw the information box
 	drawInfoBox(canvas, null, selected_field, true);
+    }
+
+    public float getMapDrawWidth() {
+    	// returns the width of map in pixels
+    	return map.getWidth() * tilesize;
+    }
+    
+    public float getMapDrawHeight() {
+    	// returns the width of map in pixels
+    	return map.getHeight() * tilesize;
     }
 
     public void drawInfoBox(Canvas canvas, Unit unit, GameField field, boolean left) {
@@ -340,8 +342,70 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         canvas.drawRect(back_rect, back_paint);
         canvas.drawText(info, 0, info.length(), (float) back_rect.left, (float) back_rect.bottom, text_paint);
-   }
+    }
 
+    /* Please excuse all the auto-generated method stubs
+     * as we're implementing an interface or two (GestureDetector.OnGestureListener etc), we need them all
+     */
+    
+	@Override
+	public boolean onDown(MotionEvent e) {return false;}
+	
+	@Override
+	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+		return false;
+	}
+
+	@Override
+	public void onLongPress(MotionEvent e) {}
+
+	@Override
+	public void onShowPress(MotionEvent e) {}
+
+	@Override
+	public boolean onSingleTapUp(MotionEvent e) {return false;}
+
+	@Override
+	public boolean onDoubleTap(MotionEvent e) {return false;}
+
+	@Override
+	public boolean onDoubleTapEvent(MotionEvent e) {return false;}
+
+	@Override
+	public boolean onSingleTapConfirmed(MotionEvent event) {
+    	int touchX = (int)((event.getX() - scroll_offset.getX()) / tilesize); // the coordinates of the pressed tile
+    	int touchY = (int)((event.getY() - scroll_offset.getY()) / tilesize); // taking into account scrolling
+
+		//Log.v(null, "Touch ended at: (" + touchX + ", " + touchY + ") (dimensions are: (" + this.map.getWidth() + "x" + this.map.getHeight() + "))");
+        Position newselected = new Position(touchX, touchY);
+        if (this.map.isValidField(touchX, touchY)) {
+        	//Log.v(null, "Setting selection");
+        	this.selected = newselected;
+        }
+		return true;
+	}
+
+	@Override
+	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+		float new_x = scroll_offset.getX() - distanceX;
+		if (this.getWidth() >= this.getMapDrawWidth()) {
+			new_x = 0;
+		} else if ((-new_x) > (getMapDrawWidth() - getWidth())) {
+			new_x = -(getMapDrawWidth() - getWidth());
+		} else if (new_x > 0) {
+			new_x = 0;
+		}
+		float new_y = scroll_offset.getY() - distanceY;
+		if (this.getHeight() >= this.getMapDrawHeight()) {
+			new_y = 0;
+		} else if ((-new_y) > (getMapDrawHeight() - getHeight())) {
+			new_y = -(getMapDrawHeight() - getHeight());
+		} else if (new_y > 0) {
+			new_y = 0;
+		}
+		scroll_offset = new FloatPair(new_x, new_y);
+		return true;
+	}
 }
 
 class DrawingThread extends Thread {
@@ -378,10 +442,10 @@ class DrawingThread extends Thread {
 
 }
 
-class ScrollOffset { // the Position code, but with Floats
+class FloatPair { // the Position code, but with Floats
     private Pair<Float, Float> pair;
 
-    public ScrollOffset(Float x, Float y) {
+    public FloatPair(Float x, Float y) {
         this.pair = new Pair<Float, Float>(x, y);
     }
 
@@ -393,7 +457,7 @@ class ScrollOffset { // the Position code, but with Floats
         return this.pair.getRight();
     }
 
-    public Boolean equals(ScrollOffset other) {
+    public Boolean equals(FloatPair other) {
         return this.getX() == other.getX() && this.getY() == other.getY();
     }
 
