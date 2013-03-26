@@ -23,6 +23,8 @@ public class GameField {
                      Double defenseModifier, Boolean accessible, Boolean flightOnly,
                      String spriteLocation, String spriteDir, String spritePack) {
         this.fieldName = fieldName;
+        this.hostedUnit = null;
+        this.hostedBuilding = null;
         this.movementModifier = movementModifier;
         this.attackModifier = attackModifier;
         this.defenseModifier = defenseModifier;

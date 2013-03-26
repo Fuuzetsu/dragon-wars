@@ -313,7 +313,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
 
 
 	// draw the information box
-	drawInfoBox(canvas, null, selected_field, true);
+	drawInfoBox(canvas, selected_field.hostsUnit() ? selected_field.getUnit() : null, selected_field, true);
     }
 
     public float getMapDrawWidth() {
@@ -327,21 +327,51 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
     }
 
     public void drawInfoBox(Canvas canvas, Unit unit, GameField field, boolean left) {
-        String info = field.getFieldName();
-        if (field.hostsBuilding()) {
-            info = info + " : " + field.getBuilding().getBuildingName();
+    	LinkedList<String> info = new LinkedList<String>();
+
+    	// unit info
+        if (unit != null) {
+        	info.add(unit.getUnitName());// + " - Player: " + unit.getOwner().getName()); // causes problems when there is no owner
+        	info.add("Health: " + unit.getHealth() + "/" + unit.getMaxHealth());
+        	info.add("Attack: " + unit.getAttack());
+        	info.add("Defense: " + unit.getMeleeDefense() + " (Melee) " + unit.getRangeDefense() + " (Ranged)");
+        	info.add("");
         }
+    	
+    	// field names
+        info.add(field.getFieldName() + (field.hostsBuilding() ? " - " + field.getBuilding().getBuildingName() : ""));
+        // field stats
+        info.add("Attack: " + field.getAttackModifier() +
+        		" Defense: " + field.getDefenseModifier() +
+        		" Move: " + field.getMovementModifier());
+        
         Paint text_paint = new Paint();
-        text_paint.setARGB(255, 255, 255, 255);
-        Rect text_bounds = new Rect();
-        text_paint.getTextBounds(info, 0, info.length(), text_bounds);
-
+        text_paint.setColor(Color.WHITE);
+        
+        Rect text_bounds = new Rect(0, 0, 0, 0); // contains the bounds of the entire text in the info box
+        LinkedList<Rect> info_bounds = new LinkedList<Rect>();
+        for (int i = 0; i < info.size(); ++i) {
+        	String text = info.get(i);
+        	info_bounds.add(i, new Rect());
+        	text_paint.getTextBounds(text, 0, text.length(), info_bounds.get(i));
+        	if (info_bounds.get(i).right > text_bounds.right) {
+        		text_bounds.right = info_bounds.get(i).right;
+        	}
+        	text_bounds.bottom += (info_bounds.get(i).bottom - info_bounds.get(i).top);
+        }
+        
         Paint back_paint = new Paint();
-        back_paint.setColor(Color.BLACK);
-        Rect back_rect = new Rect(0, canvas.getHeight() + text_bounds.top, text_bounds.right, canvas.getHeight());
-
+        back_paint.setColor(Color.BLUE); // FIXME make it black
+        
+        Rect back_rect = new Rect(0, canvas.getHeight() - text_bounds.bottom, text_bounds.right, canvas.getHeight());
         canvas.drawRect(back_rect, back_paint);
-        canvas.drawText(info, 0, info.length(), (float) back_rect.left, (float) back_rect.bottom, text_paint);
+        
+        float text_height = 0f;
+        for (int i = info.size() - 1; i >= 0; --i) {
+        	canvas.drawText(info.get(i), 0, info.get(i).length(), 0, (canvas.getHeight() - text_height) - info_bounds.get(i).bottom, text_paint);
+        	text_height += (info_bounds.get(i).bottom - info_bounds.get(i).top);
+        }
+        //canvas.drawText(info, 0, info.length(), (float) back_rect.left, (float) back_rect.bottom, text_paint);
     }
 
     /* Please excuse all the auto-generated method stubs
