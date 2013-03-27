@@ -23,8 +23,13 @@ public class MapReader {
         JSONObject bs = m.getJSONObject("buildings");
         JSONObject us = m.getJSONObject("units");
         JSONArray terrain = m.getJSONArray("terrain");
-        JSONArray buildingPos = m.getJSONArray("buildingPos");
+        JSONArray startingBuildingPos = m.getJSONArray("startingBuildingPos");
 
+
+        /* Make a fake player list for now */
+        List<Player> playerList = new ArrayList<Player>();
+        for (Integer i = 0; i < players; ++i)
+            playerList.add(new Player("Player " + i));
 
         /* Fill in a HashMap for look-up */
         HashMap<Character, JSONObject> fields = new HashMap<Character, JSONObject>();
@@ -68,6 +73,7 @@ public class MapReader {
             String key = (String) uIter.next();
             units.put(key.charAt(0), new MapReader.UnitGetter().apply(us.getJSONObject(key)));
         }
+
 
         List<List<GameField>> grid = MapReader.listifyJSONArray(new MapReader.TerrainGetter(fields), terrain);
         List<List<Building>> buildingGrid = MapReader.listifyJSONArray(new MapReader.BuildingGetter(buildings), buildingPos);
@@ -113,6 +119,30 @@ public class MapReader {
             v.add(map(f, ys));
 
         return v;
+    }
+
+    private static void setBuildings(List<List<Gamefield>> grid, List<Player> players,
+                                     HashMap<Character, Building> buildings, JSONArray posInfo) throws JSONException {
+        Log.d(TAG, "Running setBuildings");
+        for (Integer i = 0; i < posInfo.size(); ++i) {
+            JSONObject buildingInfo = posInfo.getJSONObject(i);
+            Building building = buildings.get(buildingInfo.getString("building").charAt(0));
+            Integer playerOwner = buildingInfo.getInteger("owner");
+            Integer posX = buildingInfo.getInteger("posX");
+            Integer posX = buildingInfo.getInteger("posY");
+
+            /* TODO proper choice of player */
+            if (playerOwner == 0)
+                building.setOwner(new Player("Gaia"));
+            else
+                building.setOwner(players.get(playerOwner - 1));
+
+            GameField gf = grid.get(posY).get(posX);
+            gf.setBuilding(building);
+
+        }
+        Log.d(TAG, "Leaving setBuildings");
+
     }
 
     private static class BuildingGetter implements FuncEx<Character, Building, JSONException> {
@@ -168,6 +198,7 @@ public class MapReader {
 
         }
     }
+
 
     private static <I, O, E extends Exception> List<O> map(FuncEx<I, O, E> f, List<I> ls) throws E {
         List<O> os = new ArrayList<O>();
