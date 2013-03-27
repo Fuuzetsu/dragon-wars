@@ -86,18 +86,31 @@
         "WGGGGGWGWW",
         "WWWWWWWWWW"
     ],
-    "buildingPos": [
-        "          ",
-        "   C      ",
-        "  CV  C   ",
-        "   C      ",
-        "          "
-    ],
-    "starting": [
-        "          ",
-        "   1      ",
-        "      2   ",
-        "   1  2   ",
-        "          "
+    "startingBuildingPos": [
+        {"building" : "C",
+         "posX": 3,
+         "posY": 1,
+         "owner": 1
+        },
+        {"building" : "V",
+         "posX": 3,
+         "posY": 2,
+         "owner": 2
+        },
+        {"building" : "C",
+         "posX": 3,
+         "posY": 3,
+         "owner": 0
+        },
+        {"building" : "C",
+         "posX": 2,
+         "posY": 2,
+         "owner": 2
+        },
+        {"building" : "C",
+         "posX": 5,
+         "posY": 2,
+         "owner": 2
+        }
     ]
 }

@@ -2,10 +2,13 @@ package com.group7.dragonwars.engine;
 
 /* Generates a GameField based on a flat text file. Test solution. */
 
+import android.util.Log;
 import java.util.*;
 import org.json.*;
 
+
 public class MapReader {
+    final private static String TAG = "MapReader";
 
     public static GameMap readMap(List<String> mapLines) throws JSONException {
         String jsonSource = "";
@@ -23,8 +26,13 @@ public class MapReader {
         JSONObject bs = m.getJSONObject("buildings");
         JSONObject us = m.getJSONObject("units");
         JSONArray terrain = m.getJSONArray("terrain");
-        JSONArray buildingPos = m.getJSONArray("buildingPos");
+        JSONArray startingBuildingPos = m.getJSONArray("startingBuildingPos");
 
+
+        /* Make a fake player list for now */
+        List<Player> playerList = new ArrayList<Player>();
+        for (Integer i = 0; i < players; ++i)
+            playerList.add(new Player("Player " + i));
 
         /* Fill in a HashMap for look-up */
         HashMap<Character, JSONObject> fields = new HashMap<Character, JSONObject>();
@@ -69,26 +77,11 @@ public class MapReader {
             units.put(key.charAt(0), new MapReader.UnitGetter().apply(us.getJSONObject(key)));
         }
 
+
         List<List<GameField>> grid = MapReader.listifyJSONArray(new MapReader.TerrainGetter(fields), terrain);
-        List<List<Building>> buildingGrid = MapReader.listifyJSONArray(new MapReader.BuildingGetter(buildings), buildingPos);
+        //List<List<Building>> buildingGrid = MapReader.listifyJSONArray(new MapReader.BuildingGetter(buildings), buildingPos);
 
-        Integer gSize = -1;
-
-        for (List<GameField> x : grid)
-            if (x.size() > gSize)
-                gSize = x.size();
-
-        JSONArray starting = m.getJSONArray("starting");
-
-        /* Fill out the grid with buildings */
-        for (Integer height = 0; height < grid.size(); height++) {
-            for (Integer width = 0; width < gSize; width++) {
-                GameField gf = grid.get(height).get(width);
-
-                if (buildingGrid.get(height).get(width) != null)
-                    gf.setBuilding(buildingGrid.get(height).get(width));
-            }
-        }
+        MapReader.setBuildings(grid, playerList, buildingsInfo, startingBuildingPos);
 
         return new GameMap(grid, units, buildingsInfo, fieldsInfo);
 
@@ -113,6 +106,35 @@ public class MapReader {
             v.add(map(f, ys));
 
         return v;
+    }
+
+    private static void setBuildings(List<List<GameField>> grid, List<Player> players,
+                                     HashMap<Character, Building> buildings, JSONArray posInfo) throws JSONException {
+        Log.d(TAG, "Running setBuildings");
+        for (Integer i = 0; i < posInfo.length(); ++i) {
+            Log.d(TAG, "Grabbing info for building number " + i);
+            JSONObject buildingInfo = posInfo.getJSONObject(i);
+            Building building = buildings.get(buildingInfo.getString("building").charAt(0));
+            Integer playerOwner = buildingInfo.getInt("owner");
+            Integer posX = buildingInfo.getInt("posX");
+            Integer posY = buildingInfo.getInt("posY");
+            Log.d(TAG, "Cast all the values into Java types for building " + i);
+
+            /* TODO proper choice of player */
+            if (playerOwner == 0)
+                building.setOwner(new Player("Gaia"));
+            else
+                building.setOwner(players.get(playerOwner - 1));
+            Log.d(TAG, "Post setting owner.");
+
+            Log.d(TAG, "Grabbing GameField " + new Position(posX, posY));
+            GameField gf = grid.get(posY).get(posX);
+            gf.setBuilding(building);
+
+
+        }
+        Log.d(TAG, "Leaving setBuildings");
+
     }
 
     private static class BuildingGetter implements FuncEx<Character, Building, JSONException> {
@@ -168,6 +190,7 @@ public class MapReader {
 
         }
     }
+
 
     private static <I, O, E extends Exception> List<O> map(FuncEx<I, O, E> f, List<I> ls) throws E {
         List<O> os = new ArrayList<O>();
