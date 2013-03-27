@@ -337,7 +337,13 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
         }
 
     	// field names
-        info.add(field.getFieldName() + (field.hostsBuilding() ? " - " + field.getBuilding().getBuildingName() : ""));
+        if (field.hostsBuilding()) {
+            Building building = field.getBuilding();
+            String bLine = field.getFieldName() + " - " + building.getBuildingName();
+
+            info.add(bLine + building.hasOwner() ? " ~ " + building.getOwner().getName() : "");
+        }
+
         // field stats
         info.add("Attack: " + field.getAttackModifier() +
         		" Defense: " + field.getDefenseModifier() +
