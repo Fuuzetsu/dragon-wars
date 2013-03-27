@@ -128,7 +128,7 @@ public class MapReader {
             Log.d(TAG, "Post setting owner.");
 
             Log.d(TAG, "Grabbing GameField " + new Position(posX, posY));
-            GameField gf = grid.get(posY).get(posX);
+            GameField gf = grid.get(posX).get(posY);
             gf.setBuilding(building);
 
         }
