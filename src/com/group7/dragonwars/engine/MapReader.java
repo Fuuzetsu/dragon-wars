@@ -114,7 +114,7 @@ public class MapReader {
             Building building = buildings.get(buildingInfo.getString("building").charAt(0));
             Integer playerOwner = buildingInfo.getInteger("owner");
             Integer posX = buildingInfo.getInteger("posX");
-            Integer posX = buildingInfo.getInteger("posY");
+            Integer posY = buildingInfo.getInteger("posY");
 
             /* TODO proper choice of player */
             if (playerOwner == 0)
