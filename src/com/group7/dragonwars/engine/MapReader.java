@@ -76,25 +76,9 @@ public class MapReader {
 
 
         List<List<GameField>> grid = MapReader.listifyJSONArray(new MapReader.TerrainGetter(fields), terrain);
-        List<List<Building>> buildingGrid = MapReader.listifyJSONArray(new MapReader.BuildingGetter(buildings), buildingPos);
+        //List<List<Building>> buildingGrid = MapReader.listifyJSONArray(new MapReader.BuildingGetter(buildings), buildingPos);
 
-        Integer gSize = -1;
-
-        for (List<GameField> x : grid)
-            if (x.size() > gSize)
-                gSize = x.size();
-
-        JSONArray starting = m.getJSONArray("starting");
-
-        /* Fill out the grid with buildings */
-        for (Integer height = 0; height < grid.size(); height++) {
-            for (Integer width = 0; width < gSize; width++) {
-                GameField gf = grid.get(height).get(width);
-
-                if (buildingGrid.get(height).get(width) != null)
-                    gf.setBuilding(buildingGrid.get(height).get(width));
-            }
-        }
+        MapReader.setBuildings(grid, playerList, buildings, startingBuildingPos);
 
         return new GameMap(grid, units, buildingsInfo, fieldsInfo);
 
