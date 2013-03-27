@@ -112,18 +112,22 @@ public class MapReader {
                                      HashMap<Character, Building> buildings, JSONArray posInfo) throws JSONException {
         Log.d(TAG, "Running setBuildings");
         for (Integer i = 0; i < posInfo.length(); ++i) {
+            Log.d(TAG, "Grabbing info for building number " + i);
             JSONObject buildingInfo = posInfo.getJSONObject(i);
             Building building = buildings.get(buildingInfo.getString("building").charAt(0));
             Integer playerOwner = buildingInfo.getInt("owner");
             Integer posX = buildingInfo.getInt("posX");
             Integer posY = buildingInfo.getInt("posY");
+            Log.d(TAG, "Cast all the values into Java types for building " + i);
 
             /* TODO proper choice of player */
             if (playerOwner == 0)
                 building.setOwner(new Player("Gaia"));
             else
                 building.setOwner(players.get(playerOwner - 1));
+            Log.d(TAG, "Post setting owner.");
 
+            Log.d(TAG, "Grabbing GameField " + new Position(posX, posY));
             GameField gf = grid.get(posY).get(posX);
             gf.setBuilding(building);
 
