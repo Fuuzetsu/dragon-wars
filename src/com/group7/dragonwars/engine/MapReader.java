@@ -105,7 +105,7 @@ public class MapReader {
         return v;
     }
 
-    private static void setBuildings(List<List<Gamefield>> grid, List<Player> players,
+    private static void setBuildings(List<List<GameField>> grid, List<Player> players,
                                      HashMap<Character, Building> buildings, JSONArray posInfo) throws JSONException {
         Log.d(TAG, "Running setBuildings");
         for (Integer i = 0; i < posInfo.size(); ++i) {
