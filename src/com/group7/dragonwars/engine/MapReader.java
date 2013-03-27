@@ -111,7 +111,7 @@ public class MapReader {
     private static void setBuildings(List<List<GameField>> grid, List<Player> players,
                                      HashMap<Character, Building> buildings, JSONArray posInfo) throws JSONException {
         Log.d(TAG, "Running setBuildings");
-        for (Integer i = 0; i < posInfo.size(); ++i) {
+        for (Integer i = 0; i < posInfo.length(); ++i) {
             JSONObject buildingInfo = posInfo.getJSONObject(i);
             Building building = buildings.get(buildingInfo.getString("building").charAt(0));
             Integer playerOwner = buildingInfo.getInt("owner");
