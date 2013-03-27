@@ -6,6 +6,7 @@ import java.util.*;
 import org.json.*;
 
 public class MapReader {
+    final private static String TAG = "MapReader";
 
     public static GameMap readMap(List<String> mapLines) throws JSONException {
         String jsonSource = "";
