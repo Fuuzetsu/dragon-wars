@@ -78,7 +78,7 @@ public class MapReader {
         List<List<GameField>> grid = MapReader.listifyJSONArray(new MapReader.TerrainGetter(fields), terrain);
         //List<List<Building>> buildingGrid = MapReader.listifyJSONArray(new MapReader.BuildingGetter(buildings), buildingPos);
 
-        MapReader.setBuildings(grid, playerList, buildings, startingBuildingPos);
+        MapReader.setBuildings(grid, playerList, buildingsInfo, startingBuildingPos);
 
         return new GameMap(grid, units, buildingsInfo, fieldsInfo);
 
