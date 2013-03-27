@@ -108,8 +108,8 @@
          "owner": 2
         },
         {"building" : "C",
-         "posX": 2,
-         "posY": 5,
+         "posX": 5,
+         "posY": 2,
          "owner": 2
         }
     ]
