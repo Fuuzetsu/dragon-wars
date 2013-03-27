@@ -2,8 +2,10 @@ package com.group7.dragonwars.engine;
 
 /* Generates a GameField based on a flat text file. Test solution. */
 
+import android.util.Log;
 import java.util.*;
 import org.json.*;
+
 
 public class MapReader {
     final private static String TAG = "MapReader";
