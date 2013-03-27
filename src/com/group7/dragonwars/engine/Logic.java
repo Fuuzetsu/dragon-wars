@@ -1,17 +1,54 @@
 package com.group7.dragonwars.engine;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Set;
+import java.util.*;
+
+import android.util.Log;
 
 /* Class containing things like damage calculation and path finding. */
 public class Logic {
 
+    public final static String TAG = "Logic";
+
     public List<Position> findPath(GameMap map, Unit unit, Position destination) {
         return AStar(map, unit, destination);
+    }
+
+    public List<Position> destinations(GameMap map, Unit unit) {
+        List<Position> checked = new ArrayList<Position>();
+
+        List<Position> mapPositions = new ArrayList<Position>();
+        for (int x = 0; x < map.getWidth(); ++x)
+            for (int y = 0; y < map.getHeight(); y++)
+                mapPositions.add(new Position(x, y));
+
+        for (Position p : mapPositions) {
+            Boolean c = false;
+
+            for (Position x : checked)
+                if (p.equals(x)) {
+                    c = true;
+                    break;
+                }
+
+            if (!map.isValidField(p) || c)
+                continue;
+
+            List<Position> path = AStar(map, unit, p);
+
+            for (Position y : path){
+                Boolean b = false;
+                for (Position x : checked)
+                    if (y.equals(x)) {
+                        b = true;
+                        break;
+                    }
+
+                if (!b)
+                    checked.add(y);
+
+            }
+        }
+        return checked;
     }
 
     public Pair<Double, Double> calculateDamage(GameMap map, Unit attacker,
@@ -67,12 +104,12 @@ public class Logic {
     }
 
     private List<Position> AStar(GameMap map, Unit unit, Position destination) {
-        if (!map.isValidField(destination)) {
-            List<Position> dummy = new ArrayList<Position>(0);
-            return dummy;
-        }
+    	// setting path to true will cause the original behaviour, the path between unit and destination will be returned
+    	// otherwise destination is ignored and the list of possible destinations for unit (based on the unit's maxMovement) is instead returned
+        if (!map.isValidField(destination))
+            return new ArrayList<Position>(0);
 
-        Set<Position> expanded = new HashSet<Position>();
+        List<Position> expanded = new ArrayList<Position>();
         Comparator<Pair<List<Position>, Double>> comp = new AStarComparator();
         PriorityQueue<Pair<List<Position>, Double>> queue = new PriorityQueue<Pair<List<Position>, Double>>(
             10, comp);
@@ -84,16 +121,20 @@ public class Logic {
         while (queue.size() != 0) {
             Pair<List<Position>, Double> posP = queue.poll();
             List<Position> poss = posP.getLeft();
-            /*
-             * String debug = "[ "; for (Position p : poss) { debug +=
-             * p.toString() + " "; } debug += "]"; System.out.println(debug);
-             */
+
             Position lastPos = poss.get(poss.size() - 1);
 
             if (lastPos.equals(destination))
                 return poss;
 
-            if (expanded.contains(lastPos))
+            Boolean c = false;
+            for (Position x : expanded)
+                if (lastPos.equals(x)) {
+                    c = true;
+                    break;
+                }
+
+            if (c)
                 continue;
 
             expanded.add(lastPos);
@@ -102,18 +143,21 @@ public class Logic {
             Integer h = getManhattanDistance(lastPos, destination);
             /* Get cost */
             Double g = getMovementCost(map, unit, lastPos);
-            Double pathCost = h + g + posP.getRight();
+            Double pathCost = posP.getRight() + h * g;
 
             if (pathCost > unit.getRemainingMovement())
-                continue;
+            	continue;
 
             for (Position p : getAdjacentPositions(lastPos)) {
                 if (map.isValidField(p) && map.getField(p).doesAcceptUnit(unit)) {
-                    if (!map.getField(p).hostsUnit()) {
-                        Player op = map.getField(p).getUnit().getOwner();
+                    if (map.getField(p).hostsUnit()) {
+                        /* Assume all units are from a different player */
+                        /* TODO fix this */
+                        // Player op = map.getField(p).getUnit().getOwner();
 
-                        if (!op.equals(unit.getOwner()))
-                            continue;
+                        // if (!op.equals(unit.getOwner()))
+                        //     continue;
+                        continue;
                     }
 
                     List<Position> plan = new ArrayList<Position>(poss);
@@ -123,8 +167,7 @@ public class Logic {
             }
         }
 
-        List<Position> dummy = new ArrayList<Position>();
-        return dummy; /* Search failed */
+        return new ArrayList<Position>(); /* Search failed */
     }
 
     private List<Position> getAdjacentPositions(Position pos) {
@@ -153,7 +196,10 @@ public class Logic {
     private Double getMovementCost(GameMap map, Unit unit, Position origin) {
         /* g(x) for search */
         // flying units ignore this; always 1
-        return (100 / map.getField(origin).getMovementModifier());
+        if (unit.isFlying())
+            return 1.0;
+
+        return map.getField(origin).getMovementModifier();
     }
 
     public Set<Position> getAttackableUnitPositions(GameMap map, Unit unit) {

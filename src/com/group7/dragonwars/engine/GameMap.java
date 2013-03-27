@@ -5,17 +5,22 @@ import java.util.*;
 public class GameMap implements Iterable<GameField> {
 
     List<List<GameField>> fields;
-	HashMap<Character, Unit> units;
-	HashMap<Character, Building> buildings;
-	HashMap<Character, GameField> gameFields;
+    HashMap<Character, Unit> units;
+    HashMap<Character, Building> buildings;
+    HashMap<Character, GameField> gameFields;
 
 
     public GameMap(List<List<GameField>> fields, HashMap<Character, Unit> units,
-				   HashMap<Character, Building> buildings, HashMap<Character, GameField> gameFields) {
+                   HashMap<Character, Building> buildings, HashMap<Character, GameField> gameFields) {
         this.fields = fields;
-		this.units = units;
-		this.buildings = buildings;
-		this.gameFields = gameFields;
+        this.units = units;
+        this.buildings = buildings;
+        this.gameFields = gameFields;
+
+        Unit u = this.units.get('S'); /* TODO remove after test */
+        Position p = new Position(2, 3);
+        u.setPosition(p);
+        getField(p).setUnit(u);
     }
 
     public Iterator<GameField> iterator() {
@@ -34,11 +39,11 @@ public class GameMap implements Iterable<GameField> {
     }
 
     public Integer getWidth() {
-        return fields.size();
+        return fields.get(0).size();
     }
 
     public Integer getHeight() {
-        return fields.get(0).size();
+        return fields.size();
     }
 
     public GameField getField(Position position) {
@@ -46,7 +51,7 @@ public class GameMap implements Iterable<GameField> {
     }
 
     public GameField getField(Integer x, Integer y) {
-        return fields.get(x).get(y);
+        return fields.get(y).get(x);
     }
 
     public Boolean isValidField(Position position) {
@@ -62,7 +67,7 @@ public class GameMap implements Iterable<GameField> {
             return false;
         }
 
-        if (x >= this.fields.size() || y >= this.fields.get(0).size()) {
+        if (x >= this.getWidth() || y >= this.getHeight()) {
             return false;
         }
 
@@ -100,15 +105,15 @@ public class GameMap implements Iterable<GameField> {
         return m;
     }
 
-	public HashMap<Character, Unit> getUnitMap() {
-		return this.units;
-	}
+    public HashMap<Character, Unit> getUnitMap() {
+        return this.units;
+    }
 
-	public HashMap<Character, Building> getBuildingMap() {
-		return this.buildings;
-	}
+    public HashMap<Character, Building> getBuildingMap() {
+        return this.buildings;
+    }
 
-	public HashMap<Character, GameField> getGameFieldMap() {
-		return this.gameFields;
-	}
+    public HashMap<Character, GameField> getGameFieldMap() {
+        return this.gameFields;
+    }
 }

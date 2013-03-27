@@ -23,7 +23,7 @@
             "movementModifier": 1.0,
             "attackModifier": 0.0,
             "defenseModifier": 0.0,
-            "accessible": true,
+            "accessible": false,
             "flightOnly": true
         }
     },
@@ -43,7 +43,7 @@
         },
         "D": {
             "name": "Dragon",
-            "file": "dragon",
+            "file": "small_dragon",
             "dir": "raw",
             "package": "com.group7.dragonwars",
             "ranged": true,

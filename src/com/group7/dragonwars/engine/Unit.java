@@ -1,5 +1,7 @@
 package com.group7.dragonwars.engine;
 
+import java.util.LinkedList;
+
 public class Unit {
 
     private String name;
@@ -9,14 +11,14 @@ public class Unit {
     private Position position;
     private Boolean hasFinishedTurn = false;
     private Player owner;
-	private Boolean isFlying;
-	private String spriteLocation, spriteDir, spritePack;
+    private Boolean isFlying;
+    private String spriteLocation, spriteDir, spritePack;
 
 
     public Unit(String name, Double maxHealth, Integer maxMovement,
                 Double attack, Double meleeDefense, Double rangeDefense,
-				Boolean isFlying, String spriteLocation,
-				String spriteDir, String spritePack) {
+                Boolean isFlying, String spriteLocation,
+                String spriteDir, String spritePack) {
         this.name = name;
 
         this.maxHealth = maxHealth;
@@ -29,10 +31,10 @@ public class Unit {
         this.meleeDefense = meleeDefense;
         this.rangeDefense = rangeDefense;
 
-		this.isFlying = isFlying;
-		this.spriteLocation = spriteLocation;
-		this.spriteDir = spriteDir;
-		this.spritePack = spritePack;
+        this.isFlying = isFlying;
+        this.spriteLocation = spriteLocation;
+        this.spriteDir = spriteDir;
+        this.spritePack = spritePack;
     }
 
     public Boolean isDead() {
@@ -105,23 +107,22 @@ public class Unit {
     }
 
     public Boolean isFlying() {
-        return this.isFlying();
+        return this.isFlying;
     }
 
     public String getSpriteLocation() {
         return this.spriteLocation;
     }
 
-	public String getSpriteDir() {
-		return this.spriteDir;
-	}
+    public String getSpriteDir() {
+        return this.spriteDir;
+    }
 
-	public String getSpritePack() {
-		return this.spritePack;
-	}
+    public String getSpritePack() {
+        return this.spritePack;
+    }
 
-	public String getUnitName() {
-		return this.name;
-	}
-
+    public String getUnitName() {
+        return this.name;
+    }
 }
