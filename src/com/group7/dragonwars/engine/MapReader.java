@@ -114,9 +114,9 @@ public class MapReader {
         for (Integer i = 0; i < posInfo.size(); ++i) {
             JSONObject buildingInfo = posInfo.getJSONObject(i);
             Building building = buildings.get(buildingInfo.getString("building").charAt(0));
-            Integer playerOwner = buildingInfo.getInteger("owner");
-            Integer posX = buildingInfo.getInteger("posX");
-            Integer posY = buildingInfo.getInteger("posY");
+            Integer playerOwner = buildingInfo.getInt("owner");
+            Integer posX = buildingInfo.getInt("posX");
+            Integer posY = buildingInfo.getInt("posY");
 
             /* TODO proper choice of player */
             if (playerOwner == 0)
