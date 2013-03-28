@@ -141,6 +141,7 @@ public class MapReader {
             }
 
             GameField gf = grid.get(posY).get(posX);
+            building.setPosition(new Position(posX, posY));
             gf.setBuilding(building);
 
 

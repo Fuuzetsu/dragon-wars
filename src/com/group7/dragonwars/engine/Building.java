@@ -12,6 +12,7 @@ public class Building {
     private Player lastCapturer;
     private String spriteLocation, spriteDir, spritePack;
     private List<Unit> producableUnits = new ArrayList<Unit>();
+    private Position position;
 
 
     public Building(String name, Integer captureDifficulty, Double attackBonus,
@@ -132,5 +133,13 @@ public class Building {
 
     public String getSpritePack() {
         return this.spritePack;
+    }
+
+    public Position getPosition() {
+        return this.position;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
     }
 }
