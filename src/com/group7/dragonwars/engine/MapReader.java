@@ -208,9 +208,11 @@ public class MapReader {
             Double attackBonus = f.getDouble("attackBonus");
             Double defenseBonus = f.getDouble("defenseBonus");
             Boolean goalBuilding = f.getBoolean("goalBuilding");
+            Integer captureWorth = f.getInt("captureWorth");
 
             return new Building(name, captureDifficulty, attackBonus,
-                                defenseBonus, goalBuilding, file, dir, pack);
+                                defenseBonus, goalBuilding, captureWorth,
+                                file, dir, pack);
 
         }
     }
@@ -228,14 +230,15 @@ public class MapReader {
             Double attack = f.getDouble("attack");
             Double meleeDefense = f.getDouble("meleeDefense");
             Double rangeDefense = f.getDouble("rangeDefense");
+            Integer productionCost = f.getInt("productionCost");
 
             if (f.getBoolean("ranged"))
                 return new RangedUnit(name, maxHealth, maxMovement, attack, meleeDefense,
                                       rangeDefense, f.getDouble("minRange"), f.getDouble("maxRange"),
-                                      flying, file, dir, pack);
+                                      flying, productionCost, file, dir, pack);
 
             return new Unit(name, maxHealth, maxMovement, attack, meleeDefense,
-                            rangeDefense, flying, file, dir, pack);
+                            rangeDefense, flying, productionCost, file, dir, pack);
 
         }
     }

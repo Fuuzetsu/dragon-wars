@@ -13,11 +13,11 @@ public class Unit {
     private Player owner;
     private Boolean isFlying;
     private String spriteLocation, spriteDir, spritePack;
-
+    private Integer productionCost;
 
     public Unit(String name, Double maxHealth, Integer maxMovement,
                 Double attack, Double meleeDefense, Double rangeDefense,
-                Boolean isFlying, String spriteLocation,
+                Boolean isFlying, Integer productionCost, String spriteLocation,
                 String spriteDir, String spritePack) {
         this.name = name;
 
@@ -52,6 +52,7 @@ public class Unit {
         this.rangeDefense = unit.getRangeDefense();
 
         this.isFlying = unit.isFlying();
+        this.productionCost = unit.getProductionCost();
 
         this.spriteLocation = unit.getSpriteLocation();
         this.spriteDir = unit.getSpriteDir();
@@ -153,5 +154,9 @@ public class Unit {
 
         this.movement -= amount;
         return true;
+    }
+
+    public Integer getProductionCost() {
+        return this.productionCost;
     }
 }
