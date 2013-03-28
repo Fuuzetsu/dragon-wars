@@ -175,23 +175,8 @@ package com.group7.dragonwars.engine {
             -void setBuildings(List<List<GameField>>, List<Player>, HashMap<Character, Unit>, HashMap<Character, Building>, JSONArray) {static}
             -void spawnUnits(List<List<GameField>>, List<Player>, HashMap<Character, Unit>, JSONArray) {static}
             -List<O> map(FuncEx<I, O, E extends Exception>, List<I>) throws E {static}
-            }
-
-            class BuildingGetter {
-            -HashMap<Character, JSONObject> map
-            +BuildingGetter BuildingGetter(<HashMap<Character, JSONObject>)
-            +Building apply(Character) throws JSONException
       }
 
-      class TerrainGetter {
-            -HashMap<Character, JSONObject> map
-            +TerrainGetter TerrainGetter(<HashMap<Character, JSONObject>)
-            +GameField apply(Character) throws JSONException
-      }
-
-      class UnitGetter {
-            +Unit apply(JSONObject) throws JSONException
-      }
 
       interface FuncEx<I, O, E extends Exception> {
             +O apply(I) throws E
@@ -203,6 +188,28 @@ package com.group7.dragonwars.engine {
             +Pair<L, R>
             +L getLeft()
             +R getRight()
+      }
+
+      namespace MapReader {
+            com.group7.dragonwars.engine.MapReader o-- BuildingGetter
+            com.group7.dragonwars.engine.MapReader o-- TerrainGetter
+            com.group7.dragonwars.engine.MapReader o-- UnitGetter
+      
+            class BuildingGetter {
+                  -HashMap<Character, JSONObject> map
+                  +BuildingGetter BuildingGetter(<HashMap<Character, JSONObject>)
+                  +Building apply(Character) throws JSONException
+            }
+
+            class TerrainGetter {
+                  -HashMap<Character, JSONObject> map
+                  +TerrainGetter TerrainGetter(<HashMap<Character, JSONObject>)
+                  +GameField apply(Character) throws JSONException
+            }
+
+            class UnitGetter {
+                  +Unit apply(JSONObject) throws JSONException
+            }
       }
 
       class Unit {	 
