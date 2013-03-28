@@ -30,7 +30,13 @@ package com.group7.dragonwars.engine.GoalArbitration {
       MoveTo o-- com.group7.dragonwars.engine.Unit
       MoveTo <|-- AtomicAction      
       Node o-- AtomicAction
-      class StateTree
+      StateTree o-- com.group7.dragonwars.engine.GameState
+      StateTree o-- com.group7.dragonwars.engine.Logic
+      StateTree o-- com.group7.dragonwars.engine.Pair
+      StateTree o-- com.group7.dragonwars.engine.Player
+      StateTree o-- com.group7.dragonwars.engine.Position
+      StateTree o-- com.group7.dragonwars.engine.Unit
+      StateTree o-- AtomicAction
 
       abstract class AtomicAction {
             -float actionValue
@@ -75,6 +81,17 @@ package com.group7.dragonwars.engine.GoalArbitration {
             +void setSize(int)
             +int getSize()
             +boolean isFull()
+      }
+
+      class StateTree {
+            -int maxSize
+            -GameState gameState
+            -Node base
+            -Player stateTreeOwner
+            -List<AtomicAction>
+            +StateTree(GameState, int, Player)
+            -void Explore()
+            +List<AtomicAction> getActions()
       }
 
       
