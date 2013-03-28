@@ -42,7 +42,7 @@ class GameState {
       
 }
 
-class Map {
+class GameMap {
       -GameField[][] fields
       +GameField getField(Position)
       +Boolean isInsantiated()
@@ -70,7 +70,7 @@ class Position {
 }
 
 class MapReader {
-      +Map readMap(File)
+      +GameMap readMap(File)
 }
 
 class Pair {
@@ -113,17 +113,17 @@ abstract class Unit {
 }
 
 class Logic {
-      +List<Position> findPath(Map, Unit, Position)
-      +Pair<Double, Double> calculateDamage(Map, Unit, Unit)
-      +Double calculateCounterDamage(Map, Unit, Unit)
-      -Double calculateTheoreticalCounterDamage(Map, Unit, Unit, Double)
-      -List<Position> AStar(Map, Unit, Position)
+      +List<Position> findPath(GameMap, Unit, Position)
+      +Pair<Double, Double> calculateDamage(GameMap, Unit, Unit)
+      +Double calculateCounterDamage(GameMap, Unit, Unit)
+      -Double calculateTheoreticalCounterDamage(GameMap, Unit, Unit, Double)
+      -List<Position> AStar(GameMap, Unit, Position)
       -List<Position> getAdjacentPositions(Position)
       -class AStarComparator
-      -Double getMovementCost(Map, Unit, Position)
-      +Set<Position> getAttackableUnitPositions(Map, Unit)
-      -Set<Position> getAttackableFields(Map, Unit)
-      -Set<Position> getPositionsInRange(Map, Position, Double)
+      -Double getMovementCost(GameMap, Unit, Position)
+      +Set<Position> getAttackableUnitPositions(GameMap, Unit)
+      -Set<Position> getAttackableFields(GameMap, Unit)
+      -Set<Position> getPositionsInRange(GameMap, Position, Double)
       -Integer getManhattanDistance(Position, Position)
       -Pair<Integer, Integer> getDistanceAway(Position, Position)
       
