@@ -124,7 +124,7 @@ public class MapReader {
             Integer posY = buildingInfo.getInt("posY");
             JSONArray prod = buildingInfo.getJSONArray("produces");
 
-            for (Integer j = 0; i < prod.length(); ++i) {
+            for (Integer j = 0; j < prod.length(); ++j) {
                 Unit unit = units.get(prod.getString(j).charAt(0));
                 building.addProducableUnit(unit);
             }
@@ -135,15 +135,11 @@ public class MapReader {
             if (playerOwner == 0)
                 building.setOwner(new Player("Gaia"));
             else {
-                Log.d(TAG, "Getting player " + playerOwner);
                 Player p = players.get(playerOwner - 1);
-                Log.d(TAG, "That player has a name " + p);
                 building.setOwner(p);
                 p.addBuilding(building);
             }
-            Log.d(TAG, "Post setting owner.");
 
-            Log.d(TAG, "Grabbing GameField " + new Position(posX, posY));
             GameField gf = grid.get(posY).get(posX);
             gf.setBuilding(building);
 

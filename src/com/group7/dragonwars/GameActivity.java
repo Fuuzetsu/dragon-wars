@@ -343,8 +343,11 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
             bLine += building.hasOwner() ? " ~ " + building.getOwner().getName() : "";
             info.add(bLine);
 
-            for (Unit u : building.getProducableUnits())
-                Log.d(TAG, "I can produce " + u);
+            if (building.canProduceUnits())
+                for (Unit u : building.getProducableUnits())
+                    info.add("I can produce " + u);
+            else
+                info.add("I can't produce anything.");
         }
 
         // field stats

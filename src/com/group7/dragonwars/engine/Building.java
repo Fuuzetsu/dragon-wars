@@ -53,12 +53,16 @@ public class Building {
         return !this.producableUnits.isEmpty();
     }
 
-    public Boolean addProducableUnit(Unit unit) {
-        return this.producableUnits.add(unit);
+    public void addProducableUnit(Unit unit) {
+        this.producableUnits.add(unit);
     }
 
     public List<Unit> getProducableUnits() {
         return this.producableUnits;
+    }
+
+    public String toString() {
+        return this.buildingName;
     }
 
     public Player getLastCapturer() {
