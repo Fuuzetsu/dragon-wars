@@ -252,21 +252,29 @@ class Building {
       +Integer getCaptureWorth()
 }
 
-abstract class GameField {
+class GameField {
       -String fieldName
       -Unit hostedUnit
       -Building hostedBuilding
       -Double movementModifier
       -Double defenseModifier
       -Double attackModifier
+      -Boolean flightOnly
+      -Boolean accessible
+      +GameField(String, Double, Double, Double, Boolean, Boolean, String, String, String)
+      +Boolean doesAcceptUnit(Unit)
       +Double getAttackModifier()
       +Double getMovementModifier()
       +Boolean hostsUnit()
       +Boolean hostsBuilding()
       +Unit getUnit()
       +Building getBuilding()
-      +Unit setUnit()
-      +Building setBuilding()
+      +Unit setUnit(Unit)
+      +String getFieldName()
+      +Building setBuilding(Building)
+      +String getSpriteLocation()
+      +String getSpriteDir()
+      +String getSpritePack()
 }
 
 abstract class RangedUnit {
