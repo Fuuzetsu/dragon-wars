@@ -10,20 +10,6 @@ public class GameState {
     List<Player> players = new ArrayList<Player>();
     Integer turns = 0;
 
-    public static void main(String[] argv) {
-        if (argv.length == 1) {
-            System.exit(1); // We don't need this now anyway, I'll get rid of it later
-            //GameMap m = MapReader.readMap(GameState.readFile(argv[0]));
-            GameMap m = null;
-            Logic l = new Logic();
-            GameState game = new GameState(m, l);
-            game.play();
-        } else {
-            System.err.println("USAGE: java Game <mapName>");
-            System.exit(1);
-        }
-    }
-
     public GameState(GameMap map, Logic logic) {
         this.map = map;
         this.logic = logic;
@@ -34,10 +20,6 @@ public class GameState {
         players.add(new Player("Yukari"));
     }
 
-    private static void printMap(GameMap m) {
-        System.out.println(m);
-        System.out.println(m.dumpMobMap());
-    }
 
     private static List<String> readFile(String filename) {
         List<String> text = new ArrayList<String>();
@@ -59,29 +41,6 @@ public class GameState {
         }
 
         return text;
-    }
-
-    public void play() {
-        return;
-        // Position p = new Position(0, 0);
-        // Dragon d = new Dragon();
-        // d.setPosition(p);
-        // map.getField(p).setUnit(d);
-        // printMap(map);
-        // // System.out.println(logic.getAttackableUnits(map, d));
-        // Position dest = new Position(4, 4);
-        // System.out.println(String.format("Getting a %s from %s to %s", d,
-        //                                  d.getPosition(), dest));
-        // System.out.println(logic.findPath(map, d, dest));
-        // int playersInGame = 0;
-
-        // for (Player player : this.players)
-        //     if (!player.hasLost())
-        //         playersInGame += 1;
-
-        // if (playersInGame < 2)
-        //     System.exit(0); /* Announce winner etc. */
-
     }
 
     public void attack(Unit attacker, Unit defender) {
