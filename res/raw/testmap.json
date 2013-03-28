@@ -67,6 +67,7 @@
             "attackBonus": 3.0,
             "defenseBonus": 4.0,
             "goalBuilding": true
+            "produces": ["D", "S"]
         },
         "V": {
             "name": "Village",
@@ -77,6 +78,7 @@
             "attackBonus": 1.0,
             "defenseBonus": 1.0,
             "goalBuilding": false
+            "produces": []
         }
     },
     "terrain": [
