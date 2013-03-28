@@ -1,5 +1,7 @@
 package com.group7.dragonwars.engine;
 
+import java.util.*;
+
 public class Building {
 
     private String buildingName;
@@ -9,6 +11,9 @@ public class Building {
     private Boolean goalBuilding;
     private Player lastCapturer;
     private String spriteLocation, spriteDir, spritePack;
+    private List<Unit> producableUnits = new ArrayList<Unit>();
+    private Position position;
+
 
     public Building(String name, Integer captureDifficulty, Double attackBonus,
                     Double defenseBonus, Boolean goalBuilding, String spriteLocation,
@@ -26,6 +31,7 @@ public class Building {
         this.spriteLocation = spriteLocation;
         this.spriteDir = spriteDir;
         this.spritePack = spritePack;
+
     }
 
     public Building(Building building) {
@@ -42,6 +48,22 @@ public class Building {
         this.spriteLocation = building.getSpriteLocation();
         this.spriteDir = building.getSpriteDir();
         this.spritePack = building.getSpritePack();
+    }
+
+    public Boolean canProduceUnits() {
+        return !this.producableUnits.isEmpty();
+    }
+
+    public void addProducableUnit(Unit unit) {
+        this.producableUnits.add(unit);
+    }
+
+    public List<Unit> getProducableUnits() {
+        return this.producableUnits;
+    }
+
+    public String toString() {
+        return this.buildingName;
     }
 
     public Player getLastCapturer() {
@@ -111,5 +133,13 @@ public class Building {
 
     public String getSpritePack() {
         return this.spritePack;
+    }
+
+    public Position getPosition() {
+        return this.position;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
     }
 }

@@ -88,29 +88,34 @@
     ],
     "startingBuildingPos": [
         {"building": "C",
-         "posX": 3,
+         "posX": 4,
          "posY": 1,
-         "owner": 1
+         "owner": 1,
+         "produces": ["S"]
         },
         {"building": "V",
          "posX": 3,
          "posY": 2,
-         "owner": 2
+         "owner": 2,
+         "produces": ["D", "S"]
         },
         {"building": "C",
          "posX": 3,
          "posY": 3,
-         "owner": 0
+         "owner": 0,
+         "produces": []
         },
         {"building": "C",
          "posX": 2,
          "posY": 2,
-         "owner": 2
+         "owner": 2,
+         "produces": ["D", "S"]
         },
         {"building": "C",
          "posX": 5,
          "posY": 2,
-         "owner": 2
+         "owner": 2,
+         "produces": ["S"]
         }
     ],
     "startingUnitPos": [
