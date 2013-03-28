@@ -39,7 +39,8 @@
             "maxMovement": 5,
             "attack": 2.0,
             "meleeDefense": 1.0,
-            "rangeDefense": 2.0
+            "rangeDefense": 2.0,
+            "productCost": 5,
         },
         "D": {
             "name": "Dragon",
@@ -54,7 +55,8 @@
             "maxMovement": 7,
             "attack": 3.0,
             "meleeDefense": 2.0,
-            "rangeDefense": 2.0
+            "rangeDefense": 2.0,
+            "productCost": 7
         }
     },
     "buildings": {
