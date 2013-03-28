@@ -32,6 +32,8 @@ public class Unit {
         this.rangeDefense = rangeDefense;
 
         this.isFlying = isFlying;
+        this.productionCost = productionCost;
+
         this.spriteLocation = spriteLocation;
         this.spriteDir = spriteDir;
         this.spritePack = spritePack;
