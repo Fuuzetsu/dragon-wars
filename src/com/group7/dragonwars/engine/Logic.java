@@ -149,13 +149,10 @@ public class Logic {
             for (Position p : getAdjacentPositions(lastPos)) {
                 if (map.isValidField(p) && map.getField(p).doesAcceptUnit(unit)) {
                     if (map.getField(p).hostsUnit()) {
-                        /* Assume all units are from a different player */
-                        /* TODO fix this */
-                        // Player op = map.getField(p).getUnit().getOwner();
+                        Player op = map.getField(p).getUnit().getOwner();
 
-                        // if (!op.equals(unit.getOwner()))
-                        //     continue;
-                        continue;
+                        if (!op.equals(unit.getOwner()))
+                            continue;
                     }
 
                     List<Position> plan = new ArrayList<Position>(poss);
