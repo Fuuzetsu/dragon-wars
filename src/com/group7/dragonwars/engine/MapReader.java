@@ -82,7 +82,7 @@ public class MapReader {
         List<List<GameField>> grid = MapReader.listifyJSONArray(new MapReader.TerrainGetter(fields), terrain);
         //List<List<Building>> buildingGrid = MapReader.listifyJSONArray(new MapReader.BuildingGetter(buildings), buildingPos);
 
-        MapReader.setBuildings(grid, playerList, buildingsInfo, startingBuildingPos);
+        MapReader.setBuildings(grid, playerList, units, buildingsInfo, startingBuildingPos);
         MapReader.spawnUnits(grid, playerList, units, startingUnitPos);
 
         return new GameMap(grid, units, buildingsInfo, fieldsInfo, playerList);
@@ -110,7 +110,7 @@ public class MapReader {
         return v;
     }
 
-    private static void setBuildings(List<List<GameField>> grid, List<Player> players,
+    private static void setBuildings(List<List<GameField>> grid, List<Player> players, HashMap<Character, Unit> units,
                                      HashMap<Character, Building> buildings, JSONArray posInfo) throws JSONException {
         Log.d(TAG, "Running setBuildings");
         Log.d(TAG, "The list of players contains " + players);
@@ -122,22 +122,26 @@ public class MapReader {
             Integer playerOwner = buildingInfo.getInt("owner");
             Integer posX = buildingInfo.getInt("posX");
             Integer posY = buildingInfo.getInt("posY");
+            JSONArray prod = buildingInfo.getJSONArray("produces");
+
+            for (Integer j = 0; j < prod.length(); ++j) {
+                Unit unit = units.get(prod.getString(j).charAt(0));
+                building.addProducableUnit(unit);
+            }
+
             Log.d(TAG, "Cast all the values into Java types for building " + i);
 
             /* TODO proper choice of player */
             if (playerOwner == 0)
                 building.setOwner(new Player("Gaia"));
             else {
-                Log.d(TAG, "Getting player " + playerOwner);
                 Player p = players.get(playerOwner - 1);
-                Log.d(TAG, "That player has a name " + p);
                 building.setOwner(p);
                 p.addBuilding(building);
             }
-            Log.d(TAG, "Post setting owner.");
 
-            Log.d(TAG, "Grabbing GameField " + new Position(posX, posY));
             GameField gf = grid.get(posY).get(posX);
+            building.setPosition(new Position(posX, posY));
             gf.setBuilding(building);
 
 
@@ -168,7 +172,7 @@ public class MapReader {
                 Player p = players.get(playerOwner - 1);
                 Log.d(TAG, "That player has a name " + p);
                 unit.setOwner(p);
-                p.addUnit(p);
+                p.addUnit(unit);
             }
             Log.d(TAG, "Post setting owner.");
             Position pos = new Position(posX, posY);

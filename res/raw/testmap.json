@@ -39,7 +39,8 @@
             "maxMovement": 5,
             "attack": 2.0,
             "meleeDefense": 1.0,
-            "rangeDefense": 2.0
+            "rangeDefense": 2.0,
+            "productCost": 5,
         },
         "D": {
             "name": "Dragon",
@@ -54,7 +55,8 @@
             "maxMovement": 7,
             "attack": 3.0,
             "meleeDefense": 2.0,
-            "rangeDefense": 2.0
+            "rangeDefense": 2.0,
+            "productCost": 7
         }
     },
     "buildings": {
@@ -88,29 +90,34 @@
     ],
     "startingBuildingPos": [
         {"building": "C",
-         "posX": 3,
+         "posX": 4,
          "posY": 1,
-         "owner": 1
+         "owner": 1,
+         "produces": ["S"]
         },
         {"building": "V",
          "posX": 3,
          "posY": 2,
-         "owner": 2
+         "owner": 2,
+         "produces": ["D", "S"]
         },
         {"building": "C",
          "posX": 3,
          "posY": 3,
-         "owner": 0
+         "owner": 0,
+         "produces": []
         },
         {"building": "C",
          "posX": 2,
          "posY": 2,
-         "owner": 2
+         "owner": 2,
+         "produces": ["D", "S"]
         },
         {"building": "C",
          "posX": 5,
          "posY": 2,
-         "owner": 2
+         "owner": 2,
+         "produces": ["S"]
         }
     ],
     "startingUnitPos": [

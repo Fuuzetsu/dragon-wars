@@ -146,4 +146,12 @@ public class Unit {
     public String getUnitName() {
         return this.name;
     }
+
+    public Boolean reduceMovement(Integer amount) {
+        if (this.movement - amount < 0)
+            return false;
+
+        this.movement -= amount;
+        return true;
+    }
 }
