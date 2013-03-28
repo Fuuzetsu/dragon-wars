@@ -17,10 +17,6 @@ public class GameMap implements Iterable<GameField> {
         this.buildings = buildings;
         this.gameFields = gameFields;
 
-        Unit u = this.units.get('S'); /* TODO remove after test */
-        Position p = new Position(2, 3);
-        u.setPosition(p);
-        getField(p).setUnit(u);
     }
 
     public Iterator<GameField> iterator() {
