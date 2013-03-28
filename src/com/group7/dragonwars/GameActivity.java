@@ -77,6 +77,9 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
     HashMap<String, HashMap<String, Bitmap>> graphics;
     private Integer orientation;
     int tilesize = 64; // the size (in pixels) to draw the square tiles
+    private GameField lastField;
+    private Unit lastUnit;
+    private List<Position> lastDestinations;
 
 
     public GameView(Context ctx, AttributeSet attrset) {
@@ -254,8 +257,38 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
         // }
         canvas.drawColor(Color.BLACK); // Draw black anyway, in order to ensure that there are no leftover graphics
 
+        List<Position> unit_destinations = new ArrayList<Position>(0);
         GameField selected_field = map.getField(selected);
-        List<Position> unit_destinations = selected_field.hostsUnit() ? logic.destinations(map, selected_field.getUnit()) : new ArrayList<Position>(0);
+
+        /* First time clicking */
+        if (lastUnit == null || lastField == null || lastDestinations == null) {
+            lastField = selected_field;
+            if (selected_field.hostsUnit()) {
+                Unit unit = selected_field.getUnit();
+                lastUnit = unit;
+                unit_destinations = logic.destinations(map, unit);
+                lastDestinations = unit_destinations;
+            }
+            else {
+                unit_destinations = new ArrayList<Position>(0);
+                lastDestinations = unit_destinations;
+            }
+        }
+
+        if (selected_field.equals(lastField) && selected_field.hostsUnit()) {
+            if (selected_field.getUnit().equals(lastUnit)) { /* Same unit, same place */
+                unit_destinations = lastDestinations;
+            }
+        }
+        else {
+            if (selected_field.hostsUnit())
+                unit_destinations = logic.destinations(map, selected_field.getUnit());
+
+            lastDestinations = unit_destinations;
+            lastField = selected_field;
+            lastUnit = selected_field.getUnit(); /* Fine if null */
+        }
+
 
         for (int i = 0; i < map.getWidth(); ++i) {
             for (int j = 0; j < map.getHeight(); j++) {
