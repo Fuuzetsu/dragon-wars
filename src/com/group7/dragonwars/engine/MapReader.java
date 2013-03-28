@@ -117,7 +117,8 @@ public class MapReader {
         for (Integer i = 0; i < posInfo.length(); ++i) {
             Log.d(TAG, "Grabbing info for building number " + i);
             JSONObject buildingInfo = posInfo.getJSONObject(i);
-            Building building = buildings.get(buildingInfo.getString("building").charAt(0));
+            Building buildingT = buildings.get(buildingInfo.getString("building").charAt(0));
+            Building building = new Building(buildingT);
             Integer playerOwner = buildingInfo.getInt("owner");
             Integer posX = buildingInfo.getInt("posX");
             Integer posY = buildingInfo.getInt("posY");
