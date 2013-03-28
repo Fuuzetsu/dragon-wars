@@ -167,6 +167,14 @@ class Unit {
       +Integer getProductionCost()
 }
 
+class RangedUnit {
+      -Double minRange
+      -Double maxRange
+      +RangedUnit(String, Double, Integer, Double, Double, Double, Double, Double, Boolean, Integer, String, String, String)
+      +Double getMinRange()
+      +Double getMaxRange()
+}
+
 class Logic {
       -String TAG {static}
       +List<Position> findPath(GameMap, Unit, Position)
@@ -276,12 +284,6 @@ class GameField {
       +String getSpriteDir()
       +String getSpritePack()
 }
-
-abstract class RangedUnit {
-      +Double getMinRange()
-      +Double getMaxRange()
-}
-
 
 hide empty members
 
