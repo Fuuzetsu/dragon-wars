@@ -167,9 +167,10 @@ public class MapReader {
                 unit.setOwner(p);
             }
             Log.d(TAG, "Post setting owner.");
-
-            Log.d(TAG, "Grabbing GameField " + new Position(posX, posY));
+            Position pos = new Position(posX, posY);
+            Log.d(TAG, "Grabbing GameField " + pos);
             GameField gf = grid.get(posY).get(posX);
+            unit.setPosition(pos);
             gf.setUnit(unit);
 
         }
