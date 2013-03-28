@@ -20,7 +20,9 @@ Unit <|-- Soldier
 GameField <|-- Grass
 GameField <|-- Water
 GameField <|-- Pit
-
+BuildingGetter <|.. FuncEx
+UnitGetter <|.. FuncEx
+TerrainGetter <|.. FuncEx
 
 class GameState {
       -GameMap map
@@ -83,7 +85,32 @@ class Position {
 }
 
 class MapReader {
-      +GameMap readMap(File)
+      -String TAG {static}
+      +GameMap readMap(List<String>) {static}
+      -List<List<O>> listifyJSONArray(FuncEx<Character, O, JSONException>) {static}
+      -void setBuildings(List<List<GameField>>, List<Player>, HashMap<Character, Unit>, HashMap<Character, Building>, JSONArray) {static}
+      -void spawnUnits(List<List<GameField>>, List<Player>, HashMap<Character, Unit>, JSONArray) {static}
+      -List<O> map(FuncEx<I, O, E extends Exception>, List<I>) throws E {static}
+}
+
+class BuildingGetter {
+      -HashMap<Character, JSONObject> map
+      +BuildingGetter BuildingGetter(<HashMap<Character, JSONObject>)
+      +Building apply(Character) throws JSONException
+}
+
+class TerrainGetter {
+      -HashMap<Character, JSONObject> map
+      +TerrainGetter TerrainGetter(<HashMap<Character, JSONObject>)
+      +GameField apply(Character) throws JSONException
+}
+
+class UnitGetter {
+      +Unit apply(JSONObject) throws JSONException
+}
+
+interface FuncEx<I, O, E extends Exception> {
+      +O apply(I) throws E
 }
 
 class Pair {
