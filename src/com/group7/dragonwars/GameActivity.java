@@ -345,7 +345,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
 
             if (building.canProduceUnits())
                 for (Unit u : building.getProducableUnits())
-                    info.add("I can produce " + u);
+                    info.add("I can produce " + u + " - " + u.getProductionCost() + "g");
             else
                 info.add("I can't produce anything.");
         }
