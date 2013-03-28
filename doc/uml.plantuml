@@ -1,11 +1,11 @@
 @startuml
-GameState o-- Map
+GameState o-- GameMap
 GameState o-- Logic
 GameState o-- Player
 Building o-- Player
-MapReader - Map : reads >
-Map o-- GameField
-Map <|.. java.lang.Iterable
+MapReader - GameMap : reads >
+GameMap o-- GameField
+GameMap <|.. java.lang.Iterable
 Logic <|.. java.util.Comparator
 GameField o-- Building
 GameField o-- Unit
