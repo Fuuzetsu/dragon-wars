@@ -54,7 +54,7 @@ public class Building {
     }
 
     public Boolean addProducableUnit(Unit unit) {
-        this.producableUnits.add(unit);
+        return this.producableUnits.add(unit);
     }
 
     public List<Unit> getProducableUnits() {
