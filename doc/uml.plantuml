@@ -114,6 +114,8 @@ package com.group7.dragonwars.engine {
       Unit o-- Player
       Player o-- Unit
       Player <|-- PlayerAI
+      PlayerAI o-- com.group7.dragonwars.engine.GoalArbitration.AtomicAction
+      PlayerAI o-- com.group7.dragonwars.engine.GoalArbitration.StateTree
       Unit <|-- RangedUnit
       BuildingGetter <|.. FuncEx
       UnitGetter <|.. FuncEx
@@ -306,6 +308,10 @@ package com.group7.dragonwars.engine {
       }
 
       class PlayerAI {
+            -GameState gameState
+            +PlayerAI(String, GameState)
+            +void takeTurn()
+            -void UpdateActions()
       }
 
       class Building {
