@@ -6,7 +6,6 @@ Building o-- Player
 MapReader - GameMap : reads >
 GameMap o-- GameField
 GameMap <|.. java.lang.Iterable
-Logic <|.. java.util.Comparator
 GameField o-- Building
 GameField o-- Unit
 Position o-- Pair
@@ -23,6 +22,7 @@ GameField <|-- Pit
 BuildingGetter <|.. FuncEx
 UnitGetter <|.. FuncEx
 TerrainGetter <|.. FuncEx
+AStarComparator <|.. java.util.Comparator
 
 class GameState {
       -GameMap map
@@ -166,20 +166,26 @@ class Unit {
 }
 
 class Logic {
+      -String TAG {static}
       +List<Position> findPath(GameMap, Unit, Position)
+      +Integer calculateMovementCost(GameMap, Unit, List<Position>)
+      +List<Position> destinations(GameMap, Unit)
       +Pair<Double, Double> calculateDamage(GameMap, Unit, Unit)
+      +Double calculateRawDamage(GameMap, Unit, Unit)
       +Double calculateCounterDamage(GameMap, Unit, Unit)
       -Double calculateTheoreticalCounterDamage(GameMap, Unit, Unit, Double)
       -List<Position> AStar(GameMap, Unit, Position)
       -List<Position> getAdjacentPositions(Position)
-      -class AStarComparator
       -Double getMovementCost(GameMap, Unit, Position)
       +Set<Position> getAttackableUnitPositions(GameMap, Unit)
       -Set<Position> getAttackableFields(GameMap, Unit)
-      -Set<Position> getPositionsInRange(GameMap, Position, Double)
+      -Set<Position> getPositionsInRange(GameMap, Position, Double, Double)
       -Integer getManhattanDistance(Position, Position)
       -Pair<Integer, Integer> getDistanceAway(Position, Position)
-      
+}
+
+class AStarComparator {
+      +int compare(Pair<List<Position>, Double>, Pair<List<Position>, Double>)
 }
 
 class Player {
