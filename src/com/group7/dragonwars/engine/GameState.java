@@ -10,14 +10,11 @@ public class GameState {
     List<Player> players = new ArrayList<Player>();
     Integer turns = 0;
 
-    public GameState(GameMap map, Logic logic) {
+    public GameState(GameMap map, Logic logic, List<Player> players) {
         this.map = map;
         this.logic = logic;
 
-        // Test data
-        this.players = new ArrayList<Player>(2);
-        players.add(new Player("Shana"));
-        players.add(new Player("Yukari"));
+        this.players = players;
     }
 
 
