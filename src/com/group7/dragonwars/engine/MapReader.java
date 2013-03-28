@@ -124,8 +124,12 @@ public class MapReader {
             /* TODO proper choice of player */
             if (playerOwner == 0)
                 building.setOwner(new Player("Gaia"));
-            else
-                building.setOwner(players.get(playerOwner - 1));
+            else {
+                Log.d(TAG, "Getting player " + playerOwner);
+                Player p = players.get(playerOwner - 1);
+                Log.d(TAG, "That player has a name " + p);
+                building.setOwner(p);
+            }
             Log.d(TAG, "Post setting owner.");
 
             Log.d(TAG, "Grabbing GameField " + new Position(posX, posY));
