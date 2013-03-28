@@ -66,8 +66,7 @@
             "captureDifficulty": 4,
             "attackBonus": 3.0,
             "defenseBonus": 4.0,
-            "goalBuilding": true,
-            "produces": ["D", "S"]
+            "goalBuilding": true
         },
         "V": {
             "name": "Village",
@@ -77,8 +76,7 @@
             "captureDifficulty": 2,
             "attackBonus": 1.0,
             "defenseBonus": 1.0,
-            "goalBuilding": false,
-            "produces": []
+            "goalBuilding": false
         }
     },
     "terrain": [
@@ -92,27 +90,32 @@
         {"building": "C",
          "posX": 3,
          "posY": 1,
-         "owner": 1
+         "owner": 1,
+         "produces": ["S"]
         },
         {"building": "V",
          "posX": 3,
          "posY": 2,
-         "owner": 2
+         "owner": 2,
+         "produces": ["D", "S"]
         },
         {"building": "C",
          "posX": 3,
          "posY": 3,
-         "owner": 0
+         "owner": 0,
+         "produces": []
         },
         {"building": "C",
          "posX": 2,
          "posY": 2,
-         "owner": 2
+         "owner": 2,
+         "produces": ["D", "S"]
         },
         {"building": "C",
          "posX": 5,
          "posY": 2,
-         "owner": 2
+         "owner": 2,
+         "produces": ["S"]
         }
     ],
     "startingUnitPos": [
