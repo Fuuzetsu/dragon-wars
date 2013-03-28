@@ -142,6 +142,14 @@ public class GameState {
 
     public void advanceTurn() {
         updateBuildingCaptureCounters();
+
+        for (Player P : players) {
+            Integer goldWorth = 0;
+
+            for (Building b : p.ownedBuildings())
+                goldWorth += b.captureWorth();
+            p.setGoldAmount(goldWorth + p.getGoldAmount());
+        }
         ++this.turns;
     }
 
