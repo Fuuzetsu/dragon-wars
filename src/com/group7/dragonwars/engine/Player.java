@@ -35,4 +35,8 @@ public class Player {
     public List<Unit> getOwnedUnits() {
         return this.ownedUnits;
     }
+
+    public String toString() {
+        return this.name;
+    }
 }

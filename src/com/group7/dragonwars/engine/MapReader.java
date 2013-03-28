@@ -32,7 +32,7 @@ public class MapReader {
         /* Make a fake player list for now */
         List<Player> playerList = new ArrayList<Player>();
         for (Integer i = 0; i < players; ++i)
-            playerList.add(new Player("Player " + i));
+            playerList.add(new Player("Player " + (i + 1)));
 
         /* Fill in a HashMap for look-up */
         HashMap<Character, JSONObject> fields = new HashMap<Character, JSONObject>();
@@ -111,6 +111,7 @@ public class MapReader {
     private static void setBuildings(List<List<GameField>> grid, List<Player> players,
                                      HashMap<Character, Building> buildings, JSONArray posInfo) throws JSONException {
         Log.d(TAG, "Running setBuildings");
+        Log.d(TAG, "The list of players contains " + players);
         for (Integer i = 0; i < posInfo.length(); ++i) {
             Log.d(TAG, "Grabbing info for building number " + i);
             JSONObject buildingInfo = posInfo.getJSONObject(i);
