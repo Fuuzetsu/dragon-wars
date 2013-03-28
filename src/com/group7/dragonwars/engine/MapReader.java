@@ -228,14 +228,15 @@ public class MapReader {
             Double attack = f.getDouble("attack");
             Double meleeDefense = f.getDouble("meleeDefense");
             Double rangeDefense = f.getDouble("rangeDefense");
+            Integer productionCost = f.getInt("productionCost");
 
             if (f.getBoolean("ranged"))
                 return new RangedUnit(name, maxHealth, maxMovement, attack, meleeDefense,
                                       rangeDefense, f.getDouble("minRange"), f.getDouble("maxRange"),
-                                      flying, file, dir, pack);
+                                      flying, productionCost, file, dir, pack);
 
             return new Unit(name, maxHealth, maxMovement, attack, meleeDefense,
-                            rangeDefense, flying, file, dir, pack);
+                            rangeDefense, flying, productionCost, file, dir, pack);
 
         }
     }

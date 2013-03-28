@@ -40,7 +40,7 @@
             "attack": 2.0,
             "meleeDefense": 1.0,
             "rangeDefense": 2.0,
-            "productCost": 5,
+            "productCost": 5
         },
         "D": {
             "name": "Dragon",
