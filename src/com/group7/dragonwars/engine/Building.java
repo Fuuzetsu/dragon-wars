@@ -4,6 +4,7 @@ import java.util.*;
 
 public class Building {
 
+    private Integer captureWorth;
     private String buildingName;
     private Integer captureDifficulty, remainingCaptureTime;
     private Double attackBonus, defenseBonus;
@@ -16,8 +17,8 @@ public class Building {
 
 
     public Building(String name, Integer captureDifficulty, Double attackBonus,
-                    Double defenseBonus, Boolean goalBuilding, String spriteLocation,
-                    String spriteDir, String spritePack) {
+                    Double defenseBonus, Boolean goalBuilding, Integer captureWorth,
+                    String spriteLocation, String spriteDir, String spritePack) {
         this.buildingName = name;
 
         this.captureDifficulty = captureDifficulty;
@@ -27,6 +28,7 @@ public class Building {
         this.defenseBonus = defenseBonus;
 
         this.goalBuilding = goalBuilding;
+        this.captureWorth = captureWorth;
 
         this.spriteLocation = spriteLocation;
         this.spriteDir = spriteDir;
@@ -44,6 +46,7 @@ public class Building {
         this.defenseBonus = building.getDefenseBonus();
 
         this.goalBuilding = building.isGoalBuilding();
+        this.captureWorth = building.getCaptureWorth();
 
         this.spriteLocation = building.getSpriteLocation();
         this.spriteDir = building.getSpriteDir();
@@ -141,5 +144,9 @@ public class Building {
 
     public void setPosition(Position position) {
         this.position = position;
+    }
+
+    public Integer getCaptureWorth() {
+        return this.captureWorth;
     }
 }
