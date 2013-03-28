@@ -1,28 +1,40 @@
 @startuml
-GameState o-- GameMap
-GameState o-- Logic
-GameState o-- Player
-Building o-- Player
-MapReader - GameMap : reads >
-GameMap o-- GameField
-GameMap <|.. java.lang.Iterable
-GameField o-- Building
-GameField o-- Unit
-Position o-- Pair
-Unit o-- Position
-Unit o-- Player
-Player o-- Unit
-Player <|-- PlayerAI
-Unit <|-- RangedUnit
-RangedUnit <|-- Dragon
-Unit <|-- Soldier
-GameField <|-- Grass
-GameField <|-- Water
-GameField <|-- Pit
-BuildingGetter <|.. FuncEx
-UnitGetter <|.. FuncEx
-TerrainGetter <|.. FuncEx
-AStarComparator <|.. java.util.Comparator
+
+package com.group7.dragonwars {
+    GameActivity o-- com.group7.dragonwars.engine.Logic
+    GameActivity o-- com.group7.dragonwars.engine.GameMap
+    GameActivity o-- com.group7.dragonwars.engine.GameState
+    GameActivity o-- com.group7.dragonwars.engine.Position
+    GameActivity o-- com.group7.dragonwars.engine.GameField
+    GameActivity o-- com.group7.dragonwars.engine.Building
+    GameActivity o-- com.group7.dragonwars.engine.Unit
+    GameActivity o-- com.group7.dragonwars.engine.Pair
+    class MainMenuActivity
+    class SettingsActivity
+}
+
+package com.group7.dragonwars.engine {
+    GameState o-- GameMap
+    GameState o-- Logic
+    GameState o-- Player
+    Building o-- Player
+    MapReader - GameMap : reads >
+    GameMap o-- GameField
+    GameMap <|.. java.lang.Iterable
+    GameField o-- Building
+    GameField o-- Unit
+    Position o-- Pair
+    Unit o-- Position
+    Unit o-- Player
+    Player o-- Unit
+    Player <|-- PlayerAI
+    Unit <|-- RangedUnit
+    BuildingGetter <|.. FuncEx
+    UnitGetter <|.. FuncEx
+    TerrainGetter <|.. FuncEx
+    AStarComparator <|.. java.util.Comparator
+}
+
 
 class GameState {
       -GameMap map
