@@ -6,6 +6,7 @@ public class Player {
     private String name;
     private Boolean lost;
     List<Unit> ownedUnits = new ArrayList<Unit>();
+    List<Building> ownedBuildings = new ArrayList<Building>();
 
     public Player(String name) {
         this.name = name;
@@ -17,7 +18,7 @@ public class Player {
     }
 
     public Boolean hasLost() {
-        return this.lost || ownedUnits.isEmpty();
+        return this.lost || (ownedUnits.isEmpty() && ownedBuildings.isEmpty());
     }
 
     public Boolean hasMoveableUnits() {
@@ -34,6 +35,14 @@ public class Player {
 
     public List<Unit> getOwnedUnits() {
         return this.ownedUnits;
+    }
+
+    public void addUnit(Unit unit) {
+        this.ownedUnits.add(unit);
+    }
+
+    public void addBuilding(Building building) {
+        this.ownedBuildings.add(building);
     }
 
     public String toString() {
