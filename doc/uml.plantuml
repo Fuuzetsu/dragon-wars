@@ -120,7 +120,6 @@ package com.group7.dragonwars.engine {
       BuildingGetter <|.. FuncEx
       UnitGetter <|.. FuncEx
       TerrainGetter <|.. FuncEx
-      AStarComparator <|.. java.util.Comparator
 
       class GameState {
             -GameMap map
@@ -285,9 +284,17 @@ package com.group7.dragonwars.engine {
             -Pair<Integer, Integer> getDistanceAway(Position, Position)
       }
 
-      class AStarComparator {
-            +int compare(Pair<List<Position>, Double>, Pair<List<Position>, Double>)
+
+      namespace Logic {
+            com.group7.dragonwars.engine.Logic o-- AStarComparator
+            AStarComparator <|.. java.util.Comparator
+
+
+            class AStarComparator {
+                  +int compare(Pair<List<Position>, Double>, Pair<List<Position>, Double>)
+            }            
       }
+
 
       class Player {
             -String name
