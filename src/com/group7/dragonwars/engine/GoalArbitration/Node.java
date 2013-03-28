@@ -53,17 +53,17 @@ public class Node {
     }
 
     //collapse tree from bottom to the base node
-    public float Collaplse() {
+    public float Collapse() {
         float value = currentValue;
 
         if (getMiniMax()) {
             for (Node child : children) {
-                value += child.Collaplse();
+                value += child.Collapse();
                 size--;
             }
         } else {
             for (Node child : children) {
-                value += child.Collaplse();
+                value += child.Collapse();
                 size--;
             }
         }

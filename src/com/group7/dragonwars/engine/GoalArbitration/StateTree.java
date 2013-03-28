@@ -74,7 +74,7 @@ public class StateTree {
 
         }
 
-        base.Collaplse();
+        base.Collapse();
         actions = base.getActions();
     }
 
