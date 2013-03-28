@@ -20,11 +20,22 @@ package com.group7.dragonwars.util {
 }
 
 package com.group7.dragonwars.engine.GoalArbitration {
-      class AtomicAction
+      AtomicAction o-- com.group7.dragonwars.engine.GameState
+      AtomicAction o-- com.group7.dragonwars.engine.Unit
       class AttackAt
       class MoveTo
       class Node
       class StateTree
+
+      abstract class AtomicAction {
+            -float actionValue
+            #GameState gameState
+            -Unit actionUnit
+            +AtomicAction(GameState, Unit, float)
+            +void Perform() {abstract}
+            +Unit getUnit()
+            +float getActionValue()
+      }
 }
 
 package com.group7.dragonwars.engine {
