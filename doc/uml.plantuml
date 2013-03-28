@@ -50,6 +50,7 @@ class GameMap {
       -HashMap<Character, Unit> units
       -HashMap<Character, Building> buildings
       -HashMap<Character, GameField> gameFields
+      +GameMap(List<List<GameField>> HashMap<Character, Unit>, HashMap<Character, Building>, HashMap<Character, GameField>, List<Player>)
       +Iterator<GameField> iterator()
       +Integer getWidth()
       +Integer getHeight()
@@ -80,6 +81,7 @@ namespace java.lang #DDDDDD {
 
 class Position {
       -Pair<Integer, Integer> pair
+      +Position(Integer, Integer)
       +Integer getX()
       +Integer getY()
 }
