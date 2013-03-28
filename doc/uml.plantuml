@@ -43,11 +43,24 @@ class GameState {
 }
 
 class GameMap {
-      -GameField[][] fields
+      -List<List<GameField>> fields
+      -List<Player> players
+      -HashMap<Character, Unit> units
+      -HashMap<Character, Building> buildings
+      -HashMap<Character, GameField> gameFields
+      +Iterator<GameField> iterator()
+      +Integer getWidth()
+      +Integer getHeight()
+      +GameField getField(Integer, Integer)
       +GameField getField(Position)
       +Boolean isInsantiated()
-      +Boolean isValidField(Integer, Integer)
       +Boolean isValidField(Position)
+      +Boolean isValidField(Integer, Integer)
+      +HashMap<Character, Unit> getUnitMap()
+      +HashMap<Character, Building> getBuildingMap()
+      +HashMap<Character, GameField> getGameFieldMap()
+      +List<Player> getPlayers()
+
 }
 
 namespace java.util #DDDDDD {
