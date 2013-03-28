@@ -85,7 +85,7 @@ public class MapReader {
         MapReader.setBuildings(grid, playerList, buildingsInfo, startingBuildingPos);
         MapReader.spawnUnits(grid, playerList, units, startingUnitPos);
 
-        return new GameMap(grid, units, buildingsInfo, fieldsInfo);
+        return new GameMap(grid, units, buildingsInfo, fieldsInfo, playerList);
 
     }
 
