@@ -50,11 +50,15 @@ public class Building {
     }
 
     public Boolean canProduceUnits() {
-        return !this.producableUnits.isEmpty()
+        return !this.producableUnits.isEmpty();
     }
 
     public Boolean addProducableUnit(Unit unit) {
         this.producableUnits.add(unit);
+    }
+
+    public List<Unit> getProducableUnits() {
+        return this.producableUnits;
     }
 
     public Player getLastCapturer() {
