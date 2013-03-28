@@ -121,35 +121,48 @@ class Pair {
       +R getRight()
 }
 
-abstract class Unit {	 
+class Unit {	 
       -Double health
       -Double maxHealth
       -Integer attack
-      -Integer meleeDefense
-      -Integer rangeDefense
+      -Double meleeDefense
+      -Double rangeDefense
       -Postition position
       -Player owner
       -String name
       -Integer movement
       -Integer maxMovement
       -Boolean hasFinishedTurn
+      -Boolean isFlying
+      -Integer productionCost
+      -String spriteLocation
+      -String spriteDir
+      -String spritePack
+      +Unit(String, Double, Integer, Double, Double, Double, Boolean, Integer, String, String, String)
+      +Unit(Unit)
       +Boolean isDead()
-      +Integer getHealth()
-      +Integer getMaxHealth()
-      +Integer getAttack()
+      +Double getHealth()
+      +Double getMaxHealth()
+      +Double getAttack()
       +Integer getRemainingMovement()			 	 
       +Integer getMaxMovement()			 	 
-      +Integer getMeleeDefense()
-      +Integer getRangeDefense()
+      +Double getMeleeDefense()
+      +Double getRangeDefense()
       +Player getOwner()
-      +void setOwner
+      +void setOwner()
       +Position getPosition()
       +void setPosition(Position)
       +void restortHealth(Double)
       +void reduceHealth(Double)
       +Boolean hasFinishedTurn()
-      +Boolean canMoveTo(Position)
       +Boolean isRanged()
+      +Boolean isFlying()
+      +String getSpriteLocation()
+      +String getSpriteDir()
+      +String getSpritePack()
+      +String getUnitName()
+      +Boolean reduceMovement(Integer)
+      +Integer getProductionCost()
 }
 
 class Logic {
