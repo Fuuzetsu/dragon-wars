@@ -209,7 +209,8 @@ class Player {
 class PlayerAI {
 }
 
-abstract class Building {
+class Building {
+      -Integer captureWorth
       -String buildingName
       -Integer captureDifficulty
       -Integer remainingCaptureTime
@@ -218,6 +219,16 @@ abstract class Building {
       -Player owner
       -Player lastCapturer
       -Boolean goalBuilding
+      -String spriteLocation
+      -String spriteDir
+      -String spritePack
+      -List<Unit> producableUnits
+      -Position position
+      +Building(String, Integer, Double, Double, Boolean, Integer, String, String, String)
+      +Building(Building)
+      +Boolean canProduceUnits()
+      +void addProducableUnit(Unit)
+      +List<Unit> getProducableUnits()
       +Double getAttackBonus()
       +Double getDefenseBonus()
       +Player getLastCapturer()
@@ -230,7 +241,13 @@ abstract class Building {
       +Integer getCaptureDifficulty()
       +Integer getRemainingCaptureTime()
       +Integer setOwner(Player)
-      +Boolean isGoalBuilding()      
+      +Boolean isGoalBuilding()
+      +String getSpriteLocation()
+      +String getSpriteDir()
+      +String getSpritePack()
+      +Position getPosition()
+      +void setPosition(Position)
+      +Integer getCaptureWorth()
 }
 
 abstract class GameField {
