@@ -50,7 +50,7 @@ public class Player {
         return this.name;
     }
 
-    public void getGoldAmount() {
+    public Integer getGoldAmount() {
         return this.gold;
     }
 
