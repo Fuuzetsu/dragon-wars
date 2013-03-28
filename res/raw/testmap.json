@@ -68,7 +68,8 @@
             "captureDifficulty": 4,
             "attackBonus": 3.0,
             "defenseBonus": 4.0,
-            "goalBuilding": true
+            "goalBuilding": true,
+            "captureWorth": 4
         },
         "V": {
             "name": "Village",
@@ -78,7 +79,8 @@
             "captureDifficulty": 2,
             "attackBonus": 1.0,
             "defenseBonus": 1.0,
-            "goalBuilding": false
+            "goalBuilding": false,
+            "captureWorth": 2
         }
     },
     "terrain": [
