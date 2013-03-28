@@ -124,8 +124,8 @@ public class MapReader {
             Integer posY = buildingInfo.getInt("posY");
             JSONArray prod = buildingInfo.getJSONArray("produces");
 
-            for (Integer i = 0; i < prod.length(); ++i) {
-                Unit unit = units.get(prod.getString(i).charAt(0));
+            for (Integer j = 0; i < prod.length(); ++i) {
+                Unit unit = units.get(prod.getString(j).charAt(0));
                 building.addProducableUnit(unit);
             }
 
