@@ -112,5 +112,22 @@
          "posY": 2,
          "owner": 2
         }
+    ],
+    "startingUnitPos": [
+        {"unit": "S",
+         "posX": 3,
+         "posY": 1,
+         "owner": 1
+        },
+        {"unit": "D",
+         "posX": 2,
+         "posY": 3,
+         "owner": 2
+        },
+        {"unit": "S",
+         "posX": 5,
+         "posY": 2,
+         "owner": 2
+        }
     ]
 }
