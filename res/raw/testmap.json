@@ -88,7 +88,7 @@
     ],
     "startingBuildingPos": [
         {"building": "C",
-         "posX": 3,
+         "posX": 4,
          "posY": 1,
          "owner": 1,
          "produces": ["S"]
