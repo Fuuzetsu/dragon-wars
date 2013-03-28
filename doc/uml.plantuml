@@ -23,18 +23,22 @@ GameField <|-- Pit
 
 
 class GameState {
-      -Map map
+      -GameMap map
       -Logic logic
       -List<Player> players
       -Integer turns
       +Integer getTurns()
+      +GameState GameState(GameMap, Logic, List<Player>)
       +void advanceTurn()
       +void advancePlayer()
-      +Map getMap()
+      +GameMap getMap()
       +void attack(Unit, Unit)
+      +Boolean move(Unit, Position)
       +void play()
+      +List<Player> getPlayers()
+      +Boolean produceUnit(GameField, String)
       -void updateBuildingCaptureCounters()
-      -void removeUnitIfDead(Unit)
+      -Boolean removeUnitIfDead(Unit)
       
 }
 
