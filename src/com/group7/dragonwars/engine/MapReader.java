@@ -151,7 +151,8 @@ public class MapReader {
         for (Integer i = 0; i < posInfo.length(); ++i) {
             Log.d(TAG, "Grabbing info for unit number " + i);
             JSONObject unitInfo = posInfo.getJSONObject(i);
-            Unit unit = units.get(unitInfo.getString("unit").charAt(0));
+            Unit unitT = units.get(unitInfo.getString("unit").charAt(0));
+            Unit unit = new Unit(unitT);
             Integer playerOwner = unitInfo.getInt("owner");
             Integer posX = unitInfo.getInt("posX");
             Integer posY = unitInfo.getInt("posY");
