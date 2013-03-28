@@ -37,6 +37,27 @@ public class Unit {
         this.spritePack = spritePack;
     }
 
+    /* Used for copying the unit template */
+    public Unit(Unit unit) {
+        this.name = unit.name;
+
+        this.maxHealth = unit.getMaxHealth();
+        this.health = this.maxHealth;
+
+        this.maxMovement = unit.getMaxMovement();
+        this.movement = this.maxMovement;
+
+        this.attack = unit.getAttack();
+        this.meleeDefense = unit.getMeleeDefense();
+        this.rangeDefense = unit.getRangeDefense();
+
+        this.isFlying = unit.isFlying();
+
+        this.spriteLocation = unit.getSpriteLocation();
+        this.spriteDir = unit.getSpriteDir();
+        this.spritePack = unit.getSpritePack();
+    }
+
     public Boolean isDead() {
         return health <= 0;
     }

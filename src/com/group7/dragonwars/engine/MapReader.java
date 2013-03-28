@@ -27,12 +27,13 @@ public class MapReader {
         JSONObject us = m.getJSONObject("units");
         JSONArray terrain = m.getJSONArray("terrain");
         JSONArray startingBuildingPos = m.getJSONArray("startingBuildingPos");
+        JSONArray startingUnitPos = m.getJSONArray("startingUnitPos");
 
 
         /* Make a fake player list for now */
         List<Player> playerList = new ArrayList<Player>();
         for (Integer i = 0; i < players; ++i)
-            playerList.add(new Player("Player " + i));
+            playerList.add(new Player("Player " + (i + 1)));
 
         /* Fill in a HashMap for look-up */
         HashMap<Character, JSONObject> fields = new HashMap<Character, JSONObject>();
@@ -82,6 +83,7 @@ public class MapReader {
         //List<List<Building>> buildingGrid = MapReader.listifyJSONArray(new MapReader.BuildingGetter(buildings), buildingPos);
 
         MapReader.setBuildings(grid, playerList, buildingsInfo, startingBuildingPos);
+        MapReader.spawnUnits(grid, playerList, units, startingUnitPos);
 
         return new GameMap(grid, units, buildingsInfo, fieldsInfo);
 
@@ -111,10 +113,12 @@ public class MapReader {
     private static void setBuildings(List<List<GameField>> grid, List<Player> players,
                                      HashMap<Character, Building> buildings, JSONArray posInfo) throws JSONException {
         Log.d(TAG, "Running setBuildings");
+        Log.d(TAG, "The list of players contains " + players);
         for (Integer i = 0; i < posInfo.length(); ++i) {
             Log.d(TAG, "Grabbing info for building number " + i);
             JSONObject buildingInfo = posInfo.getJSONObject(i);
-            Building building = buildings.get(buildingInfo.getString("building").charAt(0));
+            Building buildingT = buildings.get(buildingInfo.getString("building").charAt(0));
+            Building building = new Building(buildingT);
             Integer playerOwner = buildingInfo.getInt("owner");
             Integer posX = buildingInfo.getInt("posX");
             Integer posY = buildingInfo.getInt("posY");
@@ -123,8 +127,12 @@ public class MapReader {
             /* TODO proper choice of player */
             if (playerOwner == 0)
                 building.setOwner(new Player("Gaia"));
-            else
-                building.setOwner(players.get(playerOwner - 1));
+            else {
+                Log.d(TAG, "Getting player " + playerOwner);
+                Player p = players.get(playerOwner - 1);
+                Log.d(TAG, "That player has a name " + p);
+                building.setOwner(p);
+            }
             Log.d(TAG, "Post setting owner.");
 
             Log.d(TAG, "Grabbing GameField " + new Position(posX, posY));
@@ -134,6 +142,41 @@ public class MapReader {
 
         }
         Log.d(TAG, "Leaving setBuildings");
+
+    }
+
+    private static void spawnUnits(List<List<GameField>> grid, List<Player> players,
+                                   HashMap<Character, Unit> units, JSONArray posInfo) throws JSONException {
+        Log.d(TAG, "Running spawnUnits");
+        Log.d(TAG, "The list of players contains " + players);
+        for (Integer i = 0; i < posInfo.length(); ++i) {
+            Log.d(TAG, "Grabbing info for unit number " + i);
+            JSONObject unitInfo = posInfo.getJSONObject(i);
+            Unit unitT = units.get(unitInfo.getString("unit").charAt(0));
+            Unit unit = new Unit(unitT);
+            Integer playerOwner = unitInfo.getInt("owner");
+            Integer posX = unitInfo.getInt("posX");
+            Integer posY = unitInfo.getInt("posY");
+            Log.d(TAG, "Cast all the values into Java types for unit " + i);
+
+            /* TODO proper choice of player */
+            if (playerOwner == 0)
+                unit.setOwner(new Player("Gaia"));
+            else {
+                Log.d(TAG, "Getting player " + playerOwner);
+                Player p = players.get(playerOwner - 1);
+                Log.d(TAG, "That player has a name " + p);
+                unit.setOwner(p);
+            }
+            Log.d(TAG, "Post setting owner.");
+            Position pos = new Position(posX, posY);
+            Log.d(TAG, "Grabbing GameField " + pos);
+            GameField gf = grid.get(posY).get(posX);
+            unit.setPosition(pos);
+            gf.setUnit(unit);
+
+        }
+        Log.d(TAG, "Leaving spawnUnits");
 
     }
 
