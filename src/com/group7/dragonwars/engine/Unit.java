@@ -41,20 +41,21 @@ public class Unit {
     public Unit(Unit unit) {
         this.name = unit.name;
 
-        this.maxHealth = unit.maxHealth;
+        this.maxHealth = unit.getMaxHealth();
         this.health = this.maxHealth;
 
-        this.maxMovement = unit.maxMovement;
+        this.maxMovement = unit.getMaxMovement();
         this.movement = this.maxMovement;
 
-        this.attack = unit.attack;
-        this.meleeDefense = unit.meleeDefense;
-        this.rangeDefense = unit.rangeDefense;
+        this.attack = unit.getAttack();
+        this.meleeDefense = unit.getMeleeDefense();
+        this.rangeDefense = unit.getRangeDefense();
 
-        this.isFlying = unit.isFlying;
-        this.spriteLocation = unit.spriteLocation;
-        this.spriteDir = unit.spriteDir;
-        this.spritePack = unit.spritePack;
+        this.isFlying = unit.isFlying();
+
+        this.spriteLocation = unit.getSpriteLocation();
+        this.spriteDir = unit.getSpriteDir();
+        this.spritePack = unit.getSpritePack();
     }
 
     public Boolean isDead() {
