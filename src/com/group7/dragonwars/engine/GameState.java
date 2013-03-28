@@ -146,7 +146,7 @@ public class GameState {
         for (Player p : players) {
             Integer goldWorth = 0;
 
-            for (Building b : p.ownedBuildings())
+            for (Building b : p.getOwnedBuildings())
                 goldWorth += b.getCaptureWorth();
             p.setGoldAmount(goldWorth + p.getGoldAmount());
         }

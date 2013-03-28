@@ -57,4 +57,8 @@ public class Player {
     public void setGoldAmount(Integer amount) {
         this.gold = amount;
     }
+
+    public List<Building> getOwnedBuildings() {
+        return this.ownedBuildings;
+    }
 }
