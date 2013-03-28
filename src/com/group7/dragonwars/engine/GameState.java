@@ -160,6 +160,7 @@ public class GameState {
     /* I'll just roll with GF and String for now; should be easy to change */
     public Boolean produceUnit(GameField field, String unitName) {
         /* TODO decrement player gold or whatever it is we're doing */
+
         if (!field.hostsBuilding() || field.hostsUnit())
             return false;
 
@@ -175,6 +176,7 @@ public class GameState {
             return false;
 
         unit.setOwner(building.getOwner());
+        unit.setPosition(building.getPosition());
         field.setUnit(unit);
 
         return true;
