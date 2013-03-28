@@ -1,9 +1,7 @@
 package com.group7.dragonwars;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+
 import java.util.*;
 
 import org.json.*;
@@ -63,10 +61,10 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
     Logic logic;
     GameMap map;
     Position selected; // the (coordinates of the) currently selected position
-    
+
     FloatPair scroll_offset; // the offset caused by scrolling, in pixels
     GestureDetector gesture_detector; // used to receive onScroll and onSingleTapConfirmed
-    
+
     DrawingThread dt;
     Paint circle_paint; // used to draw the selection circles (to show which tile is selected)
     Paint move_high_paint; // used to highlight movements
@@ -247,7 +245,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
 
     public void doDraw(Canvas canvas) {
         Configuration c = getResources().getConfiguration();
-        
+
         /* TODO figure out why this doesn't just work */
         // if (orientation == null || orientation != c.orientation) {
         //     orientation = c.orientation;
@@ -320,7 +318,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
     	// returns the width of map in pixels
     	return map.getWidth() * tilesize;
     }
-    
+
     public float getMapDrawHeight() {
     	// returns the width of map in pixels
     	return map.getHeight() * tilesize;
@@ -337,17 +335,23 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
         	info.add("Defense: " + unit.getMeleeDefense() + " (Melee) " + unit.getRangeDefense() + " (Ranged)");
         	info.add("");
         }
-    	
+
     	// field names
-        info.add(field.getFieldName() + (field.hostsBuilding() ? " - " + field.getBuilding().getBuildingName() : ""));
+        if (field.hostsBuilding()) {
+            Building building = field.getBuilding();
+            String bLine = field.getFieldName() + " - " + building.getBuildingName();
+            bLine += building.hasOwner() ? " ~ " + building.getOwner().getName() : "";
+            info.add(bLine);
+        }
+
         // field stats
         info.add("Attack: " + field.getAttackModifier() +
         		" Defense: " + field.getDefenseModifier() +
         		" Move: " + field.getMovementModifier());
-        
+
         Paint text_paint = new Paint();
         text_paint.setColor(Color.WHITE);
-        
+
         Rect text_bounds = new Rect(0, 0, 0, 0); // contains the bounds of the entire text in the info box
         LinkedList<Rect> info_bounds = new LinkedList<Rect>();
         for (int i = 0; i < info.size(); ++i) {
@@ -359,13 +363,13 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
         	}
         	text_bounds.bottom += (info_bounds.get(i).bottom - info_bounds.get(i).top);
         }
-        
+
         Paint back_paint = new Paint();
         back_paint.setColor(Color.BLUE); // FIXME make it black
-        
+
         Rect back_rect = new Rect(0, canvas.getHeight() - text_bounds.bottom, text_bounds.right, canvas.getHeight());
         canvas.drawRect(back_rect, back_paint);
-        
+
         float text_height = 0f;
         for (int i = info.size() - 1; i >= 0; --i) {
         	canvas.drawText(info.get(i), 0, info.get(i).length(), 0, (canvas.getHeight() - text_height) - info_bounds.get(i).bottom, text_paint);
@@ -377,10 +381,10 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
     /* Please excuse all the auto-generated method stubs
      * as we're implementing an interface or two (GestureDetector.OnGestureListener etc), we need them all
      */
-    
+
 	@Override
 	public boolean onDown(MotionEvent e) {return false;}
-	
+
 	@Override
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 		return false;
