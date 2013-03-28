@@ -5,17 +5,21 @@ import java.util.*;
 public class GameMap implements Iterable<GameField> {
 
     List<List<GameField>> fields;
+    List<Player> players;
     HashMap<Character, Unit> units;
     HashMap<Character, Building> buildings;
     HashMap<Character, GameField> gameFields;
 
 
     public GameMap(List<List<GameField>> fields, HashMap<Character, Unit> units,
-                   HashMap<Character, Building> buildings, HashMap<Character, GameField> gameFields) {
+                   HashMap<Character, Building> buildings,
+                   HashMap<Character, GameField> gameFields,
+                   List<Player> players) {
         this.fields = fields;
         this.units = units;
         this.buildings = buildings;
         this.gameFields = gameFields;
+        this.players = players;
 
     }
 
@@ -111,5 +115,9 @@ public class GameMap implements Iterable<GameField> {
 
     public HashMap<Character, GameField> getGameFieldMap() {
         return this.gameFields;
+    }
+
+    public List<Player> getPlayers() {
+        return this.players;
     }
 }

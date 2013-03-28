@@ -1,7 +1,7 @@
 package com.group7.dragonwars.engine;
 
 import java.util.*;
-
+import java.lang.Math;
 import android.util.Log;
 
 /* Class containing things like damage calculation and path finding. */
@@ -11,6 +11,18 @@ public class Logic {
 
     public List<Position> findPath(GameMap map, Unit unit, Position destination) {
         return AStar(map, unit, destination);
+    }
+
+    public Integer calculateMovementCost(GameMap map, Unit unit, List<Position> path) {
+        Double totalCost = 0.0;
+        for (Position pos : path) {
+            totalCost += getMovementCost(map, unit, pos);
+        }
+
+        totalCost = Math.ceil(totalCost);
+
+
+        return totalCost.intValue();
     }
 
     public List<Position> destinations(GameMap map, Unit unit) {

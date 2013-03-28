@@ -85,7 +85,7 @@ public class MapReader {
         MapReader.setBuildings(grid, playerList, buildingsInfo, startingBuildingPos);
         MapReader.spawnUnits(grid, playerList, units, startingUnitPos);
 
-        return new GameMap(grid, units, buildingsInfo, fieldsInfo);
+        return new GameMap(grid, units, buildingsInfo, fieldsInfo, playerList);
 
     }
 
@@ -132,6 +132,7 @@ public class MapReader {
                 Player p = players.get(playerOwner - 1);
                 Log.d(TAG, "That player has a name " + p);
                 building.setOwner(p);
+                p.addBuilding(building);
             }
             Log.d(TAG, "Post setting owner.");
 
@@ -167,6 +168,7 @@ public class MapReader {
                 Player p = players.get(playerOwner - 1);
                 Log.d(TAG, "That player has a name " + p);
                 unit.setOwner(p);
+                p.addUnit(unit);
             }
             Log.d(TAG, "Post setting owner.");
             Position pos = new Position(posX, posY);

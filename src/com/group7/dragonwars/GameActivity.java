@@ -102,7 +102,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
         Log.d(TAG, "before setMap");
         game_view.setMap(gm);
         this.logic = new Logic();
-        this.state = new GameState(map, logic);
+        this.state = new GameState(map, logic, map.getPlayers());
 
         context = ctx;
         bm = BitmapFactory.decodeResource(context.getResources(),
