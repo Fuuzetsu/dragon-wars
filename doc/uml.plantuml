@@ -231,20 +231,6 @@ abstract class RangedUnit {
       +Double getMaxRange()
 }
 
-class Dragon {
-}
-
-class Soldier {
-}
-
-class Grass {
-}
-
-class Pit {
-}
-
-class Water {
-}
 
 hide empty members
 
