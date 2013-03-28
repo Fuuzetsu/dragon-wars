@@ -167,7 +167,6 @@ public class GameState {
 
     /* I'll just roll with GF and String for now; should be easy to change */
     public Boolean produceUnit(GameField field, String unitName) {
-        /* TODO decrement player gold or whatever it is we're doing */
 
         if (!field.hostsBuilding() || field.hostsUnit())
             return false;
@@ -183,8 +182,14 @@ public class GameState {
         if (unit == null)
             return false;
 
-        unit.setOwner(building.getOwner());
+        Player player = building.getOwner();
+
+        if (player.getGoldAmount() < unit.getProductionCost())
+            return false;
+
+        unit.setOwner(player);
         unit.setPosition(building.getPosition());
+        player.setGoldAmount(player.getGoldAmount() - unit.getProductionCost());
         field.setUnit(unit);
 
         return true;
