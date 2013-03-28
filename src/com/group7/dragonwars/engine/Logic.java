@@ -104,8 +104,6 @@ public class Logic {
     }
 
     private List<Position> AStar(GameMap map, Unit unit, Position destination) {
-    	// setting path to true will cause the original behaviour, the path between unit and destination will be returned
-    	// otherwise destination is ignored and the list of possible destinations for unit (based on the unit's maxMovement) is instead returned
         if (!map.isValidField(destination))
             return new ArrayList<Position>(0);
 
@@ -151,13 +149,10 @@ public class Logic {
             for (Position p : getAdjacentPositions(lastPos)) {
                 if (map.isValidField(p) && map.getField(p).doesAcceptUnit(unit)) {
                     if (map.getField(p).hostsUnit()) {
-                        /* Assume all units are from a different player */
-                        /* TODO fix this */
-                        // Player op = map.getField(p).getUnit().getOwner();
+                        Player op = map.getField(p).getUnit().getOwner();
 
-                        // if (!op.equals(unit.getOwner()))
-                        //     continue;
-                        continue;
+                        if (!op.equals(unit.getOwner()))
+                            continue;
                     }
 
                     List<Position> plan = new ArrayList<Position>(poss);
