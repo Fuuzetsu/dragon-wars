@@ -28,6 +28,22 @@ public class Building {
         this.spritePack = spritePack;
     }
 
+    public Building(Building building) {
+        this.buildingName = building.getBuildingName();
+
+        this.captureDifficulty = building.getCaptureDifficulty();
+        this.remainingCaptureTime = this.captureDifficulty;
+
+        this.attackBonus = building.getAttackBonus();
+        this.defenseBonus = building.getDefenseBonus();
+
+        this.goalBuilding = building.isGoalBuilding();
+
+        this.spriteLocation = building.getSpriteLocation();
+        this.spriteDir = building.getSpriteDir();
+        this.spritePack = building.getSpritePack();
+    }
+
     public Player getLastCapturer() {
         return this.lastCapturer;
     }
