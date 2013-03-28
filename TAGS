@@ -1,0 +1,450 @@
+
+gen/com/group7/dragonwars/BuildConfig.java,100
+public final class BuildConfig 4,83
+    public final static boolean DEBUG BuildConfig.DEBUG5,116
+
+gen/com/group7/dragonwars/R.java,665
+public final class R 10,214
+    public static final class array R.array11,237
+    public static final class attr R.attr17,561
+    public static final class color R.color27,1200
+    public static final class drawable R.drawable30,1302
+    public static final class id R.id33,1405
+    public static final class layout R.layout41,1777
+    public static final class menu R.menu45,1943
+    public static final class raw R.raw48,2049
+    public static final class string R.string63,2781
+    public static final class style R.style93,4439
+    public static final class xml R.xml125,5774
+    public static final class styleable R.styleable131,6051
+
+src/com/group7/dragonwars/engine/Building.java,1942
+public class Building 3,39
+    private String buildingName;Building.buildingName5,64
+    private Integer captureDifficulty,Building.captureDifficulty6,97
+    private Integer captureDifficulty, remainingCaptureTime;Building.remainingCaptureTime6,97
+    private Double attackBonus,Building.attackBonus7,158
+    private Double attackBonus, defenseBonus;Building.defenseBonus7,158
+    private Player owner;Building.owner8,204
+    private Boolean goalBuilding;Building.goalBuilding9,230
+    private Player lastCapturer;Building.lastCapturer10,264
+    private String spriteLocation,Building.spriteLocation11,297
+    private String spriteLocation, spriteDir,Building.spriteDir11,297
+    private String spriteLocation, spriteDir, spritePack;Building.spritePack11,297
+    public Building(Building.Building13,356
+    public Building(Building.Building31,982
+    public Player getLastCapturer(Building.getLastCapturer47,1543
+    public void setLastCapturer(Building.setLastCapturer51,1622
+    public String getBuildingName(Building.getBuildingName55,1714
+    public Integer getCaptureDifficulty(Building.getCaptureDifficulty59,1793
+    public Integer getRemainingCaptureTime(Building.getRemainingCaptureTime63,1883
+    public Double getAttackBonus(Building.getAttackBonus67,1979
+    public Double getDefenseBonus(Building.getDefenseBonus71,2056
+    public Boolean hasOwner(Building.hasOwner75,2135
+    public Player getOwner(Building.getOwner79,2209
+    public void setOwner(Building.setOwner83,2274
+    public Boolean isGoalBuilding(Building.isGoalBuilding87,2352
+    public void reduceCaptureTime(Building.reduceCaptureTime91,2431
+    public void resetCaptureTime(Building.resetCaptureTime100,2693
+    public String getSpriteLocation(Building.getSpriteLocation104,2797
+    public String getSpriteDir(Building.getSpriteDir108,2880
+    public String getSpritePack(Building.getSpritePack112,2953
+
+src/com/group7/dragonwars/engine/GameField.java,1797
+public class GameField 3,39
+    private String fieldName;GameField.fieldName5,65
+    private Unit hostedUnit;GameField.hostedUnit6,95
+    private Building hostedBuilding;GameField.hostedBuilding7,124
+    private Double movementModifier;GameField.movementModifier8,161
+    private Double defenseModifier,GameField.defenseModifier9,198
+    private Double defenseModifier, attackModifier;GameField.attackModifier9,198
+    private Boolean flightOnly,GameField.flightOnly10,250
+    private Boolean flightOnly, accessible;GameField.accessible10,250
+    private String spriteLocation,GameField.spriteLocation11,294
+    private String spriteLocation, spriteDir,GameField.spriteDir11,294
+    private String spriteLocation, spriteDir, spritePack;GameField.spritePack11,294
+    public  Boolean doesAcceptUnit(GameField.doesAcceptUnit13,353
+    public GameField(GameField.GameField22,553
+    public Double getDefenseModifier(GameField.getDefenseModifier40,1261
+    public Double getAttackModifier(GameField.getAttackModifier50,1526
+    public Double getMovementModifier(GameField.getMovementModifier60,1787
+    public Boolean hostsUnit(GameField.hostsUnit65,1875
+    public Boolean hostsBuilding(GameField.hostsBuilding69,1955
+    public Unit getUnit(GameField.getUnit74,2095
+    public Building getBuilding(GameField.getBuilding78,2162
+    public void setBuilding(GameField.setBuilding83,2303
+    public void setUnit(GameField.setUnit87,2399
+    public String toString(GameField.toString91,2475
+    public String getFieldName(GameField.getFieldName95,2549
+    public String getSpriteLocation(GameField.getSpriteLocation99,2622
+    public String getSpriteDir(GameField.getSpriteDir103,2705
+    public String getSpritePack(GameField.getSpritePack107,2778
+
+src/com/group7/dragonwars/engine/GameMap.java,1403
+public class GameMap 5,60
+    List<List<GameField>> fields;GameMap.fields7,115
+    HashMap<GameMap.HashMap8,149
+    HashMap<Character, Unit> units;GameMap.units8,149
+    HashMap<GameMap.HashMap9,185
+    HashMap<Character, Building> buildings;GameMap.buildings9,185
+    HashMap<GameMap.HashMap10,229
+    HashMap<Character, GameField> gameFields;GameMap.gameFields10,229
+    public GameMap(GameMap.GameMap13,277
+    public Iterator<GameField> iterator(GameMap.iterator22,601
+    public Boolean isInstantiated(GameMap.isInstantiated33,924
+    public Integer getWidth(GameMap.getWidth37,1000
+    public Integer getHeight(GameMap.getHeight41,1076
+    public GameField getField(GameMap.getField45,1146
+    public GameField getField(GameMap.getField49,1263
+    public Boolean isValidField(GameMap.isValidField53,1361
+    public Boolean isValidField(GameMap.isValidField57,1484
+    public String toString(GameMap.toString73,1835
+    public String dumpMobMap(GameMap.dumpMobMap87,2099
+    public HashMap<GameMap.HashMap104,2466
+    public HashMap<Character, Unit> getUnitMap(GameMap.getUnitMap104,2466
+    public HashMap<GameMap.HashMap108,2551
+    public HashMap<Character, Building> getBuildingMap(GameMap.getBuildingMap108,2551
+    public HashMap<GameMap.HashMap112,2648
+    public HashMap<Character, GameField> getGameFieldMap(GameMap.getGameFieldMap112,2648
+
+src/com/group7/dragonwars/engine/GameState.java,928
+public class GameState 6,78
+    GameMap map;GameState.map8,104
+    Logic logic;GameState.logic9,121
+    List<Player> players GameState.players10,138
+    Integer turns GameState.turns11,190
+    public static void main(GameState.main13,214
+    public GameState(GameState.GameState27,716
+    private static void printMap(GameState.printMap37,980
+    private static List<String> readFile(GameState.readFile42,1108
+    public void play(GameState.play64,1763
+    public void attack(GameState.attack87,2559
+    private Boolean removeUnitIfDead(GameState.removeUnitIfDead110,3204
+    private void updateBuildingCaptureCounters(GameState.updateBuildingCaptureCounters120,3454
+    public void advanceTurn(GameState.advanceTurn154,4523
+    public Integer getTurns(GameState.getTurns159,4625
+    public GameMap getMap(GameState.getMap163,4691
+    public List<Player> getPlayers(GameState.getPlayers167,4753
+
+src/com/group7/dragonwars/engine/GoalArbitration/AtomicAction.java,410
+public abstract class AtomicAction 10,243
+    private float actionValue AtomicAction.actionValue11,280
+    protected GameState gameState;AtomicAction.gameState12,315
+    private Unit actionUnit;AtomicAction.actionUnit13,350
+    public AtomicAction(AtomicAction.AtomicAction15,380
+    public Unit getUnit(AtomicAction.getUnit23,582
+    public float getActionValue(AtomicAction.getActionValue26,643
+
+src/com/group7/dragonwars/engine/GoalArbitration/AttackAt.java,192
+public class AttackAt AtomicAction.AttackAt6,145
+    Unit targetUnit;AttackAt.targetUnit7,190
+    public AttackAt(AttackAt.AttackAt9,212
+    public void Perform(AttackAt.Perform15,379
+
+src/com/group7/dragonwars/engine/GoalArbitration/MoveTo.java,165
+public class MoveTo 7,191
+    Position destination;MoveTo.destination8,234
+    public MoveTo(MoveTo.MoveTo10,261
+    public void Perform(MoveTo.Perform16,431
+
+src/com/group7/dragonwars/engine/GoalArbitration/Node.java,1112
+public class Node 5,76
+    private AtomicAction nodeAction;Node.nodeAction6,96
+    private Node nodeParent;Node.nodeParent7,133
+    private List<Node> children;Node.children8,162
+    private int min Node.min9,195
+    private float minValue Node.minValue11,333
+    private float maxValue Node.maxValue12,402
+    private int nodeDepth;Node.nodeDepth13,471
+    private float currentValue;Node.currentValue14,498
+    private static int size Node.size15,530
+    private static int maxSize Node.maxSize16,589
+    public Node(Node.Node18,649
+    public List<AtomicAction> getActions(Node.getActions25,861
+    public List<Node> getTerminals(Node.getTerminals40,1261
+    public float Collaplse(Node.Collaplse56,1671
+    public void AddChildNode(Node.AddChildNode75,2098
+    public float getTotalValue(Node.getTotalValue91,2538
+    public float getCurrentValue(Node.getCurrentValue104,2855
+    public boolean getMiniMax(Node.getMiniMax108,2928
+    public void setSize(Node.setSize112,3002
+    public int getSize(Node.getSize116,3072
+    public boolean isFull(Node.isFull120,3127
+
+src/com/group7/dragonwars/engine/GoalArbitration/StateTree.java,489
+public class StateTree 12,344
+    private int maxSize StateTree.maxSize13,369
+    private GameState gameState;StateTree.gameState14,400
+    private Node base StateTree.base15,433
+    private Player stateTreeOwner;StateTree.stateTreeOwner16,463
+    private List<AtomicAction> actions;StateTree.actions18,499
+    public StateTree(StateTree.StateTree20,540
+    private void Explore(StateTree.Explore25,681
+    public List<AtomicAction> getActions(StateTree.getActions81,2953
+
+src/com/group7/dragonwars/engine/Logic.java,1466
+public class Logic StateTree.Logic8,158
+    public final static String TAG Logic.TAG10,180
+    public List<Position> findPath(Logic.findPath12,227
+    public List<Position> destinations(Logic.destinations16,363
+    public Pair<Logic.Pair54,1420
+    public Pair<Double, Double> calculateDamage(Logic.calculateDamage54,1420
+    public Double calculateRawDamage(Logic.calculateRawDamage61,1699
+    public Double calculateCounterDamage(Logic.calculateCounterDamage79,2387
+    private Double calculateTheoreticalCounterDamage(Logic.calculateTheoreticalCounterDamage88,2802
+    private List<Position> AStar(Logic.AStar106,3484
+    private List<Position> getAdjacentPositions(Logic.getAdjacentPositions168,5659
+    private class AStarComparator Logic.AStarComparator177,6078
+        public int compare(Logic.AStarComparator.compare179,6174
+    private Double getMovementCost(Logic.getMovementCost191,6484
+    public Set<Position> getAttackableUnitPositions(Logic.getAttackableUnitPositions200,6758
+    private Set<Position> getAttackableFields(Logic.getAttackableFields216,7265
+    private Set<Position> getPositionsInRange(Logic.getPositionsInRange225,7618
+    private Set<Position> getPositionsInRange(Logic.getPositionsInRange257,8692
+    private Integer getManhattanDistance(Logic.getManhattanDistance276,9289
+    private Pair<Logic.Pair283,9535
+    private Pair<Integer, Integer> getDistanceAway(Logic.getDistanceAway283,9535
+
+src/com/group7/dragonwars/engine/MapReader.java,1392
+public class MapReader 10,176
+    final private static String TAG MapReader.TAG11,201
+    public static GameMap readMap(MapReader.readMap13,253
+    private static <O> List<List<O>> listifyJSONArrayMapReader.listifyJSONArray92,3402
+    private static void setBuildings(MapReader.setBuildings113,4031
+    private static void spawnUnits(MapReader.spawnUnits148,5601
+    private static class BuildingGetter MapReader.BuildingGetter183,7144
+        private HashMap<MapReader.BuildingGetter.HashMap185,7241
+        private HashMap<Character, JSONObject> map;MapReader.BuildingGetter.map185,7241
+        public BuildingGetter(MapReader.BuildingGetter.BuildingGetter187,7294
+        public Building apply(MapReader.BuildingGetter.apply191,7397
+    private static class UnitGetter MapReader.UnitGetter212,8226
+        public Unit apply(MapReader.UnitGetter.apply213,8315
+    private static MapReader.static238,9379
+    private static <I, O, E extends Exception> List<O> map(MapReader.map238,9379
+    private static class TerrainGetter MapReader.TerrainGetter247,9604
+        private HashMap<MapReader.TerrainGetter.HashMap249,9701
+        private HashMap<Character, JSONObject> map;MapReader.TerrainGetter.map249,9701
+        public TerrainGetter(MapReader.TerrainGetter.TerrainGetter251,9754
+        public GameField apply(MapReader.TerrainGetter.apply255,9856
+
+src/com/group7/dragonwars/engine/Pair.java,168
+    private L left;5,66
+    private R right;6,86
+    public Pair(8,108
+    public L getLeft(13,204
+    public R getRight(17,262
+    public String toString(21,322
+
+src/com/group7/dragonwars/engine/PlayerAI.java,294
+public class PlayerAI 8,190
+    GameState gameState;PlayerAI.gameState9,229
+    List<AtomicAction> actions;PlayerAI.actions11,281
+    public PlayerAI(PlayerAI.PlayerAI13,314
+    public void takeTurn(PlayerAI.takeTurn18,429
+    private void UpdateActions(PlayerAI.UpdateActions28,603
+
+src/com/group7/dragonwars/engine/Player.java,539
+public class Player 5,60
+    private String name;Player.name6,82
+    private Boolean lost;Player.lost7,107
+    List<Unit> ownedUnits Player.ownedUnits8,133
+    public Player(Player.Player10,185
+    public String getName(Player.getName15,278
+    public Boolean hasLost(Player.hasLost19,341
+    public Boolean hasMoveableUnits(Player.hasMoveableUnits23,429
+    public void removeUnit(Player.removeUnit31,600
+    public List<Unit> getOwnedUnits(Player.getOwnedUnits35,680
+    public String toString(Player.toString39,759
+
+src/com/group7/dragonwars/engine/Position.java,365
+public class Position 3,39
+    private Pair<Position.Pair5,64
+    private Pair<Integer, Integer> pair;Position.pair5,64
+    public Position(Position.Position7,106
+    public Integer getX(Position.getX11,211
+    public Integer getY(Position.getY15,282
+    public Boolean equals(Position.equals19,354
+    public String toString(Position.toString24,481
+
+src/com/group7/dragonwars/engine/RangedUnit.java,377
+public class RangedUnit 3,39
+    private Double minRange,RangedUnit.minRange5,79
+    private Double minRange, maxRange;RangedUnit.maxRange5,79
+    public RangedUnit(RangedUnit.RangedUnit7,119
+    public Double getMaxRange(RangedUnit.getMaxRange17,645
+    public Double getMinRange(RangedUnit.getMinRange21,716
+    public Boolean isRanged(RangedUnit.isRanged25,787
+
+src/com/group7/dragonwars/engine/Unit.java,2244
+public class Unit 5,69
+    private String name;Unit.name7,90
+    private Integer maxMovement,Unit.maxMovement8,115
+    private Integer maxMovement, movement;Unit.movement8,115
+    private Double maxHealth,Unit.maxHealth9,158
+    private Double maxHealth, health;Unit.health9,158
+    private Double attack,Unit.attack10,196
+    private Double attack, meleeDefense,Unit.meleeDefense10,196
+    private Double attack, meleeDefense, rangeDefense;Unit.rangeDefense10,196
+    private Position position;Unit.position11,251
+    private Boolean hasFinishedTurn Unit.hasFinishedTurn12,282
+    private Player owner;Unit.owner13,327
+    private Boolean isFlying;Unit.isFlying14,353
+    private String spriteLocation,Unit.spriteLocation15,383
+    private String spriteLocation, spriteDir,Unit.spriteDir15,383
+    private String spriteLocation, spriteDir, spritePack;Unit.spritePack15,383
+    public Unit(Unit.Unit18,443
+    public Unit(Unit.Unit41,1202
+    public Boolean isDead(Unit.isDead61,1785
+    public Double getHealth(Unit.getHealth65,1850
+    public Double getMaxHealth(Unit.getMaxHealth69,1917
+    public Double getAttack(Unit.getAttack73,1990
+    public Double getMeleeDefense(Unit.getMeleeDefense77,2057
+    public Double getRangeDefense(Unit.getRangeDefense81,2136
+    public Position getPosition(Unit.getPosition85,2215
+    public Integer getRemainingMovement(Unit.getRemainingMovement89,2288
+    public Integer getMaxMovement(Unit.getMaxMovement93,2369
+    public Player getOwner(Unit.getOwner97,2447
+    public void setOwner(Unit.setOwner101,2512
+    public void reduceHealth(Unit.reduceHealth105,2590
+    public void setPosition(Unit.setPosition109,2674
+    public void restoreHealth(Unit.restoreHealth113,2764
+    public Boolean hasFinishedTurn(Unit.hasFinishedTurn118,2935
+    public String toString(Unit.toString122,3018
+    public Boolean isRanged(Unit.isRanged126,3082
+    public Boolean isFlying(Unit.isFlying130,3143
+    public String getSpriteLocation(Unit.getSpriteLocation134,3212
+    public String getSpriteDir(Unit.getSpriteDir138,3295
+    public String getSpritePack(Unit.getSpritePack142,3368
+    public String getUnitName(Unit.getUnitName146,3443
+
+src/com/group7/dragonwars/GameActivity.java,3327
+public class GameActivity 35,985
+    private static final String TAG GameActivity.TAG36,1030
+    private Integer orientation;GameActivity.orientation37,1084
+    private Boolean orientationChanged GameActivity.orientationChanged38,1117
+    protected void onCreate(GameActivity.onCreate41,1180
+class GameView 57,1763
+    final private String TAG GameView.TAG58,1874
+    Bitmap bm;GameView.bm59,1917
+    GameState state;GameView.state60,1932
+    Logic logic;GameView.logic61,1953
+    GameMap map;GameView.map62,1970
+    Position selected;GameView.selected63,1987
+    FloatPair scroll_offset;GameView.scroll_offset65,2067
+    GestureDetector gesture_detector;GameView.gesture_detector66,2141
+    DrawingThread dt;GameView.dt68,2233
+    Paint circle_paint;GameView.circle_paint69,2255
+    Paint move_high_paint;GameView.move_high_paint70,2350
+    boolean unit_selected;GameView.unit_selected72,2409
+    Context context;GameView.context76,2623
+    HashMap<GameView.HashMap77,2644
+    HashMap<String, HashMap<String, Bitmap>> graphics;GameView.graphics77,2644
+    private Integer orientation;GameView.orientation78,2699
+    int tilesize GameView.tilesize79,2732
+    public GameView(GameView.GameView82,2806
+    private List<String> readFile(GameView.readFile184,7140
+    public void setMap(GameView.setMap207,7885
+    public void surfaceChanged(GameView.surfaceChanged212,7974
+    public void surfaceCreated(GameView.surfaceCreated218,8122
+    public void surfaceDestroyed(GameView.surfaceDestroyed225,8298
+    public boolean onTouchEvent(GameView.onTouchEvent236,8545
+    public RectF getSquare(GameView.getSquare242,8760
+    public void doDraw(GameView.doDraw246,8881
+    public float getMapDrawWidth(GameView.getMapDrawWidth317,12024
+    public float getMapDrawHeight(GameView.getMapDrawHeight322,12150
+    public void drawInfoBox(GameView.drawInfoBox327,12278
+	public boolean onDown(GameView.onDown386,14954
+	public boolean onFling(GameView.onFling389,15020
+	public void onLongPress(GameView.onLongPress394,15143
+	public void onShowPress(GameView.onShowPress397,15198
+	public boolean onSingleTapUp(GameView.onSingleTapUp400,15253
+	public boolean onDoubleTap(GameView.onDoubleTap403,15326
+	public boolean onDoubleTapEvent(GameView.onDoubleTapEvent406,15397
+	public boolean onSingleTapConfirmed(GameView.onSingleTapConfirmed409,15473
+	public boolean onScroll(GameView.onScroll423,16137
+class DrawingThread 445,16834
+    boolean run;DrawingThread.run446,16871
+    Canvas canvas;DrawingThread.canvas447,16888
+    SurfaceHolder surfaceholder;DrawingThread.surfaceholder448,16907
+    Context context;DrawingThread.context449,16940
+    GameView gview;DrawingThread.gview450,16961
+    public DrawingThread(DrawingThread.DrawingThread452,16982
+    void setRunning(DrawingThread.setRunning459,17162
+    public void run(DrawingThread.run464,17243
+class FloatPair 479,17526
+    private Pair<FloatPair.Pair480,17582
+    private Pair<Float, Float> pair;FloatPair.pair480,17582
+    public FloatPair(FloatPair.FloatPair482,17620
+    public Float getX(FloatPair.getX486,17718
+    public Float getY(FloatPair.getY490,17787
+    public Boolean equals(FloatPair.equals494,17857
+    public String toString(FloatPair.toString498,17984
+
+src/com/group7/dragonwars/MainMenuActivity.java,456
+public class MainMenuActivity 13,302
+    private Button btnBattle;MainMenuActivity.btnBattle15,379
+    protected void onCreate(MainMenuActivity.onCreate18,424
+    protected void onStart(MainMenuActivity.onStart26,716
+    public boolean onCreateOptionsMenu(MainMenuActivity.onCreateOptionsMenu39,1288
+    public boolean onOptionsItemSelected(MainMenuActivity.onOptionsItemSelected46,1531
+    public void onClick(MainMenuActivity.onClick59,1891
+
+src/com/group7/dragonwars/SettingsActivity.java,1484
+public class SettingsActivity 33,1210
+    private static final boolean ALWAYS_SIMPLE_PREFS SettingsActivity.ALWAYS_SIMPLE_PREFS40,1544
+    protected void onPostCreate(SettingsActivity.onPostCreate43,1621
+    private void setupSimplePreferencesScreen(SettingsActivity.setupSimplePreferencesScreen54,1964
+    public boolean onIsMultiPane(SettingsActivity.onIsMultiPane88,3516
+    private static boolean isXLargeTablet(SettingsActivity.isXLargeTablet96,3767
+    private static boolean isSimplePreferences(SettingsActivity.isSimplePreferences107,4361
+    @TargetApi(SettingsActivity.@TargetApi115,4624
+    private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener SettingsActivity.sBindPreferenceSummaryToValueListener126,4977
+    private static void bindPreferenceSummaryToValue(SettingsActivity.bindPreferenceSummaryToValue184,7604
+    public static class GeneralPreferenceFragment SettingsActivity.GeneralPreferenceFragment203,8373
+        public void onCreate(SettingsActivity.GeneralPreferenceFragment.onCreate205,8470
+    public static class NotificationPreferenceFragment SettingsActivity.NotificationPreferenceFragment223,9249
+        public void onCreate(SettingsActivity.NotificationPreferenceFragment.onCreate226,9359
+    public static class DataSyncPreferenceFragment SettingsActivity.DataSyncPreferenceFragment243,10092
+        public void onCreate(SettingsActivity.DataSyncPreferenceFragment.onCreate245,10190
+
+src/com/group7/dragonwars/util/SystemUiHiderBase.java,405
+public class SystemUiHiderBase 11,261
+    private boolean mVisible SystemUiHiderBase.mVisible16,471
+    protected SystemUiHiderBase(SystemUiHiderBase.SystemUiHiderBase22,650
+    public void setup(SystemUiHiderBase.setup27,796
+    public boolean isVisible(SystemUiHiderBase.isVisible38,1231
+    public void hide(SystemUiHiderBase.hide43,1310
+    public void show(SystemUiHiderBase.show55,1668
+
+src/com/group7/dragonwars/util/SystemUiHiderHoneycomb.java,813
+public class SystemUiHiderHoneycomb 15,431
+    private int mShowFlags;SystemUiHiderHoneycomb.mShowFlags20,610
+    private int mHideFlags;SystemUiHiderHoneycomb.mHideFlags26,753
+    private int mTestFlags;SystemUiHiderHoneycomb.mTestFlags33,1002
+    private boolean mVisible SystemUiHiderHoneycomb.mVisible39,1194
+    protected SystemUiHiderHoneycomb(SystemUiHiderHoneycomb.SystemUiHiderHoneycomb45,1373
+    public void setup(SystemUiHiderHoneycomb.setup74,2711
+    public void hide(SystemUiHiderHoneycomb.hide81,2886
+    public void show(SystemUiHiderHoneycomb.show87,3012
+    public boolean isVisible(SystemUiHiderHoneycomb.isVisible93,3138
+    private View.OnSystemUiVisibilityChangeListener mSystemUiVisibilityChangeListener SystemUiHiderHoneycomb.mSystemUiVisibilityChangeListener97,3203
+
+src/com/group7/dragonwars/util/SystemUiHider.java,1149
+public abstract class SystemUiHider 26,1061
+    public static final int FLAG_LAYOUT_IN_SCREEN_OLDER_DEVICES SystemUiHider.FLAG_LAYOUT_IN_SCREEN_OLDER_DEVICES39,1710
+    public static final int FLAG_FULLSCREEN SystemUiHider.FLAG_FULLSCREEN46,1998
+    public static final int FLAG_HIDE_NAVIGATION SystemUiHider.FLAG_HIDE_NAVIGATION54,2377
+    protected Activity mActivity;SystemUiHider.mActivity59,2526
+    protected View mAnchorView;SystemUiHider.mAnchorView64,2658
+    protected int mFlags;SystemUiHider.mFlags73,2861
+    protected OnVisibilityChangeListener mOnVisibilityChangeListener SystemUiHider.mOnVisibilityChangeListener78,2944
+    public static SystemUiHider getInstance(SystemUiHider.getInstance97,3770
+    protected SystemUiHider(SystemUiHider.SystemUiHider106,4158
+    public void toggle(SystemUiHider.toggle136,4804
+    public void setOnVisibilityChangeListener(SystemUiHider.setOnVisibilityChangeListener148,5039
+    private static OnVisibilityChangeListener sDummyListener SystemUiHider.sDummyListener160,5361
+    public interface OnVisibilityChangeListener SystemUiHider.OnVisibilityChangeListener169,5646
+
+src/com/group7/dragonwars/engine/Func.java,0
+
+src/com/group7/dragonwars/engine/FuncEx.java,0

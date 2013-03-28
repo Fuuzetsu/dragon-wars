@@ -2,40 +2,22 @@ package com.group7.dragonwars.engine;
 
 import java.util.*;
 import java.io.*;
+import java.lang.Math;
 
 public class GameState {
 
-    Map map;
+    GameMap map;
     Logic logic;
     List<Player> players = new ArrayList<Player>();
     Integer turns = 0;
 
-    public static void main(String[] argv) {
-        if (argv.length == 1) {
-            Map m = MapReader.readMap(GameState.readFile(argv[0]));
-            Logic l = new Logic();
-            GameState game = new GameState(m, l);
-            game.play();
-        } else {
-            System.err.println("USAGE: java Game <mapName>");
-            System.exit(1);
-        }
-    }
-
-    public GameState(Map map, Logic logic) {
+    public GameState(GameMap map, Logic logic, List<Player> players) {
         this.map = map;
         this.logic = logic;
 
-        // Test data
-        this.players = new ArrayList<Player>(2);
-        players.add(new Player("Shana"));
-        players.add(new Player("Yukari"));
+        this.players = players;
     }
 
-    private static void printMap(Map m) {
-        System.out.println(m);
-        System.out.println(m.dumpMobMap());
-    }
 
     private static List<String> readFile(String filename) {
         List<String> text = new ArrayList<String>();
@@ -59,28 +41,6 @@ public class GameState {
         return text;
     }
 
-    public void play() {
-        Position p = new Position(0, 0);
-        Dragon d = new Dragon();
-        d.setPosition(p);
-        map.getField(p).setUnit(d);
-        printMap(map);
-        // System.out.println(logic.getAttackableUnits(map, d));
-        Position dest = new Position(4, 4);
-        System.out.println(String.format("Getting a %s from %s to %s", d,
-                                         d.getPosition(), dest));
-        System.out.println(logic.findPath(map, d, dest));
-        int playersInGame = 0;
-
-        for (Player player : this.players)
-            if (!player.hasLost())
-                playersInGame += 1;
-
-        if (playersInGame < 2)
-            System.exit(0); /* Announce winner etc. */
-
-    }
-
     public void attack(Unit attacker, Unit defender) {
         Set<Position> attackable = logic.getAttackableUnitPositions(map,
                                    attacker);
@@ -101,6 +61,38 @@ public class GameState {
         /* Possibly counter */
         attacker.reduceHealth(damage.getRight());
         removeUnitIfDead(attacker);
+
+    }
+
+    private Boolean move(Unit unit, Position destination) {
+        /* We are assuming that the destination was already
+         * checked to be within this unit's reach
+         */
+
+        List<Position> path = logic.findPath(map, unit, destination);
+        Integer movementCost = logic.calculateMovementCost(map, unit, path);
+
+        if (!map.isValidField(destination))
+            return false;
+
+        GameField destField = map.getField(destination);
+        if (destField.hostsUnit())
+            return false;
+
+
+        /* Double check */
+        if (unit.getRemainingMovement() > movementCost)
+            return false;
+
+
+        GameField currentField = map.getField(unit.getPosition());
+        destField.setUnit(unit);
+        unit.reduceMovement(movementCost);
+
+
+        currentField.setUnit(null);
+
+        return true;
 
     }
 
@@ -157,7 +149,7 @@ public class GameState {
         return this.turns;
     }
 
-    public Map getMap() {
+    public GameMap getMap() {
         return this.map;
     }
 

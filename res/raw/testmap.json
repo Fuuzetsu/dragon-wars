@@ -1,0 +1,133 @@
+{
+    "mapName": "testfirst",
+    "sizeX": 10,
+    "sizeY": 5,
+    "players": 2,
+    "fields": {
+        "G": {
+            "name": "Grass",
+            "file": "grass",
+            "dir": "raw",
+            "package": "com.group7.dragonwars",
+            "movementModifier": 1.0,
+            "attackModifier": 0.0,
+            "defenseModifier": 0.0,
+            "accessible": true,
+            "flightOnly": false
+        },
+        "W": {
+            "name": "Water",
+            "file": "sea",
+            "dir": "raw",
+            "package": "com.group7.dragonwars",
+            "movementModifier": 1.0,
+            "attackModifier": 0.0,
+            "defenseModifier": 0.0,
+            "accessible": false,
+            "flightOnly": true
+        }
+    },
+    "units": {
+        "S": {
+            "name": "Soldier",
+            "file": "soldier",
+            "dir": "raw",
+            "package": "com.group7.dragonwars",
+            "ranged": false,
+            "flying": false,
+            "maxHealth": 10,
+            "maxMovement": 5,
+            "attack": 2.0,
+            "meleeDefense": 1.0,
+            "rangeDefense": 2.0
+        },
+        "D": {
+            "name": "Dragon",
+            "file": "small_dragon",
+            "dir": "raw",
+            "package": "com.group7.dragonwars",
+            "ranged": true,
+            "minRange": 2.0,
+            "maxRange": 4.0,
+            "flying": true,
+            "maxHealth": 30,
+            "maxMovement": 7,
+            "attack": 3.0,
+            "meleeDefense": 2.0,
+            "rangeDefense": 2.0
+        }
+    },
+    "buildings": {
+        "C": {
+            "name": "Castle",
+            "file": "castle",
+            "dir": "raw",
+            "package": "com.group7.dragonwars",
+            "captureDifficulty": 4,
+            "attackBonus": 3.0,
+            "defenseBonus": 4.0,
+            "goalBuilding": true
+        },
+        "V": {
+            "name": "Village",
+            "file": "village",
+            "dir": "raw",
+            "package": "com.group7.dragonwars",
+            "captureDifficulty": 2,
+            "attackBonus": 1.0,
+            "defenseBonus": 1.0,
+            "goalBuilding": false
+        }
+    },
+    "terrain": [
+        "WWWWWWWWWW",
+        "WWWGGGWGWW",
+        "WWWGWGGWWW",
+        "WGGGGGWGWW",
+        "WWWWWWWWWW"
+    ],
+    "startingBuildingPos": [
+        {"building": "C",
+         "posX": 3,
+         "posY": 1,
+         "owner": 1
+        },
+        {"building": "V",
+         "posX": 3,
+         "posY": 2,
+         "owner": 2
+        },
+        {"building": "C",
+         "posX": 3,
+         "posY": 3,
+         "owner": 0
+        },
+        {"building": "C",
+         "posX": 2,
+         "posY": 2,
+         "owner": 2
+        },
+        {"building": "C",
+         "posX": 5,
+         "posY": 2,
+         "owner": 2
+        }
+    ],
+    "startingUnitPos": [
+        {"unit": "S",
+         "posX": 3,
+         "posY": 1,
+         "owner": 1
+        },
+        {"unit": "D",
+         "posX": 2,
+         "posY": 3,
+         "owner": 2
+        },
+        {"unit": "S",
+         "posX": 5,
+         "posY": 2,
+         "owner": 2
+        }
+    ]
+}

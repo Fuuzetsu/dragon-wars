@@ -1,6 +1,6 @@
 package com.group7.dragonwars.engine;
 
-public abstract class Building {
+public class Building {
 
     private String buildingName;
     private Integer captureDifficulty, remainingCaptureTime;
@@ -8,9 +8,11 @@ public abstract class Building {
     private Player owner;
     private Boolean goalBuilding;
     private Player lastCapturer;
+    private String spriteLocation, spriteDir, spritePack;
 
     public Building(String name, Integer captureDifficulty, Double attackBonus,
-                    Double defenseBonus, Boolean goalBuilding) {
+                    Double defenseBonus, Boolean goalBuilding, String spriteLocation,
+                    String spriteDir, String spritePack) {
         this.buildingName = name;
 
         this.captureDifficulty = captureDifficulty;
@@ -20,6 +22,26 @@ public abstract class Building {
         this.defenseBonus = defenseBonus;
 
         this.goalBuilding = goalBuilding;
+
+        this.spriteLocation = spriteLocation;
+        this.spriteDir = spriteDir;
+        this.spritePack = spritePack;
+    }
+
+    public Building(Building building) {
+        this.buildingName = building.getBuildingName();
+
+        this.captureDifficulty = building.getCaptureDifficulty();
+        this.remainingCaptureTime = this.captureDifficulty;
+
+        this.attackBonus = building.getAttackBonus();
+        this.defenseBonus = building.getDefenseBonus();
+
+        this.goalBuilding = building.isGoalBuilding();
+
+        this.spriteLocation = building.getSpriteLocation();
+        this.spriteDir = building.getSpriteDir();
+        this.spritePack = building.getSpritePack();
     }
 
     public Player getLastCapturer() {
@@ -30,7 +52,7 @@ public abstract class Building {
         this.lastCapturer = player;
     }
 
-    public String getName() {
+    public String getBuildingName() {
         return this.buildingName;
     }
 
@@ -77,5 +99,17 @@ public abstract class Building {
 
     public void resetCaptureTime() {
         this.remainingCaptureTime = this.captureDifficulty;
+    }
+
+    public String getSpriteLocation() {
+        return this.spriteLocation;
+    }
+
+    public String getSpriteDir() {
+        return this.spriteDir;
+    }
+
+    public String getSpritePack() {
+        return this.spritePack;
     }
 }

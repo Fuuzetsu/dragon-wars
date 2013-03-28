@@ -1,13 +1,15 @@
 package com.group7.dragonwars.engine;
 
-public abstract class RangedUnit extends Unit {
+public class RangedUnit extends Unit {
 
     private Double minRange, maxRange;
 
     public RangedUnit(String name, Double maxHealth, Integer maxMovement,
                       Double attack, Double meleeDefense, Double rangeDefense,
-                      Double minRange, Double maxRange) {
-        super(name, maxHealth, maxMovement, attack, meleeDefense, rangeDefense);
+                      Double minRange, Double maxRange, Boolean flying, String spriteLocation,
+                      String spriteDir, String spritePack) {
+        super(name, maxHealth, maxMovement, attack, meleeDefense, rangeDefense,
+              flying, spriteLocation, spriteDir, spritePack);
         this.minRange = minRange;
         this.maxRange = maxRange;
     }
@@ -21,7 +23,7 @@ public abstract class RangedUnit extends Unit {
     }
 
     public Boolean isRanged() {
-        return false;
+        return true;
     }
 
 }

@@ -1,19 +1,40 @@
 package com.group7.dragonwars.engine;
 
-public abstract class GameField {
+public class GameField {
 
-    String fieldName;
-    Unit hostedUnit;
-    Building hostedBuilding;
-    Double movementModifier;
-    Double defenseModifier, attackModifier;
+    private String fieldName;
+    private Unit hostedUnit;
+    private Building hostedBuilding;
+    private Double movementModifier;
+    private Double defenseModifier, attackModifier;
+    private Boolean flightOnly, accessible;
+    private String spriteLocation, spriteDir, spritePack;
 
-    public abstract Boolean doesAcceptUnit(Unit unit);
+    public  Boolean doesAcceptUnit(Unit unit) {
+        Boolean canStep = true;
 
-    public GameField(String fieldName, Double movementModifier,
-                     Double attackModifier, Double defenseModifier) {
+        if (this.flightOnly)
+            canStep = unit.isFlying();
+
+        return this.accessible && canStep;
+    }
+
+    public GameField(String fieldName, Double movementModifier, Double attackModifier,
+                     Double defenseModifier, Boolean accessible, Boolean flightOnly,
+                     String spriteLocation, String spriteDir, String spritePack) {
         this.fieldName = fieldName;
+        this.hostedUnit = null;
+        this.hostedBuilding = null;
         this.movementModifier = movementModifier;
+        this.attackModifier = attackModifier;
+        this.defenseModifier = defenseModifier;
+        this.accessible = accessible;
+        this.flightOnly = flightOnly;
+
+        this.spriteLocation = spriteLocation;
+        this.spriteDir = spriteDir;
+        this.spritePack = spritePack;
+
     }
 
     public Double getDefenseModifier() {
@@ -39,6 +60,7 @@ public abstract class GameField {
     public Double getMovementModifier() {
         return this.movementModifier;
     }
+
 
     public Boolean hostsUnit() {
         return this.hostedUnit != null;
@@ -67,6 +89,22 @@ public abstract class GameField {
     }
 
     public String toString() {
+        return this.getFieldName();
+    }
+
+    public String getFieldName() {
         return this.fieldName;
+    }
+
+    public String getSpriteLocation() {
+        return this.spriteLocation;
+    }
+
+    public String getSpriteDir() {
+        return this.spriteDir;
+    }
+
+    public String getSpritePack() {
+        return this.spritePack;
     }
 }

@@ -1,6 +1,8 @@
 package com.group7.dragonwars.engine;
 
-public abstract class Unit {
+import java.util.LinkedList;
+
+public class Unit {
 
     private String name;
     private Integer maxMovement, movement;
@@ -9,9 +11,14 @@ public abstract class Unit {
     private Position position;
     private Boolean hasFinishedTurn = false;
     private Player owner;
+    private Boolean isFlying;
+    private String spriteLocation, spriteDir, spritePack;
+
 
     public Unit(String name, Double maxHealth, Integer maxMovement,
-                Double attack, Double meleeDefense, Double rangeDefense) {
+                Double attack, Double meleeDefense, Double rangeDefense,
+                Boolean isFlying, String spriteLocation,
+                String spriteDir, String spritePack) {
         this.name = name;
 
         this.maxHealth = maxHealth;
@@ -23,6 +30,32 @@ public abstract class Unit {
         this.attack = attack;
         this.meleeDefense = meleeDefense;
         this.rangeDefense = rangeDefense;
+
+        this.isFlying = isFlying;
+        this.spriteLocation = spriteLocation;
+        this.spriteDir = spriteDir;
+        this.spritePack = spritePack;
+    }
+
+    /* Used for copying the unit template */
+    public Unit(Unit unit) {
+        this.name = unit.name;
+
+        this.maxHealth = unit.getMaxHealth();
+        this.health = this.maxHealth;
+
+        this.maxMovement = unit.getMaxMovement();
+        this.movement = this.maxMovement;
+
+        this.attack = unit.getAttack();
+        this.meleeDefense = unit.getMeleeDefense();
+        this.rangeDefense = unit.getRangeDefense();
+
+        this.isFlying = unit.isFlying();
+
+        this.spriteLocation = unit.getSpriteLocation();
+        this.spriteDir = unit.getSpriteDir();
+        this.spritePack = unit.getSpritePack();
     }
 
     public Boolean isDead() {
@@ -94,4 +127,31 @@ public abstract class Unit {
         return false;
     }
 
+    public Boolean isFlying() {
+        return this.isFlying;
+    }
+
+    public String getSpriteLocation() {
+        return this.spriteLocation;
+    }
+
+    public String getSpriteDir() {
+        return this.spriteDir;
+    }
+
+    public String getSpritePack() {
+        return this.spritePack;
+    }
+
+    public String getUnitName() {
+        return this.name;
+    }
+
+    public Boolean reduceMovement(Integer amount) {
+        if (this.movement - amount < 0)
+            return false;
+
+        this.movement -= amount;
+        return true;
+    }
 }

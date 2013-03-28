@@ -26,11 +26,11 @@ public class Node {
         List<AtomicAction> nodes = new ArrayList<AtomicAction>();
 
         //explore tree recursively up to a defined depth
-        for(Node child : children) {
+        for (Node child : children) {
             nodes.addAll((List<AtomicAction>)child.getActions());
         }
 
-        if(children.size() == 0) {
+        if (children.size() == 0) {
             nodes.add(this.nodeAction);
         }
 
@@ -41,11 +41,11 @@ public class Node {
         List<Node> nodes = new ArrayList<Node>();
 
         //explore tree recursively up to a defined depth
-        for(Node child : children) {
+        for (Node child : children) {
             nodes.addAll((List<Node>)child.getTerminals());
         }
 
-        if(children.size() == 0) {
+        if (children.size() == 0) {
             nodes.add(this);
         }
 
@@ -56,13 +56,13 @@ public class Node {
     public float Collaplse() {
         float value = currentValue;
 
-        if(getMiniMax()) {
-            for(Node child : children) {
+        if (getMiniMax()) {
+            for (Node child : children) {
                 value += child.Collaplse();
                 size--;
             }
         } else {
-            for(Node child : children) {
+            for (Node child : children) {
                 value += child.Collaplse();
                 size--;
             }
@@ -75,11 +75,11 @@ public class Node {
     public void AddChildNode(float value, AtomicAction action) {
         children.add(new Node(this, nodeDepth+1, value, action));
 
-        if(children.size() > 0) {
-            if(value < minValue) {
+        if (children.size() > 0) {
+            if (value < minValue) {
                 minValue = value;
                 min = children.size();
-            } else if(value > maxValue) {
+            } else if (value > maxValue) {
                 maxValue = value;
                 max = children.size();
             }
@@ -92,10 +92,10 @@ public class Node {
         float totalValue = currentValue;
 
         //recursively calculates current node value;
-        if(nodeParent == null)
+        if (nodeParent == null)
             return getCurrentValue();
 
-        if(nodeDepth > 0)
+        if (nodeDepth > 0)
             totalValue += nodeParent.getTotalValue();
 
         return totalValue;
