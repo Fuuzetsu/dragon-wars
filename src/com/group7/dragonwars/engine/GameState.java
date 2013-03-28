@@ -2,6 +2,7 @@ package com.group7.dragonwars.engine;
 
 import java.util.*;
 import java.io.*;
+import java.lang.Math;
 
 public class GameState {
 
@@ -60,6 +61,38 @@ public class GameState {
         /* Possibly counter */
         attacker.reduceHealth(damage.getRight());
         removeUnitIfDead(attacker);
+
+    }
+
+    private Boolean move(Unit unit, Position destination) {
+        /* We are assuming that the destination was already
+         * checked to be within this unit's reach
+         */
+
+        List<Position> path = logic.findPath(map, unit, destination);
+        Integer movementCost = logic.calculateMovementCost(map, unit, path);
+
+        if (!map.isValidField(destination))
+            return false;
+
+        GameField destField = map.getField(destination);
+        if (destField.hostsUnit())
+            return false;
+
+
+        /* Double check */
+        if (unit.getRemainingMovement() > movementCost)
+            return false;
+
+
+        GameField currentField = map.getField(unit.getPosition());
+        destField.setUnit(unit);
+        unit.reduceMovement(movementCost);
+
+
+        currentField.setUnit(null);
+
+        return true;
 
     }
 
