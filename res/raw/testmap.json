@@ -66,7 +66,7 @@
             "captureDifficulty": 4,
             "attackBonus": 3.0,
             "defenseBonus": 4.0,
-            "goalBuilding": true
+            "goalBuilding": true,
             "produces": ["D", "S"]
         },
         "V": {
@@ -77,7 +77,7 @@
             "captureDifficulty": 2,
             "attackBonus": 1.0,
             "defenseBonus": 1.0,
-            "goalBuilding": false
+            "goalBuilding": false,
             "produces": []
         }
     },
