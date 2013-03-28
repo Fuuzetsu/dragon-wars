@@ -333,7 +333,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
         	info.add("Health: " + unit.getHealth() + "/" + unit.getMaxHealth());
         	info.add("Attack: " + unit.getAttack());
         	info.add("Defense: " + unit.getMeleeDefense() + " (Melee) " + unit.getRangeDefense() + " (Ranged)");
-        	info.add("");
+        	info.add(""); // FIXME: this is intended to produce some sort of space between the unit and terrain info
         }
 
     	// field names
@@ -371,7 +371,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
         }
 
         Paint back_paint = new Paint();
-        back_paint.setColor(Color.BLUE); // FIXME make it black
+        back_paint.setColor(Color.BLUE); // FIXME make it black, keep it blue for debug purposes
 
         Rect back_rect = new Rect(0, canvas.getHeight() - text_bounds.bottom, text_bounds.right, canvas.getHeight());
         canvas.drawRect(back_rect, back_paint);
@@ -413,14 +413,30 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
 
 	@Override
 	public boolean onSingleTapConfirmed(MotionEvent event) {
-    	int touchX = (int)((event.getX() - scroll_offset.getX()) / tilesize); // the coordinates of the pressed tile
+		int touchX = (int)((event.getX() - scroll_offset.getX()) / tilesize); // the coordinates of the pressed tile
     	int touchY = (int)((event.getY() - scroll_offset.getY()) / tilesize); // taking into account scrolling
 
 		//Log.v(null, "Touch ended at: (" + touchX + ", " + touchY + ") (dimensions are: (" + this.map.getWidth() + "x" + this.map.getHeight() + "))");
         Position newselected = new Position(touchX, touchY);
         if (this.map.isValidField(touchX, touchY)) {
-        	//Log.v(null, "Setting selection");
-        	this.selected = newselected;
+        	if (map.getField(selected).hostsUnit()) {
+        		// If the user currently has a unit selected and selects a field that this unit could move to
+        		// (and the unit has not finished it's turn)
+                GameField selected_field = map.getField(selected);
+                if (!selected_field.getUnit().hasFinishedTurn()) {
+	                List<Position> unit_destinations = logic.destinations(map, selected_field.getUnit());
+	                if (unit_destinations.contains(newselected)) {
+	                	/* pop up a menu with options:
+	                	 * - Wait (go here and do nothing else
+	                	 * - Attack (if there are units to attack)
+	                	 * - Cancel (do nothing, also do not set the selection to here)
+	                	 */
+	                }
+                }
+        	} else {
+	        	//Log.v(null, "Setting selection");
+	        	this.selected = newselected;
+        	}
         }
 		return true;
 	}
