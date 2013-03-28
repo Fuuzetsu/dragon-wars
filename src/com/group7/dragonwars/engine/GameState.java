@@ -157,4 +157,28 @@ public class GameState {
         return this.players;
     }
 
+    /* I'll just roll with GF and String for now; should be easy to change */
+    public Boolean produceUnit(GameField field, String unitName) {
+        /* TODO decrement player gold or whatever it is we're doing */
+        if (!field.hostsBuilding() || field.hostsUnit())
+            return false;
+
+        Building building = field.getBuilding();
+        Unit unit = null;
+        for (Unit u : building.getProducableUnits())
+            if (u.getUnitName().equals(unitName)) {
+                unit = new Unit(u);
+                break;
+            }
+
+        if (unit == null)
+            return false;
+
+        unit.setOwner(building.getOwner());
+        field.setUnit(unit);
+
+        return true;
+
+    }
+
 }
