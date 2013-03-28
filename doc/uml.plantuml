@@ -48,13 +48,15 @@ package com.group7.dragonwars.engine.GoalArbitration {
             +float getActionValue()
       }
 
-      class AttackAt(GameState, Unit, Unit, float) {
+      class AttackAt {
             -Unit targetUnit
+            +AttackAt(GameState, Unit, Unit, float)
             +void Perform()
       }
 
-      class MoveTo(GameState, Unit, Position, float) {
+      class MoveTo {
             -Position destination
+            +MoveTo(GameState, Unit, Position, float)
             +void Perform()
       }
 
