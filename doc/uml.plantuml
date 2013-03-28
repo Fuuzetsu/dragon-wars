@@ -22,8 +22,13 @@ package com.group7.dragonwars.util {
 package com.group7.dragonwars.engine.GoalArbitration {
       AtomicAction o-- com.group7.dragonwars.engine.GameState
       AtomicAction o-- com.group7.dragonwars.engine.Unit
-      class AttackAt
-      class MoveTo
+      AttackAt o-- com.group7.dragonwars.engine.GameState
+      AttackAt o-- com.group7.dragonwars.engine.Unit
+      AttackAt <|-- AtomicAction
+      MoveTo o-- com.group7.dragonwars.engine.GameState
+      MoveTo o-- com.group7.dragonwars.engine.Position
+      MoveTo o-- com.group7.dragonwars.engine.Unit
+      MoveTo <|-- AtomicAction      
       class Node
       class StateTree
 
@@ -36,6 +41,18 @@ package com.group7.dragonwars.engine.GoalArbitration {
             +Unit getUnit()
             +float getActionValue()
       }
+
+      class AttackAt(GameState, Unit, Unit, float) {
+            -Unit targetUnit
+            +void Perform()
+      }
+
+      class MoveTo(GameState, Unit, Position, float) {
+            -Position destination
+            +void Perform()
+      }
+
+      
 }
 
 package com.group7.dragonwars.engine {
