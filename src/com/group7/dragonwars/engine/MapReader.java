@@ -208,9 +208,11 @@ public class MapReader {
             Double attackBonus = f.getDouble("attackBonus");
             Double defenseBonus = f.getDouble("defenseBonus");
             Boolean goalBuilding = f.getBoolean("goalBuilding");
+            Integer captureWorth = f.getInt("captureWorth");
 
             return new Building(name, captureDifficulty, attackBonus,
-                                defenseBonus, goalBuilding, file, dir, pack);
+                                defenseBonus, goalBuilding, captureWorth,
+                                file, dir, pack);
 
         }
     }
