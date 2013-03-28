@@ -1,55 +1,398 @@
 @startuml
-GameState o-- Map
-GameState o-- Logic
-GameState o-- Player
-Building o-- Player
-MapReader - Map : reads >
-Map o-- GameField
-Map <|.. java.lang.Iterable
-Logic <|.. java.util.Comparator
-GameField o-- Building
-GameField o-- Unit
-Position o-- Pair
-Unit o-- Position
-Unit o-- Player
-Player o-- Unit
-Player <|-- ComputerPlayer
-Unit <|-- RangedUnit
-RangedUnit <|-- Dragon
-Unit <|-- Soldier
-GameField <|-- Grass
-GameField <|-- Water
-GameField <|-- Pit
 
+package com.group7.dragonwars {
+      GameActivity o-- com.group7.dragonwars.engine.Logic
+      GameActivity o-- com.group7.dragonwars.engine.GameMap
+      GameActivity o-- com.group7.dragonwars.engine.GameState
+      GameActivity o-- com.group7.dragonwars.engine.Position
+      GameActivity o-- com.group7.dragonwars.engine.GameField
+      GameActivity o-- com.group7.dragonwars.engine.Building
+      GameActivity o-- com.group7.dragonwars.engine.Unit
+      GameActivity o-- com.group7.dragonwars.engine.Pair
+      class MainMenuActivity
+      class SettingsActivity
+}
 
-class GameState {
-      -Map map
-      -Logic logic
-      -List<Player> players
-      -Integer turns
-      +Integer getTurns()
-      +void advanceTurn()
-      +void advancePlayer()
-      +Map getMap()
-      +void attack(Unit, Unit)
-      +void play()
-      -void updateBuildingCaptureCounters()
-      -void removeUnitIfDead(Unit)
+package com.group7.dragonwars.util {
+      class SystemUiHiderBase
+      class SystemUiHiderHoneycomb
+      class SystemUiHider
+}
+
+package com.group7.dragonwars.engine.GoalArbitration {
+      AtomicAction o-- com.group7.dragonwars.engine.GameState
+      AtomicAction o-- com.group7.dragonwars.engine.Unit
+      AttackAt o-- com.group7.dragonwars.engine.GameState
+      AttackAt o-- com.group7.dragonwars.engine.Unit
+      AttackAt <|-- AtomicAction
+      MoveTo o-- com.group7.dragonwars.engine.GameState
+      MoveTo o-- com.group7.dragonwars.engine.Position
+      MoveTo o-- com.group7.dragonwars.engine.Unit
+      MoveTo <|-- AtomicAction      
+      Node o-- AtomicAction
+      StateTree o-- com.group7.dragonwars.engine.GameState
+      StateTree o-- com.group7.dragonwars.engine.Logic
+      StateTree o-- com.group7.dragonwars.engine.Pair
+      StateTree o-- com.group7.dragonwars.engine.Player
+      StateTree o-- com.group7.dragonwars.engine.Position
+      StateTree o-- com.group7.dragonwars.engine.Unit
+      StateTree o-- AtomicAction
+
+      abstract class AtomicAction {
+            -float actionValue
+            #GameState gameState
+            -Unit actionUnit
+            +AtomicAction(GameState, Unit, float)
+            +void Perform() {abstract}
+            +Unit getUnit()
+            +float getActionValue()
+      }
+
+      class AttackAt {
+            -Unit targetUnit
+            +AttackAt(GameState, Unit, Unit, float)
+            +void Perform()
+      }
+
+      class MoveTo {
+            -Position destination
+            +MoveTo(GameState, Unit, Position, float)
+            +void Perform()
+      }
+
+      class Node {
+            -AtomicAction nodeAction
+            -Node nodeParent
+            -List<Node> children
+            -int min
+            -int max
+            -float minValue
+            -float maxValue
+            -int nodeDepth
+            -float currentValue
+            -int size {static}
+            -int maxSize {static}
+            +Node(Node, depth, currentvalue, action)
+            +List<AtomicAction> getActions()
+            +List<Node> getTerminals()
+            +float Collapse()
+            +void AddChildNode(float, AtomicAction)
+            +float getTotalValue
+            +float getCurrentValue()
+            +boolean getMiniMax
+            +void setSize(int)
+            +int getSize()
+            +boolean isFull()
+      }
+
+      class StateTree {
+            -int maxSize
+            -GameState gameState
+            -Node base
+            -Player stateTreeOwner
+            -List<AtomicAction>
+            +StateTree(GameState, int, Player)
+            -void Explore()
+            +List<AtomicAction> getActions()
+      }
+
       
 }
 
-class Map {
-      -GameField[][] fields
-      +GameField getField(Position)
-      +Boolean isInsantiated()
-      +Boolean isValidField(Integer, Integer)
-      +Boolean isValidField(Position)
+package com.group7.dragonwars.engine {
+      GameState o-- GameMap
+      GameState o-- Logic
+      GameState o-- Player
+      Building o-- Player
+      MapReader - GameMap : reads >
+      GameMap o-- GameField
+      GameMap <|.. java.lang.Iterable
+      GameField o-- Building
+      GameField o-- Unit
+      Position o-- Pair
+      Unit o-- Position
+      Unit o-- Player
+      Player o-- Unit
+      Player <|-- PlayerAI
+      PlayerAI o-- com.group7.dragonwars.engine.GoalArbitration.AtomicAction
+      PlayerAI o-- com.group7.dragonwars.engine.GoalArbitration.StateTree
+      Unit <|-- RangedUnit
+      BuildingGetter <|.. FuncEx
+      UnitGetter <|.. FuncEx
+      TerrainGetter <|.. FuncEx
+
+      class GameState {
+            -GameMap map
+            -Logic logic
+            -List<Player> players
+            -Integer turns
+            +Integer getTurns()
+            +GameState GameState(GameMap, Logic, List<Player>)
+            +void advanceTurn()
+            +void advancePlayer()
+            +GameMap getMap()
+            +void attack(Unit, Unit)
+            +Boolean move(Unit, Position)
+            +void play()
+            +List<Player> getPlayers()
+            +Boolean produceUnit(GameField, String)
+            -void updateBuildingCaptureCounters()
+            -Boolean removeUnitIfDead(Unit)
+      }
+
+      class GameMap {
+            -List<List<GameField>> fields
+            -List<Player> players
+            -HashMap<Character, Unit> units
+            -HashMap<Character, Building> buildings
+            -HashMap<Character, GameField> gameFields
+            +GameMap(List<List<GameField>> HashMap<Character, Unit>, HashMap<Character, Building>, HashMap<Character, GameField>, List<Player>)
+            +Iterator<GameField> iterator()
+            +Integer getWidth()
+            +Integer getHeight()
+            +GameField getField(Integer, Integer)
+            +GameField getField(Position)
+            +Boolean isInsantiated()
+            +Boolean isValidField(Position)
+            +Boolean isValidField(Integer, Integer)
+            +HashMap<Character, Unit> getUnitMap()
+            +HashMap<Character, Building> getBuildingMap()
+            +HashMap<Character, GameField> getGameFieldMap()
+            +List<Player> getPlayers()
+      }
+
+
+      class Position {
+            -Pair<Integer, Integer> pair
+            +Position(Integer, Integer)
+            +Integer getX()
+            +Integer getY()
+      }
+
+      class MapReader {
+            -String TAG {static}
+            +GameMap readMap(List<String>) {static}
+            -List<List<O>> listifyJSONArray(FuncEx<Character, O, JSONException>) {static}
+            -void setBuildings(List<List<GameField>>, List<Player>, HashMap<Character, Unit>, HashMap<Character, Building>, JSONArray) {static}
+            -void spawnUnits(List<List<GameField>>, List<Player>, HashMap<Character, Unit>, JSONArray) {static}
+            -List<O> map(FuncEx<I, O, E extends Exception>, List<I>) throws E {static}
+      }
+
+
+      interface FuncEx<I, O, E extends Exception> {
+            +O apply(I) throws E
+      }
+
+      class Pair {
+            -L left
+            -R right
+            +Pair<L, R>
+            +L getLeft()
+            +R getRight()
+      }
+
+      namespace MapReader {
+            com.group7.dragonwars.engine.MapReader o-- BuildingGetter
+            com.group7.dragonwars.engine.MapReader o-- TerrainGetter
+            com.group7.dragonwars.engine.MapReader o-- UnitGetter
+      
+            class BuildingGetter {
+                  -HashMap<Character, JSONObject> map
+                  +BuildingGetter BuildingGetter(<HashMap<Character, JSONObject>)
+                  +Building apply(Character) throws JSONException
+            }
+
+            class TerrainGetter {
+                  -HashMap<Character, JSONObject> map
+                  +TerrainGetter TerrainGetter(<HashMap<Character, JSONObject>)
+                  +GameField apply(Character) throws JSONException
+            }
+
+            class UnitGetter {
+                  +Unit apply(JSONObject) throws JSONException
+            }
+      }
+
+      class Unit {	 
+            -Double health
+            -Double maxHealth
+            -Integer attack
+            -Double meleeDefense
+            -Double rangeDefense
+            -Postition position
+            -Player owner
+            -String name
+            -Integer movement
+            -Integer maxMovement
+            -Boolean hasFinishedTurn
+            -Boolean isFlying
+            -Integer productionCost
+            -String spriteLocation
+            -String spriteDir
+            -String spritePack
+            +Unit(String, Double, Integer, Double, Double, Double, Boolean, Integer, String, String, String)
+            +Unit(Unit)
+            +Boolean isDead()
+            +Double getHealth()
+            +Double getMaxHealth()
+            +Double getAttack()
+            +Integer getRemainingMovement()			 	 
+            +Integer getMaxMovement()			 	 
+            +Double getMeleeDefense()
+            +Double getRangeDefense()
+            +Player getOwner()
+            +void setOwner()
+            +Position getPosition()
+            +void setPosition(Position)
+            +void restortHealth(Double)
+            +void reduceHealth(Double)
+            +Boolean hasFinishedTurn()
+            +Boolean isRanged()
+            +Boolean isFlying()
+            +String getSpriteLocation()
+            +String getSpriteDir()
+            +String getSpritePack()
+            +String getUnitName()
+            +Boolean reduceMovement(Integer)
+            +Integer getProductionCost()
+      }
+
+      class RangedUnit {
+            -Double minRange
+            -Double maxRange
+            +RangedUnit(String, Double, Integer, Double, Double, Double, Double, Double, Boolean, Integer, String, String, String)
+            +Double getMinRange()
+            +Double getMaxRange()
+      }
+
+      class Logic {
+            -String TAG {static}
+            +List<Position> findPath(GameMap, Unit, Position)
+            +Integer calculateMovementCost(GameMap, Unit, List<Position>)
+            +List<Position> destinations(GameMap, Unit)
+            +Pair<Double, Double> calculateDamage(GameMap, Unit, Unit)
+            +Double calculateRawDamage(GameMap, Unit, Unit)
+            +Double calculateCounterDamage(GameMap, Unit, Unit)
+            -Double calculateTheoreticalCounterDamage(GameMap, Unit, Unit, Double)
+            -List<Position> AStar(GameMap, Unit, Position)
+            -List<Position> getAdjacentPositions(Position)
+            -Double getMovementCost(GameMap, Unit, Position)
+            +Set<Position> getAttackableUnitPositions(GameMap, Unit)
+            -Set<Position> getAttackableFields(GameMap, Unit)
+            -Set<Position> getPositionsInRange(GameMap, Position, Double, Double)
+            -Integer getManhattanDistance(Position, Position)
+            -Pair<Integer, Integer> getDistanceAway(Position, Position)
+      }
+
+
+      namespace Logic {
+            com.group7.dragonwars.engine.Logic o-- AStarComparator
+            AStarComparator <|.. java.util.Comparator
+
+
+            class AStarComparator {
+                  +int compare(Pair<List<Position>, Double>, Pair<List<Position>, Double>)
+            }            
+      }
+
+
+      class Player {
+            -String name
+            -Boolean lost
+            -Integer gold
+            -List<Unit> ownedUnits
+            -List<Building> ownedBuildings
+            +String getName()
+            +Boolean hasLost()
+            +Boolean hasMoveableUnits()
+            +void removeUnit(unit)
+            +List<Unit> getOwnedUnits()
+            +List<Building> getOwnedBuildings()      
+            +void addUnit(Unit)
+            +void addBuilding(Building)
+            +Integer getGoldAmount()
+            +void setGouldAmount(Integer)
+      }
+
+      class PlayerAI {
+            -GameState gameState
+            +PlayerAI(String, GameState)
+            +void takeTurn()
+            -void UpdateActions()
+      }
+
+      class Building {
+            -Integer captureWorth
+            -String buildingName
+            -Integer captureDifficulty
+            -Integer remainingCaptureTime
+            -Double attackBonus
+            -Double defenseBonus
+            -Player owner
+            -Player lastCapturer
+            -Boolean goalBuilding
+            -String spriteLocation
+            -String spriteDir
+            -String spritePack
+            -List<Unit> producableUnits
+            -Position position
+            +Building(String, Integer, Double, Double, Boolean, Integer, String, String, String)
+            +Building(Building)
+            +Boolean canProduceUnits()
+            +void addProducableUnit(Unit)
+            +List<Unit> getProducableUnits()
+            +Double getAttackBonus()
+            +Double getDefenseBonus()
+            +Player getLastCapturer()
+            +void setLastCapturer()
+            +Player getOwner()
+            +String getName()
+            +Boolean hasOwner()
+            +void reduceCaptureTime(Integer)
+            +void resetCaptureTime()
+            +Integer getCaptureDifficulty()
+            +Integer getRemainingCaptureTime()
+            +Integer setOwner(Player)
+            +Boolean isGoalBuilding()
+            +String getSpriteLocation()
+            +String getSpriteDir()
+            +String getSpritePack()
+            +Position getPosition()
+            +void setPosition(Position)
+            +Integer getCaptureWorth()
+      }
+
+      class GameField {
+            -String fieldName
+            -Unit hostedUnit
+            -Building hostedBuilding
+            -Double movementModifier
+            -Double defenseModifier
+            -Double attackModifier
+            -Boolean flightOnly
+            -Boolean accessible
+            +GameField(String, Double, Double, Double, Boolean, Boolean, String, String, String)
+            +Boolean doesAcceptUnit(Unit)
+            +Double getAttackModifier()
+            +Double getMovementModifier()
+            +Boolean hostsUnit()
+            +Boolean hostsBuilding()
+            +Unit getUnit()
+            +Building getBuilding()
+            +Unit setUnit(Unit)
+            +String getFieldName()
+            +Building setBuilding(Building)
+            +String getSpriteLocation()
+            +String getSpriteDir()
+            +String getSpritePack()
+      }
+
 }
 
 namespace java.util #DDDDDD {
       interface Comparator<T> {
             +int compare(T, T)
-      }     
+      }
 }
 
 
@@ -59,148 +402,6 @@ namespace java.lang #DDDDDD {
       }	    
 }
 
-class Position {
-      -Pair<Integer, Integer> pair
-      +Integer getX()
-      +Integer getY()
-}
-
-class MapReader {
-      +Map readMap(File)
-}
-
-class Pair {
-      -L left
-      -R right
-      +Pair<L, R>
-      +L getLeft()
-      +R getRight()
-}
-
-abstract class Unit {	 
-      -Double health
-      -Double maxHealth
-      -Integer attack
-      -Integer meleeDefense
-      -Integer rangeDefense
-      -Postition position
-      -Player owner
-      -String name
-      -Integer movement
-      -Integer maxMovement
-      -Boolean hasFinishedTurn
-      +Boolean isDead()
-      +Integer getHealth()
-      +Integer getMaxHealth()
-      +Integer getAttack()
-      +Integer getRemainingMovement()			 	 
-      +Integer getMaxMovement()			 	 
-      +Integer getMeleeDefense()
-      +Integer getRangeDefense()
-      +Player getOwner()
-      +void setOwner
-      +Position getPosition()
-      +void setPosition(Position)
-      +void restortHealth(Double)
-      +void reduceHealth(Double)
-      +Boolean hasFinishedTurn()
-      +Boolean canMoveTo(Position)
-      +Boolean isRanged()
-}
-
-class Logic {
-      +List<Position> findPath(Map, Unit, Position)
-      +Pair<Double, Double> calculateDamage(Map, Unit, Unit)
-      +Double calculateCounterDamage(Map, Unit, Unit)
-      -Double calculateTheoreticalCounterDamage(Map, Unit, Unit, Double)
-      -List<Position> AStar(Map, Unit, Position)
-      -List<Position> getAdjacentPositions(Position)
-      -class AStarComparator
-      -Double getMovementCost(Map, Unit, Position)
-      +Set<Position> getAttackableUnitPositions(Map, Unit)
-      -Set<Position> getAttackableFields(Map, Unit)
-      -Set<Position> getPositionsInRange(Map, Position, Double)
-      -Integer getManhattanDistance(Position, Position)
-      -Pair<Integer, Integer> getDistanceAway(Position, Position)
-      
-}
-
-class Player {
-      -String name
-      -Color color
-      -Boolean playerOwned
-      -List<Unit> unitsOwned
-      +Boolean isHumanPlayer()
-      +String getName()
-      +Boolean hasLost()
-      +Boolean hasMoveableUnits()
-      +void removeUnit(unit)
-}
-
-class ComputerPlayer {
-      +void takeTurn()
-}
-
-abstract class Building {
-      -String buildingName
-      -Integer captureDifficulty
-      -Integer remainingCaptureTime
-      -Double attackBonus
-      -Double defenseBonus
-      -Player owner
-      -Player lastCapturer
-      -Boolean goalBuilding
-      +Double getAttackBonus()
-      +Double getDefenseBonus()
-      +Player getLastCapturer()
-      +void setLastCapturer()
-      +Player getOwner()
-      +String getName()
-      +Boolean hasOwner()
-      +void reduceCaptureTime(Integer)
-      +void resetCaptureTime()
-      +Integer getCaptureDifficulty()
-      +Integer getRemainingCaptureTime()
-      +Integer setOwner(Player)
-      +Boolean isGoalBuilding()      
-}
-
-abstract class GameField {
-      -String fieldName
-      -Unit hostedUnit
-      -Building hostedBuilding
-      -Double movementModifier
-      -Double defenseModifier
-      -Double attackModifier
-      +Double getAttackModifier()
-      +Double getMovementModifier()
-      +Boolean hostsUnit()
-      +Boolean hostsBuilding()
-      +Unit getUnit()
-      +Building getBuilding()
-      +Unit setUnit()
-      +Building setBuilding()
-}
-
-abstract class RangedUnit {
-      +Double getMinRange()
-      +Double getMaxRange()
-}
-
-class Dragon {
-}
-
-class Soldier {
-}
-
-class Grass {
-}
-
-class Pit {
-}
-
-class Water {
-}
 
 hide empty members
 
