@@ -5,6 +5,7 @@ import java.util.*;
 public class Player {
     private String name;
     private Boolean lost;
+    private Integer gold = 5;
     List<Unit> ownedUnits = new ArrayList<Unit>();
     List<Building> ownedBuildings = new ArrayList<Building>();
 
@@ -47,5 +48,17 @@ public class Player {
 
     public String toString() {
         return this.name;
+    }
+
+    public Integer getGoldAmount() {
+        return this.gold;
+    }
+
+    public void setGoldAmount(Integer amount) {
+        this.gold = amount;
+    }
+
+    public List<Building> getOwnedBuildings() {
+        return this.ownedBuildings;
     }
 }
