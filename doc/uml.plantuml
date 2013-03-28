@@ -12,7 +12,7 @@ Position o-- Pair
 Unit o-- Position
 Unit o-- Player
 Player o-- Unit
-Player <|-- ComputerPlayer
+Player <|-- PlayerAI
 Unit <|-- RangedUnit
 RangedUnit <|-- Dragon
 Unit <|-- Soldier
@@ -206,8 +206,7 @@ class Player {
       +void setGouldAmount(Integer)
 }
 
-class ComputerPlayer {
-      +void takeTurn()
+class PlayerAI {
 }
 
 abstract class Building {
