@@ -190,14 +190,20 @@ class AStarComparator {
 
 class Player {
       -String name
-      -Color color
-      -Boolean playerOwned
-      -List<Unit> unitsOwned
-      +Boolean isHumanPlayer()
+      -Boolean lost
+      -Integer gold
+      -List<Unit> ownedUnits
+      -List<Building> ownedBuildings
       +String getName()
       +Boolean hasLost()
       +Boolean hasMoveableUnits()
       +void removeUnit(unit)
+      +List<Unit> getOwnedUnits()
+      +List<Building> getOwnedBuildings()      
+      +void addUnit(Unit)
+      +void addBuilding(Building)
+      +Integer getGoldAmount()
+      +void setGouldAmount(Integer)
 }
 
 class ComputerPlayer {
