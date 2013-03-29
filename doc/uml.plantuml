@@ -44,15 +44,13 @@ package android.widget #DDDDDD {
 }
 
 package android.graphics #DDDDDD {
-      class Bitmap
-      class Paint
       class Canvas
       class RectF
       class Rect
-
-      namespace Paint {
-            enum Style
+      class Paint {
+             +enum Style
       }
+      
 }
 
 package android.os #DDDDDD {
@@ -81,7 +79,6 @@ package com.group7.dragonwars {
       MainMenuActivity o-- android.view.Menu
       MainMenuActivity o-- android.view.MenuItem
       MainMenuActivity o-- android.content.Intent
-      MainMenuActivity o-- android.view.View
       
       
       class GameActivity {
