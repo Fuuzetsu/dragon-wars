@@ -163,6 +163,30 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
                                         BitmapFactory.decodeResource(context.getResources(),
                                                                      borderID));
 
+        borderID = getResources().getIdentifier("water_grass_corner1",
+                                                "raw", "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Grass->water corner SW",
+                                        BitmapFactory.decodeResource(context.getResources(),
+                                                                     borderID));
+
+        borderID = getResources().getIdentifier("water_grass_corner4",
+                                                "raw", "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Grass->water corner SE",
+                                        BitmapFactory.decodeResource(context.getResources(),
+                                                                     borderID));
+
+        borderID = getResources().getIdentifier("water_grass_corner3",
+                                                "raw", "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Grass->water corner NE",
+                                        BitmapFactory.decodeResource(context.getResources(),
+                                                                     borderID));
+
+        borderID = getResources().getIdentifier("water_grass_corner2",
+                                                "raw", "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Grass->water corner NW",
+                                        BitmapFactory.decodeResource(context.getResources(),
+                                                                     borderID));
+
         Log.d(TAG, "after fields");
         /* Register units */
 
@@ -313,92 +337,100 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
     }
 
     public void drawBorder(Canvas canvas, Position currentField, RectF dest) {
+        /* TODO not hard-code this */
         Integer i = currentField.getX();
         Integer j = currentField.getY();
 
+        final String FAKE = "NoTaReAlTiL3";
+
         String gfn = map.getField(currentField).getFieldName();
 
-        GameField  ne, n, nw, e, c, w, se, s, sw;
+        Position nep, np, nwp, ep, cp, wp, sep, sp, swp;
+        String ne, n, nw, e, c, w, se, s, sw;
 
-        if (i < 1 || j < 1 || i > 7 || j > 7)
-            return;
+        nep = new Position(i - 1, j - 1);
+        np = new Position(i, j - 1);
+        nwp = new Position(i + 1, j - 1);
 
-        ne = map.getField(new Position(i - 1, j - 1));
-        n = map.getField(new Position(i, j - 1));
-        nw = map.getField(new Position(i + 1, j - 1));
+        ep = new Position(i - 1, j);
+        cp = new Position(i, j);
+        wp = new Position(i + 1, j);
 
-        e = map.getField(new Position(i - 1, j));
-        c = map.getField(new Position(i, j));
-        w = map.getField(new Position(i + 1, j));
+        sep = new Position(i - 1, j + 1);
+        sp = new Position(i, j + 1);
+        swp = new Position(i + 1, j + 1);
 
-        se = map.getField(new Position(i - 1, j + 1));
-        s = map.getField(new Position(i, j + 1));
-        sw = map.getField(new Position(i + 1, j + 1));
+        ne = map.isValidField(nep) ? map.getField(nep).toString() : FAKE;
+        n = map.isValidField(np) ? map.getField(np).toString() : FAKE;
+        nw = map.isValidField(nwp) ? map.getField(nwp).toString() : FAKE;
 
-        // Position north = new Position(i, j - 1);
-        // Position south = new Position(i, j + 1);
-        // if (map.isValidField(south) && gfn.equals("Water")) {
-        //     String southField = map.getField(south).getFieldName();
-        //     if (southField.equals("Grass")) {
-        //         canvas.drawBitmap(graphics.get("Fields").get("Top grass->water border"),
-        //                           null, dest, null);
-        //     }
-        // }
+        e = map.isValidField(ep) ? map.getField(ep).toString() : FAKE;
+        c = map.isValidField(cp) ? map.getField(cp).toString() : FAKE;
+        w = map.isValidField(wp) ? map.getField(wp).toString() : FAKE;
 
-        // if (map.isValidField(south) && gfn.equals("Grass")) {
-        //     String southField = map.getField(south).getFieldName();
-        //     if (southField.equals("Water")) {
-        //         canvas.drawBitmap(graphics.get("Fields").get("Bottom grass->water border"),
-        //                           null, dest, null);
-        //     }
-        // }
-
-        // if (map.isValidField(east) && gfn.equals("Water")) {
-        //     String nField = map.getField(east).getFieldName();
-        //     if (nField.equals("Grass"))
-        //         canvas.drawBitmap(graphics.get("Fields").get("Left grass->water border"), //4
-        //                           null, dest, null);
-        //     return;
-        // }
-
+        se = map.isValidField(sep) ? map.getField(sep).toString() : FAKE;
+        s = map.isValidField(sp) ? map.getField(sp).toString() : FAKE;
+        sw = map.isValidField(swp) ? map.getField(swp).toString() : FAKE;
 
         if (gfn.equals("Water")) {
-            String nField = w.getFieldName();
-            if (nField.equals("Grass"))
+            if (w.equals("Grass"))
                 canvas.drawBitmap(graphics.get("Fields").get("Right grass->water border"), //2
                                   null, dest, null);
 
         }
 
         if (gfn.equals("Water")) {
-            String nField = e.getFieldName();
-            if (nField.equals("Grass"))
+            if (e.equals("Grass"))
                 canvas.drawBitmap(graphics.get("Fields").get("Left grass->water border"),
                                   null, dest, null);
         }
 
+
         if (gfn.equals("Water")) {
-            String nField = s.getFieldName();
-            if (nField.equals("Grass"))
+            if (s.equals("Grass"))
                 canvas.drawBitmap(graphics.get("Fields").get("Top grass->water border"),
                                   null, dest, null);
         }
 
+        if(gfn.equals("Water")) {
+            if(n.equals("Grass"))
+                canvas.drawBitmap(graphics.get("Fields").get("Bottom grass->water border"),
+                                  null, dest, null);
+        }
+
         if (gfn.equals("Water")) {
-            String wf = w.getFieldName();
-            String sf = s.getFieldName();
-            String swf = sw.getFieldName();
-            if (wf.equals("Grass") && sf.equals("Grass") && swf.equals("Grass")) {
+            if (s.equals("Water") && w.equals("Water") && sw.equals("Grass"))
+                canvas.drawBitmap(graphics.get("Fields").get("Grass->water corner SW"),
+                                  null, dest, null);
+        }
+
+        if (gfn.equals("Water")) {
+            if (s.equals("Water") && e.equals("Water") && se.equals("Grass"))
+                canvas.drawBitmap(graphics.get("Fields").get("Grass->water corner SE"),
+                                  null, dest, null);
+        }
+
+        if (gfn.equals("Water")) {
+            if (n.equals("Water") && w.equals("Water") && nw.equals("Grass"))
+                canvas.drawBitmap(graphics.get("Fields").get("Grass->water corner NW"),
+                                  null, dest, null);
+        }
+
+        if (gfn.equals("Water")) {
+            if (n.equals("Water") && e.equals("Water") && ne.equals("Grass"))
+                canvas.drawBitmap(graphics.get("Fields").get("Grass->water corner NE"),
+                                  null, dest, null);
+        }
+
+        if (gfn.equals("Water")) {
+            if (w.equals("Grass") && s.equals("Grass") && sw.equals("Grass")) {
                 canvas.drawBitmap(graphics.get("Fields").get("Water->grass corner SW"),
                                   null, dest, null);
             }
         }
 
         if (gfn.equals("Water")) {
-            String ef = e.getFieldName();
-            String sf = s.getFieldName();
-            String sef = se.getFieldName();
-            if (ef.equals("Grass") && sf.equals("Grass") && sef.equals("Grass")) {
+            if (e.equals("Grass") && s.equals("Grass") && se.equals("Grass")) {
                 canvas.drawBitmap(graphics.get("Fields").get("Water->grass corner SE"),
                                   null, dest, null);
             }
