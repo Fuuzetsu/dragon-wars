@@ -356,15 +356,15 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
             if (nField.equals("Grass"))
                 canvas.drawBitmap(graphics.get("Fields").get("Right grass->water border"), //2
                                   null, dest, null);
-            return;
+
         }
 
-        // if (map.isValidField(west) && gfn.equals("Water")) {
-        //     String nField = map.getField(west).getFieldName();
-        //     if (nField.equals("Grass"))
-        //         canvas.drawBitmap(graphics.get("Fields").get("Right grass->water border"),
-        //                           null, dest, null);
-        // }
+        if (gfn.equals("Water")) {
+            String nField = e.getFieldName();
+            if (nField.equals("Grass"))
+                canvas.drawBitmap(graphics.get("Fields").get("Left grass->water border"),
+                                  null, dest, null);
+        }
 
     }
 
