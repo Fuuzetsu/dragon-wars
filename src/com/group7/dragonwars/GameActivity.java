@@ -163,6 +163,17 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
                                         BitmapFactory.decodeResource(context.getResources(),
                                                                      borderID));
 
+        borderID = getResources().getIdentifier("grass_water_corner1",
+                                                "raw", "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Water->grass corner NE",
+                                        BitmapFactory.decodeResource(context.getResources(),
+                                                                     borderID));
+        borderID = getResources().getIdentifier("grass_water_corner4",
+                                                "raw", "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Water->grass corner NW",
+                                        BitmapFactory.decodeResource(context.getResources(),
+                                                                     borderID));
+
         borderID = getResources().getIdentifier("water_grass_corner1",
                                                 "raw", "com.group7.dragonwars");
         this.graphics.get("Fields").put("Grass->water corner SW",
@@ -432,6 +443,20 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
         if (gfn.equals("Water")) {
             if (e.equals("Grass") && s.equals("Grass") && se.equals("Grass")) {
                 canvas.drawBitmap(graphics.get("Fields").get("Water->grass corner SE"),
+                                  null, dest, null);
+            }
+        }
+
+        if (gfn.equals("Water")) {
+            if (w.equals("Grass") && n.equals("Grass") && nw.equals("Grass")) {
+                canvas.drawBitmap(graphics.get("Fields").get("Water->grass corner NW"),
+                                  null, dest, null);
+            }
+        }
+
+        if (gfn.equals("Water")) {
+            if (e.equals("Grass") && n.equals("Grass") && ne.equals("Grass")) {
+                canvas.drawBitmap(graphics.get("Fields").get("Water->grass corner NE"),
                                   null, dest, null);
             }
         }
