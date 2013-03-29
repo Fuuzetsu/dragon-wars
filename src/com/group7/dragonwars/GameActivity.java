@@ -246,13 +246,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
     	return new RectF(x, y, x + length, y + length);
     }
 
-    public void doDraw(Canvas canvas) {
-        Configuration c = getResources().getConfiguration();
-
-        canvas.drawColor(Color.BLACK); // Draw black anyway, in order to ensure that there are no leftover graphics
-
+    public List<Position> getUnitDestinations(GameField selected_field) {
         List<Position> unit_destinations = new ArrayList<Position>(0);
-        GameField selected_field = map.getField(selected);
 
         /* First time clicking */
         if (lastUnit == null || lastField == null || lastDestinations == null) {
@@ -283,6 +278,17 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
             lastUnit = selected_field.getUnit(); /* Fine if null */
         }
 
+        return unit_destinations;
+
+    }
+
+    public void doDraw(Canvas canvas) {
+        Configuration c = getResources().getConfiguration();
+
+        canvas.drawColor(Color.BLACK); // Draw black anyway, in order to ensure that there are no leftover graphics
+
+        GameField selected_field = map.getField(selected);
+        List<Position> unit_destinations = getUnitDestinations(selected_field);
 
         for (int i = 0; i < map.getWidth(); ++i) {
             for (int j = 0; j < map.getHeight(); j++) {
