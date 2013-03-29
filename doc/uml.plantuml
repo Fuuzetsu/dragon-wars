@@ -15,6 +15,9 @@ package android.view #DDDDDD {
       class Window
       class WindowManager
       class MotionEvent
+      class Menu
+      class MenuItem
+      class View
       interface SurfaceHolder
       
       namespace GestureDetector {
@@ -29,10 +32,15 @@ package android.view #DDDDDD {
       namespace WindowManager {
             class LayoutParams
       }
+
+      namespace View {
+            class OnClickListener
+      }
 }
 
 package android.widget #DDDDDD {
       class Toast
+      class Button
 }
 
 package android.graphics #DDDDDD {
@@ -66,6 +74,16 @@ package com.group7.dragonwars {
       GameActivity o-- android.view.WindowManager.LayoutParams
       GameActivity o-- com.group7.dragonwars.util.SystemUiHider      
 
+      MainMenuActivity <|-- android.app.Activity
+      MainMenuActivity <|.. android.view.View.OnClickListener
+      MainMenuActivity o-- android.widget.Button
+      ManiMenuActivity o-- android.os.Bundle
+      MainMenuActivity o-- android.view.Menu
+      MainMenuActivity o-- android.view.MenuItem
+      MainMenuActivity o-- android.content.Intent
+      MainMenuActivity o-- android.view.View
+      
+      
       class GameActivity {
             -String TAG {static}
             -Integer orientation
@@ -74,7 +92,15 @@ package com.group7.dragonwars {
       }
 
 
-      class MainMenuActivity
+      class MainMenuActivity {
+            -Button btnBattle
+            #void onCreate(Bundle)
+            #void onStart()
+            +boolean onCreateOptionsMenu(Menu)
+            +boolean onOptionsItemSelected(MenuItem)
+            +void onClick(View)
+            
+      }
       class SettingsActivity
 
       namespace GameActivity {
@@ -581,7 +607,7 @@ package java.util #DDDDDD {
 
 package java.io #DDDDDD {
       FileNotFoundException <|-- java.lang.Exception
-      InputStreamReader <|-- java.lang.Exception
+      IOException <|-- java.lang.Exception
       
       class BufferedReader
       class InputStreamReader
