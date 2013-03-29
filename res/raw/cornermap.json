@@ -86,8 +86,8 @@
     "terrain": [
         "WWWWWWWWWWW",
         "WWWWWWWGGWW",
-        "WWGWWWWGGWW",
-        "WWGWWWWGGWW",
+        "WWGGGGGGGWW",
+        "WWGWWWWWGWW",
         "WWGWWWWGGWW",
         "WGGGGGGGGWW",
         "WGGGGGGGGWW",
@@ -96,50 +96,50 @@
     ],
     "startingBuildingPos": [
         {"building": "C",
-         "posX": 1,
-         "posY": 1,
+         "posX": 2,
+         "posY": 4,
          "owner": 1,
          "produces": ["S"]
         },
         {"building": "V",
          "posX": 2,
-         "posY": 1,
+         "posY": 2,
          "owner": 2,
          "produces": ["D", "S"]
         },
-        {"building": "C",
-         "posX": 3,
-         "posY": 1,
+        {"building": "V",
+         "posX": 6,
+         "posY": 6,
          "owner": 0,
          "produces": []
         },
         {"building": "C",
          "posX": 4,
-         "posY": 1,
+         "posY": 6,
          "owner": 2,
          "produces": ["D", "S"]
         },
         {"building": "C",
-         "posX": 5,
-         "posY": 1,
+         "posX": 8,
+         "posY": 5,
          "owner": 2,
          "produces": ["S"]
         }
     ],
     "startingUnitPos": [
         {"unit": "S",
-         "posX": 1,
-         "posY": 0,
+         "posX": 2,
+         "posY": 5,
          "owner": 1
         },
         {"unit": "D",
          "posX": 2,
-         "posY": 0,
+         "posY": 6,
          "owner": 2
         },
         {"unit": "S",
-         "posX": 3,
-         "posY": 0,
+         "posX": 6,
+         "posY": 6,
          "owner": 2
         }
     ]
