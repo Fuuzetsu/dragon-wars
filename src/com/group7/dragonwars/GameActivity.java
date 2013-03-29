@@ -67,8 +67,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
 
     DrawingThread dt;
     Paint circle_paint; // used to draw the selection circles (to show which tile is selected)
-    Paint move_high_paint; // used to highlight movements
-
+    Bitmap highlighter;
     boolean unit_selected; // true if there is a unit at selection
 
     // List<Position> unit_destinations; // probably not best to recompute this every time, or maybe it is, treat as Undefined if !unit_selected
@@ -165,6 +164,12 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
                                                        resourceID));
         }
 
+
+        Integer highID = getResources().getIdentifier("highlight",
+                                                      "raw",
+                                                      "com.group7.dragonwars");
+        highlighter = BitmapFactory.decodeResource(context.getResources(),
+                                                   highID);
         Log.d(TAG, "after buildings");
         holder.addCallback(this);
 
@@ -179,9 +184,6 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
         circle_paint.setStyle(Paint.Style.FILL);
         circle_paint.setARGB(200, 255, 255, 255); // semi-transparent white
 
-        move_high_paint = new Paint();
-        move_high_paint.setStyle(Paint.Style.FILL);
-        move_high_paint.setARGB(150, 0, 0, 255); // semi-transparent white
     }
 
     private List<String> readFile(int resourceid) {
@@ -327,7 +329,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
             		tilesize * pos.getX() + scroll_offset.getX(),
             		tilesize * pos.getY() + scroll_offset.getY(),
             		tilesize);
-        	canvas.drawRect(dest, move_high_paint);
+        	canvas.drawBitmap(highlighter, null, dest, null);
         }
 
         // draw the selection shower (bad name)
