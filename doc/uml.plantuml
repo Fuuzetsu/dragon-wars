@@ -14,6 +14,7 @@ package android.view #DDDDDD {
       class GestureDetector
       class Window
       class WindowManager
+      class MotionEvent
       interface SurfaceHolder
       
       namespace GestureDetector {
@@ -37,6 +38,9 @@ package android.widget #DDDDDD {
 package android.graphics #DDDDDD {
       class Bitmap
       class Paint
+      class Canvas
+      class RectF
+      class Rect
 
       namespace Paint {
             enum Style
@@ -49,6 +53,10 @@ package android.os #DDDDDD {
 
 package android.content #DDDDDD {
       class Context
+}
+
+package android.content.res #DDDDDD {
+      class Configuration
 }
 
 package com.group7.dragonwars {
@@ -101,6 +109,13 @@ package com.group7.dragonwars {
             GameView o-- java.io.FileNotFoundException
             GameView o-- java.io.IOException
             GameView o-- java.lang.InterruptedException
+            GameView o-- android.graphics.RectF
+            GameView o-- android.graphics.Rect            
+            GameView o-- android.graphics.Canvas
+            GameView o-- android.content.res.Configuration
+            GameView o-- android.view.MotionEvent
+            
+            
             
             DrawingThread <|-- java.lang.Thread
             FloatPair o-- com.group7.dragonwars.engine.Pair
