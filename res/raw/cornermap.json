@@ -84,14 +84,15 @@
         }
     },
     "terrain": [
-        "WWWWWWWWWW",
-        "WWWWWWWWWW",
-        "WWWWWWWWWW",
-        "WGGGGGGGGW",
-        "WWWWWWWWWW",
-        "WGGGGGGGGW",
-        "WWWWWWWWWW",
-        "WWWWWWWWWW"
+        "WWWWWWWWWWW",
+        "WWWWWWWGGWW",
+        "WWGWWWWGGWW",
+        "WWGWWWWGGWW",
+        "WWGWWWWGGWW",
+        "WGGGGGGGGWW",
+        "WGGGGGGGGWW",
+        "WWWWWWWWWWW",
+        "WWWWWWWWWWW"
     ],
     "startingBuildingPos": [
         {"building": "C",

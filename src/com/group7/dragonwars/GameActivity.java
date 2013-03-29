@@ -303,34 +303,61 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
     }
 
     public void drawBorder(Canvas canvas, Position currentField, RectF dest) {
-        Integer i = currentField.getY();
-        Integer j = currentField.getX();
+        Integer i = currentField.getX();
+        Integer j = currentField.getY();
+
         String gfn = map.getField(currentField).getFieldName();
 
-        Position north = new Position(i, j - 1);
-        if (map.isValidField(north) && gfn.equals("Grass")) {
-            String northField = map.getField(north).getFieldName();
-            if (northField.equals("Water"))
-                canvas.drawBitmap(graphics.get("Fields").get("Top grass->water border"),
-                                  null, dest, null);
-        }
+        GameField  ne, n, nw, e, c, w, se, s, sw;
 
-        if (map.isValidField(north) && gfn.equals("Water")) {
-            String northField = map.getField(north).getFieldName();
-            if (northField.equals("Grass"))
-                canvas.drawBitmap(graphics.get("Fields").get("Bottom grass->water border"),
-                                  null, dest, null);
-        }
+        if (i < 1 || j < 1 || i > 7 || j > 7)
+            return;
 
-        // Position east = new Position(i - 1, j);
-        // Position west = new Position(i + 1, j);
+        ne = map.getField(new Position(i - 1, j - 1));
+        n = map.getField(new Position(i, j - 1));
+        nw = map.getField(new Position(i + 1, j - 1));
+
+        e = map.getField(new Position(i - 1, j));
+        c = map.getField(new Position(i, j));
+        w = map.getField(new Position(i + 1, j));
+
+        se = map.getField(new Position(i - 1, j + 1));
+        s = map.getField(new Position(i, j + 1));
+        sw = map.getField(new Position(i + 1, j + 1));
+
+        // Position north = new Position(i, j - 1);
+        // Position south = new Position(i, j + 1);
+        // if (map.isValidField(south) && gfn.equals("Water")) {
+        //     String southField = map.getField(south).getFieldName();
+        //     if (southField.equals("Grass")) {
+        //         canvas.drawBitmap(graphics.get("Fields").get("Top grass->water border"),
+        //                           null, dest, null);
+        //     }
+        // }
+
+        // if (map.isValidField(south) && gfn.equals("Grass")) {
+        //     String southField = map.getField(south).getFieldName();
+        //     if (southField.equals("Water")) {
+        //         canvas.drawBitmap(graphics.get("Fields").get("Bottom grass->water border"),
+        //                           null, dest, null);
+        //     }
+        // }
 
         // if (map.isValidField(east) && gfn.equals("Water")) {
         //     String nField = map.getField(east).getFieldName();
         //     if (nField.equals("Grass"))
-        //         canvas.drawBitmap(graphics.get("Fields").get("Left grass->water border"),
+        //         canvas.drawBitmap(graphics.get("Fields").get("Left grass->water border"), //4
         //                           null, dest, null);
+        //     return;
         // }
+
+        if (gfn.equals("Water")) {
+            String nField = w.getFieldName();
+            if (nField.equals("Grass"))
+                canvas.drawBitmap(graphics.get("Fields").get("Right grass->water border"), //2
+                                  null, dest, null);
+            return;
+        }
 
         // if (map.isValidField(west) && gfn.equals("Water")) {
         //     String nField = map.getField(west).getFieldName();
@@ -339,6 +366,33 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
         //                           null, dest, null);
         // }
 
+    }
+
+    private List<String> getFieldSquare(Position p) {
+        List<String> r = new ArrayList<String>();
+        GameField  ne, n, nw, e, c, w, se, s, sw;
+        int i, j;
+        i = p.getX();
+        j = p.getY();
+        if (i < 1 || j < 1 || i > 6 || j > 6)
+            return new ArrayList<String>();
+
+        ne = map.getField(new Position(i - 1, j - 1));
+        n = map.getField(new Position(i, j - 1));
+        nw = map.getField(new Position(i + 1, j - 1));
+
+        e = map.getField(new Position(i - 1, j));
+        c = map.getField(new Position(i, j));
+        w = map.getField(new Position(i + 1, j));
+
+        se = map.getField(new Position(i - 1, j + 1));
+        s = map.getField(new Position(i, j + 1));
+        sw = map.getField(new Position(i + 1, j + 1));
+        r.add("" + ne.toString().charAt(0) + n.toString().charAt(0) + nw.toString().charAt(0));
+        r.add("" + e.toString().charAt(0) + c.toString().charAt(0) + w.toString().charAt(0));
+        r.add("" + se.toString().charAt(0) + s.toString().charAt(0) + sw.toString().charAt(0));
+
+        return r;
     }
 
     public void doDraw(Canvas canvas) {
@@ -360,6 +414,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
                 		tilesize * j + scroll_offset.getY(),
                 		tilesize);
                 canvas.drawBitmap(graphics.get("Fields").get(gfn), null, dest, null);
+
                 drawBorder(canvas, pos, dest);
 
                 if (gf.hostsBuilding()) {
@@ -377,6 +432,20 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
                         canvas.drawBitmap(graphics.get("Units").get(un), null, dest, null);
                     }
                 }
+
+                Paint p = new Paint();
+                p.setColor(Color.RED);
+                canvas.drawText(pos.toString() + gfn.charAt(0), tilesize * i + scroll_offset.getX(),
+                                tilesize * j + scroll_offset.getY() + 64, p);
+                List<String> aoe = getFieldSquare(pos);
+                for (int x = 0; x < aoe.size(); ++x)
+                    canvas.drawText(aoe.get(x), tilesize * i + scroll_offset.getX(),
+                                    tilesize * j + scroll_offset.getY() + 20 + (x * 10), p);
+
+                Paint r = new Paint();
+                r.setStyle(Paint.Style.STROKE);
+                r.setColor(Color.RED);
+                canvas.drawRect(dest, r);
             }
         }
 
@@ -419,7 +488,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
 
     public void drawInfoBox(Canvas canvas, Unit unit, GameField field, boolean left) {
     	LinkedList<String> info = new LinkedList<String>();
-
+        info.add(field.getFieldName()); /* Always print for debug */
     	// unit info
         if (unit != null) {
         	info.add(unit.getUnitName());// + " - Player: " + unit.getOwner().getName()); // causes problems when there is no owner
@@ -432,7 +501,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
     	// field names
         if (field.hostsBuilding()) {
             Building building = field.getBuilding();
-            String bLine = field.getFieldName() + " - " + building.getBuildingName();
+            String bLine = building.getBuildingName();
             bLine += building.hasOwner() ? " ~ " + building.getOwner().getName() : "";
             info.add(bLine);
 
