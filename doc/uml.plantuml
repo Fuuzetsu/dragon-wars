@@ -1,69 +1,43 @@
 @startuml
 
 package android.app #DDDDDD {
-      class Activity
 }
 
 package android.util #DDDDDD {
-      class AttributeSet
-      class Log
       interface AttributeSet
 }
 
 package android.view #DDDDDD {
-      class GestureDetector
-      class Window
-      class WindowManager
-      class MotionEvent
-      class Menu
-      class MenuItem
-      class View
       interface SurfaceHolder
       
-      namespace GestureDetector {
+      package GestureDetector {
             interface OnDoubleTapListener
             interface OnGestureListener
       }
 
-      namespace SurfaceHolder {
+      package SurfaceHolder {
             interface Callback
       }
 
-      namespace WindowManager {
+      package WindowManager {
             class LayoutParams
       }
 
-      namespace View {
+      package View {
             class OnClickListener
       }
 }
 
 package android.widget #DDDDDD {
-      class Toast
-      class Button
 }
 
 package android.graphics #DDDDDD {
-      class Canvas
-      class RectF
-      class Rect
       class Paint {
              +enum Style
       }
-      
 }
 
-package android.os #DDDDDD {
-      class Bundle
-}
 
-package android.content #DDDDDD {
-      class Context
-}
-
-package android.content.res #DDDDDD {
-      class Configuration
-}
 
 package com.group7.dragonwars {
       GameActivity <|-- android.app.Activity
@@ -615,8 +589,6 @@ package java.io #DDDDDD {
 package java.lang #DDDDDD {
       InterruptedException <|-- Exception
       
-      class Exception
-      class Math
       class InterruptedException
       
       interface Iterable<T> {
