@@ -157,6 +157,11 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
         this.graphics.get("Fields").put("Water->grass corner SW",
                                         BitmapFactory.decodeResource(context.getResources(),
                                                                      borderID));
+        borderID = getResources().getIdentifier("grass_water_corner2",
+                                                "raw", "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Water->grass corner SE",
+                                        BitmapFactory.decodeResource(context.getResources(),
+                                                                     borderID));
 
         Log.d(TAG, "after fields");
         /* Register units */
@@ -373,11 +378,28 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
         }
 
         if (gfn.equals("Water")) {
+            String nField = s.getFieldName();
+            if (nField.equals("Grass"))
+                canvas.drawBitmap(graphics.get("Fields").get("Top grass->water border"),
+                                  null, dest, null);
+        }
+
+        if (gfn.equals("Water")) {
             String wf = w.getFieldName();
             String sf = s.getFieldName();
             String swf = sw.getFieldName();
             if (wf.equals("Grass") && sf.equals("Grass") && swf.equals("Grass")) {
                 canvas.drawBitmap(graphics.get("Fields").get("Water->grass corner SW"),
+                                  null, dest, null);
+            }
+        }
+
+        if (gfn.equals("Water")) {
+            String ef = e.getFieldName();
+            String sf = s.getFieldName();
+            String sef = se.getFieldName();
+            if (ef.equals("Grass") && sf.equals("Grass") && sef.equals("Grass")) {
+                canvas.drawBitmap(graphics.get("Fields").get("Water->grass corner SE"),
                                   null, dest, null);
             }
         }
@@ -449,19 +471,19 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
                     }
                 }
 
-                Paint p = new Paint();
-                p.setColor(Color.RED);
-                canvas.drawText(pos.toString() + gfn.charAt(0), tilesize * i + scroll_offset.getX(),
-                                tilesize * j + scroll_offset.getY() + 64, p);
-                List<String> aoe = getFieldSquare(pos);
-                for (int x = 0; x < aoe.size(); ++x)
-                    canvas.drawText(aoe.get(x), tilesize * i + scroll_offset.getX(),
-                                    tilesize * j + scroll_offset.getY() + 20 + (x * 10), p);
+                // Paint p = new Paint();
+                // p.setColor(Color.RED);
+                // canvas.drawText(pos.toString() + gfn.charAt(0), tilesize * i + scroll_offset.getX(),
+                //                 tilesize * j + scroll_offset.getY() + 64, p);
+                // List<String> aoe = getFieldSquare(pos);
+                // for (int x = 0; x < aoe.size(); ++x)
+                //     canvas.drawText(aoe.get(x), tilesize * i + scroll_offset.getX(),
+                //                     tilesize * j + scroll_offset.getY() + 20 + (x * 10), p);
 
-                Paint r = new Paint();
-                r.setStyle(Paint.Style.STROKE);
-                r.setColor(Color.RED);
-                canvas.drawRect(dest, r);
+                // Paint r = new Paint();
+                // r.setStyle(Paint.Style.STROKE);
+                // r.setColor(Color.RED);
+                // canvas.drawRect(dest, r);
             }
         }
 
