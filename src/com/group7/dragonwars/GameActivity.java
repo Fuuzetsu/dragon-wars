@@ -249,12 +249,6 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
     public void doDraw(Canvas canvas) {
         Configuration c = getResources().getConfiguration();
 
-        /* TODO figure out why this doesn't just work */
-        // if (orientation == null || orientation != c.orientation) {
-        //     orientation = c.orientation;
-        //     canvas.drawColor(Color.BLACK);
-        //     Log.d(TAG, "Painted canvas black due to orientation change.");
-        // }
         canvas.drawColor(Color.BLACK); // Draw black anyway, in order to ensure that there are no leftover graphics
 
         List<Position> unit_destinations = new ArrayList<Position>(0);
