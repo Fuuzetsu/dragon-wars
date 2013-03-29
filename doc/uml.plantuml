@@ -115,9 +115,12 @@ package com.group7.dragonwars {
             GameView o-- android.content.res.Configuration
             GameView o-- android.view.MotionEvent
             
-            
-            
             DrawingThread <|-- java.lang.Thread
+            DrawingThread o-- android.graphics.Canvas
+            DrawingThread o-- android.view.SurfaceHolder
+            DrawingThread o-- android.content.Context
+            DrawingThread o-- GameView
+            
             FloatPair o-- com.group7.dragonwars.engine.Pair
 
             class GameView {
