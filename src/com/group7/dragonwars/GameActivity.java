@@ -152,6 +152,11 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
         this.graphics.get("Fields").put("Right grass->water border",
                                         BitmapFactory.decodeResource(context.getResources(),
                                                                      borderID));
+        borderID = getResources().getIdentifier("grass_water_corner3",
+                                                "raw", "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Water->grass corner SW",
+                                        BitmapFactory.decodeResource(context.getResources(),
+                                                                     borderID));
 
         Log.d(TAG, "after fields");
         /* Register units */
@@ -351,6 +356,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
         //     return;
         // }
 
+
         if (gfn.equals("Water")) {
             String nField = w.getFieldName();
             if (nField.equals("Grass"))
@@ -364,6 +370,16 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
             if (nField.equals("Grass"))
                 canvas.drawBitmap(graphics.get("Fields").get("Left grass->water border"),
                                   null, dest, null);
+        }
+
+        if (gfn.equals("Water")) {
+            String wf = w.getFieldName();
+            String sf = s.getFieldName();
+            String swf = sw.getFieldName();
+            if (wf.equals("Grass") && sf.equals("Grass") && swf.equals("Grass")) {
+                canvas.drawBitmap(graphics.get("Fields").get("Water->grass corner SW"),
+                                  null, dest, null);
+            }
         }
 
     }
