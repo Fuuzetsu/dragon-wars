@@ -7,6 +7,7 @@ import java.util.*;
 import org.json.*;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.*;
 import android.content.res.*;
 import android.graphics.*;
@@ -17,6 +18,7 @@ import android.util.Log;
 import android.view.*;
 import android.view.GestureDetector.OnDoubleTapListener;
 import android.view.GestureDetector.OnGestureListener;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.group7.dragonwars.engine.*;
@@ -54,7 +56,7 @@ public class GameActivity extends Activity {
 
 }
 
-class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureListener, OnDoubleTapListener {
+class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureListener, OnDoubleTapListener, DialogInterface.OnClickListener {
     final private String TAG = "GameView";
     Bitmap bm;
     GameState state;
@@ -420,18 +422,40 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
         Position newselected = new Position(touchX, touchY);
         if (this.map.isValidField(touchX, touchY)) {
         	if (map.getField(selected).hostsUnit()) {
+        		Log.v(null, "A unit is selected!");
         		// If the user currently has a unit selected and selects a field that this unit could move to
         		// (and the unit has not finished it's turn)
                 GameField selected_field = map.getField(selected);
                 if (!selected_field.getUnit().hasFinishedTurn()) {
 	                List<Position> unit_destinations = logic.destinations(map, selected_field.getUnit());
-	                if (unit_destinations.contains(newselected)) {
+	                Log.v(null, "after destinations");
+	                boolean contains = true;
+	                for (Position pos : unit_destinations) {
+	                	if (pos.equals(newselected)) {
+	                		contains = true;
+	                		break;
+	                	}
+	                }
+	                if (contains) {
+	                	Log.v(null, "unit_destinations contains newselected");
 	                	/* pop up a menu with options:
 	                	 * - Wait (go here and do nothing else
 	                	 * - Attack (if there are units to attack)
 	                	 * - Cancel (do nothing, also do not set the selection to here)
 	                	 */
+	                	AlertDialog.Builder actions_builder = new AlertDialog.Builder(this.getContext());
+	                	actions_builder.setTitle("Actions");
+	                	String[] actions = {"cat", "window", "defenestrate"};
+	                	actions_builder.setItems(actions, this);
+	                	actions_builder.create().show();
+	                	
+	                	// onClick handles the result
+	                } else {
+	                	Log.v(null, "turn over");
+	    	        	this.selected = newselected;
 	                }
+                } else {
+    	        	this.selected = newselected;
                 }
         	} else {
 	        	//Log.v(null, "Setting selection");
@@ -441,6 +465,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
 		return true;
 	}
 
+	
 	@Override
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 		float new_x = scroll_offset.getX() - distanceX;
@@ -461,6 +486,11 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
 		}
 		scroll_offset = new FloatPair(new_x, new_y);
 		return true;
+	}
+
+	@Override
+	public void onClick(DialogInterface dialog, int which) {
+		Log.v(null, "If this works, I might just not go mad " + which);
 	}
 }
 
