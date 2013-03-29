@@ -322,22 +322,22 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
                                   null, dest, null);
         }
 
-        Position east = new Position(i - 1, j);
-        Position west = new Position(i + 1, j);
+        // Position east = new Position(i - 1, j);
+        // Position west = new Position(i + 1, j);
 
-        if (map.isValidField(east) && gfn.equals("Water")) {
-            String nField = map.getField(east).getFieldName();
-            if (nField.equals("Grass"))
-                canvas.drawBitmap(graphics.get("Fields").get("Left grass->water border"),
-                                  null, dest, null);
-        }
+        // if (map.isValidField(east) && gfn.equals("Water")) {
+        //     String nField = map.getField(east).getFieldName();
+        //     if (nField.equals("Grass"))
+        //         canvas.drawBitmap(graphics.get("Fields").get("Left grass->water border"),
+        //                           null, dest, null);
+        // }
 
-        if (map.isValidField(west) && gfn.equals("Water")) {
-            String nField = map.getField(west).getFieldName();
-            if (nField.equals("Grass"))
-                canvas.drawBitmap(graphics.get("Fields").get("Right grass->water border"),
-                                  null, dest, null);
-        }
+        // if (map.isValidField(west) && gfn.equals("Water")) {
+        //     String nField = map.getField(west).getFieldName();
+        //     if (nField.equals("Grass"))
+        //         canvas.drawBitmap(graphics.get("Fields").get("Right grass->water border"),
+        //                           null, dest, null);
+        // }
 
     }
 
