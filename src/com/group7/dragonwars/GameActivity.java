@@ -132,6 +132,26 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
                                                     resourceID));
             Log.d(TAG, "after putting decoded resource into Fields");
         }
+        Integer borderID = getResources().getIdentifier("water_grass_edge1",
+                                                        "raw", "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Top grass->water border",
+                                        BitmapFactory.decodeResource(context.getResources(),
+                                                                     borderID));
+        borderID = getResources().getIdentifier("water_grass_edge3",
+                                                "raw", "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Bottom grass->water border",
+                                        BitmapFactory.decodeResource(context.getResources(),
+                                                                     borderID));
+        borderID = getResources().getIdentifier("water_grass_edge4",
+                                                "raw", "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Left grass->water border",
+                                        BitmapFactory.decodeResource(context.getResources(),
+                                                                     borderID));
+        borderID = getResources().getIdentifier("water_grass_edge2",
+                                                "raw", "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Right grass->water border",
+                                        BitmapFactory.decodeResource(context.getResources(),
+                                                                     borderID));
 
         Log.d(TAG, "after fields");
         /* Register units */
@@ -282,6 +302,45 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
 
     }
 
+    public void drawBorder(Canvas canvas, Position currentField, RectF dest) {
+        Integer i = currentField.getY();
+        Integer j = currentField.getX();
+        String gfn = map.getField(currentField).getFieldName();
+
+        Position north = new Position(i, j - 1);
+        if (map.isValidField(north) && gfn.equals("Grass")) {
+            String northField = map.getField(north).getFieldName();
+            if (northField.equals("Water"))
+                canvas.drawBitmap(graphics.get("Fields").get("Top grass->water border"),
+                                  null, dest, null);
+        }
+
+        if (map.isValidField(north) && gfn.equals("Water")) {
+            String northField = map.getField(north).getFieldName();
+            if (northField.equals("Grass"))
+                canvas.drawBitmap(graphics.get("Fields").get("Bottom grass->water border"),
+                                  null, dest, null);
+        }
+
+        Position east = new Position(i - 1, j);
+        Position west = new Position(i + 1, j);
+
+        if (map.isValidField(east) && gfn.equals("Water")) {
+            String nField = map.getField(east).getFieldName();
+            if (nField.equals("Grass"))
+                canvas.drawBitmap(graphics.get("Fields").get("Left grass->water border"),
+                                  null, dest, null);
+        }
+
+        if (map.isValidField(west) && gfn.equals("Water")) {
+            String nField = map.getField(west).getFieldName();
+            if (nField.equals("Grass"))
+                canvas.drawBitmap(graphics.get("Fields").get("Right grass->water border"),
+                                  null, dest, null);
+        }
+
+    }
+
     public void doDraw(Canvas canvas) {
         Configuration c = getResources().getConfiguration();
 
@@ -301,6 +360,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
                 		tilesize * j + scroll_offset.getY(),
                 		tilesize);
                 canvas.drawBitmap(graphics.get("Fields").get(gfn), null, dest, null);
+                drawBorder(canvas, pos, dest);
 
                 if (gf.hostsBuilding()) {
                     Building b = gf.getBuilding();
