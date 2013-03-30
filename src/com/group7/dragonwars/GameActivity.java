@@ -411,37 +411,37 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         return new RectF(x, y, x + length, y + length);
     }
 
-    public List<Position> getUnitDestinations(final GameField selected_field) {
-        List<Position> unit_destinations = new ArrayList<Position>(0);
+    public List<Position> getUnitDestinations(final GameField selectedField) {
+        List<Position> unitDests = new ArrayList<Position>(0);
 
         /* First time clicking */
         if (lastUnit == null || lastField == null || lastDestinations == null) {
-            lastField = selected_field;
-            if (selected_field.hostsUnit()) {
-                Unit unit = selected_field.getUnit();
+            lastField = selectedField;
+            if (selectedField.hostsUnit()) {
+                Unit unit = selectedField.getUnit();
                 lastUnit = unit;
-                unit_destinations = logic.destinations(map, unit);
-                lastDestinations = unit_destinations;
+                unitDests = logic.destinations(map, unit);
+                lastDestinations = unitDests;
             } else {
-                unit_destinations = new ArrayList<Position>(0);
-                lastDestinations = unit_destinations;
+                unitDests = new ArrayList<Position>(0);
+                lastDestinations = unitDests;
             }
         }
 
-        if (selected_field.equals(lastField) && selected_field.hostsUnit()) {
-            if (selected_field.getUnit().equals(lastUnit)) { /* Same unit, same place */
-                unit_destinations = lastDestinations;
+        if (selectedField.equals(lastField) && selectedField.hostsUnit()) {
+            if (selectedField.getUnit().equals(lastUnit)) { /* Same unit, same place */
+                unitDests = lastDestinations;
             }
         } else {
-            if (selected_field.hostsUnit()) {
-                unit_destinations = logic.destinations(map, selected_field.getUnit());
+            if (selectedField.hostsUnit()) {
+                unitDests = logic.destinations(map, selectedField.getUnit());
             }
-            lastDestinations = unit_destinations;
-            lastField = selected_field;
-            lastUnit = selected_field.getUnit(); /* Fine if null */
+            lastDestinations = unitDests;
+            lastField = selectedField;
+            lastUnit = selectedField.getUnit(); /* Fine if null */
         }
 
-        return unit_destinations;
+        return unitDests;
 
     }
 
@@ -504,8 +504,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
             }
         }
 
-        if(gfn.equals("Water")) {
-            if(n.equals("Grass")) {
+        if (gfn.equals("Water")) {
+            if (n.equals("Grass")) {
                 canvas.drawBitmap(graphics.get("Fields").get("Bottom grass->water border"),
                                   null, dest, null);
             }
@@ -572,25 +572,38 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     /* Debug method */
     private List<String> getFieldSquare(final Position p) {
         List<String> r = new ArrayList<String>();
-        GameField  ne, n, nw, e, c, w, se, s, sw;
-        int i, j;
+
+        Integer i, j;
         i = p.getX();
         j = p.getY();
-        if (i < 1 || j < 1 || i > 6 || j > 6) {
-            return new ArrayList<String>();
-        }
 
-        ne = map.getField(new Position(i - 1, j - 1));
-        n = map.getField(new Position(i, j - 1));
-        nw = map.getField(new Position(i + 1, j - 1));
+        Position nep, np, nwp, ep, cp, wp, sep, sp, swp;
+        String ne, n, nw, e, c, w, se, s, sw;
 
-        e = map.getField(new Position(i - 1, j));
-        c = map.getField(new Position(i, j));
-        w = map.getField(new Position(i + 1, j));
+        nep = new Position(i - 1, j - 1);
+        np = new Position(i, j - 1);
+        nwp = new Position(i + 1, j - 1);
 
-        se = map.getField(new Position(i - 1, j + 1));
-        s = map.getField(new Position(i, j + 1));
-        sw = map.getField(new Position(i + 1, j + 1));
+        ep = new Position(i - 1, j);
+        cp = new Position(i, j);
+        wp = new Position(i + 1, j);
+
+        sep = new Position(i - 1, j + 1);
+        sp = new Position(i, j + 1);
+        swp = new Position(i + 1, j + 1);
+
+        ne = map.isValidField(nep) ? map.getField(nep).toString() : " ";
+        n = map.isValidField(np) ? map.getField(np).toString() : " ";
+        nw = map.isValidField(nwp) ? map.getField(nwp).toString() : " ";
+
+        e = map.isValidField(ep) ? map.getField(ep).toString() : " ";
+        c = map.isValidField(cp) ? map.getField(cp).toString() : " ";
+        w = map.isValidField(wp) ? map.getField(wp).toString() : " ";
+
+        se = map.isValidField(sep) ? map.getField(sep).toString() : " ";
+        s = map.isValidField(sp) ? map.getField(sp).toString() : " ";
+        sw = map.isValidField(swp) ? map.getField(swp).toString() : " ";
+
         r.add("" + ne.toString().charAt(0) + n.toString().charAt(0) + nw.toString().charAt(0));
         r.add("" + e.toString().charAt(0) + c.toString().charAt(0) + w.toString().charAt(0));
         r.add("" + se.toString().charAt(0) + s.toString().charAt(0) + sw.toString().charAt(0));
@@ -603,8 +616,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         canvas.drawColor(Color.BLACK); // Draw black anyway, in order to ensure that there are no leftover graphics
 
-        GameField selected_field = map.getField(selected);
-        List<Position> unit_destinations = getUnitDestinations(selected_field);
+        GameField selectedField = map.getField(selected);
+        List<Position> unitDests = getUnitDestinations(selectedField);
 
         canvas.drawBitmap(fullMap, scrollOffset.getX(), scrollOffset.getY(), null);
 
@@ -643,7 +656,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
 
         // perform highlighting
-        for (Position pos : unit_destinations) {
+        for (Position pos : unitDests) {
             RectF dest = getSquare(
                     tilesize * pos.getX() + scrollOffset.getX(),
                     tilesize * pos.getY() + scrollOffset.getY(),
@@ -658,8 +671,9 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         canvas.drawBitmap(selector, null, dest, null);
 
 
-    // draw the information box
-    drawInfoBox(canvas, selected_field.hostsUnit() ? selected_field.getUnit() : null, selected_field, true);
+        // draw the information box
+        drawInfoBox(canvas, selectedField.hostsUnit() ? selectedField.getUnit() : null, selectedField, true);
+
     }
 
     public float getMapDrawWidth() {
@@ -702,37 +716,37 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         }
 
         // field stats
-        info.add("Attack: " + field.getAttackModifier() +
-                " Defense: " + field.getDefenseModifier() +
-                " Move: " + field.getMovementModifier());
+        info.add("Attack: " + field.getAttackModifier()
+                 + " Defense: " + field.getDefenseModifier()
+                 + " Move: " + field.getMovementModifier());
 
-        Paint text_paint = new Paint();
-        text_paint.setColor(Color.WHITE);
+        Paint textPaint = new Paint();
+        textPaint.setColor(Color.WHITE);
 
-        Rect text_bounds = new Rect(0, 0, 0, 0); // contains the bounds of the entire text in the info box
+        Rect textBounds = new Rect(0, 0, 0, 0); // contains the bounds of the entire text in the info box
         LinkedList<Rect> info_bounds = new LinkedList<Rect>();
         for (int i = 0; i < info.size(); ++i) {
             String text = info.get(i);
             info_bounds.add(i, new Rect());
-            text_paint.getTextBounds(text, 0, text.length(), info_bounds.get(i));
-            if (info_bounds.get(i).right > text_bounds.right) {
-                text_bounds.right = info_bounds.get(i).right;
+            textPaint.getTextBounds(text, 0, text.length(), info_bounds.get(i));
+            if (info_bounds.get(i).right > textBounds.right) {
+                textBounds.right = info_bounds.get(i).right;
             }
-            text_bounds.bottom += (info_bounds.get(i).bottom - info_bounds.get(i).top);
+            textBounds.bottom += (info_bounds.get(i).bottom - info_bounds.get(i).top);
         }
 
-        Paint back_paint = new Paint();
-        back_paint.setColor(Color.BLACK); // FIXME make it black
+        Paint backPaint = new Paint();
+        backPaint.setColor(Color.BLACK); // FIXME make it black
 
-        Rect back_rect = new Rect(0, canvas.getHeight() - text_bounds.bottom, text_bounds.right, canvas.getHeight());
-        canvas.drawRect(back_rect, back_paint);
+        Rect backRect = new Rect(0, canvas.getHeight() - textBounds.bottom, textBounds.right, canvas.getHeight());
+        canvas.drawRect(backRect, backPaint);
 
-        float text_height = 0f;
+        float textHeight = 0f;
         for (int i = info.size() - 1; i >= 0; --i) {
-            canvas.drawText(info.get(i), 0, info.get(i).length(), 0, (canvas.getHeight() - text_height) - info_bounds.get(i).bottom, text_paint);
-            text_height += (info_bounds.get(i).bottom - info_bounds.get(i).top);
+            canvas.drawText(info.get(i), 0, info.get(i).length(), 0, (canvas.getHeight() - textHeight) - info_bounds.get(i).bottom, textPaint);
+            textHeight += (info_bounds.get(i).bottom - info_bounds.get(i).top);
         }
-        //canvas.drawText(info, 0, info.length(), (float) back_rect.left, (float) back_rect.bottom, text_paint);
+        //canvas.drawText(info, 0, info.length(), (float) backRect.left, (float) backRect.bottom, textPaint);
     }
 
     /* Please excuse all the auto-generated method stubs
@@ -790,23 +804,23 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     @Override
     public boolean onScroll(final MotionEvent e1, final MotionEvent e2,
                             final float distanceX, final float distanceY) {
-        float new_x = scrollOffset.getX() - distanceX;
+        float newX = scrollOffset.getX() - distanceX;
         if (this.getWidth() >= this.getMapDrawWidth()) {
-            new_x = 0;
-        } else if ((-new_x) > (getMapDrawWidth() - getWidth())) {
-            new_x = -(getMapDrawWidth() - getWidth());
-        } else if (new_x > 0) {
-            new_x = 0;
+            newX = 0;
+        } else if ((-newX) > (getMapDrawWidth() - getWidth())) {
+            newX = -(getMapDrawWidth() - getWidth());
+        } else if (newX > 0) {
+            newX = 0;
         }
-        float new_y = scrollOffset.getY() - distanceY;
+        float newY = scrollOffset.getY() - distanceY;
         if (this.getHeight() >= this.getMapDrawHeight()) {
-            new_y = 0;
-        } else if ((-new_y) > (getMapDrawHeight() - getHeight())) {
-            new_y = -(getMapDrawHeight() - getHeight());
-        } else if (new_y > 0) {
-            new_y = 0;
+            newY = 0;
+        } else if ((-newY) > (getMapDrawHeight() - getHeight())) {
+            newY = -(getMapDrawHeight() - getHeight());
+        } else if (newY > 0) {
+            newY = 0;
         }
-        scrollOffset = new FloatPair(new_x, new_y);
+        scrollOffset = new FloatPair(newX, newY);
         return true;
     }
 }
