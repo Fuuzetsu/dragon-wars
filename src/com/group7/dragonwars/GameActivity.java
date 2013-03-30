@@ -155,71 +155,6 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                                                     resourceID));
             Log.d(TAG, "after putting decoded resource into Fields");
         }
-        Integer borderID = getResources().getIdentifier("water_grass_edge1",
-                                                        "drawable", "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Top grass->water border",
-                                        BitmapFactory.decodeResource(context.getResources(),
-                                                                     borderID));
-        borderID = getResources().getIdentifier("water_grass_edge3",
-                                                "drawable", "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Bottom grass->water border",
-                                        BitmapFactory.decodeResource(context.getResources(),
-                                                                     borderID));
-        borderID = getResources().getIdentifier("water_grass_edge4",
-                                                "drawable", "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Left grass->water border",
-                                        BitmapFactory.decodeResource(context.getResources(),
-                                                                     borderID));
-        borderID = getResources().getIdentifier("water_grass_edge2",
-                                                "drawable", "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Right grass->water border",
-                                        BitmapFactory.decodeResource(context.getResources(),
-                                                                     borderID));
-        borderID = getResources().getIdentifier("grass_water_corner3",
-                                                "drawable", "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Water->grass corner SW",
-                                        BitmapFactory.decodeResource(context.getResources(),
-                                                                     borderID));
-        borderID = getResources().getIdentifier("grass_water_corner2",
-                                                "drawable", "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Water->grass corner SE",
-                                        BitmapFactory.decodeResource(context.getResources(),
-                                                                     borderID));
-
-        borderID = getResources().getIdentifier("grass_water_corner1",
-                                                "drawable", "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Water->grass corner NE",
-                                        BitmapFactory.decodeResource(context.getResources(),
-                                                                     borderID));
-        borderID = getResources().getIdentifier("grass_water_corner4",
-                                                "drawable", "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Water->grass corner NW",
-                                        BitmapFactory.decodeResource(context.getResources(),
-                                                                     borderID));
-
-        borderID = getResources().getIdentifier("water_grass_corner1",
-                                                "drawable", "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Grass->water corner SW",
-                                        BitmapFactory.decodeResource(context.getResources(),
-                                                                     borderID));
-
-        borderID = getResources().getIdentifier("water_grass_corner4",
-                                                "drawable", "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Grass->water corner SE",
-                                        BitmapFactory.decodeResource(context.getResources(),
-                                                                     borderID));
-
-        borderID = getResources().getIdentifier("water_grass_corner3",
-                                                "drawable", "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Grass->water corner NE",
-                                        BitmapFactory.decodeResource(context.getResources(),
-                                                                     borderID));
-
-        borderID = getResources().getIdentifier("water_grass_corner2",
-                                                "drawable", "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Grass->water corner NW",
-                                        BitmapFactory.decodeResource(context.getResources(),
-                                                                     borderID));
 
         Integer selID = getResources().getIdentifier("selector",
                                                      "drawable",
@@ -258,6 +193,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                                                        resourceID));
         }
 
+        loadBorders();
 
         Integer highID = getResources().getIdentifier("highlight",
                                                       "drawable",
@@ -275,6 +211,106 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         /* Prerender combined map */
         fullMap = combineMap();
 
+    }
+
+    /* TODO do not hardcode */
+    private void loadBorders() {
+        Integer borderID;
+        borderID = getResources().getIdentifier("water_grass_edge1",
+                                                "drawable",
+                                                "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Top grass->water border",
+                                        BitmapFactory
+                                        .decodeResource(context.getResources(),
+                                                        borderID));
+
+        borderID = getResources().getIdentifier("water_grass_edge3",
+                                                "drawable",
+                                                "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Bottom grass->water border",
+                                        BitmapFactory
+                                        .decodeResource(context.getResources(),
+                                                        borderID));
+
+        borderID = getResources().getIdentifier("water_grass_edge4",
+                                                "drawable",
+                                                "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Left grass->water border",
+                                        BitmapFactory
+                                        .decodeResource(context.getResources(),
+                                                        borderID));
+
+        borderID = getResources().getIdentifier("water_grass_edge2",
+                                                "drawable",
+                                                "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Right grass->water border",
+                                        BitmapFactory
+                                        .decodeResource(context.getResources(),
+                                                        borderID));
+
+        borderID = getResources().getIdentifier("grass_water_corner3",
+                                                "drawable",
+                                                "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Water->grass corner SW",
+                                        BitmapFactory
+                                        .decodeResource(context.getResources(),
+                                                        borderID));
+
+        borderID = getResources().getIdentifier("grass_water_corner2",
+                                                "drawable",
+                                                "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Water->grass corner SE",
+                                        BitmapFactory
+                                        .decodeResource(context.getResources(),
+                                                        borderID));
+
+        borderID = getResources().getIdentifier("grass_water_corner1",
+                                                "drawable",
+                                                "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Water->grass corner NE",
+                                        BitmapFactory
+                                        .decodeResource(context.getResources(),
+                                                        borderID));
+
+        borderID = getResources().getIdentifier("grass_water_corner4",
+                                                "drawable",
+                                                "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Water->grass corner NW",
+                                        BitmapFactory
+                                        .decodeResource(context.getResources(),
+                                                        borderID));
+
+        borderID = getResources().getIdentifier("water_grass_corner1",
+                                                "drawable",
+                                                "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Grass->water corner SW",
+                                        BitmapFactory
+                                        .decodeResource(context.getResources(),
+                                                        borderID));
+
+        borderID = getResources().getIdentifier("water_grass_corner4",
+                                                "drawable",
+                                                "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Grass->water corner SE",
+                                        BitmapFactory
+                                        .decodeResource(context.getResources(),
+                                                        borderID));
+
+        borderID = getResources().getIdentifier("water_grass_corner3",
+                                                "drawable",
+                                                "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Grass->water corner NE",
+                                        BitmapFactory
+                                        .decodeResource(context.getResources(),
+                                                        borderID));
+
+        borderID = getResources().getIdentifier("water_grass_corner2",
+                                                "drawable",
+                                                "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Grass->water corner NW",
+                                        BitmapFactory
+                                        .decodeResource(context.getResources(),
+                                                        borderID));
     }
 
     /*
