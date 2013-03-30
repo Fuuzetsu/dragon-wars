@@ -66,7 +66,6 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
     GestureDetector gesture_detector; // used to receive onScroll and onSingleTapConfirmed
 
     DrawingThread dt;
-    Paint circle_paint; // used to draw the selection circles (to show which tile is selected)
     Bitmap highlighter;
     boolean unit_selected; // true if there is a unit at selection
 
@@ -244,10 +243,6 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
 
         gesture_detector = new GestureDetector(this.getContext(), this);
         scroll_offset = new FloatPair(0f, 0f);
-
-        circle_paint = new Paint();
-        circle_paint.setStyle(Paint.Style.FILL);
-        circle_paint.setARGB(200, 255, 255, 255); // semi-transparent white
 
     }
 
