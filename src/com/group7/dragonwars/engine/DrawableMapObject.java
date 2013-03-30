@@ -1,3 +1,5 @@
+package com.group7.dragonwars.engine;
+
 public abstract class DrawableMapObject {
 
     public String name;
