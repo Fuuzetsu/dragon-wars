@@ -7,7 +7,7 @@
         "G": {
             "name": "Grass",
             "file": "grass",
-            "dir": "raw",
+            "dir": "drawable",
             "package": "com.group7.dragonwars",
             "movementModifier": 1.0,
             "attackModifier": 0.0,
@@ -18,7 +18,7 @@
         "W": {
             "name": "Water",
             "file": "sea",
-            "dir": "raw",
+            "dir": "drawable",
             "package": "com.group7.dragonwars",
             "movementModifier": 1.0,
             "attackModifier": 0.0,
@@ -31,7 +31,7 @@
         "S": {
             "name": "Soldier",
             "file": "soldier",
-            "dir": "raw",
+            "dir": "drawable",
             "package": "com.group7.dragonwars",
             "ranged": false,
             "flying": false,
@@ -45,7 +45,7 @@
         "D": {
             "name": "Dragon",
             "file": "small_dragon",
-            "dir": "raw",
+            "dir": "drawable",
             "package": "com.group7.dragonwars",
             "ranged": true,
             "minRange": 2.0,
@@ -63,7 +63,7 @@
         "C": {
             "name": "Castle",
             "file": "castle",
-            "dir": "raw",
+            "dir": "drawable",
             "package": "com.group7.dragonwars",
             "captureDifficulty": 4,
             "attackBonus": 3.0,
@@ -74,7 +74,7 @@
         "V": {
             "name": "Village",
             "file": "village",
-            "dir": "raw",
+            "dir": "drawable",
             "package": "com.group7.dragonwars",
             "captureDifficulty": 2,
             "attackBonus": 1.0,
