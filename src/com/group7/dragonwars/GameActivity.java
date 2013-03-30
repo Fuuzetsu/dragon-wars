@@ -1,52 +1,71 @@
 package com.group7.dragonwars;
-
-import java.io.*;
-
-import java.util.*;
-
-import org.json.*;
-
 import android.app.Activity;
-import android.content.*;
-import android.content.res.*;
-import android.graphics.*;
-import android.graphics.PorterDuff.*;
+
+import android.content.Context;
+import android.content.res.Configuration;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
+
 import android.os.Bundle;
+
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.*;
+
+import android.view.GestureDetector;
 import android.view.GestureDetector.OnDoubleTapListener;
 import android.view.GestureDetector.OnGestureListener;
-import android.widget.Toast;
+import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.Window;
+import android.view.WindowManager;
 
-import com.group7.dragonwars.engine.*;
-import com.group7.dragonwars.util.SystemUiHider;
+import com.group7.dragonwars.engine.Building;
+import com.group7.dragonwars.engine.GameField;
+import com.group7.dragonwars.engine.GameMap;
+import com.group7.dragonwars.engine.GameState;
+import com.group7.dragonwars.engine.Logic;
+import com.group7.dragonwars.engine.MapReader;
+import com.group7.dragonwars.engine.Position;
+import com.group7.dragonwars.engine.Pair;
+import com.group7.dragonwars.engine.Unit;
 
-/**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- *
- * @see SystemUiHider
- *
- *      I removed almost all of this, a lot of it was to make the navigation ui
- *      (top bar + any software buttons) appear and disappear and animate,
- *      however now we only want it gone. it was also incredibly boring.
- */
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
+import java.io.IOException;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.json.JSONException;
+
+
 public class GameActivity extends Activity {
     private static final String TAG = "GameActivity";
     private Integer orientation;
     private Boolean orientationChanged = false;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected final void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // remove the title bar (it would normally say something like "Dragon Wars" or "Battle"
+        // remove the title bar
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        // remove the status bar (the top bar containing things such as the time, and notifications)
+        // remove the status bar
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                             WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         Log.d(TAG, "in onCreate");
         setContentView(R.layout.activity_game);
@@ -54,40 +73,42 @@ public class GameActivity extends Activity {
 
 }
 
-class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureListener, OnDoubleTapListener {
-    final private String TAG = "GameView";
-    Bitmap bm;
-    GameState state;
-    Logic logic;
-    GameMap map;
-    Position selected; // the (coordinates of the) currently selected position
+class GameView extends SurfaceView implements SurfaceHolder.Callback,
+                                              OnGestureListener,
+                                              OnDoubleTapListener {
+    private final String TAG = "GameView";
 
-    FloatPair scroll_offset; // the offset caused by scrolling, in pixels
-    GestureDetector gesture_detector; // used to receive onScroll and onSingleTapConfirmed
+    private final int tilesize = 64;
 
-    DrawingThread dt;
-    Bitmap highlighter;
-    Bitmap selector;
-    boolean unit_selected; // true if there is a unit at selection
+    private Bitmap bm;
+    private GameState state;
+    private Logic logic;
+    private GameMap map;
+    private Position selected; // Currently selected position
 
-    Bitmap fullMap;
+    private FloatPair scrollOffset; // offset caused by scrolling, in pixels
+    private GestureDetector gestureDetector;
 
-    // List<Position> unit_destinations; // probably not best to recompute this every time, or maybe it is, treat as Undefined if !unit_selected
+    private DrawingThread dt;
+    private Bitmap highlighter;
+    private Bitmap selector;
 
-    Context context;
-    HashMap<String, HashMap<String, Bitmap>> graphics;
+    private Bitmap fullMap;
+
+    private Context context;
+    private HashMap<String, HashMap<String, Bitmap>> graphics;
     private Integer orientation;
-    int tilesize = 64; // the size (in pixels) to draw the square tiles
+
     private GameField lastField;
     private Unit lastUnit;
     private List<Position> lastDestinations;
 
 
-    public GameView(Context ctx, AttributeSet attrset) {
+    public GameView(final Context ctx, final AttributeSet attrset) {
         super(ctx, attrset);
         Log.d(TAG, "GameView ctor");
 
-        GameView game_view = (GameView) this.findViewById(R.id.game_view);
+        GameView gameView = (GameView) this.findViewById(R.id.game_view);
         GameMap gm = null;
 
         Log.d(TAG, "nulling GameMap");
@@ -104,7 +125,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
         }
 
         Log.d(TAG, "before setMap");
-        game_view.setMap(gm);
+        gameView.setMap(gm);
         this.logic = new Logic();
         this.state = new GameState(map, logic, map.getPlayers());
 
@@ -120,84 +141,22 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
         Boolean b = map == null;
         Log.d(TAG, "map is current null?: " + b.toString());
 
-        for (Map.Entry<Character, GameField> ent : this.map.getGameFieldMap().entrySet()) {
+        for (Map.Entry<Character, GameField> ent :
+                 this.map.getGameFieldMap().entrySet()) {
             Log.d(TAG, "inside for loop, about to ent.getValue()");
             GameField f = ent.getValue();
             Log.d(TAG, "about to getResources() for " + f.getFieldName());
-            Integer resourceID = getResources().getIdentifier(f.getSpriteLocation(),
-                                 f.getSpriteDir(),
-                                 f.getSpritePack());
+            Integer resourceID = getResources().getIdentifier(
+                f.getSpriteLocation(),
+                f.getSpriteDir(),
+                f.getSpritePack());
             Log.d(TAG, "after getResources()");
-            this.graphics.get("Fields").put(f.getFieldName(),
-                                            BitmapFactory.decodeResource(context.getResources(),
-                                                    resourceID));
+            graphics.get("Fields").put(f.getFieldName(),
+                                       BitmapFactory
+                                       .decodeResource(context.getResources(),
+                                                       resourceID));
             Log.d(TAG, "after putting decoded resource into Fields");
         }
-        Integer borderID = getResources().getIdentifier("water_grass_edge1",
-                                                        "drawable", "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Top grass->water border",
-                                        BitmapFactory.decodeResource(context.getResources(),
-                                                                     borderID));
-        borderID = getResources().getIdentifier("water_grass_edge3",
-                                                "drawable", "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Bottom grass->water border",
-                                        BitmapFactory.decodeResource(context.getResources(),
-                                                                     borderID));
-        borderID = getResources().getIdentifier("water_grass_edge4",
-                                                "drawable", "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Left grass->water border",
-                                        BitmapFactory.decodeResource(context.getResources(),
-                                                                     borderID));
-        borderID = getResources().getIdentifier("water_grass_edge2",
-                                                "drawable", "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Right grass->water border",
-                                        BitmapFactory.decodeResource(context.getResources(),
-                                                                     borderID));
-        borderID = getResources().getIdentifier("grass_water_corner3",
-                                                "drawable", "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Water->grass corner SW",
-                                        BitmapFactory.decodeResource(context.getResources(),
-                                                                     borderID));
-        borderID = getResources().getIdentifier("grass_water_corner2",
-                                                "drawable", "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Water->grass corner SE",
-                                        BitmapFactory.decodeResource(context.getResources(),
-                                                                     borderID));
-
-        borderID = getResources().getIdentifier("grass_water_corner1",
-                                                "drawable", "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Water->grass corner NE",
-                                        BitmapFactory.decodeResource(context.getResources(),
-                                                                     borderID));
-        borderID = getResources().getIdentifier("grass_water_corner4",
-                                                "drawable", "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Water->grass corner NW",
-                                        BitmapFactory.decodeResource(context.getResources(),
-                                                                     borderID));
-
-        borderID = getResources().getIdentifier("water_grass_corner1",
-                                                "drawable", "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Grass->water corner SW",
-                                        BitmapFactory.decodeResource(context.getResources(),
-                                                                     borderID));
-
-        borderID = getResources().getIdentifier("water_grass_corner4",
-                                                "drawable", "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Grass->water corner SE",
-                                        BitmapFactory.decodeResource(context.getResources(),
-                                                                     borderID));
-
-        borderID = getResources().getIdentifier("water_grass_corner3",
-                                                "drawable", "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Grass->water corner NE",
-                                        BitmapFactory.decodeResource(context.getResources(),
-                                                                     borderID));
-
-        borderID = getResources().getIdentifier("water_grass_corner2",
-                                                "drawable", "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Grass->water corner NW",
-                                        BitmapFactory.decodeResource(context.getResources(),
-                                                                     borderID));
 
         Integer selID = getResources().getIdentifier("selector",
                                                      "drawable",
@@ -209,15 +168,18 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
 
         this.graphics.put("Units", new HashMap<String, Bitmap>());
 
-        for (Map.Entry<Character, Unit> ent : this.map.getUnitMap().entrySet()) {
+        for (Map.Entry<Character, Unit> ent :
+                 this.map.getUnitMap().entrySet()) {
             Unit f = ent.getValue();
             Log.d(TAG, "about to getResources() for " + f.getUnitName());
-            Integer resourceID = getResources().getIdentifier(f.getSpriteLocation(),
-                                 f.getSpriteDir(),
-                                 f.getSpritePack());
-            this.graphics.get("Units").put(f.getUnitName(),
-                                           BitmapFactory.decodeResource(context.getResources(),
-                                                   resourceID));
+            Integer resourceID = getResources().getIdentifier(
+                f.getSpriteLocation(),
+                f.getSpriteDir(),
+                f.getSpritePack());
+            graphics.get("Units").put(f.getUnitName(),
+                                      BitmapFactory
+                                      .decodeResource(context.getResources(),
+                                                      resourceID));
         }
 
 
@@ -225,17 +187,21 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
         /* Register buildings */
         this.graphics.put("Buildings", new HashMap<String, Bitmap>());
 
-        for (Map.Entry<Character, Building> ent : this.map.getBuildingMap().entrySet()) {
+        for (Map.Entry<Character, Building> ent :
+                 this.map.getBuildingMap().entrySet()) {
             Building f = ent.getValue();
             Log.d(TAG, "about to getResources() for " + f.getBuildingName());
-            Integer resourceID = getResources().getIdentifier(f.getSpriteLocation(),
-                                 f.getSpriteDir(),
-                                 f.getSpritePack());
-            this.graphics.get("Buildings").put(f.getBuildingName(),
-                                               BitmapFactory.decodeResource(context.getResources(),
-                                                       resourceID));
+            Integer resourceID = getResources().getIdentifier(
+                f.getSpriteLocation(),
+                f.getSpriteDir(),
+                f.getSpritePack());
+            graphics.get("Buildings").put(
+                f.getBuildingName(),
+                BitmapFactory.decodeResource(context.getResources(),
+                                             resourceID));
         }
 
+        loadBorders();
 
         Integer highID = getResources().getIdentifier("highlight",
                                                       "drawable",
@@ -245,16 +211,114 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
         Log.d(TAG, "after buildings");
         holder.addCallback(this);
 
-        selected = new Position(0, 0); // I really hope that it's ok to assume that the map is at least 1*1
+        selected = new Position(0, 0);
 
-        unit_selected = map.getField(selected).hostsUnit();
-
-        gesture_detector = new GestureDetector(this.getContext(), this);
-        scroll_offset = new FloatPair(0f, 0f);
+        gestureDetector = new GestureDetector(this.getContext(), this);
+        scrollOffset = new FloatPair(0f, 0f);
 
         /* Prerender combined map */
         fullMap = combineMap();
 
+    }
+
+    /* TODO do not hardcode */
+    private void loadBorders() {
+        Integer borderID;
+        borderID = getResources().getIdentifier("water_grass_edge1",
+                                                "drawable",
+                                                "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Top grass->water border",
+                                        BitmapFactory
+                                        .decodeResource(context.getResources(),
+                                                        borderID));
+
+        borderID = getResources().getIdentifier("water_grass_edge3",
+                                                "drawable",
+                                                "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Bottom grass->water border",
+                                        BitmapFactory
+                                        .decodeResource(context.getResources(),
+                                                        borderID));
+
+        borderID = getResources().getIdentifier("water_grass_edge4",
+                                                "drawable",
+                                                "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Left grass->water border",
+                                        BitmapFactory
+                                        .decodeResource(context.getResources(),
+                                                        borderID));
+
+        borderID = getResources().getIdentifier("water_grass_edge2",
+                                                "drawable",
+                                                "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Right grass->water border",
+                                        BitmapFactory
+                                        .decodeResource(context.getResources(),
+                                                        borderID));
+
+        borderID = getResources().getIdentifier("grass_water_corner3",
+                                                "drawable",
+                                                "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Water->grass corner SW",
+                                        BitmapFactory
+                                        .decodeResource(context.getResources(),
+                                                        borderID));
+
+        borderID = getResources().getIdentifier("grass_water_corner2",
+                                                "drawable",
+                                                "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Water->grass corner SE",
+                                        BitmapFactory
+                                        .decodeResource(context.getResources(),
+                                                        borderID));
+
+        borderID = getResources().getIdentifier("grass_water_corner1",
+                                                "drawable",
+                                                "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Water->grass corner NE",
+                                        BitmapFactory
+                                        .decodeResource(context.getResources(),
+                                                        borderID));
+
+        borderID = getResources().getIdentifier("grass_water_corner4",
+                                                "drawable",
+                                                "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Water->grass corner NW",
+                                        BitmapFactory
+                                        .decodeResource(context.getResources(),
+                                                        borderID));
+
+        borderID = getResources().getIdentifier("water_grass_corner1",
+                                                "drawable",
+                                                "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Grass->water corner SW",
+                                        BitmapFactory
+                                        .decodeResource(context.getResources(),
+                                                        borderID));
+
+        borderID = getResources().getIdentifier("water_grass_corner4",
+                                                "drawable",
+                                                "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Grass->water corner SE",
+                                        BitmapFactory
+                                        .decodeResource(context.getResources(),
+                                                        borderID));
+
+        borderID = getResources().getIdentifier("water_grass_corner3",
+                                                "drawable",
+                                                "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Grass->water corner NE",
+                                        BitmapFactory
+                                        .decodeResource(context.getResources(),
+                                                        borderID));
+
+        borderID = getResources().getIdentifier("water_grass_corner2",
+                                                "drawable",
+                                                "com.group7.dragonwars");
+        this.graphics.get("Fields").put("Grass->water corner NW",
+                                        BitmapFactory
+                                        .decodeResource(context.getResources(),
+                                                        borderID));
     }
 
     /*
@@ -273,18 +337,20 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
 
         for (int i = 0; i < map.getWidth(); ++i) {
             for (int j = 0; j < map.getHeight(); j++) {
-            	Position pos = new Position(i, j);
+                Position pos = new Position(i, j);
                 GameField gf = map.getField(i, j);
                 String gfn = gf.getFieldName();
                 RectF dest = getSquare(tilesize * i, tilesize * j, tilesize);
-                combined.drawBitmap(graphics.get("Fields").get(gfn), null, dest, null);
+                combined.drawBitmap(graphics.get("Fields").get(gfn),
+                                    null, dest, null);
 
                 drawBorder(combined, pos, dest);
 
                 if (gf.hostsBuilding()) {
                     Building b = gf.getBuilding();
                     String n = b.getBuildingName();
-                    combined.drawBitmap(graphics.get("Buildings").get(n), null, dest, null);
+                    combined.drawBitmap(graphics.get("Buildings").get(n),
+                                        null, dest, null);
                 }
             }
         }
@@ -292,16 +358,18 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
         return result;
     }
 
-    private List<String> readFile(int resourceid) {
+    private List<String> readFile(final int resourceid) {
         List<String> text = new ArrayList<String>();
 
         try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(this
-                                                   .getResources().openRawResource(resourceid)));
+            BufferedReader in = new BufferedReader(
+                new InputStreamReader(this.getResources()
+                                      .openRawResource(resourceid)));
             String line;
 
-            while ((line = in.readLine()) != null)
+            while ((line = in.readLine()) != null) {
                 text.add(line);
+            }
 
             in.close();
         } catch (FileNotFoundException fnf) {
@@ -315,25 +383,26 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
         return text;
     }
 
-    public void setMap(GameMap newmap) {
+    public void setMap(final GameMap newmap) {
         this.map = newmap;
     }
 
     @Override
-    public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
+    public void surfaceChanged(final SurfaceHolder arg0, final int arg1,
+                               final int arg2, final int arg3) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void surfaceCreated(SurfaceHolder arg0) {
+    public void surfaceCreated(final SurfaceHolder arg0) {
         dt = new DrawingThread(arg0, context, this);
         dt.setRunning(true);
         dt.start();
     }
 
     @Override
-    public void surfaceDestroyed(SurfaceHolder arg0) {
+    public void surfaceDestroyed(final SurfaceHolder arg0) {
         dt.setRunning(false);
 
         try {
@@ -344,53 +413,53 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-    	// all of the functionality that was previously here is now in onSingleTapConfirmed()
-    	gesture_detector.onTouchEvent(event);
+    public boolean onTouchEvent(final MotionEvent event) {
+        /* Functionality moved to onSingleTapConfirmed() */
+        gestureDetector.onTouchEvent(event);
         return true;
     }
 
-    public RectF getSquare(float x, float y, float length) {
-    	return new RectF(x, y, x + length, y + length);
+    public RectF getSquare(final float x, final float y, final float length) {
+        return new RectF(x, y, x + length, y + length);
     }
 
-    public List<Position> getUnitDestinations(GameField selected_field) {
-        List<Position> unit_destinations = new ArrayList<Position>(0);
+    public List<Position> getUnitDestinations(final GameField selectedField) {
+        List<Position> unitDests = new ArrayList<Position>(0);
 
         /* First time clicking */
         if (lastUnit == null || lastField == null || lastDestinations == null) {
-            lastField = selected_field;
-            if (selected_field.hostsUnit()) {
-                Unit unit = selected_field.getUnit();
+            lastField = selectedField;
+            if (selectedField.hostsUnit()) {
+                Unit unit = selectedField.getUnit();
                 lastUnit = unit;
-                unit_destinations = logic.destinations(map, unit);
-                lastDestinations = unit_destinations;
-            }
-            else {
-                unit_destinations = new ArrayList<Position>(0);
-                lastDestinations = unit_destinations;
+                unitDests = logic.destinations(map, unit);
+                lastDestinations = unitDests;
+            } else {
+                unitDests = new ArrayList<Position>(0);
+                lastDestinations = unitDests;
             }
         }
 
-        if (selected_field.equals(lastField) && selected_field.hostsUnit()) {
-            if (selected_field.getUnit().equals(lastUnit)) { /* Same unit, same place */
-                unit_destinations = lastDestinations;
+        if (selectedField.equals(lastField) && selectedField.hostsUnit()) {
+            /* Same unit, same place */
+            if (selectedField.getUnit().equals(lastUnit)) {
+                unitDests = lastDestinations;
             }
+        } else {
+            if (selectedField.hostsUnit()) {
+                unitDests = logic.destinations(map, selectedField.getUnit());
+            }
+            lastDestinations = unitDests;
+            lastField = selectedField;
+            lastUnit = selectedField.getUnit(); /* Fine if null */
         }
-        else {
-            if (selected_field.hostsUnit())
-                unit_destinations = logic.destinations(map, selected_field.getUnit());
 
-            lastDestinations = unit_destinations;
-            lastField = selected_field;
-            lastUnit = selected_field.getUnit(); /* Fine if null */
-        }
-
-        return unit_destinations;
+        return unitDests;
 
     }
 
-    public void drawBorder(Canvas canvas, Position currentField, RectF dest) {
+    public void drawBorder(final Canvas canvas, final Position currentField,
+                           final RectF dest) {
         /* TODO not hard-code this */
         Integer i = currentField.getX();
         Integer j = currentField.getY();
@@ -427,148 +496,189 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
         sw = map.isValidField(swp) ? map.getField(swp).toString() : FAKE;
 
         if (gfn.equals("Water")) {
-            if (w.equals("Grass"))
-                canvas.drawBitmap(graphics.get("Fields").get("Right grass->water border"), //2
+            if (w.equals("Grass")) {
+                canvas.drawBitmap(graphics.get("Fields")
+                                  .get("Right grass->water border"),
                                   null, dest, null);
-
+            }
         }
 
         if (gfn.equals("Water")) {
-            if (e.equals("Grass"))
-                canvas.drawBitmap(graphics.get("Fields").get("Left grass->water border"),
+            if (e.equals("Grass")) {
+                canvas.drawBitmap(graphics.get("Fields")
+                                  .get("Left grass->water border"),
                                   null, dest, null);
+            }
         }
 
 
         if (gfn.equals("Water")) {
-            if (s.equals("Grass"))
-                canvas.drawBitmap(graphics.get("Fields").get("Top grass->water border"),
+            if (s.equals("Grass")) {
+                canvas.drawBitmap(graphics.get("Fields")
+                                  .get("Top grass->water border"),
                                   null, dest, null);
-        }
-
-        if(gfn.equals("Water")) {
-            if(n.equals("Grass"))
-                canvas.drawBitmap(graphics.get("Fields").get("Bottom grass->water border"),
-                                  null, dest, null);
+            }
         }
 
         if (gfn.equals("Water")) {
-            if (s.equals("Water") && w.equals("Water") && sw.equals("Grass"))
-                canvas.drawBitmap(graphics.get("Fields").get("Grass->water corner SW"),
+            if (n.equals("Grass")) {
+                canvas.drawBitmap(graphics.get("Fields")
+                                  .get("Bottom grass->water border"),
                                   null, dest, null);
+            }
         }
 
         if (gfn.equals("Water")) {
-            if (s.equals("Water") && e.equals("Water") && se.equals("Grass"))
-                canvas.drawBitmap(graphics.get("Fields").get("Grass->water corner SE"),
+            if (s.equals("Water") && w.equals("Water") && sw.equals("Grass")) {
+                canvas.drawBitmap(graphics.get("Fields")
+                                  .get("Grass->water corner SW"),
                                   null, dest, null);
+            }
         }
 
         if (gfn.equals("Water")) {
-            if (n.equals("Water") && w.equals("Water") && nw.equals("Grass"))
-                canvas.drawBitmap(graphics.get("Fields").get("Grass->water corner NW"),
+            if (s.equals("Water") && e.equals("Water") && se.equals("Grass")) {
+                canvas.drawBitmap(graphics.get("Fields")
+                                  .get("Grass->water corner SE"),
                                   null, dest, null);
+            }
         }
 
         if (gfn.equals("Water")) {
-            if (n.equals("Water") && e.equals("Water") && ne.equals("Grass"))
-                canvas.drawBitmap(graphics.get("Fields").get("Grass->water corner NE"),
+            if (n.equals("Water") && w.equals("Water") && nw.equals("Grass")) {
+                canvas.drawBitmap(graphics.get("Fields")
+                                  .get("Grass->water corner NW"),
                                   null, dest, null);
+            }
+        }
+
+        if (gfn.equals("Water")) {
+            if (n.equals("Water") && e.equals("Water") && ne.equals("Grass")) {
+                canvas.drawBitmap(graphics.get("Fields")
+                                  .get("Grass->water corner NE"),
+                                  null, dest, null);
+            }
         }
 
         if (gfn.equals("Water")) {
             if (w.equals("Grass") && s.equals("Grass") && sw.equals("Grass")) {
-                canvas.drawBitmap(graphics.get("Fields").get("Water->grass corner SW"),
+                canvas.drawBitmap(graphics.get("Fields")
+                                  .get("Water->grass corner SW"),
                                   null, dest, null);
             }
         }
 
         if (gfn.equals("Water")) {
             if (e.equals("Grass") && s.equals("Grass") && se.equals("Grass")) {
-                canvas.drawBitmap(graphics.get("Fields").get("Water->grass corner SE"),
+                canvas.drawBitmap(graphics.get("Fields")
+                                  .get("Water->grass corner SE"),
                                   null, dest, null);
             }
         }
 
         if (gfn.equals("Water")) {
             if (w.equals("Grass") && n.equals("Grass") && nw.equals("Grass")) {
-                canvas.drawBitmap(graphics.get("Fields").get("Water->grass corner NW"),
+                canvas.drawBitmap(graphics.get("Fields")
+                                  .get("Water->grass corner NW"),
                                   null, dest, null);
             }
         }
 
         if (gfn.equals("Water")) {
             if (e.equals("Grass") && n.equals("Grass") && ne.equals("Grass")) {
-                canvas.drawBitmap(graphics.get("Fields").get("Water->grass corner NE"),
+                canvas.drawBitmap(graphics.get("Fields")
+                                  .get("Water->grass corner NE"),
                                   null, dest, null);
             }
         }
 
     }
 
-    private List<String> getFieldSquare(Position p) {
+    /* Debug method */
+    private List<String> getFieldSquare(final Position p) {
         List<String> r = new ArrayList<String>();
-        GameField  ne, n, nw, e, c, w, se, s, sw;
-        int i, j;
+
+        Integer i, j;
         i = p.getX();
         j = p.getY();
-        if (i < 1 || j < 1 || i > 6 || j > 6)
-            return new ArrayList<String>();
 
-        ne = map.getField(new Position(i - 1, j - 1));
-        n = map.getField(new Position(i, j - 1));
-        nw = map.getField(new Position(i + 1, j - 1));
+        Position nep, np, nwp, ep, cp, wp, sep, sp, swp;
+        String ne, n, nw, e, c, w, se, s, sw;
 
-        e = map.getField(new Position(i - 1, j));
-        c = map.getField(new Position(i, j));
-        w = map.getField(new Position(i + 1, j));
+        nep = new Position(i - 1, j - 1);
+        np = new Position(i, j - 1);
+        nwp = new Position(i + 1, j - 1);
 
-        se = map.getField(new Position(i - 1, j + 1));
-        s = map.getField(new Position(i, j + 1));
-        sw = map.getField(new Position(i + 1, j + 1));
-        r.add("" + ne.toString().charAt(0) + n.toString().charAt(0) + nw.toString().charAt(0));
-        r.add("" + e.toString().charAt(0) + c.toString().charAt(0) + w.toString().charAt(0));
-        r.add("" + se.toString().charAt(0) + s.toString().charAt(0) + sw.toString().charAt(0));
+        ep = new Position(i - 1, j);
+        cp = new Position(i, j);
+        wp = new Position(i + 1, j);
+
+        sep = new Position(i - 1, j + 1);
+        sp = new Position(i, j + 1);
+        swp = new Position(i + 1, j + 1);
+
+        ne = map.isValidField(nep) ? map.getField(nep).toString() : " ";
+        n = map.isValidField(np) ? map.getField(np).toString() : " ";
+        nw = map.isValidField(nwp) ? map.getField(nwp).toString() : " ";
+
+        e = map.isValidField(ep) ? map.getField(ep).toString() : " ";
+        c = map.isValidField(cp) ? map.getField(cp).toString() : " ";
+        w = map.isValidField(wp) ? map.getField(wp).toString() : " ";
+
+        se = map.isValidField(sep) ? map.getField(sep).toString() : " ";
+        s = map.isValidField(sp) ? map.getField(sp).toString() : " ";
+        sw = map.isValidField(swp) ? map.getField(swp).toString() : " ";
+
+        r.add("" + ne.toString().charAt(0) + n.toString().charAt(0)
+              + nw.toString().charAt(0));
+        r.add("" + e.toString().charAt(0) + c.toString().charAt(0)
+              + w.toString().charAt(0));
+        r.add("" + se.toString().charAt(0) + s.toString().charAt(0)
+              + sw.toString().charAt(0));
 
         return r;
     }
 
-    public void doDraw(Canvas canvas) {
+    public void doDraw(final Canvas canvas) {
         Configuration c = getResources().getConfiguration();
 
-        canvas.drawColor(Color.BLACK); // Draw black anyway, in order to ensure that there are no leftover graphics
+        canvas.drawColor(Color.BLACK);
 
-        GameField selected_field = map.getField(selected);
-        List<Position> unit_destinations = getUnitDestinations(selected_field);
+        GameField selectedField = map.getField(selected);
+        List<Position> unitDests = getUnitDestinations(selectedField);
 
-        canvas.drawBitmap(fullMap, scroll_offset.getX(), scroll_offset.getY(), null);
+        canvas.drawBitmap(fullMap, scrollOffset.getX(),
+                          scrollOffset.getY(), null);
 
         for (int i = 0; i < map.getWidth(); ++i) {
             for (int j = 0; j < map.getHeight(); j++) {
                 GameField gf = map.getField(i, j);
                 RectF dest = getSquare(
-                		tilesize * i + scroll_offset.getX(),
-                		tilesize * j + scroll_offset.getY(),
-                		tilesize);
+                        tilesize * i + scrollOffset.getX(),
+                        tilesize * j + scrollOffset.getY(),
+                        tilesize);
 
                 if (gf.hostsUnit()) {
                     Unit unit = gf.getUnit();
 
                     if (unit != null) {
                         String un = unit.toString();
-                        canvas.drawBitmap(graphics.get("Units").get(un), null, dest, null);
+                        canvas.drawBitmap(graphics.get("Units").get(un),
+                                          null, dest, null);
                     }
                 }
-
+                /* Uncomment to print red grid with some info */
                 // Paint p = new Paint();
                 // p.setColor(Color.RED);
-                // canvas.drawText(pos.toString() + gfn.charAt(0), tilesize * i + scroll_offset.getX(),
-                //                 tilesize * j + scroll_offset.getY() + 64, p);
+                // canvas.drawText(pos.toString() + gfn.charAt(0),
+                //                 tilesize * i + scrollOffset.getX(),
+                //                 tilesize * j + scrollOffset.getY() + 64, p);
                 // List<String> aoe = getFieldSquare(pos);
                 // for (int x = 0; x < aoe.size(); ++x)
-                //     canvas.drawText(aoe.get(x), tilesize * i + scroll_offset.getX(),
-                //                     tilesize * j + scroll_offset.getY() + 20 + (x * 10), p);
-
+                // canvas.drawText(aoe.get(x), tilesize * i
+                //                 + scrollOffset.getX(),
+                //                 tilesize * j + scrollOffset.getY()
+                //                 + 20 + (x * 10), p);
                 // Paint r = new Paint();
                 // r.setStyle(Paint.Style.STROKE);
                 // r.setColor(Color.RED);
@@ -577,175 +687,205 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
         }
 
 
-        // perform highlighting
-        for (Position pos : unit_destinations) {
-        	RectF dest = getSquare(
-            		tilesize * pos.getX() + scroll_offset.getX(),
-            		tilesize * pos.getY() + scroll_offset.getY(),
-            		tilesize);
-        	canvas.drawBitmap(highlighter, null, dest, null);
+        /* Destination highlighting */
+        for (Position pos : unitDests) {
+            RectF dest = getSquare(
+                    tilesize * pos.getX() + scrollOffset.getX(),
+                    tilesize * pos.getY() + scrollOffset.getY(),
+                    tilesize);
+            canvas.drawBitmap(highlighter, null, dest, null);
         }
 
         RectF dest = getSquare(
-            tilesize * selected.getX() + scroll_offset.getX(),
-            tilesize * selected.getY() + scroll_offset.getY(),
+            tilesize * selected.getX() + scrollOffset.getX(),
+            tilesize * selected.getY() + scrollOffset.getY(),
             tilesize);
         canvas.drawBitmap(selector, null, dest, null);
 
-
-	// draw the information box
-	drawInfoBox(canvas, selected_field.hostsUnit() ? selected_field.getUnit() : null, selected_field, true);
+        if (selectedField.hostsUnit()) {
+            drawInfoBox(canvas, selectedField.getUnit(), selectedField, true);
+        } else {
+            drawInfoBox(canvas, null, selectedField, true);
+        }
     }
 
     public float getMapDrawWidth() {
-    	// returns the width of map in pixels
-    	return map.getWidth() * tilesize;
+        return map.getWidth() * tilesize;
     }
 
     public float getMapDrawHeight() {
-    	// returns the width of map in pixels
-    	return map.getHeight() * tilesize;
+        return map.getHeight() * tilesize;
     }
 
-    public void drawInfoBox(Canvas canvas, Unit unit, GameField field, boolean left) {
-    	LinkedList<String> info = new LinkedList<String>();
+    public void drawInfoBox(final Canvas canvas, final Unit unit,
+                            final GameField field, final boolean left) {
+        LinkedList<String> info = new LinkedList<String>();
         info.add(field.getFieldName()); /* Always print for debug */
-    	// unit info
+        // unit info
         if (unit != null) {
-        	info.add(unit.getUnitName());// + " - Player: " + unit.getOwner().getName()); // causes problems when there is no owner
-        	info.add("Health: " + unit.getHealth() + "/" + unit.getMaxHealth());
-        	info.add("Attack: " + unit.getAttack());
-        	info.add("Defense: " + unit.getMeleeDefense() + " (Melee) " + unit.getRangeDefense() + " (Ranged)");
-        	info.add("");
+            info.add(unit.getUnitName());
+            info.add("Health: " + unit.getHealth() + "/" + unit.getMaxHealth());
+            info.add("Attack: " + unit.getAttack());
+            info.add("Defense: " + unit.getMeleeDefense() + " (Melee) "
+                     + unit.getRangeDefense() + " (Ranged)");
+            info.add("");
         }
 
-    	// field names
+        // field names
         if (field.hostsBuilding()) {
             Building building = field.getBuilding();
             String bLine = building.getBuildingName();
-            bLine += building.hasOwner() ? " ~ " + building.getOwner().getName() : "";
+
+            if (building.hasOwner()) {
+                bLine += " ~ " + building.getOwner().getName();
+            }
+
             info.add(bLine);
 
-            if (building.canProduceUnits())
-                for (Unit u : building.getProducableUnits())
-                    info.add("I can produce " + u + " - " + u.getProductionCost() + "g");
-            else
+            if (building.canProduceUnits()) {
+                for (Unit u : building.getProducableUnits()) {
+                    info.add("I can produce " + u + " - "
+                             + u.getProductionCost() + "g");
+                }
+            } else {
                 info.add("I can't produce anything.");
+            }
         }
 
         // field stats
-        info.add("Attack: " + field.getAttackModifier() +
-        		" Defense: " + field.getDefenseModifier() +
-        		" Move: " + field.getMovementModifier());
+        info.add("Attack: " + field.getAttackModifier()
+                 + " Defense: " + field.getDefenseModifier()
+                 + " Move: " + field.getMovementModifier());
 
-        Paint text_paint = new Paint();
-        text_paint.setColor(Color.WHITE);
+        Paint textPaint = new Paint();
+        textPaint.setColor(Color.WHITE);
 
-        Rect text_bounds = new Rect(0, 0, 0, 0); // contains the bounds of the entire text in the info box
-        LinkedList<Rect> info_bounds = new LinkedList<Rect>();
+        // contains the bounds of the entire text in the info box
+        Rect textBounds = new Rect(0, 0, 0, 0);
+        LinkedList<Rect> infoBounds = new LinkedList<Rect>();
         for (int i = 0; i < info.size(); ++i) {
-        	String text = info.get(i);
-        	info_bounds.add(i, new Rect());
-        	text_paint.getTextBounds(text, 0, text.length(), info_bounds.get(i));
-        	if (info_bounds.get(i).right > text_bounds.right) {
-        		text_bounds.right = info_bounds.get(i).right;
-        	}
-        	text_bounds.bottom += (info_bounds.get(i).bottom - info_bounds.get(i).top);
+            String text = info.get(i);
+            Rect r = new Rect();
+            infoBounds.add(i, r);
+            textPaint.getTextBounds(text, 0, text.length(), r);
+            if (r.right > textBounds.right) {
+                textBounds.right = r.right;
+            }
+            textBounds.bottom += r.bottom - r.top;
         }
 
-        Paint back_paint = new Paint();
-        back_paint.setColor(Color.BLACK); // FIXME make it black
+        Paint backPaint = new Paint();
+        backPaint.setColor(Color.BLACK);
 
-        Rect back_rect = new Rect(0, canvas.getHeight() - text_bounds.bottom, text_bounds.right, canvas.getHeight());
-        canvas.drawRect(back_rect, back_paint);
+        Rect backRect = new Rect(0, canvas.getHeight() - textBounds.bottom,
+                                 textBounds.right, canvas.getHeight());
+        canvas.drawRect(backRect, backPaint);
 
-        float text_height = 0f;
+        float textHeight = 0f;
         for (int i = info.size() - 1; i >= 0; --i) {
-        	canvas.drawText(info.get(i), 0, info.get(i).length(), 0, (canvas.getHeight() - text_height) - info_bounds.get(i).bottom, text_paint);
-        	text_height += (info_bounds.get(i).bottom - info_bounds.get(i).top);
+            Rect r = infoBounds.get(i);
+            canvas.drawText(info.get(i), 0, info.get(i).length(), 0,
+                            canvas.getHeight() - textHeight - r.bottom,
+                            textPaint);
+            textHeight += r.bottom - r.top;
         }
-        //canvas.drawText(info, 0, info.length(), (float) back_rect.left, (float) back_rect.bottom, text_paint);
     }
 
-    /* Please excuse all the auto-generated method stubs
-     * as we're implementing an interface or two (GestureDetector.OnGestureListener etc), we need them all
-     */
+    @Override
+    public boolean onDown(final MotionEvent e) {
+        return false;
+    }
 
-	@Override
-	public boolean onDown(MotionEvent e) {return false;}
+    @Override
+    public boolean onFling(final MotionEvent e1, final MotionEvent e2,
+                           final float velocityX, final float velocityY) {
+        return false;
+    }
 
-	@Override
-	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-		return false;
-	}
+    @Override
+    public void onLongPress(final MotionEvent e) {
+    }
 
-	@Override
-	public void onLongPress(MotionEvent e) {}
+    @Override
+    public void onShowPress(final MotionEvent e) {
+    }
 
-	@Override
-	public void onShowPress(MotionEvent e) {}
+    @Override
+    public boolean onSingleTapUp(final MotionEvent e) {
+        return false;
+    }
 
-	@Override
-	public boolean onSingleTapUp(MotionEvent e) {return false;}
+    @Override
+    public boolean onDoubleTap(final MotionEvent e) {
+        return false;
+    }
 
-	@Override
-	public boolean onDoubleTap(MotionEvent e) {return false;}
+    @Override
+    public boolean onDoubleTapEvent(final MotionEvent e) {
+        return false;
+    }
 
-	@Override
-	public boolean onDoubleTapEvent(MotionEvent e) {return false;}
+    @Override
+    public boolean onSingleTapConfirmed(final MotionEvent event) {
+        /* Coordinates of the pressed tile */
+        int touchX = (int) ((event.getX() - scrollOffset.getX()) / tilesize);
+        int touchY = (int) ((event.getY() - scrollOffset.getY()) / tilesize);
 
-	@Override
-	public boolean onSingleTapConfirmed(MotionEvent event) {
-    	int touchX = (int)((event.getX() - scroll_offset.getX()) / tilesize); // the coordinates of the pressed tile
-    	int touchY = (int)((event.getY() - scroll_offset.getY()) / tilesize); // taking into account scrolling
-
-		//Log.v(null, "Touch ended at: (" + touchX + ", " + touchY + ") (dimensions are: (" + this.map.getWidth() + "x" + this.map.getHeight() + "))");
         Position newselected = new Position(touchX, touchY);
-        if (this.map.isValidField(touchX, touchY)) {
-        	//Log.v(null, "Setting selection");
-        	this.selected = newselected;
-        }
-		return true;
-	}
 
-	@Override
-	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-		float new_x = scroll_offset.getX() - distanceX;
-		if (this.getWidth() >= this.getMapDrawWidth()) {
-			new_x = 0;
-		} else if ((-new_x) > (getMapDrawWidth() - getWidth())) {
-			new_x = -(getMapDrawWidth() - getWidth());
-		} else if (new_x > 0) {
-			new_x = 0;
-		}
-		float new_y = scroll_offset.getY() - distanceY;
-		if (this.getHeight() >= this.getMapDrawHeight()) {
-			new_y = 0;
-		} else if ((-new_y) > (getMapDrawHeight() - getHeight())) {
-			new_y = -(getMapDrawHeight() - getHeight());
-		} else if (new_y > 0) {
-			new_y = 0;
-		}
-		scroll_offset = new FloatPair(new_x, new_y);
-		return true;
-	}
+        if (this.map.isValidField(touchX, touchY)) {
+            this.selected = newselected;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onScroll(final MotionEvent e1, final MotionEvent e2,
+                            final float distanceX, final float distanceY) {
+
+        float newX = scrollOffset.getX() - distanceX;
+
+        if (this.getWidth() >= this.getMapDrawWidth()) {
+            newX = 0;
+        } else if ((-newX) > (getMapDrawWidth() - getWidth())) {
+            newX = -(getMapDrawWidth() - getWidth());
+        } else if (newX > 0) {
+            newX = 0;
+        }
+
+        float newY = scrollOffset.getY() - distanceY;
+
+        if (this.getHeight() >= this.getMapDrawHeight()) {
+            newY = 0;
+        } else if ((-newY) > (getMapDrawHeight() - getHeight())) {
+            newY = -(getMapDrawHeight() - getHeight());
+        } else if (newY > 0) {
+            newY = 0;
+        }
+
+        scrollOffset = new FloatPair(newX, newY);
+
+        return true;
+    }
 }
 
 class DrawingThread extends Thread {
-    boolean run;
-    Canvas canvas;
-    SurfaceHolder surfaceholder;
-    Context context;
-    GameView gview;
+    private boolean run;
+    private Canvas canvas;
+    private SurfaceHolder surfaceholder;
+    private Context context;
+    private GameView gview;
 
-    public DrawingThread(SurfaceHolder sholder, Context ctx, GameView gv) {
+    public DrawingThread(final SurfaceHolder sholder,
+                         final Context ctx, final GameView gv) {
         surfaceholder = sholder;
         context = ctx;
         run = false;
         gview = gv;
     }
 
-    void setRunning(boolean newrun) {
+    public void setRunning(final boolean newrun) {
         run = newrun;
     }
 
@@ -765,10 +905,10 @@ class DrawingThread extends Thread {
 
 }
 
-class FloatPair { // the Position code, but with Floats
+class FloatPair {
     private Pair<Float, Float> pair;
 
-    public FloatPair(Float x, Float y) {
+    public FloatPair(final Float x, final Float y) {
         this.pair = new Pair<Float, Float>(x, y);
     }
 
@@ -780,7 +920,7 @@ class FloatPair { // the Position code, but with Floats
         return this.pair.getRight();
     }
 
-    public Boolean equals(FloatPair other) {
+    public Boolean equals(final FloatPair other) {
         return this.getX() == other.getX() && this.getY() == other.getY();
     }
 
