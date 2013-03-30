@@ -103,6 +103,9 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     private Unit lastUnit;
     private List<Position> lastDestinations;
 
+    private Long frames = 0l;
+    private Long startingTime = null;
+
 
     public GameView(final Context ctx, final AttributeSet attrset) {
         super(ctx, attrset);
@@ -640,6 +643,10 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     }
 
     public void doDraw(final Canvas canvas) {
+        if (startingTime == null) {
+            startingTime = System.currentTimeMillis();
+        }
+
         Configuration c = getResources().getConfiguration();
 
         canvas.drawColor(Color.BLACK);
@@ -707,6 +714,14 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         } else {
             drawInfoBox(canvas, null, selectedField, true);
         }
+        frames++;
+
+        Long timeDiff = System.currentTimeMillis() - startingTime;
+        Double fpsD = frames / (timeDiff / 1000.0);
+        String fps = fpsD.toString();
+        Paint paint = new Paint();
+        paint.setARGB(255, 255, 255, 255);
+        canvas.drawText("FPS: " + fps, this.getWidth() - 80, 20, paint);
     }
 
     public float getMapDrawWidth() {
