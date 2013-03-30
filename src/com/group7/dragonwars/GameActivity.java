@@ -535,26 +535,15 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
         GameField selected_field = map.getField(selected);
         List<Position> unit_destinations = getUnitDestinations(selected_field);
 
+        canvas.drawBitmap(fullMap, scroll_offset.getX(), scroll_offset.getY(), null);
+
         for (int i = 0; i < map.getWidth(); ++i) {
             for (int j = 0; j < map.getHeight(); j++) {
-                // canvas.drawBitmap(tiles.get(0), size * j, size * i, null); // Draw
-            	Position pos = new Position(i, j);
                 GameField gf = map.getField(i, j);
-                String gfn = gf.getFieldName();
                 RectF dest = getSquare(
                 		tilesize * i + scroll_offset.getX(),
                 		tilesize * j + scroll_offset.getY(),
                 		tilesize);
-                canvas.drawBitmap(graphics.get("Fields").get(gfn), null, dest, null);
-
-                drawBorder(canvas, pos, dest);
-
-                if (gf.hostsBuilding()) {
-                    Building b = gf.getBuilding();
-                    String n = b.getBuildingName();
-
-                    canvas.drawBitmap(graphics.get("Buildings").get(n), null, dest, null);
-                }
 
                 if (gf.hostsUnit()) {
                     Unit unit = gf.getUnit();
