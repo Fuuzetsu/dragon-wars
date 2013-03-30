@@ -192,6 +192,17 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     }
 
+    private <T extends DrawableMapObject> void putGroup(final String category,
+                                                        Map<Character, T> oM) {
+        graphics.put(category, new HashMap<String, T>());
+
+        for (Map.Entry<Character, T> ent : oM.entrySet()) {
+            T f = ent.getValue();
+            putResource(category, f.getSpriteLocation(), f.getSpriteDir(),
+                        f.getSpritePack(), f.getName());
+        }
+    }
+
     private void putResource(final String category, final String resName,
                              final String resDir, final String resPack,
                              final String regName) {
