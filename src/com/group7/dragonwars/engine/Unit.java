@@ -12,7 +12,6 @@ public class Unit extends DrawableMapObject {
     private Boolean hasFinishedTurn = false;
     private Player owner;
     private Boolean isFlying;
-    private String spriteLocation, spriteDir, spritePack;
     private Integer productionCost;
 
     public Unit(String name, Double maxHealth, Integer maxMovement,
