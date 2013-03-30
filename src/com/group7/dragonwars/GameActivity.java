@@ -78,14 +78,17 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                                               OnGestureListener,
                                               OnDoubleTapListener {
     private final String TAG = "GameView";
+
+    private final int tilesize = 64;
+
     private Bitmap bm;
     private GameState state;
     private Logic logic;
     private GameMap map;
     private Position selected; // Currently selected position
 
-    private FloatPair scroll_offset; // offset caused by scrolling, in pixels
-    private GestureDetector gesture_detector;
+    private FloatPair scrollOffset; // offset caused by scrolling, in pixels
+    private GestureDetector gestureDetector;
 
     private DrawingThread dt;
     private Bitmap highlighter;
@@ -96,7 +99,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     private Context context;
     private HashMap<String, HashMap<String, Bitmap>> graphics;
     private Integer orientation;
-    private int tilesize = 64;
+
     private GameField lastField;
     private Unit lastUnit;
     private List<Position> lastDestinations;
@@ -266,8 +269,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         selected = new Position(0, 0); // I really hope that it's ok to assume that the map is at least 1*1
 
-        gesture_detector = new GestureDetector(this.getContext(), this);
-        scroll_offset = new FloatPair(0f, 0f);
+        gestureDetector = new GestureDetector(this.getContext(), this);
+        scrollOffset = new FloatPair(0f, 0f);
 
         /* Prerender combined map */
         fullMap = combineMap();
@@ -363,7 +366,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     @Override
     public boolean onTouchEvent(MotionEvent event) {
     	// all of the functionality that was previously here is now in onSingleTapConfirmed()
-    	gesture_detector.onTouchEvent(event);
+    	gestureDetector.onTouchEvent(event);
         return true;
     }
 
@@ -558,14 +561,14 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         GameField selected_field = map.getField(selected);
         List<Position> unit_destinations = getUnitDestinations(selected_field);
 
-        canvas.drawBitmap(fullMap, scroll_offset.getX(), scroll_offset.getY(), null);
+        canvas.drawBitmap(fullMap, scrollOffset.getX(), scrollOffset.getY(), null);
 
         for (int i = 0; i < map.getWidth(); ++i) {
             for (int j = 0; j < map.getHeight(); j++) {
                 GameField gf = map.getField(i, j);
                 RectF dest = getSquare(
-                		tilesize * i + scroll_offset.getX(),
-                		tilesize * j + scroll_offset.getY(),
+                		tilesize * i + scrollOffset.getX(),
+                		tilesize * j + scrollOffset.getY(),
                 		tilesize);
 
                 if (gf.hostsUnit()) {
@@ -579,12 +582,12 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
                 // Paint p = new Paint();
                 // p.setColor(Color.RED);
-                // canvas.drawText(pos.toString() + gfn.charAt(0), tilesize * i + scroll_offset.getX(),
-                //                 tilesize * j + scroll_offset.getY() + 64, p);
+                // canvas.drawText(pos.toString() + gfn.charAt(0), tilesize * i + scrollOffset.getX(),
+                //                 tilesize * j + scrollOffset.getY() + 64, p);
                 // List<String> aoe = getFieldSquare(pos);
                 // for (int x = 0; x < aoe.size(); ++x)
-                //     canvas.drawText(aoe.get(x), tilesize * i + scroll_offset.getX(),
-                //                     tilesize * j + scroll_offset.getY() + 20 + (x * 10), p);
+                //     canvas.drawText(aoe.get(x), tilesize * i + scrollOffset.getX(),
+                //                     tilesize * j + scrollOffset.getY() + 20 + (x * 10), p);
 
                 // Paint r = new Paint();
                 // r.setStyle(Paint.Style.STROKE);
@@ -597,15 +600,15 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         // perform highlighting
         for (Position pos : unit_destinations) {
         	RectF dest = getSquare(
-            		tilesize * pos.getX() + scroll_offset.getX(),
-            		tilesize * pos.getY() + scroll_offset.getY(),
+            		tilesize * pos.getX() + scrollOffset.getX(),
+            		tilesize * pos.getY() + scrollOffset.getY(),
             		tilesize);
         	canvas.drawBitmap(highlighter, null, dest, null);
         }
 
         RectF dest = getSquare(
-            tilesize * selected.getX() + scroll_offset.getX(),
-            tilesize * selected.getY() + scroll_offset.getY(),
+            tilesize * selected.getX() + scrollOffset.getX(),
+            tilesize * selected.getY() + scrollOffset.getY(),
             tilesize);
         canvas.drawBitmap(selector, null, dest, null);
 
@@ -713,8 +716,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
 	@Override
 	public boolean onSingleTapConfirmed(MotionEvent event) {
-    	int touchX = (int)((event.getX() - scroll_offset.getX()) / tilesize); // the coordinates of the pressed tile
-    	int touchY = (int)((event.getY() - scroll_offset.getY()) / tilesize); // taking into account scrolling
+    	int touchX = (int)((event.getX() - scrollOffset.getX()) / tilesize); // the coordinates of the pressed tile
+    	int touchY = (int)((event.getY() - scrollOffset.getY()) / tilesize); // taking into account scrolling
 
 		//Log.v(null, "Touch ended at: (" + touchX + ", " + touchY + ") (dimensions are: (" + this.map.getWidth() + "x" + this.map.getHeight() + "))");
         Position newselected = new Position(touchX, touchY);
@@ -727,7 +730,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
 	@Override
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-		float new_x = scroll_offset.getX() - distanceX;
+		float new_x = scrollOffset.getX() - distanceX;
 		if (this.getWidth() >= this.getMapDrawWidth()) {
 			new_x = 0;
 		} else if ((-new_x) > (getMapDrawWidth() - getWidth())) {
@@ -735,7 +738,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 		} else if (new_x > 0) {
 			new_x = 0;
 		}
-		float new_y = scroll_offset.getY() - distanceY;
+		float new_y = scrollOffset.getY() - distanceY;
 		if (this.getHeight() >= this.getMapDrawHeight()) {
 			new_y = 0;
 		} else if ((-new_y) > (getMapDrawHeight() - getHeight())) {
@@ -743,7 +746,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 		} else if (new_y > 0) {
 			new_y = 0;
 		}
-		scroll_offset = new FloatPair(new_x, new_y);
+		scrollOffset = new FloatPair(new_x, new_y);
 		return true;
 	}
 }
