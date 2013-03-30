@@ -105,9 +105,9 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     private Unit lastUnit;
     private List<Position> lastDestinations;
 
-    private Long timeElapsed = 0l;
-    private Long framesSinceLastSecond = 0l;
-    private Long timeNow = 0l;
+    private Long timeElapsed = 0L;
+    private Long framesSinceLastSecond = 0L;
+    private Long timeNow = 0L;
     private Double fps = 0.0;
 
 
@@ -167,11 +167,12 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     }
 
-    private <T extends DrawableMapObject> void putGroup(final String category,
-                                                        Map<Character, T> oM) {
+    private <T extends DrawableMapObject>
+                       void putGroup(final String category,
+                                     final Map<Character, T> objMap) {
         graphics.put(category, new HashMap<String, Bitmap>());
 
-        for (Map.Entry<Character, T> ent : oM.entrySet()) {
+        for (Map.Entry<Character, T> ent : objMap.entrySet()) {
             T f = ent.getValue();
             putResource(category, f.getSpriteLocation(), f.getSpriteDir(),
                         f.getSpritePack(), f.getName());
@@ -307,6 +308,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
             dt.join();
         } catch (InterruptedException e) {
             // TODO something, perhaps, but what?
+            return;
         }
     }
 
@@ -614,8 +616,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         timeElapsed += System.currentTimeMillis() - startingTime;
         if (timeElapsed >= 1000) {
             fps = framesSinceLastSecond / (timeElapsed * 0.001);
-            framesSinceLastSecond = 0l;
-            timeElapsed = 0l;
+            framesSinceLastSecond = 0L;
+            timeElapsed = 0L;
         }
         String fpsS = fps.toString();
         Paint paint = new Paint();
