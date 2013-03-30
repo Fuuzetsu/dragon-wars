@@ -677,8 +677,9 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         Paint textPaint = new Paint();
         textPaint.setColor(Color.WHITE);
 
+        String[] ss = info.split("\n");
         String longestLine = "";
-        for (String s : info.split("\n")) {
+        for (String s : ss) {
             if (s.length() > longestLine.length()) {
                 longestLine = s;
             }
@@ -689,16 +690,15 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         Paint paintMeasure = new Paint();
         paintMeasure.getTextBounds(longestLine, 0, longestLine.length(), bounds);
         Integer boxWidth = bounds.width(); /* Might have to Math.ceil first */
-        Integer boxHeight = info.length() * bounds.height();
+        Integer boxHeight = ss.length * bounds.height();
+
 
         Paint backPaint = new Paint();
         backPaint.setColor(Color.BLACK);
-
         Rect backRect = new Rect(0, canvas.getHeight() - boxHeight,
                                  boxWidth, canvas.getHeight());
         canvas.drawRect(backRect, backPaint);
 
-        String[] ss = info.split("\n");
         for (int i = ss.length - 1; i >= 0; --i) {
             canvas.drawText(ss[i], 0, ss[i].length(), 0,
                             canvas.getHeight() - (bounds.height() * i),
