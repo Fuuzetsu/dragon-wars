@@ -355,8 +355,9 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                                                    .getResources().openRawResource(resourceid)));
             String line;
 
-            while ((line = in.readLine()) != null)
+            while ((line = in.readLine()) != null) {
                 text.add(line);
+            }
 
             in.close();
         } catch (FileNotFoundException fnf) {
@@ -420,8 +421,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                 lastUnit = unit;
                 unit_destinations = logic.destinations(map, unit);
                 lastDestinations = unit_destinations;
-            }
-            else {
+            } else {
                 unit_destinations = new ArrayList<Position>(0);
                 lastDestinations = unit_destinations;
             }
@@ -431,11 +431,10 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
             if (selected_field.getUnit().equals(lastUnit)) { /* Same unit, same place */
                 unit_destinations = lastDestinations;
             }
-        }
-        else {
-            if (selected_field.hostsUnit())
+        } else {
+            if (selected_field.hostsUnit()) {
                 unit_destinations = logic.destinations(map, selected_field.getUnit());
-
+            }
             lastDestinations = unit_destinations;
             lastField = selected_field;
             lastUnit = selected_field.getUnit(); /* Fine if null */
@@ -482,53 +481,60 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         sw = map.isValidField(swp) ? map.getField(swp).toString() : FAKE;
 
         if (gfn.equals("Water")) {
-            if (w.equals("Grass"))
+            if (w.equals("Grass")) {
                 canvas.drawBitmap(graphics.get("Fields").get("Right grass->water border"), //2
                                   null, dest, null);
-
+            }
         }
 
         if (gfn.equals("Water")) {
-            if (e.equals("Grass"))
+            if (e.equals("Grass")) {
                 canvas.drawBitmap(graphics.get("Fields").get("Left grass->water border"),
                                   null, dest, null);
+            }
         }
 
 
         if (gfn.equals("Water")) {
-            if (s.equals("Grass"))
+            if (s.equals("Grass")) {
                 canvas.drawBitmap(graphics.get("Fields").get("Top grass->water border"),
                                   null, dest, null);
+            }
         }
 
         if(gfn.equals("Water")) {
-            if(n.equals("Grass"))
+            if(n.equals("Grass")) {
                 canvas.drawBitmap(graphics.get("Fields").get("Bottom grass->water border"),
                                   null, dest, null);
+            }
         }
 
         if (gfn.equals("Water")) {
-            if (s.equals("Water") && w.equals("Water") && sw.equals("Grass"))
+            if (s.equals("Water") && w.equals("Water") && sw.equals("Grass")) {
                 canvas.drawBitmap(graphics.get("Fields").get("Grass->water corner SW"),
                                   null, dest, null);
+            }
         }
 
         if (gfn.equals("Water")) {
-            if (s.equals("Water") && e.equals("Water") && se.equals("Grass"))
+            if (s.equals("Water") && e.equals("Water") && se.equals("Grass")) {
                 canvas.drawBitmap(graphics.get("Fields").get("Grass->water corner SE"),
                                   null, dest, null);
+            }
         }
 
         if (gfn.equals("Water")) {
-            if (n.equals("Water") && w.equals("Water") && nw.equals("Grass"))
+            if (n.equals("Water") && w.equals("Water") && nw.equals("Grass")) {
                 canvas.drawBitmap(graphics.get("Fields").get("Grass->water corner NW"),
                                   null, dest, null);
+            }
         }
 
         if (gfn.equals("Water")) {
-            if (n.equals("Water") && e.equals("Water") && ne.equals("Grass"))
+            if (n.equals("Water") && e.equals("Water") && ne.equals("Grass")) {
                 canvas.drawBitmap(graphics.get("Fields").get("Grass->water corner NE"),
                                   null, dest, null);
+            }
         }
 
         if (gfn.equals("Water")) {
@@ -561,14 +567,16 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     }
 
+    /* Debug method */
     private List<String> getFieldSquare(Position p) {
         List<String> r = new ArrayList<String>();
         GameField  ne, n, nw, e, c, w, se, s, sw;
         int i, j;
         i = p.getX();
         j = p.getY();
-        if (i < 1 || j < 1 || i > 6 || j > 6)
+        if (i < 1 || j < 1 || i > 6 || j > 6) {
             return new ArrayList<String>();
+        }
 
         ne = map.getField(new Position(i - 1, j - 1));
         n = map.getField(new Position(i, j - 1));
@@ -667,7 +675,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         info.add(field.getFieldName()); /* Always print for debug */
         // unit info
         if (unit != null) {
-            info.add(unit.getUnitName());// + " - Player: " + unit.getOwner().getName()); // causes problems when there is no owner
+            info.add(unit.getUnitName());
             info.add("Health: " + unit.getHealth() + "/" + unit.getMaxHealth());
             info.add("Attack: " + unit.getAttack());
             info.add("Defense: " + unit.getMeleeDefense() + " (Melee) " + unit.getRangeDefense() + " (Ranged)");
@@ -681,11 +689,13 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
             bLine += building.hasOwner() ? " ~ " + building.getOwner().getName() : "";
             info.add(bLine);
 
-            if (building.canProduceUnits())
-                for (Unit u : building.getProducableUnits())
+            if (building.canProduceUnits()) {
+                for (Unit u : building.getProducableUnits()) {
                     info.add("I can produce " + u + " - " + u.getProductionCost() + "g");
-            else
+                }
+            } else {
                 info.add("I can't produce anything.");
+            }
         }
 
         // field stats
@@ -727,7 +737,9 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
      */
 
     @Override
-    public boolean onDown(MotionEvent e) {return false;}
+    public boolean onDown(MotionEvent e) {
+        return false;
+    }
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
@@ -735,19 +747,27 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     }
 
     @Override
-    public void onLongPress(MotionEvent e) {}
+    public void onLongPress(MotionEvent e) {
+    }
 
     @Override
-    public void onShowPress(MotionEvent e) {}
+    public void onShowPress(MotionEvent e) {
+    }
 
     @Override
-    public boolean onSingleTapUp(MotionEvent e) {return false;}
+    public boolean onSingleTapUp(MotionEvent e) {
+        return false;
+    }
 
     @Override
-    public boolean onDoubleTap(MotionEvent e) {return false;}
+    public boolean onDoubleTap(MotionEvent e) {
+        return false;
+    }
 
     @Override
-    public boolean onDoubleTapEvent(MotionEvent e) {return false;}
+    public boolean onDoubleTapEvent(MotionEvent e) {
+        return false;
+    }
 
     @Override
     public boolean onSingleTapConfirmed(MotionEvent event) {
