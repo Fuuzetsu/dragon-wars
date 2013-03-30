@@ -103,8 +103,10 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     private Unit lastUnit;
     private List<Position> lastDestinations;
 
-    private Long frames = 0l;
-    private Long startingTime = null;
+    private Long timeElapsed = 0l;
+    private Long framesSinceLastSecond = 0l;
+    private Long timeNow = 0l;
+    private Double fps = 0.0;
 
 
     public GameView(final Context ctx, final AttributeSet attrset) {
@@ -643,9 +645,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     }
 
     public void doDraw(final Canvas canvas) {
-        if (startingTime == null) {
-            startingTime = System.currentTimeMillis();
-        }
+        Long startingTime = System.currentTimeMillis();
+
 
         Configuration c = getResources().getConfiguration();
 
@@ -714,14 +715,19 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         } else {
             drawInfoBox(canvas, null, selectedField, true);
         }
-        frames++;
 
-        Long timeDiff = System.currentTimeMillis() - startingTime;
-        Double fpsD = frames / (timeDiff / 1000.0);
-        String fps = fpsD.toString();
+        framesSinceLastSecond++;
+
+        timeElapsed += System.currentTimeMillis() - startingTime;
+        if (timeElapsed >= 1000) {
+            fps = framesSinceLastSecond / (timeElapsed * 0.001);
+            framesSinceLastSecond = 0l;
+            timeElapsed = 0l;
+        }
+        String fpsS = fps.toString();
         Paint paint = new Paint();
         paint.setARGB(255, 255, 255, 255);
-        canvas.drawText("FPS: " + fps, this.getWidth() - 80, 20, paint);
+        canvas.drawText("FPS: " + fpsS, this.getWidth() - 80, 20, paint);
     }
 
     public float getMapDrawWidth() {
