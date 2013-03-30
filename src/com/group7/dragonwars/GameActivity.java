@@ -826,11 +826,11 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 }
 
 class DrawingThread extends Thread {
-    boolean run;
-    Canvas canvas;
-    SurfaceHolder surfaceholder;
-    Context context;
-    GameView gview;
+    private boolean run;
+    private Canvas canvas;
+    private SurfaceHolder surfaceholder;
+    private Context context;
+    private GameView gview;
 
     public DrawingThread(final SurfaceHolder sholder,
                          final Context ctx, final GameView gv) {
@@ -840,7 +840,7 @@ class DrawingThread extends Thread {
         gview = gv;
     }
 
-    void setRunning(final boolean newrun) {
+    public void setRunning(final boolean newrun) {
         run = newrun;
     }
 
