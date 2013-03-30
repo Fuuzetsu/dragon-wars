@@ -724,15 +724,15 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         textPaint.setColor(Color.WHITE);
 
         Rect textBounds = new Rect(0, 0, 0, 0); // contains the bounds of the entire text in the info box
-        LinkedList<Rect> info_bounds = new LinkedList<Rect>();
+        LinkedList<Rect> infoBounds = new LinkedList<Rect>();
         for (int i = 0; i < info.size(); ++i) {
             String text = info.get(i);
-            info_bounds.add(i, new Rect());
-            textPaint.getTextBounds(text, 0, text.length(), info_bounds.get(i));
-            if (info_bounds.get(i).right > textBounds.right) {
-                textBounds.right = info_bounds.get(i).right;
+            infoBounds.add(i, new Rect());
+            textPaint.getTextBounds(text, 0, text.length(), infoBounds.get(i));
+            if (infoBounds.get(i).right > textBounds.right) {
+                textBounds.right = infoBounds.get(i).right;
             }
-            textBounds.bottom += (info_bounds.get(i).bottom - info_bounds.get(i).top);
+            textBounds.bottom += (infoBounds.get(i).bottom - infoBounds.get(i).top);
         }
 
         Paint backPaint = new Paint();
@@ -743,8 +743,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         float textHeight = 0f;
         for (int i = info.size() - 1; i >= 0; --i) {
-            canvas.drawText(info.get(i), 0, info.get(i).length(), 0, (canvas.getHeight() - textHeight) - info_bounds.get(i).bottom, textPaint);
-            textHeight += (info_bounds.get(i).bottom - info_bounds.get(i).top);
+            canvas.drawText(info.get(i), 0, info.get(i).length(), 0, (canvas.getHeight() - textHeight) - infoBounds.get(i).bottom, textPaint);
+            textHeight += (infoBounds.get(i).bottom - infoBounds.get(i).top);
         }
         //canvas.drawText(info, 0, info.length(), (float) backRect.left, (float) backRect.bottom, textPaint);
     }
