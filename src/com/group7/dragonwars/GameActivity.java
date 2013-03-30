@@ -150,13 +150,13 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                  this.map.getGameFieldMap().entrySet()) {
             Log.d(TAG, "inside for loop, about to ent.getValue()");
             GameField f = ent.getValue();
-            Log.d(TAG, "about to getResources() for " + f.getFieldName());
+            Log.d(TAG, "about to getResources() for " + f.getName());
             Integer resourceID = getResources().getIdentifier(
                 f.getSpriteLocation(),
                 f.getSpriteDir(),
                 f.getSpritePack());
             Log.d(TAG, "after getResources()");
-            graphics.get("Fields").put(f.getFieldName(),
+            graphics.get("Fields").put(f.getName(),
                                        BitmapFactory
                                        .decodeResource(context.getResources(),
                                                        resourceID));
@@ -344,7 +344,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
             for (int j = 0; j < map.getHeight(); j++) {
                 Position pos = new Position(i, j);
                 GameField gf = map.getField(i, j);
-                String gfn = gf.getFieldName();
+                String gfn = gf.getName();
                 RectF dest = getSquare(tilesize * i, tilesize * j, tilesize);
                 combined.drawBitmap(graphics.get("Fields").get(gfn),
                                     null, dest, null);
@@ -471,7 +471,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         final String FAKE = "NoTaReAlTiL3";
 
-        String gfn = map.getField(currentField).getFieldName();
+        String gfn = map.getField(currentField).getName();
 
         Position nep, np, nwp, ep, cp, wp, sep, sp, swp;
         String ne, n, nw, e, c, w, se, s, sw;
@@ -741,7 +741,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     public void drawInfoBox(final Canvas canvas, final Unit unit,
                             final GameField field, final boolean left) {
         LinkedList<String> info = new LinkedList<String>();
-        info.add(field.getFieldName()); /* Always print for debug */
+        info.add(field.getName()); /* Always print for debug */
         // unit info
         if (unit != null) {
             info.add(unit.getUnitName());
