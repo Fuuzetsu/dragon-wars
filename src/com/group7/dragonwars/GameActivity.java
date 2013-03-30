@@ -77,7 +77,7 @@ public class GameActivity extends Activity {
 class GameView extends SurfaceView implements SurfaceHolder.Callback,
                                               OnGestureListener,
                                               OnDoubleTapListener {
-    final private String TAG = "GameView";
+    private final String TAG = "GameView";
     private Bitmap bm;
     private GameState state;
     private Logic logic;
@@ -95,7 +95,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     private Context context;
     private HashMap<String, HashMap<String, Bitmap>> graphics;
-    private private Integer orientation;
+    private Integer orientation;
     private int tilesize = 64;
     private GameField lastField;
     private Unit lastUnit;
