@@ -195,13 +195,13 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         for (Map.Entry<Character, Building> ent :
                  this.map.getBuildingMap().entrySet()) {
             Building f = ent.getValue();
-            Log.d(TAG, "about to getResources() for " + f.getBuildingName());
+            Log.d(TAG, "about to getResources() for " + f.getName());
             Integer resourceID = getResources().getIdentifier(
                 f.getSpriteLocation(),
                 f.getSpriteDir(),
                 f.getSpritePack());
             graphics.get("Buildings").put(
-                f.getBuildingName(),
+                f.getName(),
                 BitmapFactory.decodeResource(context.getResources(),
                                              resourceID));
         }
@@ -353,7 +353,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
                 if (gf.hostsBuilding()) {
                     Building b = gf.getBuilding();
-                    String n = b.getBuildingName();
+                    String n = b.getName();
                     combined.drawBitmap(graphics.get("Buildings").get(n),
                                         null, dest, null);
                 }
@@ -755,7 +755,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         // field names
         if (field.hostsBuilding()) {
             Building building = field.getBuilding();
-            String bLine = building.getBuildingName();
+            String bLine = building.getName();
 
             if (building.hasOwner()) {
                 bLine += " ~ " + building.getOwner().getName();
