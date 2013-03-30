@@ -151,15 +151,11 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
             Log.d(TAG, "inside for loop, about to ent.getValue()");
             GameField f = ent.getValue();
             Log.d(TAG, "about to getResources() for " + f.getName());
-            Integer resourceID = getResources().getIdentifier(
-                f.getSpriteLocation(),
-                f.getSpriteDir(),
-                f.getSpritePack());
-            Log.d(TAG, "after getResources()");
-            graphics.get("Fields").put(f.getName(),
-                                       BitmapFactory
-                                       .decodeResource(context.getResources(),
-                                                       resourceID));
+
+            putResource("Fields", f.getSpriteLocation(), f.getSpriteDir(),
+                        f.getSpritePack(), f.getName());
+
+
             Log.d(TAG, "after putting decoded resource into Fields");
         }
 
