@@ -654,7 +654,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
         }
 
         Paint back_paint = new Paint();
-        back_paint.setColor(Color.BLUE); // FIXME make it black
+        back_paint.setColor(Color.BLACK); // FIXME make it black
 
         Rect back_rect = new Rect(0, canvas.getHeight() - text_bounds.bottom, text_bounds.right, canvas.getHeight());
         canvas.drawRect(back_rect, back_paint);
