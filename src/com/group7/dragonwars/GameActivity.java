@@ -197,7 +197,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     }
 
     /* Helper for loadBorders() */
-    private loadField(final String resName, final String regName) {
+    private void loadField(final String resName, final String regName) {
         putResource("Fields", resName, "drawable",
                     "com.group7.dragonwars", regName);
     }
@@ -635,75 +635,74 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     public void drawInfoBox(final Canvas canvas, final Unit unit,
                             final GameField field, final boolean left) {
-        List<String> info = new ArrayList<String>();
-        info.add(field.getName()); /* Always print for debug */
+        String info = "";
+
+        info += field.getName() + "\n"; /* Always print for debug */
         // unit info
         if (unit != null) {
-            info.add(unit.getName());
-            info.add("Health: " + unit.getHealth() + "/" + unit.getMaxHealth());
-            info.add("Attack: " + unit.getAttack());
-            info.add("Defense: " + unit.getMeleeDefense() + " (Melee) "
-                     + unit.getRangeDefense() + " (Ranged)");
-            info.add("");
+            info += unit.getName() + "\n";
+            info += "Health: " + unit.getHealth() + "/" + unit.getMaxHealth() + "\n";
+            info += "Attack: " + unit.getAttack() + "\n";
+            info += "Defense: " + unit.getMeleeDefense() + " (Melee) "
+                + unit.getRangeDefense() + " (Ranged)" + "\n";
         }
 
         // field names
         if (field.hostsBuilding()) {
             Building building = field.getBuilding();
-            String bLine = building.getName();
+
+            info += building.getName();
 
             if (building.hasOwner()) {
-                bLine += " ~ " + building.getOwner().getName();
+                info += " ~ " + building.getOwner().getName();
             }
 
-            info.add(bLine);
+            info += "\n";
 
             if (building.canProduceUnits()) {
                 for (Unit u : building.getProducableUnits()) {
-                    info.add("I can produce " + u + " - "
-                             + u.getProductionCost() + "g");
+                    info += "I can produce " + u + " - "
+                        + u.getProductionCost() + "g" + "\n";
                 }
             } else {
-                info.add("I can't produce anything.");
+                info += "I can't produce anything." + "\n";
             }
         }
 
         // field stats
-        info.add("Attack: " + field.getAttackModifier()
-                 + " Defense: " + field.getDefenseModifier()
-                 + " Move: " + field.getMovementModifier());
+        info += "Attack: " + field.getAttackModifier()
+            + " Defense: " + field.getDefenseModifier()
+            + " Move: " + field.getMovementModifier() + "\n";
 
         Paint textPaint = new Paint();
         textPaint.setColor(Color.WHITE);
 
-        // contains the bounds of the entire text in the info box
-        Rect textBounds = new Rect(0, 0, 0, 0);
-        List<Rect> infoBounds = new ArrayList<Rect>();
-        for (int i = 0; i < info.size(); ++i) {
-            String text = info.get(i);
-            Rect r = new Rect();
-            infoBounds.add(i, r);
-            textPaint.getTextBounds(text, 0, text.length(), r);
-            if (r.right > textBounds.right) {
-                textBounds.right = r.right;
+        String longestLine = "";
+        for (String s : info.split("\n")) {
+            if (s.length() > longestLine.length()) {
+                longestLine = s;
             }
-            textBounds.bottom += r.bottom - r.top;
         }
+
+
+        Rect bounds = new Rect();
+        Paint paintMeasure = new Paint();
+        paintMeasure.getTextBounds(longestLine, 0, longestLine.length(), bounds);
+        Integer boxWidth = bounds.width(); /* Might have to Math.ceil first */
+        Integer boxHeight = info.length() * bounds.height();
 
         Paint backPaint = new Paint();
         backPaint.setColor(Color.BLACK);
 
-        Rect backRect = new Rect(0, canvas.getHeight() - textBounds.bottom,
-                                 textBounds.right, canvas.getHeight());
+        Rect backRect = new Rect(0, canvas.getHeight() - boxHeight,
+                                 boxWidth, canvas.getHeight());
         canvas.drawRect(backRect, backPaint);
 
-        float textHeight = 0f;
-        for (int i = info.size() - 1; i >= 0; --i) {
-            Rect r = infoBounds.get(i);
-            canvas.drawText(info.get(i), 0, info.get(i).length(), 0,
-                            canvas.getHeight() - textHeight - r.bottom,
+        String[] ss = info.split("\n");
+        for (int i = ss.length - 1; i >= 0; --i) {
+            canvas.drawText(ss[i], 0, ss[i].length(), 0,
+                            canvas.getHeight() - (bounds.height() * i),
                             textPaint);
-            textHeight += r.bottom - r.top;
         }
     }
 
