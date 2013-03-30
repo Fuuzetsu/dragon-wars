@@ -148,68 +148,38 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         for (Map.Entry<Character, GameField> ent :
                  this.map.getGameFieldMap().entrySet()) {
-            Log.d(TAG, "inside for loop, about to ent.getValue()");
             GameField f = ent.getValue();
-            Log.d(TAG, "about to getResources() for " + f.getName());
-
             putResource("Fields", f.getSpriteLocation(), f.getSpriteDir(),
                         f.getSpritePack(), f.getName());
-
-
-            Log.d(TAG, "after putting decoded resource into Fields");
         }
 
-        Integer selID = getResources().getIdentifier("selector",
-                                                     "drawable",
-                                                     "com.group7.dragonwars");
-        selector = BitmapFactory.decodeResource(context.getResources(), selID);
-
-        Log.d(TAG, "after fields");
         /* Register units */
-
         this.graphics.put("Units", new HashMap<String, Bitmap>());
 
         for (Map.Entry<Character, Unit> ent :
                  this.map.getUnitMap().entrySet()) {
             Unit f = ent.getValue();
-            Log.d(TAG, "about to getResources() for " + f.getName());
-            Integer resourceID = getResources().getIdentifier(
-                f.getSpriteLocation(),
-                f.getSpriteDir(),
-                f.getSpritePack());
-            graphics.get("Units").put(f.getName(),
-                                      BitmapFactory
-                                      .decodeResource(context.getResources(),
-                                                      resourceID));
+            putResource("Units", f.getSpriteLocation(), f.getSpriteDir(),
+                        f.getSpritePack(), f.getName());
         }
 
-
-        Log.d(TAG, "after units");
-        /* Register buildings */
         this.graphics.put("Buildings", new HashMap<String, Bitmap>());
 
         for (Map.Entry<Character, Building> ent :
                  this.map.getBuildingMap().entrySet()) {
             Building f = ent.getValue();
-            Log.d(TAG, "about to getResources() for " + f.getName());
-            Integer resourceID = getResources().getIdentifier(
-                f.getSpriteLocation(),
-                f.getSpriteDir(),
-                f.getSpritePack());
-            graphics.get("Buildings").put(
-                f.getName(),
-                BitmapFactory.decodeResource(context.getResources(),
-                                             resourceID));
+            putResource("Buildings", f.getSpriteLocation(), f.getSpriteDir(),
+                        f.getSpritePack(), f.getName());
         }
 
         loadBorders();
 
-        Integer highID = getResources().getIdentifier("highlight",
-                                                      "drawable",
-                                                      "com.group7.dragonwars");
-        highlighter = BitmapFactory.decodeResource(context.getResources(),
-                                                   highID);
-        Log.d(TAG, "after buildings");
+        /* Load selector and highlighter */
+        selector = getResource("selector", "drawable",
+                               "com.group7.dragonwars");
+        highlighter = getResource("highlight", "drawable",
+                                  "com.group7.dragonwars");
+
         holder.addCallback(this);
 
         selected = new Position(0, 0);
@@ -225,11 +195,18 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     private void putResource(final String category, final String resName,
                              final String resDir, final String resPack,
                              final String regName) {
-        Integer resourceID = getResources().getIdentifier(resName, resDir, resPack);
-        graphics.get(category).put(regName,
-                                   BitmapFactory
-                                   .decodeResource(context.getResources(),
-                                                   resourceID));
+        Bitmap bMap = getResource(resName, resDir, resPack);
+        graphics.get(category).put(regName, bMap);
+    }
+
+    private Bitmap getResource(final String resName, final String resDir,
+                               final String resPack) {
+        Integer resourceID = getResources().getIdentifier(resName, resDir,
+                                                          resPack);
+        Bitmap bMap = BitmapFactory.decodeResource(context.getResources(),
+                                                   resourceID);
+
+        return bMap;
     }
 
     /* TODO do not hardcode */
