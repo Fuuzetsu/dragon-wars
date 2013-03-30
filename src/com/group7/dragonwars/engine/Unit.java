@@ -4,7 +4,6 @@ import java.util.LinkedList;
 
 public class Unit extends DrawableMapObject {
 
-    private String name;
     private Integer maxMovement, movement;
     private Double maxHealth, health;
     private Double attack, meleeDefense, rangeDefense;
@@ -115,7 +114,7 @@ public class Unit extends DrawableMapObject {
     }
 
     public String toString() {
-        return this.name;
+        return getName();
     }
 
     public Boolean isRanged() {
