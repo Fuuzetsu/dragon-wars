@@ -1,50 +1,56 @@
 package com.group7.dragonwars;
 
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
-import java.util.List;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.HashMap;
-
-import org.json.JSONException;
-
 import android.app.Activity;
+
 import android.content.Context;
 import android.content.res.Configuration;
+
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.Canvas;
-import android.graphics.BitmapFactory;
+
 import android.os.Bundle;
+
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.SurfaceView;
-import android.view.SurfaceHolder;
-import android.view.MotionEvent;
-import android.view.Window;
-import android.view.WindowManager;
+
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnDoubleTapListener;
 import android.view.GestureDetector.OnGestureListener;
+import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.Window;
+import android.view.WindowManager;
 
-import com.group7.dragonwars.engine.GameField;
-import com.group7.dragonwars.engine.Unit;
 import com.group7.dragonwars.engine.Building;
-import com.group7.dragonwars.engine.Position;
-import com.group7.dragonwars.engine.Pair;
+import com.group7.dragonwars.engine.GameField;
+import com.group7.dragonwars.engine.GameMap;
 import com.group7.dragonwars.engine.GameState;
 import com.group7.dragonwars.engine.Logic;
-import com.group7.dragonwars.engine.GameMap;
 import com.group7.dragonwars.engine.MapReader;
+import com.group7.dragonwars.engine.Position;
+import com.group7.dragonwars.engine.Pair;
+import com.group7.dragonwars.engine.Unit;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
+import java.io.IOException;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.json.JSONException;
+
 
 public class GameActivity extends Activity {
     private static final String TAG = "GameActivity";
