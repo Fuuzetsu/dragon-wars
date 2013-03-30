@@ -22,7 +22,7 @@ public abstract class DrawableMapObject {
         return spriteLocation;
     }
 
-    public String spriteDir() {
+    public String getSpriteDir() {
         return spriteDir;
     }
 
