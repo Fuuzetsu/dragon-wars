@@ -332,17 +332,16 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
         	canvas.drawBitmap(highlighter, null, dest, null);
         }
 
-        // draw the selection shower (bad name)
-        // alternate appearance suggestions welcomed
-        int circle_radius = 10;
-        RectF select_rect = getSquare(
-        		tilesize * selected.getX() + scroll_offset.getX(),
-        		tilesize * selected.getY() + scroll_offset.getY(),
-        		tilesize);
-        canvas.drawCircle(select_rect.left, select_rect.top, circle_radius, circle_paint); // top left
-        canvas.drawCircle(select_rect.left, select_rect.bottom, circle_radius, circle_paint); // bottom left
-        canvas.drawCircle(select_rect.right, select_rect.top, circle_radius, circle_paint); // top right
-        canvas.drawCircle(select_rect.right, select_rect.bottom, circle_radius, circle_paint); // bottom right
+        Integer resourceID = getResources().getIdentifier("selector",
+                                                          "raw",
+                                                          "com.group7.dragonwars");
+        Bitmap selector = BitmapFactory.decodeResource(context.getResources(),
+                                                       resourceID);
+        RectF dest = getSquare(
+            tilesize * selected.getX() + scroll_offset.getX(),
+            tilesize * selected.getY() + scroll_offset.getY(),
+            tilesize);
+        canvas.drawBitmap(selector, null, dest, null);
 
 
 	// draw the information box
