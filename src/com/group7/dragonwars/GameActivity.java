@@ -69,6 +69,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
     Bitmap highlighter;
     boolean unit_selected; // true if there is a unit at selection
 
+    Bitmap fullMap;
+
     // List<Position> unit_destinations; // probably not best to recompute this every time, or maybe it is, treat as Undefined if !unit_selected
 
     Context context;
@@ -243,6 +245,9 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
 
         gesture_detector = new GestureDetector(this.getContext(), this);
         scroll_offset = new FloatPair(0f, 0f);
+
+        /* Prerender combined map */
+        fullMap = combineMap();
 
     }
 
