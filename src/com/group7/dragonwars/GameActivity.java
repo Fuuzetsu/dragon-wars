@@ -57,7 +57,7 @@ public class GameActivity extends Activity {
     private Boolean orientationChanged = false;
 
     @Override
-    protected void onCreate(final Bundle savedInstanceState) {
+    protected final void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // remove the title bar
@@ -104,7 +104,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     private List<Position> lastDestinations;
 
 
-    public GameView(Context ctx, AttributeSet attrset) {
+    public GameView(final Context ctx, final AttributeSet attrset) {
         super(ctx, attrset);
         Log.d(TAG, "GameView ctor");
 
@@ -347,7 +347,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         return result;
     }
 
-    private List<String> readFile(int resourceid) {
+    private List<String> readFile(final int resourceid) {
         List<String> text = new ArrayList<String>();
 
         try {
@@ -371,25 +371,26 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         return text;
     }
 
-    public void setMap(GameMap newmap) {
+    public void setMap(final GameMap newmap) {
         this.map = newmap;
     }
 
     @Override
-    public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
+    public void surfaceChanged(final SurfaceHolder arg0, final int arg1,
+                               final int arg2, final int arg3) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void surfaceCreated(SurfaceHolder arg0) {
+    public void surfaceCreated(final SurfaceHolder arg0) {
         dt = new DrawingThread(arg0, context, this);
         dt.setRunning(true);
         dt.start();
     }
 
     @Override
-    public void surfaceDestroyed(SurfaceHolder arg0) {
+    public void surfaceDestroyed(final SurfaceHolder arg0) {
         dt.setRunning(false);
 
         try {
@@ -400,17 +401,17 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(final MotionEvent event) {
         // all of the functionality that was previously here is now in onSingleTapConfirmed()
         gestureDetector.onTouchEvent(event);
         return true;
     }
 
-    public RectF getSquare(float x, float y, float length) {
+    public RectF getSquare(final float x, final float y, final float length) {
         return new RectF(x, y, x + length, y + length);
     }
 
-    public List<Position> getUnitDestinations(GameField selected_field) {
+    public List<Position> getUnitDestinations(final GameField selected_field) {
         List<Position> unit_destinations = new ArrayList<Position>(0);
 
         /* First time clicking */
@@ -444,7 +445,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     }
 
-    public void drawBorder(Canvas canvas, Position currentField, RectF dest) {
+    public void drawBorder(final Canvas canvas, final Position currentField,
+                           final RectF dest) {
         /* TODO not hard-code this */
         Integer i = currentField.getX();
         Integer j = currentField.getY();
@@ -568,7 +570,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     }
 
     /* Debug method */
-    private List<String> getFieldSquare(Position p) {
+    private List<String> getFieldSquare(final Position p) {
         List<String> r = new ArrayList<String>();
         GameField  ne, n, nw, e, c, w, se, s, sw;
         int i, j;
@@ -596,7 +598,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         return r;
     }
 
-    public void doDraw(Canvas canvas) {
+    public void doDraw(final Canvas canvas) {
         Configuration c = getResources().getConfiguration();
 
         canvas.drawColor(Color.BLACK); // Draw black anyway, in order to ensure that there are no leftover graphics
@@ -670,7 +672,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         return map.getHeight() * tilesize;
     }
 
-    public void drawInfoBox(Canvas canvas, Unit unit, GameField field, boolean left) {
+    public void drawInfoBox(final Canvas canvas, final Unit unit,
+                            final GameField field, final boolean left) {
         LinkedList<String> info = new LinkedList<String>();
         info.add(field.getFieldName()); /* Always print for debug */
         // unit info
@@ -737,40 +740,41 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
      */
 
     @Override
-    public boolean onDown(MotionEvent e) {
+    public boolean onDown(final MotionEvent e) {
         return false;
     }
 
     @Override
-    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+    public boolean onFling(final MotionEvent e1, final MotionEvent e2,
+                           final float velocityX, final float velocityY) {
         return false;
     }
 
     @Override
-    public void onLongPress(MotionEvent e) {
+    public void onLongPress(final MotionEvent e) {
     }
 
     @Override
-    public void onShowPress(MotionEvent e) {
+    public void onShowPress(final MotionEvent e) {
     }
 
     @Override
-    public boolean onSingleTapUp(MotionEvent e) {
+    public boolean onSingleTapUp(final MotionEvent e) {
         return false;
     }
 
     @Override
-    public boolean onDoubleTap(MotionEvent e) {
+    public boolean onDoubleTap(final MotionEvent e) {
         return false;
     }
 
     @Override
-    public boolean onDoubleTapEvent(MotionEvent e) {
+    public boolean onDoubleTapEvent(final MotionEvent e) {
         return false;
     }
 
     @Override
-    public boolean onSingleTapConfirmed(MotionEvent event) {
+    public boolean onSingleTapConfirmed(final MotionEvent event) {
         int touchX = (int)((event.getX() - scrollOffset.getX()) / tilesize); // the coordinates of the pressed tile
         int touchY = (int)((event.getY() - scrollOffset.getY()) / tilesize); // taking into account scrolling
 
@@ -784,7 +788,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     }
 
     @Override
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+    public boolean onScroll(final MotionEvent e1, final MotionEvent e2,
+                            final float distanceX, final float distanceY) {
         float new_x = scrollOffset.getX() - distanceX;
         if (this.getWidth() >= this.getMapDrawWidth()) {
             new_x = 0;
@@ -813,14 +818,15 @@ class DrawingThread extends Thread {
     Context context;
     GameView gview;
 
-    public DrawingThread(SurfaceHolder sholder, Context ctx, GameView gv) {
+    public DrawingThread(final SurfaceHolder sholder,
+                         final Context ctx, final GameView gv) {
         surfaceholder = sholder;
         context = ctx;
         run = false;
         gview = gv;
     }
 
-    void setRunning(boolean newrun) {
+    void setRunning(final boolean newrun) {
         run = newrun;
     }
 
@@ -843,7 +849,7 @@ class DrawingThread extends Thread {
 class FloatPair { // the Position code, but with Floats
     private Pair<Float, Float> pair;
 
-    public FloatPair(Float x, Float y) {
+    public FloatPair(final Float x, final Float y) {
         this.pair = new Pair<Float, Float>(x, y);
     }
 
@@ -855,7 +861,7 @@ class FloatPair { // the Position code, but with Floats
         return this.pair.getRight();
     }
 
-    public Boolean equals(FloatPair other) {
+    public Boolean equals(final FloatPair other) {
         return this.getX() == other.getX() && this.getY() == other.getY();
     }
 
