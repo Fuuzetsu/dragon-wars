@@ -58,15 +58,15 @@ public class GameActivity extends Activity {
     private Boolean orientationChanged = false;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // remove the title bar (it would normally say something like "Dragon Wars" or "Battle"
+        // remove the title bar
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        // remove the status bar (the top bar containing things such as the time, and notifications)
+        // remove the status bar
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                             WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         Log.d(TAG, "in onCreate");
         setContentView(R.layout.activity_game);
@@ -74,30 +74,30 @@ public class GameActivity extends Activity {
 
 }
 
-class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureListener, OnDoubleTapListener {
+class GameView extends SurfaceView implements SurfaceHolder.Callback,
+                                              OnGestureListener,
+                                              OnDoubleTapListener {
     final private String TAG = "GameView";
-    Bitmap bm;
-    GameState state;
-    Logic logic;
-    GameMap map;
-    Position selected; // the (coordinates of the) currently selected position
+    private Bitmap bm;
+    private GameState state;
+    private Logic logic;
+    private GameMap map;
+    private Position selected; // Currently selected position
 
-    FloatPair scroll_offset; // the offset caused by scrolling, in pixels
-    GestureDetector gesture_detector; // used to receive onScroll and onSingleTapConfirmed
+    private FloatPair scroll_offset; // offset caused by scrolling, in pixels
+    private GestureDetector gesture_detector;
 
-    DrawingThread dt;
-    Bitmap highlighter;
-    Bitmap selector;
-    boolean unit_selected; // true if there is a unit at selection
+    private DrawingThread dt;
+    private Bitmap highlighter;
+    private Bitmap selector;
+    private boolean unit_selected;
 
-    Bitmap fullMap;
+    private Bitmap fullMap;
 
-    // List<Position> unit_destinations; // probably not best to recompute this every time, or maybe it is, treat as Undefined if !unit_selected
-
-    Context context;
-    HashMap<String, HashMap<String, Bitmap>> graphics;
-    private Integer orientation;
-    int tilesize = 64; // the size (in pixels) to draw the square tiles
+    private Context context;
+    private HashMap<String, HashMap<String, Bitmap>> graphics;
+    private private Integer orientation;
+    private int tilesize = 64;
     private GameField lastField;
     private Unit lastUnit;
     private List<Position> lastDestinations;
