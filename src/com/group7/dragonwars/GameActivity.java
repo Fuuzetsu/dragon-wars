@@ -27,6 +27,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.group7.dragonwars.engine.Building;
+import com.group7.dragonwars.engine.DrawableMapObject;
 import com.group7.dragonwars.engine.GameField;
 import com.group7.dragonwars.engine.GameMap;
 import com.group7.dragonwars.engine.GameState;
@@ -139,38 +140,11 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                                           R.drawable.ic_launcher);
         SurfaceHolder holder = getHolder();
         this.graphics = new HashMap<String, HashMap<String, Bitmap>>();
-        Log.d(TAG, "this.graphics new");
+
         /* Register game fields */
-        this.graphics.put("Fields", new HashMap<String, Bitmap>());
-        Log.d(TAG, "after putting empty Fields");
-        Boolean b = map == null;
-        Log.d(TAG, "map is current null?: " + b.toString());
-
-        for (Map.Entry<Character, GameField> ent :
-                 this.map.getGameFieldMap().entrySet()) {
-            GameField f = ent.getValue();
-            putResource("Fields", f.getSpriteLocation(), f.getSpriteDir(),
-                        f.getSpritePack(), f.getName());
-        }
-
-        /* Register units */
-        this.graphics.put("Units", new HashMap<String, Bitmap>());
-
-        for (Map.Entry<Character, Unit> ent :
-                 this.map.getUnitMap().entrySet()) {
-            Unit f = ent.getValue();
-            putResource("Units", f.getSpriteLocation(), f.getSpriteDir(),
-                        f.getSpritePack(), f.getName());
-        }
-
-        this.graphics.put("Buildings", new HashMap<String, Bitmap>());
-
-        for (Map.Entry<Character, Building> ent :
-                 this.map.getBuildingMap().entrySet()) {
-            Building f = ent.getValue();
-            putResource("Buildings", f.getSpriteLocation(), f.getSpriteDir(),
-                        f.getSpritePack(), f.getName());
-        }
+        putGroup("Fields", map.getGameFieldMap());
+        putGroup("Units", map.getUnitMap());
+        putGroup("Buildings", map.getBuildingMap());
 
         loadBorders();
 
@@ -194,7 +168,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     private <T extends DrawableMapObject> void putGroup(final String category,
                                                         Map<Character, T> oM) {
-        graphics.put(category, new HashMap<String, T>());
+        graphics.put(category, new HashMap<String, Bitmap>());
 
         for (Map.Entry<Character, T> ent : oM.entrySet()) {
             T f = ent.getValue();
