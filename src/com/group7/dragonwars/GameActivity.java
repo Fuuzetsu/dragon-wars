@@ -635,7 +635,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     public void drawInfoBox(final Canvas canvas, final Unit unit,
                             final GameField field, final boolean left) {
-        LinkedList<String> info = new LinkedList<String>();
+        List<String> info = new ArrayList<String>();
         info.add(field.getName()); /* Always print for debug */
         // unit info
         if (unit != null) {
@@ -678,7 +678,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         // contains the bounds of the entire text in the info box
         Rect textBounds = new Rect(0, 0, 0, 0);
-        LinkedList<Rect> infoBounds = new LinkedList<Rect>();
+        List<Rect> infoBounds = new ArrayList<Rect>();
         for (int i = 0; i < info.size(); ++i) {
             String text = info.get(i);
             Rect r = new Rect();
