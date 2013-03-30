@@ -634,13 +634,13 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     public void drawInfoBox(final Canvas canvas, final Unit unit,
                             final GameField field, final boolean left) {
-        String info = "";
+        String info = field.getName() + "\n";
 
-        info += field.getName() + "\n"; /* Always print for debug */
         // unit info
         if (unit != null) {
             info += unit.getName() + "\n";
-            info += "Health: " + unit.getHealth() + "/" + unit.getMaxHealth() + "\n";
+            info += "Health: " + unit.getHealth() + "/"
+                + unit.getMaxHealth() + "\n";
             info += "Attack: " + unit.getAttack() + "\n";
             info += "Defense: " + unit.getMeleeDefense() + " (Melee) "
                 + unit.getRangeDefense() + " (Ranged)" + "\n";
