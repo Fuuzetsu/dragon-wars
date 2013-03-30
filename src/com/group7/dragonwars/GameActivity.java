@@ -90,7 +90,6 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     private DrawingThread dt;
     private Bitmap highlighter;
     private Bitmap selector;
-    private boolean unit_selected;
 
     private Bitmap fullMap;
 
@@ -266,8 +265,6 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         holder.addCallback(this);
 
         selected = new Position(0, 0); // I really hope that it's ok to assume that the map is at least 1*1
-
-        unit_selected = map.getField(selected).hostsUnit();
 
         gesture_detector = new GestureDetector(this.getContext(), this);
         scroll_offset = new FloatPair(0f, 0f);
