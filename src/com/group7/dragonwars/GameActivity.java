@@ -273,7 +273,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
                 RectF dest = getSquare(tilesize * i, tilesize * j, tilesize);
                 combined.drawBitmap(graphics.get("Fields").get(gfn), null, dest, null);
 
-                drawBorder(canvas, pos, dest);
+                drawBorder(combined, pos, dest);
 
                 if (gf.hostsBuilding()) {
                     Building b = gf.getBuilding();
