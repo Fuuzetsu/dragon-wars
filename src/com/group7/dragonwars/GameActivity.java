@@ -176,12 +176,12 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         for (Map.Entry<Character, Unit> ent :
                  this.map.getUnitMap().entrySet()) {
             Unit f = ent.getValue();
-            Log.d(TAG, "about to getResources() for " + f.getUnitName());
+            Log.d(TAG, "about to getResources() for " + f.getName());
             Integer resourceID = getResources().getIdentifier(
                 f.getSpriteLocation(),
                 f.getSpriteDir(),
                 f.getSpritePack());
-            graphics.get("Units").put(f.getUnitName(),
+            graphics.get("Units").put(f.getName(),
                                       BitmapFactory
                                       .decodeResource(context.getResources(),
                                                       resourceID));
@@ -744,7 +744,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         info.add(field.getName()); /* Always print for debug */
         // unit info
         if (unit != null) {
-            info.add(unit.getUnitName());
+            info.add(unit.getName());
             info.add("Health: " + unit.getHealth() + "/" + unit.getMaxHealth());
             info.add("Attack: " + unit.getAttack());
             info.add("Defense: " + unit.getMeleeDefense() + " (Melee) "

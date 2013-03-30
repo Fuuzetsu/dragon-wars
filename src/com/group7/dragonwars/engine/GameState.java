@@ -151,7 +151,7 @@ public class GameState {
         Building building = field.getBuilding();
         Unit unit = null;
         for (Unit u : building.getProducableUnits())
-            if (u.getUnitName().equals(unitName)) {
+            if (u.getName().equals(unitName)) {
                 unit = new Unit(u);
                 break;
             }
