@@ -141,17 +141,20 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         Boolean b = map == null;
         Log.d(TAG, "map is current null?: " + b.toString());
 
-        for (Map.Entry<Character, GameField> ent : this.map.getGameFieldMap().entrySet()) {
+        for (Map.Entry<Character, GameField> ent :
+                 this.map.getGameFieldMap().entrySet()) {
             Log.d(TAG, "inside for loop, about to ent.getValue()");
             GameField f = ent.getValue();
             Log.d(TAG, "about to getResources() for " + f.getFieldName());
-            Integer resourceID = getResources().getIdentifier(f.getSpriteLocation(),
-                                 f.getSpriteDir(),
-                                 f.getSpritePack());
+            Integer resourceID = getResources().getIdentifier(
+                f.getSpriteLocation(),
+                f.getSpriteDir(),
+                f.getSpritePack());
             Log.d(TAG, "after getResources()");
-            this.graphics.get("Fields").put(f.getFieldName(),
-                                            BitmapFactory.decodeResource(context.getResources(),
-                                                    resourceID));
+            graphics.get("Fields").put(f.getFieldName(),
+                                       BitmapFactory
+                                       .decodeResource(context.getResources(),
+                                                       resourceID));
             Log.d(TAG, "after putting decoded resource into Fields");
         }
 
@@ -165,15 +168,18 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         this.graphics.put("Units", new HashMap<String, Bitmap>());
 
-        for (Map.Entry<Character, Unit> ent : this.map.getUnitMap().entrySet()) {
+        for (Map.Entry<Character, Unit> ent :
+                 this.map.getUnitMap().entrySet()) {
             Unit f = ent.getValue();
             Log.d(TAG, "about to getResources() for " + f.getUnitName());
-            Integer resourceID = getResources().getIdentifier(f.getSpriteLocation(),
-                                 f.getSpriteDir(),
-                                 f.getSpritePack());
-            this.graphics.get("Units").put(f.getUnitName(),
-                                           BitmapFactory.decodeResource(context.getResources(),
-                                                   resourceID));
+            Integer resourceID = getResources().getIdentifier(
+                f.getSpriteLocation(),
+                f.getSpriteDir(),
+                f.getSpritePack());
+            graphics.get("Units").put(f.getUnitName(),
+                                      BitmapFactory
+                                      .decodeResource(context.getResources(),
+                                                      resourceID));
         }
 
 
@@ -181,15 +187,18 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         /* Register buildings */
         this.graphics.put("Buildings", new HashMap<String, Bitmap>());
 
-        for (Map.Entry<Character, Building> ent : this.map.getBuildingMap().entrySet()) {
+        for (Map.Entry<Character, Building> ent :
+                 this.map.getBuildingMap().entrySet()) {
             Building f = ent.getValue();
             Log.d(TAG, "about to getResources() for " + f.getBuildingName());
-            Integer resourceID = getResources().getIdentifier(f.getSpriteLocation(),
-                                 f.getSpriteDir(),
-                                 f.getSpritePack());
-            this.graphics.get("Buildings").put(f.getBuildingName(),
-                                               BitmapFactory.decodeResource(context.getResources(),
-                                                       resourceID));
+            Integer resourceID = getResources().getIdentifier(
+                f.getSpriteLocation(),
+                f.getSpriteDir(),
+                f.getSpritePack());
+            graphics.get("Buildings").put(
+                f.getBuildingName(),
+                BitmapFactory.decodeResource(context.getResources(),
+                                             resourceID));
         }
 
         loadBorders();
@@ -202,7 +211,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         Log.d(TAG, "after buildings");
         holder.addCallback(this);
 
-        selected = new Position(0, 0); // I really hope that it's ok to assume that the map is at least 1*1
+        selected = new Position(0, 0);
 
         gestureDetector = new GestureDetector(this.getContext(), this);
         scrollOffset = new FloatPair(0f, 0f);
@@ -332,14 +341,16 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                 GameField gf = map.getField(i, j);
                 String gfn = gf.getFieldName();
                 RectF dest = getSquare(tilesize * i, tilesize * j, tilesize);
-                combined.drawBitmap(graphics.get("Fields").get(gfn), null, dest, null);
+                combined.drawBitmap(graphics.get("Fields").get(gfn),
+                                    null, dest, null);
 
                 drawBorder(combined, pos, dest);
 
                 if (gf.hostsBuilding()) {
                     Building b = gf.getBuilding();
                     String n = b.getBuildingName();
-                    combined.drawBitmap(graphics.get("Buildings").get(n), null, dest, null);
+                    combined.drawBitmap(graphics.get("Buildings").get(n),
+                                        null, dest, null);
                 }
             }
         }
@@ -351,8 +362,9 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         List<String> text = new ArrayList<String>();
 
         try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(this
-                                                   .getResources().openRawResource(resourceid)));
+            BufferedReader in = new BufferedReader(
+                new InputStreamReader(this.getResources()
+                                      .openRawResource(resourceid)));
             String line;
 
             while ((line = in.readLine()) != null) {
@@ -402,7 +414,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     @Override
     public boolean onTouchEvent(final MotionEvent event) {
-        // all of the functionality that was previously here is now in onSingleTapConfirmed()
+        /* Functionality moved to onSingleTapConfirmed() */
         gestureDetector.onTouchEvent(event);
         return true;
     }
@@ -429,7 +441,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         }
 
         if (selectedField.equals(lastField) && selectedField.hostsUnit()) {
-            if (selectedField.getUnit().equals(lastUnit)) { /* Same unit, same place */
+            /* Same unit, same place */
+            if (selectedField.getUnit().equals(lastUnit)) {
                 unitDests = lastDestinations;
             }
         } else {
@@ -484,14 +497,16 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         if (gfn.equals("Water")) {
             if (w.equals("Grass")) {
-                canvas.drawBitmap(graphics.get("Fields").get("Right grass->water border"), //2
+                canvas.drawBitmap(graphics.get("Fields")
+                                  .get("Right grass->water border"),
                                   null, dest, null);
             }
         }
 
         if (gfn.equals("Water")) {
             if (e.equals("Grass")) {
-                canvas.drawBitmap(graphics.get("Fields").get("Left grass->water border"),
+                canvas.drawBitmap(graphics.get("Fields")
+                                  .get("Left grass->water border"),
                                   null, dest, null);
             }
         }
@@ -499,70 +514,80 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         if (gfn.equals("Water")) {
             if (s.equals("Grass")) {
-                canvas.drawBitmap(graphics.get("Fields").get("Top grass->water border"),
+                canvas.drawBitmap(graphics.get("Fields")
+                                  .get("Top grass->water border"),
                                   null, dest, null);
             }
         }
 
         if (gfn.equals("Water")) {
             if (n.equals("Grass")) {
-                canvas.drawBitmap(graphics.get("Fields").get("Bottom grass->water border"),
+                canvas.drawBitmap(graphics.get("Fields")
+                                  .get("Bottom grass->water border"),
                                   null, dest, null);
             }
         }
 
         if (gfn.equals("Water")) {
             if (s.equals("Water") && w.equals("Water") && sw.equals("Grass")) {
-                canvas.drawBitmap(graphics.get("Fields").get("Grass->water corner SW"),
+                canvas.drawBitmap(graphics.get("Fields")
+                                  .get("Grass->water corner SW"),
                                   null, dest, null);
             }
         }
 
         if (gfn.equals("Water")) {
             if (s.equals("Water") && e.equals("Water") && se.equals("Grass")) {
-                canvas.drawBitmap(graphics.get("Fields").get("Grass->water corner SE"),
+                canvas.drawBitmap(graphics.get("Fields")
+                                  .get("Grass->water corner SE"),
                                   null, dest, null);
             }
         }
 
         if (gfn.equals("Water")) {
             if (n.equals("Water") && w.equals("Water") && nw.equals("Grass")) {
-                canvas.drawBitmap(graphics.get("Fields").get("Grass->water corner NW"),
+                canvas.drawBitmap(graphics.get("Fields")
+                                  .get("Grass->water corner NW"),
                                   null, dest, null);
             }
         }
 
         if (gfn.equals("Water")) {
             if (n.equals("Water") && e.equals("Water") && ne.equals("Grass")) {
-                canvas.drawBitmap(graphics.get("Fields").get("Grass->water corner NE"),
+                canvas.drawBitmap(graphics.get("Fields")
+                                  .get("Grass->water corner NE"),
                                   null, dest, null);
             }
         }
 
         if (gfn.equals("Water")) {
             if (w.equals("Grass") && s.equals("Grass") && sw.equals("Grass")) {
-                canvas.drawBitmap(graphics.get("Fields").get("Water->grass corner SW"),
+                canvas.drawBitmap(graphics.get("Fields")
+                                  .get("Water->grass corner SW"),
                                   null, dest, null);
             }
         }
 
         if (gfn.equals("Water")) {
             if (e.equals("Grass") && s.equals("Grass") && se.equals("Grass")) {
-                canvas.drawBitmap(graphics.get("Fields").get("Water->grass corner SE"),
+                canvas.drawBitmap(graphics.get("Fields")
+                                  .get("Water->grass corner SE"),
                                   null, dest, null);
             }
         }
 
         if (gfn.equals("Water")) {
             if (w.equals("Grass") && n.equals("Grass") && nw.equals("Grass")) {
-                canvas.drawBitmap(graphics.get("Fields").get("Water->grass corner NW"),
+                canvas.drawBitmap(graphics.get("Fields")
+                                  .get("Water->grass corner NW"),
                                   null, dest, null);
             }
         }
 
         if (gfn.equals("Water")) {
             if (e.equals("Grass") && n.equals("Grass") && ne.equals("Grass")) {
-                canvas.drawBitmap(graphics.get("Fields").get("Water->grass corner NE"),
+                canvas.drawBitmap(graphics.get("Fields")
+                                  .get("Water->grass corner NE"),
                                   null, dest, null);
             }
         }
@@ -604,9 +629,12 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         s = map.isValidField(sp) ? map.getField(sp).toString() : " ";
         sw = map.isValidField(swp) ? map.getField(swp).toString() : " ";
 
-        r.add("" + ne.toString().charAt(0) + n.toString().charAt(0) + nw.toString().charAt(0));
-        r.add("" + e.toString().charAt(0) + c.toString().charAt(0) + w.toString().charAt(0));
-        r.add("" + se.toString().charAt(0) + s.toString().charAt(0) + sw.toString().charAt(0));
+        r.add("" + ne.toString().charAt(0) + n.toString().charAt(0)
+              + nw.toString().charAt(0));
+        r.add("" + e.toString().charAt(0) + c.toString().charAt(0)
+              + w.toString().charAt(0));
+        r.add("" + se.toString().charAt(0) + s.toString().charAt(0)
+              + sw.toString().charAt(0));
 
         return r;
     }
@@ -614,12 +642,13 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     public void doDraw(final Canvas canvas) {
         Configuration c = getResources().getConfiguration();
 
-        canvas.drawColor(Color.BLACK); // Draw black anyway, in order to ensure that there are no leftover graphics
+        canvas.drawColor(Color.BLACK);
 
         GameField selectedField = map.getField(selected);
         List<Position> unitDests = getUnitDestinations(selectedField);
 
-        canvas.drawBitmap(fullMap, scrollOffset.getX(), scrollOffset.getY(), null);
+        canvas.drawBitmap(fullMap, scrollOffset.getX(),
+                          scrollOffset.getY(), null);
 
         for (int i = 0; i < map.getWidth(); ++i) {
             for (int j = 0; j < map.getHeight(); j++) {
@@ -634,7 +663,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
                     if (unit != null) {
                         String un = unit.toString();
-                        canvas.drawBitmap(graphics.get("Units").get(un), null, dest, null);
+                        canvas.drawBitmap(graphics.get("Units").get(un),
+                                          null, dest, null);
                     }
                 }
                 /* Uncomment to print red grid with some info */
@@ -696,7 +726,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
             info.add(unit.getUnitName());
             info.add("Health: " + unit.getHealth() + "/" + unit.getMaxHealth());
             info.add("Attack: " + unit.getAttack());
-            info.add("Defense: " + unit.getMeleeDefense() + " (Melee) " + unit.getRangeDefense() + " (Ranged)");
+            info.add("Defense: " + unit.getMeleeDefense() + " (Melee) "
+                     + unit.getRangeDefense() + " (Ranged)");
             info.add("");
         }
 
@@ -704,12 +735,17 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         if (field.hostsBuilding()) {
             Building building = field.getBuilding();
             String bLine = building.getBuildingName();
-            bLine += building.hasOwner() ? " ~ " + building.getOwner().getName() : "";
+
+            if (building.hasOwner()) {
+                bLine += " ~ " + building.getOwner().getName();
+            }
+
             info.add(bLine);
 
             if (building.canProduceUnits()) {
                 for (Unit u : building.getProducableUnits()) {
-                    info.add("I can produce " + u + " - " + u.getProductionCost() + "g");
+                    info.add("I can produce " + u + " - "
+                             + u.getProductionCost() + "g");
                 }
             } else {
                 info.add("I can't produce anything.");
