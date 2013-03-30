@@ -246,6 +246,41 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
 
     }
 
+    /*
+     * This method will combine the static part of the map into
+     * a single bitmap. This should make it far faster to render
+     * and prevent any tearing while scrolling the map
+     */
+    private Bitmap combineMap() {
+        Bitmap result = null;
+        Integer width = map.getWidth() * tilesize;
+        Integer height = map.getHeight() * tilesize;
+
+        result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+
+        Canvas combined = new Canvas(result);
+
+        for (int i = 0; i < map.getWidth(); ++i) {
+            for (int j = 0; j < map.getHeight(); j++) {
+            	Position pos = new Position(i, j);
+                GameField gf = map.getField(i, j);
+                String gfn = gf.getFieldName();
+                RectF dest = getSquare(tilesize * i, tilesize * j, tilesize);
+                combined.drawBitmap(graphics.get("Fields").get(gfn), null, dest, null);
+
+                drawBorder(canvas, pos, dest);
+
+                if (gf.hostsBuilding()) {
+                    Building b = gf.getBuilding();
+                    String n = b.getBuildingName();
+                    combined.drawBitmap(graphics.get("Buildings").get(n), null, dest, null);
+                }
+            }
+        }
+
+        return result;
+    }
+
     private List<String> readFile(int resourceid) {
         List<String> text = new ArrayList<String>();
 
