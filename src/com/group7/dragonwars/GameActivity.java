@@ -225,7 +225,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     private void putResource(final String category, final String resName,
                              final String resDir, final String resPack,
                              final String regName) {
-        Integer resourceID = getResources.getIdentifier(resName, resDir, resPack);
+        Integer resourceID = getResources().getIdentifier(resName, resDir, resPack);
         graphics.get(category).put(regName,
                                    BitmapFactory
                                    .decodeResource(context.getResources(),
