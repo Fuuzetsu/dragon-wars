@@ -108,7 +108,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         super(ctx, attrset);
         Log.d(TAG, "GameView ctor");
 
-        GameView game_view = (GameView) this.findViewById(R.id.game_view);
+        GameView gameView = (GameView) this.findViewById(R.id.game_view);
         GameMap gm = null;
 
         Log.d(TAG, "nulling GameMap");
@@ -125,7 +125,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         }
 
         Log.d(TAG, "before setMap");
-        game_view.setMap(gm);
+        gameView.setMap(gm);
         this.logic = new Logic();
         this.state = new GameState(map, logic, map.getPlayers());
 
