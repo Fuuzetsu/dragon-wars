@@ -2,9 +2,8 @@ package com.group7.dragonwars.engine;
 
 import java.util.LinkedList;
 
-public class Unit {
+public class Unit extends DrawableMapObject {
 
-    private String name;
     private Integer maxMovement, movement;
     private Double maxHealth, health;
     private Double attack, meleeDefense, rangeDefense;
@@ -12,14 +11,13 @@ public class Unit {
     private Boolean hasFinishedTurn = false;
     private Player owner;
     private Boolean isFlying;
-    private String spriteLocation, spriteDir, spritePack;
     private Integer productionCost;
 
     public Unit(String name, Double maxHealth, Integer maxMovement,
                 Double attack, Double meleeDefense, Double rangeDefense,
                 Boolean isFlying, Integer productionCost, String spriteLocation,
                 String spriteDir, String spritePack) {
-        this.name = name;
+        super(name, spriteLocation, spriteDir, spritePack);
 
         this.maxHealth = maxHealth;
         this.health = this.maxHealth;
@@ -33,15 +31,12 @@ public class Unit {
 
         this.isFlying = isFlying;
         this.productionCost = productionCost;
-
-        this.spriteLocation = spriteLocation;
-        this.spriteDir = spriteDir;
-        this.spritePack = spritePack;
     }
 
     /* Used for copying the unit template */
     public Unit(Unit unit) {
-        this.name = unit.name;
+        super(unit.getName(), unit.getSpriteLocation(),
+              unit.getSpriteDir(), unit.getSpritePack());
 
         this.maxHealth = unit.getMaxHealth();
         this.health = this.maxHealth;
@@ -55,10 +50,6 @@ public class Unit {
 
         this.isFlying = unit.isFlying();
         this.productionCost = unit.getProductionCost();
-
-        this.spriteLocation = unit.getSpriteLocation();
-        this.spriteDir = unit.getSpriteDir();
-        this.spritePack = unit.getSpritePack();
     }
 
     public Boolean isDead() {
@@ -123,7 +114,7 @@ public class Unit {
     }
 
     public String toString() {
-        return this.name;
+        return getName();
     }
 
     public Boolean isRanged() {
@@ -132,22 +123,6 @@ public class Unit {
 
     public Boolean isFlying() {
         return this.isFlying;
-    }
-
-    public String getSpriteLocation() {
-        return this.spriteLocation;
-    }
-
-    public String getSpriteDir() {
-        return this.spriteDir;
-    }
-
-    public String getSpritePack() {
-        return this.spritePack;
-    }
-
-    public String getUnitName() {
-        return this.name;
     }
 
     public Boolean reduceMovement(Integer amount) {

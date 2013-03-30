@@ -1,4 +1,5 @@
 package com.group7.dragonwars;
+
 import android.app.Activity;
 
 import android.content.Context;
@@ -27,6 +28,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.group7.dragonwars.engine.Building;
+import com.group7.dragonwars.engine.DrawableMapObject;
 import com.group7.dragonwars.engine.GameField;
 import com.group7.dragonwars.engine.GameMap;
 import com.group7.dragonwars.engine.GameState;
@@ -43,7 +45,6 @@ import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -103,9 +104,9 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     private Unit lastUnit;
     private List<Position> lastDestinations;
 
-    private Long timeElapsed = 0l;
-    private Long framesSinceLastSecond = 0l;
-    private Long timeNow = 0l;
+    private Long timeElapsed = 0L;
+    private Long framesSinceLastSecond = 0L;
+    private Long timeNow = 0L;
     private Double fps = 0.0;
 
 
@@ -139,81 +140,20 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                                           R.drawable.ic_launcher);
         SurfaceHolder holder = getHolder();
         this.graphics = new HashMap<String, HashMap<String, Bitmap>>();
-        Log.d(TAG, "this.graphics new");
+
         /* Register game fields */
-        this.graphics.put("Fields", new HashMap<String, Bitmap>());
-        Log.d(TAG, "after putting empty Fields");
-        Boolean b = map == null;
-        Log.d(TAG, "map is current null?: " + b.toString());
-
-        for (Map.Entry<Character, GameField> ent :
-                 this.map.getGameFieldMap().entrySet()) {
-            Log.d(TAG, "inside for loop, about to ent.getValue()");
-            GameField f = ent.getValue();
-            Log.d(TAG, "about to getResources() for " + f.getFieldName());
-            Integer resourceID = getResources().getIdentifier(
-                f.getSpriteLocation(),
-                f.getSpriteDir(),
-                f.getSpritePack());
-            Log.d(TAG, "after getResources()");
-            graphics.get("Fields").put(f.getFieldName(),
-                                       BitmapFactory
-                                       .decodeResource(context.getResources(),
-                                                       resourceID));
-            Log.d(TAG, "after putting decoded resource into Fields");
-        }
-
-        Integer selID = getResources().getIdentifier("selector",
-                                                     "drawable",
-                                                     "com.group7.dragonwars");
-        selector = BitmapFactory.decodeResource(context.getResources(), selID);
-
-        Log.d(TAG, "after fields");
-        /* Register units */
-
-        this.graphics.put("Units", new HashMap<String, Bitmap>());
-
-        for (Map.Entry<Character, Unit> ent :
-                 this.map.getUnitMap().entrySet()) {
-            Unit f = ent.getValue();
-            Log.d(TAG, "about to getResources() for " + f.getUnitName());
-            Integer resourceID = getResources().getIdentifier(
-                f.getSpriteLocation(),
-                f.getSpriteDir(),
-                f.getSpritePack());
-            graphics.get("Units").put(f.getUnitName(),
-                                      BitmapFactory
-                                      .decodeResource(context.getResources(),
-                                                      resourceID));
-        }
-
-
-        Log.d(TAG, "after units");
-        /* Register buildings */
-        this.graphics.put("Buildings", new HashMap<String, Bitmap>());
-
-        for (Map.Entry<Character, Building> ent :
-                 this.map.getBuildingMap().entrySet()) {
-            Building f = ent.getValue();
-            Log.d(TAG, "about to getResources() for " + f.getBuildingName());
-            Integer resourceID = getResources().getIdentifier(
-                f.getSpriteLocation(),
-                f.getSpriteDir(),
-                f.getSpritePack());
-            graphics.get("Buildings").put(
-                f.getBuildingName(),
-                BitmapFactory.decodeResource(context.getResources(),
-                                             resourceID));
-        }
+        putGroup("Fields", map.getGameFieldMap());
+        putGroup("Units", map.getUnitMap());
+        putGroup("Buildings", map.getBuildingMap());
 
         loadBorders();
 
-        Integer highID = getResources().getIdentifier("highlight",
-                                                      "drawable",
-                                                      "com.group7.dragonwars");
-        highlighter = BitmapFactory.decodeResource(context.getResources(),
-                                                   highID);
-        Log.d(TAG, "after buildings");
+        /* Load selector and highlighter */
+        selector = getResource("selector", "drawable",
+                               "com.group7.dragonwars");
+        highlighter = getResource("highlight", "drawable",
+                                  "com.group7.dragonwars");
+
         holder.addCallback(this);
 
         selected = new Position(0, 0);
@@ -226,104 +166,57 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     }
 
+    private <T extends DrawableMapObject>
+                       void putGroup(final String category,
+                                     final Map<Character, T> objMap) {
+        graphics.put(category, new HashMap<String, Bitmap>());
+
+        for (Map.Entry<Character, T> ent : objMap.entrySet()) {
+            T f = ent.getValue();
+            putResource(category, f.getSpriteLocation(), f.getSpriteDir(),
+                        f.getSpritePack(), f.getName());
+        }
+    }
+
+    private void putResource(final String category, final String resName,
+                             final String resDir, final String resPack,
+                             final String regName) {
+        Bitmap bMap = getResource(resName, resDir, resPack);
+        graphics.get(category).put(regName, bMap);
+    }
+
+    private Bitmap getResource(final String resName, final String resDir,
+                               final String resPack) {
+        Integer resourceID = getResources().getIdentifier(resName, resDir,
+                                                          resPack);
+        Bitmap bMap = BitmapFactory.decodeResource(context.getResources(),
+                                                   resourceID);
+
+        return bMap;
+    }
+
+    /* Helper for loadBorders() */
+    private void loadField(final String resName, final String regName) {
+        putResource("Fields", resName, "drawable",
+                    "com.group7.dragonwars", regName);
+    }
+
     /* TODO do not hardcode */
     private void loadBorders() {
-        Integer borderID;
-        borderID = getResources().getIdentifier("water_grass_edge1",
-                                                "drawable",
-                                                "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Top grass->water border",
-                                        BitmapFactory
-                                        .decodeResource(context.getResources(),
-                                                        borderID));
+        loadField("water_grass_edge1", "Top grass->water border");
+        loadField("water_grass_edge2", "Right grass->water border");
+        loadField("water_grass_edge3", "Bottom grass->water border");
+        loadField("water_grass_edge4", "Left grass->water border");
 
-        borderID = getResources().getIdentifier("water_grass_edge3",
-                                                "drawable",
-                                                "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Bottom grass->water border",
-                                        BitmapFactory
-                                        .decodeResource(context.getResources(),
-                                                        borderID));
+        loadField("grass_water_corner1", "Water->grass corner NE");
+        loadField("grass_water_corner2", "Water->grass corner SE");
+        loadField("grass_water_corner3", "Water->grass corner SW");
+        loadField("grass_water_corner4", "Water->grass corner NW");
 
-        borderID = getResources().getIdentifier("water_grass_edge4",
-                                                "drawable",
-                                                "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Left grass->water border",
-                                        BitmapFactory
-                                        .decodeResource(context.getResources(),
-                                                        borderID));
-
-        borderID = getResources().getIdentifier("water_grass_edge2",
-                                                "drawable",
-                                                "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Right grass->water border",
-                                        BitmapFactory
-                                        .decodeResource(context.getResources(),
-                                                        borderID));
-
-        borderID = getResources().getIdentifier("grass_water_corner3",
-                                                "drawable",
-                                                "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Water->grass corner SW",
-                                        BitmapFactory
-                                        .decodeResource(context.getResources(),
-                                                        borderID));
-
-        borderID = getResources().getIdentifier("grass_water_corner2",
-                                                "drawable",
-                                                "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Water->grass corner SE",
-                                        BitmapFactory
-                                        .decodeResource(context.getResources(),
-                                                        borderID));
-
-        borderID = getResources().getIdentifier("grass_water_corner1",
-                                                "drawable",
-                                                "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Water->grass corner NE",
-                                        BitmapFactory
-                                        .decodeResource(context.getResources(),
-                                                        borderID));
-
-        borderID = getResources().getIdentifier("grass_water_corner4",
-                                                "drawable",
-                                                "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Water->grass corner NW",
-                                        BitmapFactory
-                                        .decodeResource(context.getResources(),
-                                                        borderID));
-
-        borderID = getResources().getIdentifier("water_grass_corner1",
-                                                "drawable",
-                                                "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Grass->water corner SW",
-                                        BitmapFactory
-                                        .decodeResource(context.getResources(),
-                                                        borderID));
-
-        borderID = getResources().getIdentifier("water_grass_corner4",
-                                                "drawable",
-                                                "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Grass->water corner SE",
-                                        BitmapFactory
-                                        .decodeResource(context.getResources(),
-                                                        borderID));
-
-        borderID = getResources().getIdentifier("water_grass_corner3",
-                                                "drawable",
-                                                "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Grass->water corner NE",
-                                        BitmapFactory
-                                        .decodeResource(context.getResources(),
-                                                        borderID));
-
-        borderID = getResources().getIdentifier("water_grass_corner2",
-                                                "drawable",
-                                                "com.group7.dragonwars");
-        this.graphics.get("Fields").put("Grass->water corner NW",
-                                        BitmapFactory
-                                        .decodeResource(context.getResources(),
-                                                        borderID));
+        loadField("water_grass_corner1", "Grass->water corner SW");
+        loadField("water_grass_corner2", "Grass->water corner NW");
+        loadField("water_grass_corner3", "Grass->water corner NE");
+        loadField("water_grass_corner4", "Grass->water corner SE");
     }
 
     /*
@@ -344,7 +237,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
             for (int j = 0; j < map.getHeight(); j++) {
                 Position pos = new Position(i, j);
                 GameField gf = map.getField(i, j);
-                String gfn = gf.getFieldName();
+                String gfn = gf.getName();
                 RectF dest = getSquare(tilesize * i, tilesize * j, tilesize);
                 combined.drawBitmap(graphics.get("Fields").get(gfn),
                                     null, dest, null);
@@ -353,7 +246,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
                 if (gf.hostsBuilding()) {
                     Building b = gf.getBuilding();
-                    String n = b.getBuildingName();
+                    String n = b.getName();
                     combined.drawBitmap(graphics.get("Buildings").get(n),
                                         null, dest, null);
                 }
@@ -414,6 +307,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
             dt.join();
         } catch (InterruptedException e) {
             // TODO something, perhaps, but what?
+            return;
         }
     }
 
@@ -471,7 +365,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         final String FAKE = "NoTaReAlTiL3";
 
-        String gfn = map.getField(currentField).getFieldName();
+        String gfn = map.getField(currentField).getName();
 
         Position nep, np, nwp, ep, cp, wp, sep, sp, swp;
         String ne, n, nw, e, c, w, se, s, sw;
@@ -721,8 +615,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         timeElapsed += System.currentTimeMillis() - startingTime;
         if (timeElapsed >= 1000) {
             fps = framesSinceLastSecond / (timeElapsed * 0.001);
-            framesSinceLastSecond = 0l;
-            timeElapsed = 0l;
+            framesSinceLastSecond = 0L;
+            timeElapsed = 0L;
         }
         String fpsS = fps.toString();
         Paint paint = new Paint();
@@ -740,75 +634,74 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     public void drawInfoBox(final Canvas canvas, final Unit unit,
                             final GameField field, final boolean left) {
-        LinkedList<String> info = new LinkedList<String>();
-        info.add(field.getFieldName()); /* Always print for debug */
+        String info = field.getName() + "\n";
+
         // unit info
         if (unit != null) {
-            info.add(unit.getUnitName());
-            info.add("Health: " + unit.getHealth() + "/" + unit.getMaxHealth());
-            info.add("Attack: " + unit.getAttack());
-            info.add("Defense: " + unit.getMeleeDefense() + " (Melee) "
-                     + unit.getRangeDefense() + " (Ranged)");
-            info.add("");
+            info += unit.getName() + "\n";
+            info += "Health: " + unit.getHealth() + "/"
+                + unit.getMaxHealth() + "\n";
+            info += "Attack: " + unit.getAttack() + "\n";
+            info += "Defense: " + unit.getMeleeDefense() + " (Melee) "
+                + unit.getRangeDefense() + " (Ranged)" + "\n";
         }
 
         // field names
         if (field.hostsBuilding()) {
             Building building = field.getBuilding();
-            String bLine = building.getBuildingName();
+
+            info += building.getName();
 
             if (building.hasOwner()) {
-                bLine += " ~ " + building.getOwner().getName();
+                info += " ~ " + building.getOwner().getName();
             }
 
-            info.add(bLine);
+            info += "\n";
 
             if (building.canProduceUnits()) {
                 for (Unit u : building.getProducableUnits()) {
-                    info.add("I can produce " + u + " - "
-                             + u.getProductionCost() + "g");
+                    info += "I can produce " + u + " - "
+                        + u.getProductionCost() + "g" + "\n";
                 }
             } else {
-                info.add("I can't produce anything.");
+                info += "I can't produce anything." + "\n";
             }
         }
 
         // field stats
-        info.add("Attack: " + field.getAttackModifier()
-                 + " Defense: " + field.getDefenseModifier()
-                 + " Move: " + field.getMovementModifier());
+        info += "Attack: " + field.getAttackModifier()
+            + " Defense: " + field.getDefenseModifier()
+            + " Move: " + field.getMovementModifier() + "\n";
 
         Paint textPaint = new Paint();
         textPaint.setColor(Color.WHITE);
 
-        // contains the bounds of the entire text in the info box
-        Rect textBounds = new Rect(0, 0, 0, 0);
-        LinkedList<Rect> infoBounds = new LinkedList<Rect>();
-        for (int i = 0; i < info.size(); ++i) {
-            String text = info.get(i);
-            Rect r = new Rect();
-            infoBounds.add(i, r);
-            textPaint.getTextBounds(text, 0, text.length(), r);
-            if (r.right > textBounds.right) {
-                textBounds.right = r.right;
+        String[] ss = info.split("\n");
+        String longestLine = "";
+        for (String s : ss) {
+            if (s.length() > longestLine.length()) {
+                longestLine = s;
             }
-            textBounds.bottom += r.bottom - r.top;
         }
+
+
+        Rect bounds = new Rect();
+        Paint paintMeasure = new Paint();
+        paintMeasure.getTextBounds(longestLine, 0, longestLine.length(), bounds);
+        Integer boxWidth = bounds.width(); /* Might have to Math.ceil first */
+        Integer boxHeight = ss.length * bounds.height();
+
 
         Paint backPaint = new Paint();
         backPaint.setColor(Color.BLACK);
-
-        Rect backRect = new Rect(0, canvas.getHeight() - textBounds.bottom,
-                                 textBounds.right, canvas.getHeight());
+        Rect backRect = new Rect(0, canvas.getHeight() - boxHeight,
+                                 boxWidth, canvas.getHeight());
         canvas.drawRect(backRect, backPaint);
 
-        float textHeight = 0f;
-        for (int i = info.size() - 1; i >= 0; --i) {
-            Rect r = infoBounds.get(i);
-            canvas.drawText(info.get(i), 0, info.get(i).length(), 0,
-                            canvas.getHeight() - textHeight - r.bottom,
+        for (int i = ss.length - 1; i >= 0; --i) {
+            canvas.drawText(ss[i], 0, ss[i].length(), 0,
+                            canvas.getHeight() - (bounds.height() * i),
                             textPaint);
-            textHeight += r.bottom - r.top;
         }
     }
 
