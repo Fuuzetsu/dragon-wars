@@ -20,18 +20,7 @@ import android.view.GestureDetector.OnGestureListener;
 import android.widget.Toast;
 
 import com.group7.dragonwars.engine.*;
-import com.group7.dragonwars.util.SystemUiHider;
 
-/**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- *
- * @see SystemUiHider
- *
- *      I removed almost all of this, a lot of it was to make the navigation ui
- *      (top bar + any software buttons) appear and disappear and animate,
- *      however now we only want it gone. it was also incredibly boring.
- */
 public class GameActivity extends Activity {
     private static final String TAG = "GameActivity";
     private Integer orientation;
