@@ -39,7 +39,8 @@
             "maxMovement": 5,
             "attack": 2.0,
             "meleeDefense": 1.0,
-            "rangeDefense": 2.0
+            "rangeDefense": 2.0,
+            "productionCost": 5
         },
         "D": {
             "name": "Dragon",
@@ -54,7 +55,8 @@
             "maxMovement": 7,
             "attack": 3.0,
             "meleeDefense": 2.0,
-            "rangeDefense": 2.0
+            "rangeDefense": 2.0,
+            "productionCost": 7
         }
     },
     "buildings": {
@@ -66,7 +68,8 @@
             "captureDifficulty": 4,
             "attackBonus": 3.0,
             "defenseBonus": 4.0,
-            "goalBuilding": true
+            "goalBuilding": true,
+            "captureWorth": 4
         },
         "V": {
             "name": "Village",
@@ -76,7 +79,8 @@
             "captureDifficulty": 2,
             "attackBonus": 1.0,
             "defenseBonus": 1.0,
-            "goalBuilding": false
+            "goalBuilding": false,
+            "captureWorth": 2
         }
     },
     "terrain": [

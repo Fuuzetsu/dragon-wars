@@ -10,7 +10,7 @@ public class GameField {
     private Boolean flightOnly, accessible;
     private String spriteLocation, spriteDir, spritePack;
 
-    public  Boolean doesAcceptUnit(Unit unit) {
+    public Boolean doesAcceptUnit(Unit unit) {
         Boolean canStep = true;
 
         if (this.flightOnly)

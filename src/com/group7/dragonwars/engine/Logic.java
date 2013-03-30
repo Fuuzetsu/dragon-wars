@@ -7,7 +7,7 @@ import android.util.Log;
 /* Class containing things like damage calculation and path finding. */
 public class Logic {
 
-    public final static String TAG = "Logic";
+    private final static String TAG = "Logic";
 
     public List<Position> findPath(GameMap map, Unit unit, Position destination) {
         return AStar(map, unit, destination);

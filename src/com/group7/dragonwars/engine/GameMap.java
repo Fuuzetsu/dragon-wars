@@ -4,11 +4,11 @@ import java.util.*;
 
 public class GameMap implements Iterable<GameField> {
 
-    List<List<GameField>> fields;
-    List<Player> players;
-    HashMap<Character, Unit> units;
-    HashMap<Character, Building> buildings;
-    HashMap<Character, GameField> gameFields;
+    private List<List<GameField>> fields;
+    private List<Player> players;
+    private HashMap<Character, Unit> units;
+    private HashMap<Character, Building> buildings;
+    private HashMap<Character, GameField> gameFields;
 
 
     public GameMap(List<List<GameField>> fields, HashMap<Character, Unit> units,
@@ -80,23 +80,6 @@ public class GameMap implements Iterable<GameField> {
         for (List<GameField> agf : this.fields) {
             for (GameField gf : agf) {
                 m += gf.toString().charAt(0);
-            }
-
-            m += '\n';
-        }
-
-        return m;
-    }
-
-    public String dumpMobMap() {
-        String m = "";
-
-        for (List<GameField> agf : this.fields) {
-            for (GameField gf : agf) {
-                if (gf.hostsUnit())
-                    m += gf.getUnit().toString().charAt(0);
-                else
-                    m += ' ';
             }
 
             m += '\n';

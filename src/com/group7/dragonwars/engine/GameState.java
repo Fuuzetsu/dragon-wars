@@ -18,29 +18,6 @@ public class GameState {
         this.players = players;
     }
 
-
-    private static List<String> readFile(String filename) {
-        List<String> text = new ArrayList<String>();
-
-        try {
-            BufferedReader in = new BufferedReader(new FileReader(filename));
-            String line;
-
-            while ((line = in.readLine()) != null)
-                text.add(line);
-
-            in.close();
-        } catch (FileNotFoundException fnf) {
-            System.err.println("Couldn't find " + fnf.getMessage());
-            System.exit(1);
-        } catch (IOException ioe) {
-            System.err.println("Couldn't read " + ioe.getMessage());
-            System.exit(1);
-        }
-
-        return text;
-    }
-
     public void attack(Unit attacker, Unit defender) {
         Set<Position> attackable = logic.getAttackableUnitPositions(map,
                                    attacker);
@@ -142,6 +119,14 @@ public class GameState {
 
     public void advanceTurn() {
         updateBuildingCaptureCounters();
+
+        for (Player p : players) {
+            Integer goldWorth = 0;
+
+            for (Building b : p.getOwnedBuildings())
+                goldWorth += b.getCaptureWorth();
+            p.setGoldAmount(goldWorth + p.getGoldAmount());
+        }
         ++this.turns;
     }
 
@@ -159,7 +144,6 @@ public class GameState {
 
     /* I'll just roll with GF and String for now; should be easy to change */
     public Boolean produceUnit(GameField field, String unitName) {
-        /* TODO decrement player gold or whatever it is we're doing */
 
         if (!field.hostsBuilding() || field.hostsUnit())
             return false;
@@ -175,8 +159,14 @@ public class GameState {
         if (unit == null)
             return false;
 
-        unit.setOwner(building.getOwner());
+        Player player = building.getOwner();
+
+        if (player.getGoldAmount() < unit.getProductionCost())
+            return false;
+
+        unit.setOwner(player);
         unit.setPosition(building.getPosition());
+        player.setGoldAmount(player.getGoldAmount() - unit.getProductionCost());
         field.setUnit(unit);
 
         return true;
