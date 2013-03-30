@@ -131,67 +131,67 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
             Log.d(TAG, "after putting decoded resource into Fields");
         }
         Integer borderID = getResources().getIdentifier("water_grass_edge1",
-                                                        "raw", "com.group7.dragonwars");
+                                                        "drawable", "com.group7.dragonwars");
         this.graphics.get("Fields").put("Top grass->water border",
                                         BitmapFactory.decodeResource(context.getResources(),
                                                                      borderID));
         borderID = getResources().getIdentifier("water_grass_edge3",
-                                                "raw", "com.group7.dragonwars");
+                                                "drawable", "com.group7.dragonwars");
         this.graphics.get("Fields").put("Bottom grass->water border",
                                         BitmapFactory.decodeResource(context.getResources(),
                                                                      borderID));
         borderID = getResources().getIdentifier("water_grass_edge4",
-                                                "raw", "com.group7.dragonwars");
+                                                "drawable", "com.group7.dragonwars");
         this.graphics.get("Fields").put("Left grass->water border",
                                         BitmapFactory.decodeResource(context.getResources(),
                                                                      borderID));
         borderID = getResources().getIdentifier("water_grass_edge2",
-                                                "raw", "com.group7.dragonwars");
+                                                "drawable", "com.group7.dragonwars");
         this.graphics.get("Fields").put("Right grass->water border",
                                         BitmapFactory.decodeResource(context.getResources(),
                                                                      borderID));
         borderID = getResources().getIdentifier("grass_water_corner3",
-                                                "raw", "com.group7.dragonwars");
+                                                "drawable", "com.group7.dragonwars");
         this.graphics.get("Fields").put("Water->grass corner SW",
                                         BitmapFactory.decodeResource(context.getResources(),
                                                                      borderID));
         borderID = getResources().getIdentifier("grass_water_corner2",
-                                                "raw", "com.group7.dragonwars");
+                                                "drawable", "com.group7.dragonwars");
         this.graphics.get("Fields").put("Water->grass corner SE",
                                         BitmapFactory.decodeResource(context.getResources(),
                                                                      borderID));
 
         borderID = getResources().getIdentifier("grass_water_corner1",
-                                                "raw", "com.group7.dragonwars");
+                                                "drawable", "com.group7.dragonwars");
         this.graphics.get("Fields").put("Water->grass corner NE",
                                         BitmapFactory.decodeResource(context.getResources(),
                                                                      borderID));
         borderID = getResources().getIdentifier("grass_water_corner4",
-                                                "raw", "com.group7.dragonwars");
+                                                "drawable", "com.group7.dragonwars");
         this.graphics.get("Fields").put("Water->grass corner NW",
                                         BitmapFactory.decodeResource(context.getResources(),
                                                                      borderID));
 
         borderID = getResources().getIdentifier("water_grass_corner1",
-                                                "raw", "com.group7.dragonwars");
+                                                "drawable", "com.group7.dragonwars");
         this.graphics.get("Fields").put("Grass->water corner SW",
                                         BitmapFactory.decodeResource(context.getResources(),
                                                                      borderID));
 
         borderID = getResources().getIdentifier("water_grass_corner4",
-                                                "raw", "com.group7.dragonwars");
+                                                "drawable", "com.group7.dragonwars");
         this.graphics.get("Fields").put("Grass->water corner SE",
                                         BitmapFactory.decodeResource(context.getResources(),
                                                                      borderID));
 
         borderID = getResources().getIdentifier("water_grass_corner3",
-                                                "raw", "com.group7.dragonwars");
+                                                "drawable", "com.group7.dragonwars");
         this.graphics.get("Fields").put("Grass->water corner NE",
                                         BitmapFactory.decodeResource(context.getResources(),
                                                                      borderID));
 
         borderID = getResources().getIdentifier("water_grass_corner2",
-                                                "raw", "com.group7.dragonwars");
+                                                "drawable", "com.group7.dragonwars");
         this.graphics.get("Fields").put("Grass->water corner NW",
                                         BitmapFactory.decodeResource(context.getResources(),
                                                                      borderID));
@@ -230,7 +230,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
 
 
         Integer highID = getResources().getIdentifier("highlight",
-                                                      "raw",
+                                                      "drawable",
                                                       "com.group7.dragonwars");
         highlighter = BitmapFactory.decodeResource(context.getResources(),
                                                    highID);
@@ -552,7 +552,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
         }
 
         Integer resourceID = getResources().getIdentifier("selector",
-                                                          "raw",
+                                                          "drawable",
                                                           "com.group7.dragonwars");
         Bitmap selector = BitmapFactory.decodeResource(context.getResources(),
                                                        resourceID);
