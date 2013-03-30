@@ -195,56 +195,28 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         return bMap;
     }
 
+    /* Helper for loadBorders() */
+    private loadField(final String resName, final String regName) {
+        putResource("Fields", resName, "drawable",
+                    "com.group7.dragonwars", regName);
+    }
+
     /* TODO do not hardcode */
     private void loadBorders() {
-        putResource("Fields", "water_grass_edge1",
-                    "drawable", "com.group7.dragonwars",
-                    "Top grass->water border");
+        loadField("water_grass_edge1", "Top grass->water border");
+        loadField("water_grass_edge2", "Right grass->water border");
+        loadField("water_grass_edge3", "Bottom grass->water border");
+        loadField("water_grass_edge4", "Left grass->water border");
 
-        putResource("Fields", "water_grass_edge3",
-                    "drawable", "com.group7.dragonwars",
-                    "Bottom grass->water border");
+        loadField("grass_water_corner1", "Water->grass corner NE");
+        loadField("grass_water_corner2", "Water->grass corner SE");
+        loadField("grass_water_corner3", "Water->grass corner SW");
+        loadField("grass_water_corner4", "Water->grass corner NW");
 
-        putResource("Fields", "water_grass_edge4",
-                    "drawable", "com.group7.dragonwars",
-                    "Left grass->water border");
-
-        putResource("Fields", "water_grass_edge2",
-                    "drawable", "com.group7.dragonwars",
-                    "Right grass->water border");
-
-        putResource("Fields", "grass_water_corner3",
-                    "drawable", "com.group7.dragonwars",
-                    "Water->grass corner SW");
-
-        putResource("Fields", "grass_water_corner2",
-                    "drawable", "com.group7.dragonwars",
-                    "Water->grass corner SE");
-
-        putResource("Fields", "grass_water_corner1",
-                    "drawable", "com.group7.dragonwars",
-                    "Water->grass corner NE");
-
-        putResource("Fields", "grass_water_corner4",
-                    "drawable", "com.group7.dragonwars",
-                    "Water->grass corner NW");
-
-        putResource("Fields", "water_grass_corner1",
-                    "drawable", "com.group7.dragonwars",
-                    "Grass->water corner SW");
-
-        putResource("Fields", "water_grass_corner4",
-                    "drawable", "com.group7.dragonwars",
-                    "Grass->water corner SE");
-
-        putResource("Fields", "water_grass_corner3",
-                    "drawable", "com.group7.dragonwars",
-                    "Grass->water corner NE");
-
-        putResource("Fields", "water_grass_corner2",
-                    "drawable", "com.group7.dragonwars",
-                    "Grass->water corner NW");
-
+        loadField("water_grass_corner1", "Grass->water corner SW");
+        loadField("water_grass_corner2", "Grass->water corner NW");
+        loadField("water_grass_corner3", "Grass->water corner NE");
+        loadField("water_grass_corner4", "Grass->water corner SE");
     }
 
     /*
