@@ -637,16 +637,18 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                         canvas.drawBitmap(graphics.get("Units").get(un), null, dest, null);
                     }
                 }
-
+                /* Uncomment to print red grid with some info */
                 // Paint p = new Paint();
                 // p.setColor(Color.RED);
-                // canvas.drawText(pos.toString() + gfn.charAt(0), tilesize * i + scrollOffset.getX(),
+                // canvas.drawText(pos.toString() + gfn.charAt(0),
+                //                 tilesize * i + scrollOffset.getX(),
                 //                 tilesize * j + scrollOffset.getY() + 64, p);
                 // List<String> aoe = getFieldSquare(pos);
                 // for (int x = 0; x < aoe.size(); ++x)
-                //     canvas.drawText(aoe.get(x), tilesize * i + scrollOffset.getX(),
-                //                     tilesize * j + scrollOffset.getY() + 20 + (x * 10), p);
-
+                // canvas.drawText(aoe.get(x), tilesize * i
+                //                 + scrollOffset.getX(),
+                //                 tilesize * j + scrollOffset.getY()
+                //                 + 20 + (x * 10), p);
                 // Paint r = new Paint();
                 // r.setStyle(Paint.Style.STROKE);
                 // r.setColor(Color.RED);
@@ -655,7 +657,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         }
 
 
-        // perform highlighting
+        /* Destination highlighting */
         for (Position pos : unitDests) {
             RectF dest = getSquare(
                     tilesize * pos.getX() + scrollOffset.getX(),
@@ -670,19 +672,18 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
             tilesize);
         canvas.drawBitmap(selector, null, dest, null);
 
-
-        // draw the information box
-        drawInfoBox(canvas, selectedField.hostsUnit() ? selectedField.getUnit() : null, selectedField, true);
-
+        if (selectedField.hostsUnit()) {
+            drawInfoBox(canvas, selectedField.getUnit(), selectedField, true);
+        } else {
+            drawInfoBox(canvas, null, selectedField, true);
+        }
     }
 
     public float getMapDrawWidth() {
-        // returns the width of map in pixels
         return map.getWidth() * tilesize;
     }
 
     public float getMapDrawHeight() {
-        // returns the width of map in pixels
         return map.getHeight() * tilesize;
     }
 
@@ -723,35 +724,36 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         Paint textPaint = new Paint();
         textPaint.setColor(Color.WHITE);
 
-        Rect textBounds = new Rect(0, 0, 0, 0); // contains the bounds of the entire text in the info box
+        // contains the bounds of the entire text in the info box
+        Rect textBounds = new Rect(0, 0, 0, 0);
         LinkedList<Rect> infoBounds = new LinkedList<Rect>();
         for (int i = 0; i < info.size(); ++i) {
             String text = info.get(i);
-            infoBounds.add(i, new Rect());
-            textPaint.getTextBounds(text, 0, text.length(), infoBounds.get(i));
-            if (infoBounds.get(i).right > textBounds.right) {
-                textBounds.right = infoBounds.get(i).right;
+            Rect r = new Rect();
+            infoBounds.add(i, r);
+            textPaint.getTextBounds(text, 0, text.length(), r);
+            if (r.right > textBounds.right) {
+                textBounds.right = r.right;
             }
-            textBounds.bottom += (infoBounds.get(i).bottom - infoBounds.get(i).top);
+            textBounds.bottom += r.bottom - r.top;
         }
 
         Paint backPaint = new Paint();
-        backPaint.setColor(Color.BLACK); // FIXME make it black
+        backPaint.setColor(Color.BLACK);
 
-        Rect backRect = new Rect(0, canvas.getHeight() - textBounds.bottom, textBounds.right, canvas.getHeight());
+        Rect backRect = new Rect(0, canvas.getHeight() - textBounds.bottom,
+                                 textBounds.right, canvas.getHeight());
         canvas.drawRect(backRect, backPaint);
 
         float textHeight = 0f;
         for (int i = info.size() - 1; i >= 0; --i) {
-            canvas.drawText(info.get(i), 0, info.get(i).length(), 0, (canvas.getHeight() - textHeight) - infoBounds.get(i).bottom, textPaint);
-            textHeight += (infoBounds.get(i).bottom - infoBounds.get(i).top);
+            Rect r = infoBounds.get(i);
+            canvas.drawText(info.get(i), 0, info.get(i).length(), 0,
+                            canvas.getHeight() - textHeight - r.bottom,
+                            textPaint);
+            textHeight += r.bottom - r.top;
         }
-        //canvas.drawText(info, 0, info.length(), (float) backRect.left, (float) backRect.bottom, textPaint);
     }
-
-    /* Please excuse all the auto-generated method stubs
-     * as we're implementing an interface or two (GestureDetector.OnGestureListener etc), we need them all
-     */
 
     @Override
     public boolean onDown(final MotionEvent e) {
@@ -789,22 +791,25 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     @Override
     public boolean onSingleTapConfirmed(final MotionEvent event) {
-        int touchX = (int)((event.getX() - scrollOffset.getX()) / tilesize); // the coordinates of the pressed tile
-        int touchY = (int)((event.getY() - scrollOffset.getY()) / tilesize); // taking into account scrolling
+        /* Coordinates of the pressed tile */
+        int touchX = (int) ((event.getX() - scrollOffset.getX()) / tilesize);
+        int touchY = (int) ((event.getY() - scrollOffset.getY()) / tilesize);
 
-        //Log.v(null, "Touch ended at: (" + touchX + ", " + touchY + ") (dimensions are: (" + this.map.getWidth() + "x" + this.map.getHeight() + "))");
         Position newselected = new Position(touchX, touchY);
+
         if (this.map.isValidField(touchX, touchY)) {
-            //Log.v(null, "Setting selection");
             this.selected = newselected;
         }
+
         return true;
     }
 
     @Override
     public boolean onScroll(final MotionEvent e1, final MotionEvent e2,
                             final float distanceX, final float distanceY) {
+
         float newX = scrollOffset.getX() - distanceX;
+
         if (this.getWidth() >= this.getMapDrawWidth()) {
             newX = 0;
         } else if ((-newX) > (getMapDrawWidth() - getWidth())) {
@@ -812,7 +817,9 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         } else if (newX > 0) {
             newX = 0;
         }
+
         float newY = scrollOffset.getY() - distanceY;
+
         if (this.getHeight() >= this.getMapDrawHeight()) {
             newY = 0;
         } else if ((-newY) > (getMapDrawHeight() - getHeight())) {
@@ -820,7 +827,9 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         } else if (newY > 0) {
             newY = 0;
         }
+
         scrollOffset = new FloatPair(newX, newY);
+
         return true;
     }
 }
@@ -860,7 +869,7 @@ class DrawingThread extends Thread {
 
 }
 
-class FloatPair { // the Position code, but with Floats
+class FloatPair {
     private Pair<Float, Float> pair;
 
     public FloatPair(final Float x, final Float y) {
