@@ -67,6 +67,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
 
     DrawingThread dt;
     Bitmap highlighter;
+    Bitmap selector;
     boolean unit_selected; // true if there is a unit at selection
 
     Bitmap fullMap;
@@ -197,6 +198,11 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
         this.graphics.get("Fields").put("Grass->water corner NW",
                                         BitmapFactory.decodeResource(context.getResources(),
                                                                      borderID));
+
+        Integer selID = getResources().getIdentifier("selector",
+                                                     "drawable",
+                                                     "com.group7.dragonwars");
+        selector = BitmapFactory.decodeResource(context.getResources(), selID);
 
         Log.d(TAG, "after fields");
         /* Register units */
@@ -580,11 +586,6 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback, OnGestureL
         	canvas.drawBitmap(highlighter, null, dest, null);
         }
 
-        Integer resourceID = getResources().getIdentifier("selector",
-                                                          "drawable",
-                                                          "com.group7.dragonwars");
-        Bitmap selector = BitmapFactory.decodeResource(context.getResources(),
-                                                       resourceID);
         RectF dest = getSquare(
             tilesize * selected.getX() + scroll_offset.getX(),
             tilesize * selected.getY() + scroll_offset.getY(),
