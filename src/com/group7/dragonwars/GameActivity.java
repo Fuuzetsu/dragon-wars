@@ -1,5 +1,4 @@
 package com.group7.dragonwars;
-
 import android.app.Activity;
 
 import android.content.Context;
@@ -329,7 +328,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         for (int i = 0; i < map.getWidth(); ++i) {
             for (int j = 0; j < map.getHeight(); j++) {
-            	Position pos = new Position(i, j);
+                Position pos = new Position(i, j);
                 GameField gf = map.getField(i, j);
                 String gfn = gf.getFieldName();
                 RectF dest = getSquare(tilesize * i, tilesize * j, tilesize);
@@ -401,13 +400,13 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-    	// all of the functionality that was previously here is now in onSingleTapConfirmed()
-    	gestureDetector.onTouchEvent(event);
+        // all of the functionality that was previously here is now in onSingleTapConfirmed()
+        gestureDetector.onTouchEvent(event);
         return true;
     }
 
     public RectF getSquare(float x, float y, float length) {
-    	return new RectF(x, y, x + length, y + length);
+        return new RectF(x, y, x + length, y + length);
     }
 
     public List<Position> getUnitDestinations(GameField selected_field) {
@@ -603,9 +602,9 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
             for (int j = 0; j < map.getHeight(); j++) {
                 GameField gf = map.getField(i, j);
                 RectF dest = getSquare(
-                		tilesize * i + scrollOffset.getX(),
-                		tilesize * j + scrollOffset.getY(),
-                		tilesize);
+                        tilesize * i + scrollOffset.getX(),
+                        tilesize * j + scrollOffset.getY(),
+                        tilesize);
 
                 if (gf.hostsUnit()) {
                     Unit unit = gf.getUnit();
@@ -635,11 +634,11 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         // perform highlighting
         for (Position pos : unit_destinations) {
-        	RectF dest = getSquare(
-            		tilesize * pos.getX() + scrollOffset.getX(),
-            		tilesize * pos.getY() + scrollOffset.getY(),
-            		tilesize);
-        	canvas.drawBitmap(highlighter, null, dest, null);
+            RectF dest = getSquare(
+                    tilesize * pos.getX() + scrollOffset.getX(),
+                    tilesize * pos.getY() + scrollOffset.getY(),
+                    tilesize);
+            canvas.drawBitmap(highlighter, null, dest, null);
         }
 
         RectF dest = getSquare(
@@ -649,33 +648,33 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         canvas.drawBitmap(selector, null, dest, null);
 
 
-	// draw the information box
-	drawInfoBox(canvas, selected_field.hostsUnit() ? selected_field.getUnit() : null, selected_field, true);
+    // draw the information box
+    drawInfoBox(canvas, selected_field.hostsUnit() ? selected_field.getUnit() : null, selected_field, true);
     }
 
     public float getMapDrawWidth() {
-    	// returns the width of map in pixels
-    	return map.getWidth() * tilesize;
+        // returns the width of map in pixels
+        return map.getWidth() * tilesize;
     }
 
     public float getMapDrawHeight() {
-    	// returns the width of map in pixels
-    	return map.getHeight() * tilesize;
+        // returns the width of map in pixels
+        return map.getHeight() * tilesize;
     }
 
     public void drawInfoBox(Canvas canvas, Unit unit, GameField field, boolean left) {
-    	LinkedList<String> info = new LinkedList<String>();
+        LinkedList<String> info = new LinkedList<String>();
         info.add(field.getFieldName()); /* Always print for debug */
-    	// unit info
+        // unit info
         if (unit != null) {
-        	info.add(unit.getUnitName());// + " - Player: " + unit.getOwner().getName()); // causes problems when there is no owner
-        	info.add("Health: " + unit.getHealth() + "/" + unit.getMaxHealth());
-        	info.add("Attack: " + unit.getAttack());
-        	info.add("Defense: " + unit.getMeleeDefense() + " (Melee) " + unit.getRangeDefense() + " (Ranged)");
-        	info.add("");
+            info.add(unit.getUnitName());// + " - Player: " + unit.getOwner().getName()); // causes problems when there is no owner
+            info.add("Health: " + unit.getHealth() + "/" + unit.getMaxHealth());
+            info.add("Attack: " + unit.getAttack());
+            info.add("Defense: " + unit.getMeleeDefense() + " (Melee) " + unit.getRangeDefense() + " (Ranged)");
+            info.add("");
         }
 
-    	// field names
+        // field names
         if (field.hostsBuilding()) {
             Building building = field.getBuilding();
             String bLine = building.getBuildingName();
@@ -691,8 +690,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         // field stats
         info.add("Attack: " + field.getAttackModifier() +
-        		" Defense: " + field.getDefenseModifier() +
-        		" Move: " + field.getMovementModifier());
+                " Defense: " + field.getDefenseModifier() +
+                " Move: " + field.getMovementModifier());
 
         Paint text_paint = new Paint();
         text_paint.setColor(Color.WHITE);
@@ -700,13 +699,13 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         Rect text_bounds = new Rect(0, 0, 0, 0); // contains the bounds of the entire text in the info box
         LinkedList<Rect> info_bounds = new LinkedList<Rect>();
         for (int i = 0; i < info.size(); ++i) {
-        	String text = info.get(i);
-        	info_bounds.add(i, new Rect());
-        	text_paint.getTextBounds(text, 0, text.length(), info_bounds.get(i));
-        	if (info_bounds.get(i).right > text_bounds.right) {
-        		text_bounds.right = info_bounds.get(i).right;
-        	}
-        	text_bounds.bottom += (info_bounds.get(i).bottom - info_bounds.get(i).top);
+            String text = info.get(i);
+            info_bounds.add(i, new Rect());
+            text_paint.getTextBounds(text, 0, text.length(), info_bounds.get(i));
+            if (info_bounds.get(i).right > text_bounds.right) {
+                text_bounds.right = info_bounds.get(i).right;
+            }
+            text_bounds.bottom += (info_bounds.get(i).bottom - info_bounds.get(i).top);
         }
 
         Paint back_paint = new Paint();
@@ -717,8 +716,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         float text_height = 0f;
         for (int i = info.size() - 1; i >= 0; --i) {
-        	canvas.drawText(info.get(i), 0, info.get(i).length(), 0, (canvas.getHeight() - text_height) - info_bounds.get(i).bottom, text_paint);
-        	text_height += (info_bounds.get(i).bottom - info_bounds.get(i).top);
+            canvas.drawText(info.get(i), 0, info.get(i).length(), 0, (canvas.getHeight() - text_height) - info_bounds.get(i).bottom, text_paint);
+            text_height += (info_bounds.get(i).bottom - info_bounds.get(i).top);
         }
         //canvas.drawText(info, 0, info.length(), (float) back_rect.left, (float) back_rect.bottom, text_paint);
     }
@@ -727,64 +726,64 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
      * as we're implementing an interface or two (GestureDetector.OnGestureListener etc), we need them all
      */
 
-	@Override
-	public boolean onDown(MotionEvent e) {return false;}
+    @Override
+    public boolean onDown(MotionEvent e) {return false;}
 
-	@Override
-	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-		return false;
-	}
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        return false;
+    }
 
-	@Override
-	public void onLongPress(MotionEvent e) {}
+    @Override
+    public void onLongPress(MotionEvent e) {}
 
-	@Override
-	public void onShowPress(MotionEvent e) {}
+    @Override
+    public void onShowPress(MotionEvent e) {}
 
-	@Override
-	public boolean onSingleTapUp(MotionEvent e) {return false;}
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {return false;}
 
-	@Override
-	public boolean onDoubleTap(MotionEvent e) {return false;}
+    @Override
+    public boolean onDoubleTap(MotionEvent e) {return false;}
 
-	@Override
-	public boolean onDoubleTapEvent(MotionEvent e) {return false;}
+    @Override
+    public boolean onDoubleTapEvent(MotionEvent e) {return false;}
 
-	@Override
-	public boolean onSingleTapConfirmed(MotionEvent event) {
-    	int touchX = (int)((event.getX() - scrollOffset.getX()) / tilesize); // the coordinates of the pressed tile
-    	int touchY = (int)((event.getY() - scrollOffset.getY()) / tilesize); // taking into account scrolling
+    @Override
+    public boolean onSingleTapConfirmed(MotionEvent event) {
+        int touchX = (int)((event.getX() - scrollOffset.getX()) / tilesize); // the coordinates of the pressed tile
+        int touchY = (int)((event.getY() - scrollOffset.getY()) / tilesize); // taking into account scrolling
 
-		//Log.v(null, "Touch ended at: (" + touchX + ", " + touchY + ") (dimensions are: (" + this.map.getWidth() + "x" + this.map.getHeight() + "))");
+        //Log.v(null, "Touch ended at: (" + touchX + ", " + touchY + ") (dimensions are: (" + this.map.getWidth() + "x" + this.map.getHeight() + "))");
         Position newselected = new Position(touchX, touchY);
         if (this.map.isValidField(touchX, touchY)) {
-        	//Log.v(null, "Setting selection");
-        	this.selected = newselected;
+            //Log.v(null, "Setting selection");
+            this.selected = newselected;
         }
-		return true;
-	}
+        return true;
+    }
 
-	@Override
-	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-		float new_x = scrollOffset.getX() - distanceX;
-		if (this.getWidth() >= this.getMapDrawWidth()) {
-			new_x = 0;
-		} else if ((-new_x) > (getMapDrawWidth() - getWidth())) {
-			new_x = -(getMapDrawWidth() - getWidth());
-		} else if (new_x > 0) {
-			new_x = 0;
-		}
-		float new_y = scrollOffset.getY() - distanceY;
-		if (this.getHeight() >= this.getMapDrawHeight()) {
-			new_y = 0;
-		} else if ((-new_y) > (getMapDrawHeight() - getHeight())) {
-			new_y = -(getMapDrawHeight() - getHeight());
-		} else if (new_y > 0) {
-			new_y = 0;
-		}
-		scrollOffset = new FloatPair(new_x, new_y);
-		return true;
-	}
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        float new_x = scrollOffset.getX() - distanceX;
+        if (this.getWidth() >= this.getMapDrawWidth()) {
+            new_x = 0;
+        } else if ((-new_x) > (getMapDrawWidth() - getWidth())) {
+            new_x = -(getMapDrawWidth() - getWidth());
+        } else if (new_x > 0) {
+            new_x = 0;
+        }
+        float new_y = scrollOffset.getY() - distanceY;
+        if (this.getHeight() >= this.getMapDrawHeight()) {
+            new_y = 0;
+        } else if ((-new_y) > (getMapDrawHeight() - getHeight())) {
+            new_y = -(getMapDrawHeight() - getHeight());
+        } else if (new_y > 0) {
+            new_y = 0;
+        }
+        scrollOffset = new FloatPair(new_x, new_y);
+        return true;
+    }
 }
 
 class DrawingThread extends Thread {
