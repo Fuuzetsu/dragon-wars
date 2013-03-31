@@ -6,6 +6,7 @@ public abstract class DrawableMapObject {
     private String spriteLocation;
     private String spriteDir;
     private String spritePack;
+    protected String info;
 
     public DrawableMapObject(final String name, final String spriteLocation,
                              final String spriteDir, final String spritePack) {
@@ -29,5 +30,12 @@ public abstract class DrawableMapObject {
     public String getSpritePack() {
         return spritePack;
     }
+
+    public String getInfo() {
+        return info;
+    }
+
+    /* Used to enforce info creation from extending classes */
+    public abstract void generateInfo();
 
 }

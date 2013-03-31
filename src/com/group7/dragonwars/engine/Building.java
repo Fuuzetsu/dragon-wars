@@ -28,6 +28,8 @@ public class Building extends DrawableMapObject {
         this.goalBuilding = goalBuilding;
         this.captureWorth = captureWorth;
 
+        generateInfo();
+
     }
 
     public Building(Building building) {
@@ -42,6 +44,8 @@ public class Building extends DrawableMapObject {
 
         this.goalBuilding = building.isGoalBuilding();
         this.captureWorth = building.getCaptureWorth();
+
+        this.info = building.getInfo();
 
     }
 
@@ -58,7 +62,7 @@ public class Building extends DrawableMapObject {
     }
 
     public String toString() {
-        return this.name;
+        return getName();
     }
 
     public Player getLastCapturer() {
@@ -124,5 +128,29 @@ public class Building extends DrawableMapObject {
 
     public Integer getCaptureWorth() {
         return this.captureWorth;
+    }
+
+    public String getInfo() {
+        String r = getName();
+        if (hasOwner()) {
+            r += " ~ " + getOwner().getName();
+        }
+
+        return r + this.info;
+    }
+
+    public void generateInfo() {
+        String r = "\n";
+        if (canProduceUnits()) {
+            for (Unit u : getProducableUnits()) {
+                r += "I can produce " + u + " - "
+                    + u.getProductionCost() + "g\n";
+            }
+        } else {
+            r += "I can't produce anything.\n";
+        }
+
+        this.info = r;
+
     }
 }
