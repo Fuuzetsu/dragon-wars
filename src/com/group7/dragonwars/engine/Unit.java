@@ -52,7 +52,7 @@ public class Unit extends DrawableMapObject {
 
         this.isFlying = unit.isFlying();
         this.productionCost = unit.getProductionCost();
-        this.info = unit.getInfo();
+        this.info = unit.info;
     }
 
     public Boolean isDead() {

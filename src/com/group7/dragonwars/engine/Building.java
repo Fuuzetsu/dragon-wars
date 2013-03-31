@@ -45,7 +45,7 @@ public class Building extends DrawableMapObject {
         this.goalBuilding = building.isGoalBuilding();
         this.captureWorth = building.getCaptureWorth();
 
-        this.info = building.getInfo();
+        this.info = building.info;
 
     }
 
