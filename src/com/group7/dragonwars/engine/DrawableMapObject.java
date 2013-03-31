@@ -2,10 +2,10 @@ package com.group7.dragonwars.engine;
 
 public abstract class DrawableMapObject {
 
-    public String name;
-    public String spriteLocation;
-    public String spriteDir;
-    public String spritePack;
+    private String name;
+    private String spriteLocation;
+    private String spriteDir;
+    private String spritePack;
 
     public DrawableMapObject(final String name, final String spriteLocation,
                              final String spriteDir, final String spritePack) {
