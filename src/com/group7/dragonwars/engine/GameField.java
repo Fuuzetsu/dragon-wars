@@ -29,6 +29,8 @@ public class GameField extends DrawableMapObject {
         this.defenseModifier = defenseModifier;
         this.accessible = accessible;
         this.flightOnly = flightOnly;
+
+        generateInfo();
     }
 
     public Double getDefenseModifier() {
@@ -84,5 +86,13 @@ public class GameField extends DrawableMapObject {
 
     public String toString() {
         return getName();
+    }
+
+    public void generateInfo() {
+        String r = getName() + "\n";
+        r += "Attack: " + getAttackModifier()
+            + " Defense: " + getDefenseModifier()
+            + " Move: " + getMovementModifier() + "\n";
+        this.info = r;
     }
 }

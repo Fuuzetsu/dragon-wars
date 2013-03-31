@@ -31,6 +31,8 @@ public class Unit extends DrawableMapObject {
 
         this.isFlying = isFlying;
         this.productionCost = productionCost;
+
+        generateInfo();
     }
 
     /* Used for copying the unit template */
@@ -50,6 +52,7 @@ public class Unit extends DrawableMapObject {
 
         this.isFlying = unit.isFlying();
         this.productionCost = unit.getProductionCost();
+        this.info = unit.getInfo();
     }
 
     public Boolean isDead() {
@@ -135,5 +138,20 @@ public class Unit extends DrawableMapObject {
 
     public Integer getProductionCost() {
         return this.productionCost;
+    }
+
+    public String getInfo() {
+        String r = getName() + "\n";
+        r += "Health: " + getHealth();
+        return r + this.info;
+    }
+
+    public void generateInfo() {
+        String  r =  "/"  + getMaxHealth() + "\n";
+        r += "Attack: " + getAttack() + "\n";
+        r += "Defense: " + getMeleeDefense() + " (Melee) "
+            + getRangeDefense() + " (Ranged)\n";
+
+        this.info = r;
     }
 }
