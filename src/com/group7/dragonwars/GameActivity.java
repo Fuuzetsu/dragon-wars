@@ -603,7 +603,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         }
 
         if (field.hostsBuilding()) {
-            field.getBuilding().getInfo();
+            info += field.getBuilding().getInfo();
         }
 
         Paint textPaint = new Paint();
@@ -631,9 +631,9 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                                  boxWidth, canvas.getHeight());
         canvas.drawRect(backRect, backPaint);
 
-        for (int i = ss.length - 1; i >= 0; --i) {
+        for (Integer i = 0; i < ss.length; ++i) {
             canvas.drawText(ss[i], 0, ss[i].length(), 0,
-                            canvas.getHeight() - (bounds.height() * i),
+                            canvas.getHeight() - (bounds.height() * (ss.length - 1 - i)),
                             textPaint);
         }
     }
