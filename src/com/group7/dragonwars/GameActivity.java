@@ -400,97 +400,74 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                                   .get("Right grass->water border"),
                                   null, dest, null);
             }
-        }
 
-        if (gfn.equals("Water")) {
             if (e.equals("Grass")) {
                 canvas.drawBitmap(graphics.get("Fields")
                                   .get("Left grass->water border"),
                                   null, dest, null);
             }
-        }
 
-
-        if (gfn.equals("Water")) {
             if (s.equals("Grass")) {
                 canvas.drawBitmap(graphics.get("Fields")
                                   .get("Top grass->water border"),
                                   null, dest, null);
             }
-        }
 
-        if (gfn.equals("Water")) {
             if (n.equals("Grass")) {
                 canvas.drawBitmap(graphics.get("Fields")
                                   .get("Bottom grass->water border"),
                                   null, dest, null);
             }
-        }
 
-        if (gfn.equals("Water")) {
             if (s.equals("Water") && w.equals("Water") && sw.equals("Grass")) {
                 canvas.drawBitmap(graphics.get("Fields")
                                   .get("Grass->water corner SW"),
                                   null, dest, null);
             }
-        }
 
-        if (gfn.equals("Water")) {
             if (s.equals("Water") && e.equals("Water") && se.equals("Grass")) {
                 canvas.drawBitmap(graphics.get("Fields")
                                   .get("Grass->water corner SE"),
                                   null, dest, null);
             }
-        }
 
-        if (gfn.equals("Water")) {
             if (n.equals("Water") && w.equals("Water") && nw.equals("Grass")) {
                 canvas.drawBitmap(graphics.get("Fields")
                                   .get("Grass->water corner NW"),
                                   null, dest, null);
             }
-        }
 
-        if (gfn.equals("Water")) {
             if (n.equals("Water") && e.equals("Water") && ne.equals("Grass")) {
                 canvas.drawBitmap(graphics.get("Fields")
                                   .get("Grass->water corner NE"),
                                   null, dest, null);
             }
-        }
 
-        if (gfn.equals("Water")) {
             if (w.equals("Grass") && s.equals("Grass") && sw.equals("Grass")) {
                 canvas.drawBitmap(graphics.get("Fields")
                                   .get("Water->grass corner SW"),
                                   null, dest, null);
             }
-        }
 
-        if (gfn.equals("Water")) {
             if (e.equals("Grass") && s.equals("Grass") && se.equals("Grass")) {
                 canvas.drawBitmap(graphics.get("Fields")
                                   .get("Water->grass corner SE"),
                                   null, dest, null);
             }
-        }
 
-        if (gfn.equals("Water")) {
             if (w.equals("Grass") && n.equals("Grass") && nw.equals("Grass")) {
                 canvas.drawBitmap(graphics.get("Fields")
                                   .get("Water->grass corner NW"),
                                   null, dest, null);
             }
-        }
 
-        if (gfn.equals("Water")) {
             if (e.equals("Grass") && n.equals("Grass") && ne.equals("Grass")) {
                 canvas.drawBitmap(graphics.get("Fields")
                                   .get("Water->grass corner NE"),
                                   null, dest, null);
             }
-        }
 
+        }
     }
 
     /* Debug method */
