@@ -596,44 +596,15 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     public void drawInfoBox(final Canvas canvas, final Unit unit,
                             final GameField field, final boolean left) {
-        String info = field.getName() + "\n";
+        String info = field.getInfo();
 
-        // unit info
         if (unit != null) {
-            info += unit.getName() + "\n";
-            info += "Health: " + unit.getHealth() + "/"
-                + unit.getMaxHealth() + "\n";
-            info += "Attack: " + unit.getAttack() + "\n";
-            info += "Defense: " + unit.getMeleeDefense() + " (Melee) "
-                + unit.getRangeDefense() + " (Ranged)" + "\n";
+            info += unit.getInfo();
         }
 
-        // field names
         if (field.hostsBuilding()) {
-            Building building = field.getBuilding();
-
-            info += building.getName();
-
-            if (building.hasOwner()) {
-                info += " ~ " + building.getOwner().getName();
-            }
-
-            info += "\n";
-
-            if (building.canProduceUnits()) {
-                for (Unit u : building.getProducableUnits()) {
-                    info += "I can produce " + u + " - "
-                        + u.getProductionCost() + "g" + "\n";
-                }
-            } else {
-                info += "I can't produce anything." + "\n";
-            }
+            field.getBuilding().getInfo();
         }
-
-        // field stats
-        info += "Attack: " + field.getAttackModifier()
-            + " Defense: " + field.getDefenseModifier()
-            + " Move: " + field.getMovementModifier() + "\n";
 
         Paint textPaint = new Paint();
         textPaint.setColor(Color.WHITE);
