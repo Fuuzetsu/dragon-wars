@@ -29,6 +29,7 @@ import android.view.WindowManager;
 
 import com.group7.dragonwars.engine.Building;
 import com.group7.dragonwars.engine.DrawableMapObject;
+import com.group7.dragonwars.engine.Func;
 import com.group7.dragonwars.engine.GameField;
 import com.group7.dragonwars.engine.GameMap;
 import com.group7.dragonwars.engine.GameState;
@@ -394,77 +395,61 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         s = map.isValidField(sp) ? map.getField(sp).toString() : FAKE;
         sw = map.isValidField(swp) ? map.getField(swp).toString() : FAKE;
 
+        Func<String, Void> drawer = new Func<String, Void>() {
+            public Void apply(String sprite) {
+                canvas.drawBitmap(graphics.get("Fields").get(sprite),
+                                  null, dest, null);
+                return null; /* Java strikes again */
+            }
+        };
+
         if (gfn.equals("Water")) {
             if (w.equals("Grass")) {
-                canvas.drawBitmap(graphics.get("Fields")
-                                  .get("Right grass->water border"),
-                                  null, dest, null);
+                drawer.apply("Right grass->water border");
             }
 
             if (e.equals("Grass")) {
-                canvas.drawBitmap(graphics.get("Fields")
-                                  .get("Left grass->water border"),
-                                  null, dest, null);
+                drawer.apply("Left grass->water border");
             }
 
             if (s.equals("Grass")) {
-                canvas.drawBitmap(graphics.get("Fields")
-                                  .get("Top grass->water border"),
-                                  null, dest, null);
+                drawer.apply("Top grass->water border");
             }
 
             if (n.equals("Grass")) {
-                canvas.drawBitmap(graphics.get("Fields")
-                                  .get("Bottom grass->water border"),
-                                  null, dest, null);
+                drawer.apply("Bottom grass->water border");
             }
 
             if (s.equals("Water") && w.equals("Water") && sw.equals("Grass")) {
-                canvas.drawBitmap(graphics.get("Fields")
-                                  .get("Grass->water corner SW"),
-                                  null, dest, null);
+                drawer.apply("Grass->water corner SW");
             }
 
             if (s.equals("Water") && e.equals("Water") && se.equals("Grass")) {
-                canvas.drawBitmap(graphics.get("Fields")
-                                  .get("Grass->water corner SE"),
-                                  null, dest, null);
+                drawer.apply("Grass->water corner SE");
             }
 
             if (n.equals("Water") && w.equals("Water") && nw.equals("Grass")) {
-                canvas.drawBitmap(graphics.get("Fields")
-                                  .get("Grass->water corner NW"),
-                                  null, dest, null);
+                drawer.apply("Grass->water corner NW");
             }
 
             if (n.equals("Water") && e.equals("Water") && ne.equals("Grass")) {
-                canvas.drawBitmap(graphics.get("Fields")
-                                  .get("Grass->water corner NE"),
-                                  null, dest, null);
+                drawer.apply("Grass->water corner NE");
             }
 
             if (w.equals("Grass") && s.equals("Grass") && sw.equals("Grass")) {
-                canvas.drawBitmap(graphics.get("Fields")
-                                  .get("Water->grass corner SW"),
-                                  null, dest, null);
+                drawer.apply("Water->grass corner SW");
             }
 
             if (e.equals("Grass") && s.equals("Grass") && se.equals("Grass")) {
-                canvas.drawBitmap(graphics.get("Fields")
-                                  .get("Water->grass corner SE"),
-                                  null, dest, null);
+                drawer.apply("Water->grass corner SE");
             }
 
             if (w.equals("Grass") && n.equals("Grass") && nw.equals("Grass")) {
-                canvas.drawBitmap(graphics.get("Fields")
-                                  .get("Water->grass corner NW"),
-                                  null, dest, null);
+                drawer.apply("Water->grass corner NW");
             }
 
             if (e.equals("Grass") && n.equals("Grass") && ne.equals("Grass")) {
-                canvas.drawBitmap(graphics.get("Fields")
-                                  .get("Water->grass corner NE"),
-                                  null, dest, null);
+                drawer.apply("Water->grass corner NE");
             }
 
         }
