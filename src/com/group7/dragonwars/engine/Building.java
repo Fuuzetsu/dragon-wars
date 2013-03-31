@@ -135,12 +135,13 @@ public class Building extends DrawableMapObject {
         if (hasOwner()) {
             r += " ~ " + getOwner().getName();
         }
+        r += "\n";
 
         return r + this.info;
     }
 
     public void generateInfo() {
-        String r = "\n";
+        String r = "";
         if (canProduceUnits()) {
             for (Unit u : getProducableUnits()) {
                 r += "I can produce " + u + " - "

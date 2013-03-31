@@ -603,7 +603,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         }
 
         if (field.hostsBuilding()) {
-            field.getBuilding().getInfo();
+            info += field.getBuilding().getInfo();
         }
 
         Paint textPaint = new Paint();
