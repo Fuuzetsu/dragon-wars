@@ -1,16 +1,186 @@
 @startuml
 
+package android.app #DDDDDD {
+}
+
+package android.util #DDDDDD {
+      interface AttributeSet
+}
+
+package android.view #DDDDDD {
+      interface SurfaceHolder
+      
+      package GestureDetector {
+            interface OnDoubleTapListener
+            interface OnGestureListener
+      }
+
+      package SurfaceHolder {
+            interface Callback
+      }
+
+      package WindowManager {
+            class LayoutParams
+      }
+
+      package View {
+            class OnClickListener
+      }
+}
+
+package android.widget #DDDDDD {
+}
+
+package android.graphics #DDDDDD {
+      class Paint {
+             +enum Style
+      }
+}
+
+
+
 package com.group7.dragonwars {
-      GameActivity o-- com.group7.dragonwars.engine.Logic
-      GameActivity o-- com.group7.dragonwars.engine.GameMap
-      GameActivity o-- com.group7.dragonwars.engine.GameState
-      GameActivity o-- com.group7.dragonwars.engine.Position
-      GameActivity o-- com.group7.dragonwars.engine.GameField
-      GameActivity o-- com.group7.dragonwars.engine.Building
-      GameActivity o-- com.group7.dragonwars.engine.Unit
-      GameActivity o-- com.group7.dragonwars.engine.Pair
-      class MainMenuActivity
+      GameActivity <|-- android.app.Activity
+      GameActivity o-- android.os.Bundle
+      GameActivity o-- android.view.Window
+      GameActivity o-- android.view.WindowManager.LayoutParams
+      GameActivity o-- com.group7.dragonwars.util.SystemUiHider      
+
+      MainMenuActivity <|-- android.app.Activity
+      MainMenuActivity <|.. android.view.View.OnClickListener
+      MainMenuActivity o-- android.widget.Button
+      ManiMenuActivity o-- android.os.Bundle
+      MainMenuActivity o-- android.view.Menu
+      MainMenuActivity o-- android.view.MenuItem
+      MainMenuActivity o-- android.content.Intent
+      
+      
+      class GameActivity {
+            -String TAG {static}
+            -Integer orientation
+            -Boolean orientationChanged
+            +void onCreate(Bundle)
+      }
+
+
+      class MainMenuActivity {
+            -Button btnBattle
+            #void onCreate(Bundle)
+            #void onStart()
+            +boolean onCreateOptionsMenu(Menu)
+            +boolean onOptionsItemSelected(MenuItem)
+            +void onClick(View)
+            
+      }
       class SettingsActivity
+
+      namespace GameActivity {
+            GameView <|-- android.view.SurfaceView
+            GameView <|.. android.view.SurfaceHolder
+            GameView <|.. android.view.SurfaceHolder.Callback
+            GameView <|.. android.view.GestureDetector
+            GameView <|.. android.view.GestureDetector.OnGestureListener
+            GameView <|.. android.view.GestureDetector.OnDoubleTapListener
+            GameView o-- android.graphics.Bitmap
+            GameView o-- com.group7.dragonwars.engine.GameState
+            GameView o-- com.group7.dragonwars.engine.Logic
+            GameView o-- com.group7.dragonwars.engine.GameMap
+            GameView o-- com.group7.dragonwars.engine.Position
+            GameView o-- com.group7.dragonwars.GameActivity.FloatPair
+            GameView o-- android.view.GestureDetector
+            GameView o-- com.group7.dragonwars.GameActivity.DrawingThread
+            GameView o-- android.graphics.Paint
+            GameView o-- android.content.Context
+            GameView o-- java.util.HashMap
+            GameView o-- java.util.ArrayList
+            GameView o-- com.group7.dragonwars.engine.GameField
+            GameView o-- com.group7.dragonwars.engine.Unit
+            GameView o-- com.group7.dragonwars.engine.Building
+            GameView o-- com.group7.dragonwars.engine.Position
+            GameView o-- org.json.JSONException
+            GameView o-- android.util.AttributeSet
+            GameView o-- java.util.Map.Entry
+            GameView o-- android.graphics.Paint.Style
+            GameView o-- java.io.BufferedReader
+            GameView o-- java.io.InputStreamReader
+            GameView o-- java.io.FileNotFoundException
+            GameView o-- java.io.IOException
+            GameView o-- java.lang.InterruptedException
+            GameView o-- android.graphics.RectF
+            GameView o-- android.graphics.Rect            
+            GameView o-- android.graphics.Canvas
+            GameView o-- android.content.res.Configuration
+            GameView o-- android.view.MotionEvent
+            
+            DrawingThread <|-- java.lang.Thread
+            DrawingThread o-- android.graphics.Canvas
+            DrawingThread o-- android.view.SurfaceHolder
+            DrawingThread o-- android.content.Context
+            DrawingThread o-- GameView
+            
+            FloatPair o-- com.group7.dragonwars.engine.Pair
+
+            class GameView {
+                  -String TAG
+                  -Bitmap bm
+                  -GameState state
+                  -Logic logic
+                  -GameMap map
+                  -Position selected
+                  -FloatPair scroll_offset
+                  -GestureDetector gesture_detector
+                  -DrawingThread dt
+                  -Paint circle_paint
+                  -Paint move_high_paint
+                  -boolean unit_selected
+                  -Context context
+                  -HashMap<String, HashMap<String, Bitmap>> graphics
+                  -Integer orientation
+                  -int tilesize
+                  -GameField lastField
+                  -Unit lastUnit
+                  -List<Position> lastDestinations
+                  +GameView(Context, AttributeSet)
+                  -List<String> readFile(int)
+                  +void setMap(GameMap)
+                  +void surfaceChanged(SurfaceHolder, int, int, int)
+                  +void surfaceCreated(SurfaceHolder)
+                  +void surfaceDestrayed(SurfaceHolder)
+                  +boolean onTouchEvent(MotionEvent)
+                  +RectF getSquare()
+                  +void doDraw(Canvas)
+                  +float getMapDrawWidth()
+                  +float getMapDrawHeight()
+                  +void drawInfoBox(Canvas, Unit, GameField, boolean)
+                  +boolean onDown(MotionEvent)
+                  +boolean onFling(MotionEvent, MotionEvent, float, float)
+                  +void onLongPress(MotionEvent)
+                  +void onShowPress(MotionEvent)
+                  +boolean onSingleTapUp(MotionEvent)
+                  +boolean onDoubleTap(MotionEvent)
+                  +boolean onDoubleTapEvent(MotionEvent)
+                  +boolean onSingleTapConfirmed(MotionEvent)
+                  +boolean onScroll(MotionEvent, MotionEvent, float, float)
+            }
+
+            class DrawingThread {
+                  -boolean run
+                  -Canvas canvas
+                  -SurfaceHolder surfaceHolder
+                  -Context context
+                  -GameView gview
+                  +DrawingThread(SurfaceHolder, Context, GameView)
+                  -void setRunning(boolean)
+                  +void run()
+            }
+
+            class FloatPair {
+                  -Pair<Float, Float> pair
+                  +FloatPair(Float, Float)
+                  +Float getX()
+                  +Float getY
+            }
+      }
 }
 
 package com.group7.dragonwars.util {
@@ -389,14 +559,38 @@ package com.group7.dragonwars.engine {
 
 }
 
-namespace java.util #DDDDDD {
+package java.util #DDDDDD {
+      ArrayList <|.. List
+      HashMap <|.. Map
+
       interface Comparator<T> {
             +int compare(T, T)
       }
+      class Map<K, V>
+      class HashMap<K, V>
+      class ArrayList<T>
+      interface List<T>
+
+      namespace Map {
+            interface Entry<K, V>
+      }
 }
 
+package java.io #DDDDDD {
+      FileNotFoundException <|-- java.lang.Exception
+      IOException <|-- java.lang.Exception
+      
+      class BufferedReader
+      class InputStreamReader
+      class FileNotFoundException
+      class IOException
+}
 
-namespace java.lang #DDDDDD {
+package java.lang #DDDDDD {
+      InterruptedException <|-- Exception
+      
+      class InterruptedException
+      
       interface Iterable<T> {
             +Iterator<T> iterator()
       }	    
