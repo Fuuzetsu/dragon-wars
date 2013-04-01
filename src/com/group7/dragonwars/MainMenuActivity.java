@@ -31,7 +31,7 @@ public class MainMenuActivity extends Activity implements OnClickListener {
         // 4. onPause (could -> onResume) (state not lost)
         // 5. onStop (could -> onStart) (state not lost)
         // 6. onDestroy (state lost)
-        Toast.makeText(getApplicationContext(), "If the user had a game in progress when they quit the app (without properly saving and exiting), we will offer to resume it now (we are nice like that)", Toast.LENGTH_LONG).show();
+        //Toast.makeText(getApplicationContext(), "If the user had a game in progress when they quit the app (without properly saving and exiting), we will offer to resume it now (we are nice like that)", Toast.LENGTH_LONG).show();
         super.onStart();
     }
 

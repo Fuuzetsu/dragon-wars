@@ -1,15 +1,18 @@
 package com.group7.dragonwars;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.DialogInterface;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff.*;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
@@ -21,11 +24,15 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnDoubleTapListener;
 import android.view.GestureDetector.OnGestureListener;
+
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.Window;
 import android.view.WindowManager;
+
+import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import com.group7.dragonwars.engine.Building;
 import com.group7.dragonwars.engine.DrawableMapObject;
@@ -52,7 +59,6 @@ import java.util.Map.Entry;
 
 import org.json.JSONException;
 
-
 public class GameActivity extends Activity {
     private static final String TAG = "GameActivity";
     private Integer orientation;
@@ -77,7 +83,8 @@ public class GameActivity extends Activity {
 
 class GameView extends SurfaceView implements SurfaceHolder.Callback,
                                               OnGestureListener,
-                                              OnDoubleTapListener {
+                                              OnDoubleTapListener,
+                                              DialogInterface.OnClickListener {
     private final String TAG = "GameView";
 
     private final int tilesize = 64;
@@ -88,6 +95,10 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     private GameMap map;
     private Position selected; // Currently selected position
 
+    private Position attack_location;
+    private Position newselected;
+
+
     private FloatPair scrollOffset; // offset caused by scrolling, in pixels
     private GestureDetector gestureDetector;
 
@@ -95,7 +106,21 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     private Bitmap highlighter;
     private Bitmap selector;
 
+    private Paint move_high_paint; // used to highlight movements
+    private Paint attack_high_paint; // used to highlight possible attacks
+
     private Bitmap fullMap;
+    private boolean unit_selected; // true if there is a unit at selection
+
+    private boolean attack_action;
+    /* true if during an attack action:
+     * user selects a unit, selects a field
+     * chooses attack
+     **attack_move is now true
+     * selects another field
+     **attack_location is the location of the attack
+     *
+     */
 
     private Context context;
     private HashMap<String, HashMap<String, Bitmap>> graphics;
@@ -161,6 +186,16 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         gestureDetector = new GestureDetector(this.getContext(), this);
         scrollOffset = new FloatPair(0f, 0f);
+
+        move_high_paint = new Paint();
+        move_high_paint.setStyle(Paint.Style.FILL);
+        move_high_paint.setARGB(150, 0, 0, 255); // semi-transparent blue
+
+        attack_high_paint = new Paint();
+        attack_high_paint.setStyle(Paint.Style.FILL);
+        attack_high_paint.setARGB(150, 255, 0, 0); // semi-transparent red
+
+        attack_action = false;
 
         /* Prerender combined map */
         fullMap = combineMap();
@@ -550,7 +585,6 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
             }
         }
 
-
         /* Destination highlighting */
         for (Position pos : unitDests) {
             RectF dest = getSquare(
@@ -565,6 +599,19 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
             tilesize * selected.getY() + scrollOffset.getY(),
             tilesize);
         canvas.drawBitmap(selector, null, dest, null);
+
+        // attack highlighting
+        if (attack_action) {
+        	/*LinkedList<Position> attack_destinations = Logic.getAttackLocations();
+              for (Position pos : attack_destinations) {
+              RectF dest = getSquare(
+              tilesize * pos.getX() + scroll_offset.getX(),
+              tilesize * pos.getY() + scroll_offset.getY(),
+              tilesize);
+              canvas.drawRect(dest, attack_high_paint);
+              }
+            */
+        }
 
         if (selectedField.hostsUnit()) {
             drawInfoBox(canvas, selectedField.getUnit(), selectedField, true);
@@ -678,10 +725,48 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         int touchX = (int) ((event.getX() - scrollOffset.getX()) / tilesize);
         int touchY = (int) ((event.getY() - scrollOffset.getY()) / tilesize);
 
-        Position newselected = new Position(touchX, touchY);
+        newselected = new Position(touchX, touchY);
 
         if (this.map.isValidField(touchX, touchY)) {
-            this.selected = newselected;
+            if (map.getField(selected).hostsUnit()) {
+        		Log.v(null, "A unit is selected!");
+        		// If the user currently has a unit selected and selects a field that this unit could move to
+        		// (and the unit has not finished it's turn)
+                GameField selected_field = map.getField(selected);
+                if (!selected_field.getUnit().hasFinishedTurn()) {
+	                List<Position> unit_destinations = logic.destinations(map, selected_field.getUnit());
+	                Log.v(null, "after destinations");
+	                boolean contains = false;
+	                for (Position pos : unit_destinations) {
+	                	if (pos.equals(newselected)) {
+	                		contains = true;
+	                		break;
+	                	}
+	                }
+	                if (contains) {
+	                	Log.v(null, "unit_destinations contains newselected");
+	                	/* pop up a menu with options:
+	                	 * - Wait (go here and do nothing else
+	                	 * - Attack (if there are units to attack)
+	                	 * - Cancel (do nothing, also do not set the selection to here)
+	                	 */
+	                	AlertDialog.Builder actions_builder = new AlertDialog.Builder(this.getContext());
+	                	actions_builder.setTitle("Actions");
+	                	String[] actions = {"Wait here", "Attack"};
+	                	actions_builder.setItems(actions, this);
+	                	actions_builder.create().show();
+
+	                	// onClick handles the result
+	                } else {
+	    	        	this.selected = newselected;
+	                }
+                } else {
+    	        	this.selected = newselected;
+                }
+        	} else {
+	        	//Log.v(null, "Setting selection");
+	        	this.selected = newselected;
+        	}
         }
 
         return true;
@@ -715,6 +800,23 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         return true;
     }
+
+	@Override
+	public void onClick(final DialogInterface dialog, final int which) {
+		Log.v(null, "selected option: " + which);
+		switch (which) {
+		case 0:
+			Unit unit = map.getField(selected).getUnit();
+			unit.setPosition(newselected);
+			map.getField(selected).setUnit(null);
+			map.getField(newselected).setUnit(unit);
+			//dry
+			break;
+		case 1:
+			attack_location = newselected;
+			attack_action = true;
+		}
+	}
 }
 
 class DrawingThread extends Thread {
