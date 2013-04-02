@@ -2,16 +2,14 @@ package com.group7.dragonwars.engine;
 
 import java.util.*;
 
-public class Building {
+public class Building extends DrawableMapObject {
 
     private Integer captureWorth;
-    private String buildingName;
     private Integer captureDifficulty, remainingCaptureTime;
     private Double attackBonus, defenseBonus;
     private Player owner;
     private Boolean goalBuilding;
     private Player lastCapturer;
-    private String spriteLocation, spriteDir, spritePack;
     private List<Unit> producableUnits = new ArrayList<Unit>();
     private Position position;
 
@@ -19,7 +17,7 @@ public class Building {
     public Building(String name, Integer captureDifficulty, Double attackBonus,
                     Double defenseBonus, Boolean goalBuilding, Integer captureWorth,
                     String spriteLocation, String spriteDir, String spritePack) {
-        this.buildingName = name;
+        super(name, spriteLocation, spriteDir, spritePack);
 
         this.captureDifficulty = captureDifficulty;
         this.remainingCaptureTime = this.captureDifficulty;
@@ -30,14 +28,13 @@ public class Building {
         this.goalBuilding = goalBuilding;
         this.captureWorth = captureWorth;
 
-        this.spriteLocation = spriteLocation;
-        this.spriteDir = spriteDir;
-        this.spritePack = spritePack;
+        generateInfo();
 
     }
 
     public Building(Building building) {
-        this.buildingName = building.getBuildingName();
+        super(building.getName(), building.getSpriteLocation(),
+              building.getSpriteDir(), building.getSpritePack());
 
         this.captureDifficulty = building.getCaptureDifficulty();
         this.remainingCaptureTime = this.captureDifficulty;
@@ -48,9 +45,8 @@ public class Building {
         this.goalBuilding = building.isGoalBuilding();
         this.captureWorth = building.getCaptureWorth();
 
-        this.spriteLocation = building.getSpriteLocation();
-        this.spriteDir = building.getSpriteDir();
-        this.spritePack = building.getSpritePack();
+        this.info = building.info;
+
     }
 
     public Boolean canProduceUnits() {
@@ -66,7 +62,7 @@ public class Building {
     }
 
     public String toString() {
-        return this.buildingName;
+        return getName();
     }
 
     public Player getLastCapturer() {
@@ -75,10 +71,6 @@ public class Building {
 
     public void setLastCapturer(Player player) {
         this.lastCapturer = player;
-    }
-
-    public String getBuildingName() {
-        return this.buildingName;
     }
 
     public Integer getCaptureDifficulty() {
@@ -126,18 +118,6 @@ public class Building {
         this.remainingCaptureTime = this.captureDifficulty;
     }
 
-    public String getSpriteLocation() {
-        return this.spriteLocation;
-    }
-
-    public String getSpriteDir() {
-        return this.spriteDir;
-    }
-
-    public String getSpritePack() {
-        return this.spritePack;
-    }
-
     public Position getPosition() {
         return this.position;
     }
@@ -148,5 +128,30 @@ public class Building {
 
     public Integer getCaptureWorth() {
         return this.captureWorth;
+    }
+
+    public String getInfo() {
+        String r = getName();
+        if (hasOwner()) {
+            r += " ~ " + getOwner().getName();
+        }
+        r += "\n";
+
+        return r + this.info;
+    }
+
+    public void generateInfo() {
+        String r = "";
+        if (canProduceUnits()) {
+            for (Unit u : getProducableUnits()) {
+                r += "I can produce " + u + " - "
+                    + u.getProductionCost() + "g\n";
+            }
+        } else {
+            r += "I can't produce anything.\n";
+        }
+
+        this.info = r;
+
     }
 }

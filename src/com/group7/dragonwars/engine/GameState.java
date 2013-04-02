@@ -18,29 +18,6 @@ public class GameState {
         this.players = players;
     }
 
-
-    private static List<String> readFile(String filename) {
-        List<String> text = new ArrayList<String>();
-
-        try {
-            BufferedReader in = new BufferedReader(new FileReader(filename));
-            String line;
-
-            while ((line = in.readLine()) != null)
-                text.add(line);
-
-            in.close();
-        } catch (FileNotFoundException fnf) {
-            System.err.println("Couldn't find " + fnf.getMessage());
-            System.exit(1);
-        } catch (IOException ioe) {
-            System.err.println("Couldn't read " + ioe.getMessage());
-            System.exit(1);
-        }
-
-        return text;
-    }
-
     public void attack(Unit attacker, Unit defender) {
         Set<Position> attackable = logic.getAttackableUnitPositions(map,
                                    attacker);
@@ -174,7 +151,7 @@ public class GameState {
         Building building = field.getBuilding();
         Unit unit = null;
         for (Unit u : building.getProducableUnits())
-            if (u.getUnitName().equals(unitName)) {
+            if (u.getName().equals(unitName)) {
                 unit = new Unit(u);
                 break;
             }

@@ -7,7 +7,7 @@ import android.util.Log;
 /* Class containing things like damage calculation and path finding. */
 public class Logic {
 
-    public final static String TAG = "Logic";
+    private final static String TAG = "Logic";
 
     public List<Position> findPath(GameMap map, Unit unit, Position destination) {
         return AStar(map, unit, destination);
@@ -209,8 +209,23 @@ public class Logic {
         return map.getField(origin).getMovementModifier();
     }
 
+    public Set<Position> getAttackableUnitPositions(GameMap map, Unit unit, Position position) {
+    	Set<Position> atkFields = getAttackableFields(map, unit, position);
+        Set<Position> atkUnits = new HashSet<Position>();
+
+        for (Position p : atkFields) {
+            if (map.getField(p).hostsUnit()) {
+                Player uOwner = map.getField(p).getUnit().getOwner();
+
+                if (!uOwner.equals(unit.getOwner()))
+                    atkUnits.add(p);
+            }
+        }
+        return atkUnits;
+    }
+    
     public Set<Position> getAttackableUnitPositions(GameMap map, Unit unit) {
-        Set<Position> atkFields = getAttackableFields(map, unit);
+        /*Set<Position> atkFields = getAttackableFields(map, unit);
         Set<Position> atkUnits = new HashSet<Position>();
 
         for (Position p : atkFields) {
@@ -222,16 +237,27 @@ public class Logic {
             }
         }
 
-        return atkUnits;
+        return atkUnits;*/
+    	return getAttackableUnitPositions(map, unit, unit.getPosition());
     }
 
-    private Set<Position> getAttackableFields(GameMap map, Unit unit) {
+    private Set<Position> getAttackableFields(GameMap map, Unit unit, Position position) {
         if (!unit.isRanged())
+            return getPositionsInRange(map, position, 1.0);
+
+        RangedUnit ru = (RangedUnit) unit;
+        return getPositionsInRange(map, position, ru.getMinRange(),
+                                   ru.getMaxRange());
+    }
+    
+    private Set<Position> getAttackableFields(GameMap map, Unit unit) {
+        /*if (!unit.isRanged())
             return getPositionsInRange(map, unit.getPosition(), 1.0);
 
         RangedUnit ru = (RangedUnit) unit;
         return getPositionsInRange(map, ru.getPosition(), ru.getMinRange(),
-                                   ru.getMaxRange());
+                                   ru.getMaxRange());*/
+    	return getAttackableFields(map, unit, unit.getPosition());
     }
 
     private Set<Position> getPositionsInRange(GameMap map, Position origin,
