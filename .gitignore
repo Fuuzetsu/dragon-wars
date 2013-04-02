@@ -6,3 +6,5 @@
 /local.properties
 /proguard-project.txt
 /project.properties
+/tests/build.xml
+/tests/proguard-project.txt
