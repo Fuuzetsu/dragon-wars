@@ -595,20 +595,18 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
             canvas.drawBitmap(highlighter, null, dest, null);
         }
 
-        // attack highlighting
+        /* Always draw attackables */
         if (map.getField(selected).hostsUnit()) {
             Unit u = map.getField(selected).getUnit();
-            if (attack_action) {
-                Set<Position> attack_destinations =
-                    logic.getAttackableUnitPositions(map, u, selected);
-                    //logic.getAttackableFields(map, u);
-                for (Position pos : attack_destinations) {
-                    RectF dest = getSquare(
-                        tilesize * pos.getX() + scrollOffset.getX(),
-                        tilesize * pos.getY() + scrollOffset.getY(),
-                        tilesize);
-                    canvas.drawRect(dest, attack_high_paint);
-                }
+            Set<Position> attack_destinations =
+                logic.getAttackableUnitPositions(map, u, selected);
+            //logic.getAttackableFields(map, u);
+            for (Position pos : attack_destinations) {
+                RectF dest = getSquare(
+                    tilesize * pos.getX() + scrollOffset.getX(),
+                    tilesize * pos.getY() + scrollOffset.getY(),
+                    tilesize);
+                canvas.drawRect(dest, attack_high_paint);
             }
         }
 
