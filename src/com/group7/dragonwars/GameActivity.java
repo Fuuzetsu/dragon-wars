@@ -819,7 +819,10 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 		case 1:
 			attack_location = newselected;
 			attack_action = true;
+        default:
+            return;
 		}
+
 	}
 }
 
