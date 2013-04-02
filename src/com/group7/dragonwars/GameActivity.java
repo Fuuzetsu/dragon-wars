@@ -56,6 +56,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.json.JSONException;
 
@@ -594,24 +595,29 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
             canvas.drawBitmap(highlighter, null, dest, null);
         }
 
+        // attack highlighting
+        if (map.getField(selected).hostsUnit()) {
+            Unit u = map.getField(selected).getUnit();
+            if (attack_action) {
+                Set<Position> attack_destinations =
+                    logic.getAttackableUnitPositions(map, u, selected);
+                    //logic.getAttackableFields(map, u);
+                for (Position pos : attack_destinations) {
+                    RectF dest = getSquare(
+                        tilesize * pos.getX() + scrollOffset.getX(),
+                        tilesize * pos.getY() + scrollOffset.getY(),
+                        tilesize);
+                    canvas.drawRect(dest, attack_high_paint);
+                }
+            }
+        }
+
         RectF dest = getSquare(
             tilesize * selected.getX() + scrollOffset.getX(),
             tilesize * selected.getY() + scrollOffset.getY(),
             tilesize);
         canvas.drawBitmap(selector, null, dest, null);
 
-        // attack highlighting
-        if (attack_action) {
-        	/*LinkedList<Position> attack_destinations = Logic.getAttackLocations();
-              for (Position pos : attack_destinations) {
-              RectF dest = getSquare(
-              tilesize * pos.getX() + scroll_offset.getX(),
-              tilesize * pos.getY() + scroll_offset.getY(),
-              tilesize);
-              canvas.drawRect(dest, attack_high_paint);
-              }
-            */
-        }
 
         if (selectedField.hostsUnit()) {
             drawInfoBox(canvas, selectedField.getUnit(), selectedField, true);
