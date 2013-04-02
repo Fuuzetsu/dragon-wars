@@ -8,3 +8,5 @@
 /project.properties
 /tests/build.xml
 /tests/proguard-project.txt
+/tests/bin/
+/tests/gen/
