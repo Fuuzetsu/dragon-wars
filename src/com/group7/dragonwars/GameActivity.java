@@ -56,6 +56,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.json.JSONException;
 
@@ -602,15 +603,14 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         // attack highlighting
         if (attack_action) {
-        	/*LinkedList<Position> attack_destinations = Logic.getAttackLocations();
-              for (Position pos : attack_destinations) {
-              RectF dest = getSquare(
-              tilesize * pos.getX() + scroll_offset.getX(),
-              tilesize * pos.getY() + scroll_offset.getY(),
-              tilesize);
-              canvas.drawRect(dest, attack_high_paint);
-              }
-            */
+        	/*Set<Position> attack_destinations = logic.getAttackableUnitPositions(map, selectedField.getUnit(), attack_location);
+        	for (Position pos : attack_destinations) {
+				RectF attack_dest = getSquare(
+				tilesize * pos.getX() + scrollOffset.getX(),
+				tilesize * pos.getY() + scrollOffset.getY(),
+				tilesize);
+				canvas.drawRect(attack_dest, attack_high_paint);
+			}*/
         }
 
         if (selectedField.hostsUnit()) {
@@ -729,13 +729,14 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         if (this.map.isValidField(touchX, touchY)) {
             if (map.getField(selected).hostsUnit()) {
-        		Log.v(null, "A unit is selected!");
-        		// If the user currently has a unit selected and selects a field that this unit could move to
-        		// (and the unit has not finished it's turn)
+        		//Log.v(null, "A unit is selected!");
+        		/* If the user currently has a unit selected and selects a field that this unit could move to
+        		 * (and the unit has not finished it's turn)
+        		 */
                 GameField selected_field = map.getField(selected);
                 if (!selected_field.getUnit().hasFinishedTurn()) {
-	                List<Position> unit_destinations = logic.destinations(map, selected_field.getUnit());
-	                Log.v(null, "after destinations");
+	                List<Position> unit_destinations = getUnitDestinations(selected_field);
+	                //Log.v(null, "after destinations");
 	                boolean contains = false;
 	                for (Position pos : unit_destinations) {
 	                	if (pos.equals(newselected)) {
@@ -744,7 +745,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 	                	}
 	                }
 	                if (contains) {
-	                	Log.v(null, "unit_destinations contains newselected");
+	                	//Log.v(null, "unit_destinations contains newselected");
 	                	/* pop up a menu with options:
 	                	 * - Wait (go here and do nothing else
 	                	 * - Attack (if there are units to attack)
