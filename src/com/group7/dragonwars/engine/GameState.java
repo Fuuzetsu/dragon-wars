@@ -4,6 +4,8 @@ import java.util.*;
 import java.io.*;
 import java.lang.Math;
 
+import android.util.Log;
+
 public class GameState {
 
     GameMap map;
@@ -41,7 +43,7 @@ public class GameState {
 
     }
 
-    private Boolean move(Unit unit, Position destination) {
+    public Boolean move(Unit unit, Position destination) {
         /* We are assuming that the destination was already
          * checked to be within this unit's reach
          */
@@ -58,7 +60,7 @@ public class GameState {
 
 
         /* Double check */
-        if (unit.getRemainingMovement() > movementCost)
+        if (unit.getRemainingMovement() < movementCost)
             return false;
 
 
@@ -66,8 +68,8 @@ public class GameState {
         destField.setUnit(unit);
         unit.reduceMovement(movementCost);
 
-
         currentField.setUnit(null);
+        unit.setPosition(destination);
 
         return true;
 

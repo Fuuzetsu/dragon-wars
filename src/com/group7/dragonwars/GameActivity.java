@@ -807,10 +807,10 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 		switch (which) {
 		case 0:
 			Unit unit = map.getField(selected).getUnit();
-			unit.setPosition(newselected);
-			map.getField(selected).setUnit(null);
-			map.getField(newselected).setUnit(unit);
-			//dry
+            Boolean moved = state.move(unit, newselected);
+            if (moved) {
+                lastUnit = null;
+            }
 			break;
 		case 1:
 			attack_location = newselected;
