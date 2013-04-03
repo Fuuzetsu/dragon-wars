@@ -777,8 +777,11 @@ DialogInterface.OnClickListener {
                     //TODO: here is where we see if something is a building, for unit creation
                     if (map.getField(newselected).hostsBuilding()) {
                         Building building = map.getField(newselected).getBuilding();
-                        /* TODO: show another AlertDialog with the options for buildable units
-                         */
+                        if (building.canProduceUnits()) {
+                        	List<Unit> units = building.getProducableUnits();
+                            /* TODO: show another AlertDialog with the options for buildable units
+                             */
+                        }
                     }
                     this.selected = newselected;
                 }
