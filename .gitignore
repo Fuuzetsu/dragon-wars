@@ -10,3 +10,4 @@
 /tests/proguard-project.txt
 /tests/bin/
 /tests/gen/
+TEST-*
