@@ -20,6 +20,7 @@ public class AllTests {
         System.out.println("JUnit version is: " + Version.id());
 		TestSuite suite = new TestSuite(PositionTests.class);
 		suite.addTestSuite(PlayerTests.class);
+        suite.addTestSuite(UnitTests.class);
 		return suite;
 	}
 
