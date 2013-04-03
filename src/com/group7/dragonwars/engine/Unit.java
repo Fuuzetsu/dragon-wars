@@ -116,6 +116,10 @@ public class Unit extends DrawableMapObject {
         return this.hasFinishedTurn;
     }
 
+    public void setFinishedTurn(Boolean b) {
+        this.hasFinishedTurn = b;
+    }
+
     public String toString() {
         return getName();
     }
