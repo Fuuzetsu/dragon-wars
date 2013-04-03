@@ -21,6 +21,7 @@ public class AllTests {
 		TestSuite suite = new TestSuite(PositionTests.class);
 		suite.addTestSuite(PlayerTests.class);
         suite.addTestSuite(UnitTests.class);
+        suite.addTestSuite(GameFieldTests.class);
 		return suite;
 	}
 
