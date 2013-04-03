@@ -174,7 +174,7 @@ DialogInterface.OnClickListener {
 
         loadBorders();
 
-        /* Load selector and highlighter */
+        /* Load selector and highlighters */
         selector = getResource("selector", "drawable",
                 "com.group7.dragonwars");
         highlighter = getResource("highlight", "drawable",
@@ -595,11 +595,11 @@ DialogInterface.OnClickListener {
             canvas.drawBitmap(highlighter, null, dest, null);
         }
 
-        /* Always draw attackables */
-        if (map.getField(selected).hostsUnit()) {
+        /* Sometimes draw attackables */
+        if (attack_action && map.getField(selected).hostsUnit()) {
             Unit u = map.getField(selected).getUnit();
             Set<Position> attack_destinations =
-                logic.getAttackableUnitPositions(map, u, selected);
+                logic.getAttackableUnitPositions(map, u, attack_location);
             //logic.getAttackableFields(map, u);
             for (Position pos : attack_destinations) {
                 RectF attack_dest = getSquare(
@@ -749,6 +749,7 @@ DialogInterface.OnClickListener {
                                 break;
                             }
                         }
+                        
                         if (contains) {
                             //Log.v(null, "unit_destinations contains newselected");
                             /* pop up a menu with options:
@@ -787,24 +788,31 @@ DialogInterface.OnClickListener {
                  * attack otherwise cancel the attack action
                  */
                 GameField field = map.getField(selected);
-                Unit attacker = field.getUnit();
-                Set<Position> attack_positions = logic.getAttackableUnitPositions(map, attacker, attack_location);
-                
-                // FIXME: copied this from above to ensure it works, perhaps .contains(newselected) would work here?
-                boolean contains = false;
-                for (Position pos : attack_positions) {
-                    if (pos.equals(newselected)) {
-                        contains = true;
-                        break;
-                    }
-                }
-                if (contains) {
-                	field.setUnit(null);
-                	attacker.setPosition(attack_location);// move attacker to attack
-                	map.getField(attack_location).setUnit(attacker);
-                    Log.v(null, "attack(!)");
-                    //TODO: actually attack
-                    
+                if (field.hostsUnit()) {
+	                Unit attacker = field.getUnit();
+	                Set<Position> attack_positions = logic.getAttackableUnitPositions(map, attacker, attack_location);
+	                
+	                // FIXME: copied this from above to ensure it works, perhaps .contains(newselected) would work here?
+	                boolean contains = false;
+	                for (Position pos : attack_positions) {
+	                    if (pos.equals(newselected)) {
+	                        contains = true;
+	                        break;
+	                    }
+	                }
+	                if (contains && map.getField(newselected).hostsUnit()) {
+	                	Unit defender = map.getField(newselected).getUnit();
+	                	field.setUnit(null);
+	                	attacker.setPosition(attack_location);// move attacker to attack
+	                	map.getField(attack_location).setUnit(attacker);
+	                	
+	                    Log.v(null, "attack(!)");
+	                    state.attack(attacker, defender);
+	                    selected = newselected;
+	                } else {
+	                    attack_action = false; // cancel the action
+	                    selected = newselected;
+	                }
                 } else {
                     attack_action = false; // cancel the action
                     selected = newselected;
@@ -848,20 +856,22 @@ DialogInterface.OnClickListener {
     public void onClick(final DialogInterface dialog, final int which) {
         Log.v(null, "selected option: " + which);
         switch (which) {
-        case 0:
+        case 0: // move
             Unit unit = map.getField(selected).getUnit();
             unit.setPosition(newselected);
             map.getField(selected).setUnit(null);
             map.getField(newselected).setUnit(unit);
             //TODO: end turn for unit
             break;
-        case 1:
+        case 1: // attack
             attack_location = newselected;
             attack_action = true;
             /* the user will then select one of the attackable spaces
              * (handled in onSingleTapConfirmed) to perform the attack
              * onDraw will highlight attackable locations in red
              */
+        case 2: // capture building
+        	// TODO: capture code
         }
     }
 }

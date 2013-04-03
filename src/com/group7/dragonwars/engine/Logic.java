@@ -241,7 +241,7 @@ public class Logic {
     	return getAttackableUnitPositions(map, unit, unit.getPosition());
     }
 
-    private Set<Position> getAttackableFields(GameMap map, Unit unit, Position position) {
+    public Set<Position> getAttackableFields(GameMap map, Unit unit, Position position) {
         if (!unit.isRanged())
             return getPositionsInRange(map, position, 1.0);
 
@@ -250,7 +250,7 @@ public class Logic {
                                    ru.getMaxRange());
     }
     
-    private Set<Position> getAttackableFields(GameMap map, Unit unit) {
+    public Set<Position> getAttackableFields(GameMap map, Unit unit) {
         /*if (!unit.isRanged())
             return getPositionsInRange(map, unit.getPosition(), 1.0);
 
