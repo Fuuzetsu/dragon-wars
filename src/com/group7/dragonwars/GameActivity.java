@@ -595,26 +595,26 @@ DialogInterface.OnClickListener {
             canvas.drawBitmap(highlighter, null, dest, null);
         }
 
+        /* Always draw attackables */
+        if (map.getField(selected).hostsUnit()) {
+            Unit u = map.getField(selected).getUnit();
+            Set<Position> attack_destinations =
+                logic.getAttackableUnitPositions(map, u, selected);
+            //logic.getAttackableFields(map, u);
+            for (Position pos : attack_destinations) {
+                RectF attack_dest = getSquare(
+                    tilesize * pos.getX() + scrollOffset.getX(),
+                    tilesize * pos.getY() + scrollOffset.getY(),
+                    tilesize);
+                canvas.drawBitmap(attack_highlighter, null, attack_dest, null);
+            }
+        }
+        
         RectF select_dest = getSquare(
                 tilesize * selected.getX() + scrollOffset.getX(),
                 tilesize * selected.getY() + scrollOffset.getY(),
                 tilesize);
         canvas.drawBitmap(selector, null, select_dest, null);
-
-        /* Attack highlighting
-         * drawn if the user is selecting a unit to attack
-         * 
-         */
-        if (attack_action) {
-            Set<Position> attack_destinations = logic.getAttackableUnitPositions(map, selectedField.getUnit(), attack_location);
-            for (Position pos : attack_destinations) {
-                RectF attack_dest = getSquare(
-                        tilesize * pos.getX() + scrollOffset.getX(),
-                        tilesize * pos.getY() + scrollOffset.getY(),
-                        tilesize);
-                canvas.drawBitmap(attack_highlighter, null, attack_dest, null);
-            }
-        }
 
         if (selectedField.hostsUnit()) {
             drawInfoBox(canvas, selectedField.getUnit(), selectedField, true);
@@ -858,6 +858,10 @@ DialogInterface.OnClickListener {
         case 1:
             attack_location = newselected;
             attack_action = true;
+            /* the user will then select one of the attackable spaces
+             * (handled in onSingleTapConfirmed) to perform the attack
+             * onDraw will highlight attackable locations in red
+             */
         }
     }
 }
