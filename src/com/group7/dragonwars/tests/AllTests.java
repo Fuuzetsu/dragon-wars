@@ -22,6 +22,7 @@ public class AllTests {
 		suite.addTestSuite(PlayerTests.class);
         suite.addTestSuite(UnitTests.class);
         suite.addTestSuite(GameFieldTests.class);
+        //suite.addTestSuite(GameMapTests.class);
 		return suite;
 	}
 
