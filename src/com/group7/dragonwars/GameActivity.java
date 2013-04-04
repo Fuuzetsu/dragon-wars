@@ -900,7 +900,7 @@ DialogInterface.OnClickListener {
         	Unit unit = map.getField(selected).getBuilding().getProducableUnits().get(which);
         	// FIXME: the above line is evil
         	Log.v(null, "building a " + unit.getName());
-        	state.produceUnit(map.getField(selected), unit.getName());
+        	state.produceUnit(map.getField(selected), unit.getName(), state.getCurrentPlayer());
         	// FIXME: well, fix GameState.produceUnit()
         	build_menu = false; // build menu gone now
         }

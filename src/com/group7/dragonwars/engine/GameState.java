@@ -141,6 +141,11 @@ public class GameState {
     public List<Player> getPlayers() {
         return this.players;
     }
+    
+    public Player getCurrentPlayer() {
+    	return players.get(turns % players.size());
+    	// :S
+    }
 
     /* I'll just roll with GF and String for now; should be easy to change */
     public Boolean produceUnit(GameField field, String unitName) {
