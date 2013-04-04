@@ -96,7 +96,7 @@ DialogInterface.OnClickListener {
     private Position selected; // Currently selected position
 
     private Position attack_location;
-    private Position newselected;
+    private Position action_location;
 
     private FloatPair scrollOffset; // offset caused by scrolling, in pixels
     private GestureDetector gestureDetector;
@@ -110,6 +110,7 @@ DialogInterface.OnClickListener {
     private Paint attack_high_paint; // used to highlight possible attacks
 
     private Bitmap fullMap;
+    
     private boolean unit_selected; // true if there is a unit at selection
 
     private boolean attack_action;
@@ -120,6 +121,13 @@ DialogInterface.OnClickListener {
      * selects another field
      **attack_location is the location of the attack
      *
+     */
+    
+    private boolean build_menu;
+    /* true if the build menu is being shown
+     * for the building at selected
+     * made false if the user presses elsewhere
+     * (or actually builds something)
      */
 
     private Context context;
@@ -184,6 +192,7 @@ DialogInterface.OnClickListener {
         holder.addCallback(this);
 
         selected = new Position(0, 0);
+        action_location = new Position(0, 0);
 
         gestureDetector = new GestureDetector(this.getContext(), this);
         scrollOffset = new FloatPair(0f, 0f);
@@ -196,6 +205,7 @@ DialogInterface.OnClickListener {
         attack_high_paint.setStyle(Paint.Style.FILL);
         attack_high_paint.setARGB(150, 255, 0, 0); // semi-transparent red
 
+        build_menu = false;
         attack_action = false;
 
         /* Prerender combined map */
@@ -727,10 +737,11 @@ DialogInterface.OnClickListener {
         int touchX = (int) ((event.getX() - scrollOffset.getX()) / tilesize);
         int touchY = (int) ((event.getY() - scrollOffset.getY()) / tilesize);
 
-        newselected = new Position(touchX, touchY);
+        Position newselected = new Position(touchX, touchY);
 
         if (this.map.isValidField(touchX, touchY)) {
-            if (!attack_action) {
+        	build_menu = false; // the user selected another square instead of selecting something to build
+        	if (!attack_action) {
                 if (map.getField(selected).hostsUnit()) {
                     //Log.v(null, "A unit is selected!");
                     /* If the user currently has a unit selected and selects a field that this unit could move to
@@ -750,7 +761,7 @@ DialogInterface.OnClickListener {
                             }
                         }
                         
-                        if (contains) {
+                        if (contains) { // unit at selected can move to newselected
                             //Log.v(null, "unit_destinations contains newselected");
                             /* pop up a menu with options:
                              * - Wait (go here and do nothing else
@@ -764,13 +775,11 @@ DialogInterface.OnClickListener {
                             String[] actions = {"Wait here", "Attack"};
                             actions_builder.setItems(actions, this);
                             actions_builder.create().show();
+                            action_location = newselected;
 
                             // onClick handles the result
-                        } else { // newselected is not a location reachable by the unit at selected
-                            this.selected = newselected;
+                            newselected = selected; // do not move the selection
                         }
-                    } else { // the selected unit has finished it's turn
-                        this.selected = newselected;
                     }
                 } else { // selected does not host a unit
                     //Log.v(null, "Setting selection");
@@ -781,9 +790,15 @@ DialogInterface.OnClickListener {
                         	List<Unit> units = building.getProducableUnits();
                             /* TODO: show another AlertDialog with the options for buildable units
                              */
+
+                            AlertDialog.Builder buildmenu_builder = new AlertDialog.Builder(this.getContext());
+                            buildmenu_builder.setTitle("Build");
+                            build_menu = true; // true if the build menu for selected is being shown
+                            //String[] actions = {"Wait here", "Attack"};
+                            buildmenu_builder.setItems(actions, this);
+                            buildmenu_builder.create().show();
                         }
                     }
-                    this.selected = newselected;
                 }
             } else { // attack_action
                 /* TODO: if this position contains a a unit that is attackable 
@@ -811,18 +826,15 @@ DialogInterface.OnClickListener {
 	                	
 	                    Log.v(null, "attack(!)");
 	                    state.attack(attacker, defender);
-	                    selected = newselected;
 	                } else {
-	                    attack_action = false; // cancel the action
-	                    selected = newselected;
+	                    attack_action = false; // cancel the action if there is no target unit
 	                }
                 } else {
-                    attack_action = false; // cancel the action
-                    selected = newselected;
+                    attack_action = false; // cancel the action if there is no unit to perform it
                 }
             }
         }
-
+        selected = newselected;
         return true;
     }
 
@@ -858,23 +870,29 @@ DialogInterface.OnClickListener {
     @Override
     public void onClick(final DialogInterface dialog, final int which) {
         Log.v(null, "selected option: " + which);
-        switch (which) {
-        case 0: // move
-            Unit unit = map.getField(selected).getUnit();
-            unit.setPosition(newselected);
-            map.getField(selected).setUnit(null);
-            map.getField(newselected).setUnit(unit);
-            //TODO: end turn for unit
-            break;
-        case 1: // attack
-            attack_location = newselected;
-            attack_action = true;
-            /* the user will then select one of the attackable spaces
-             * (handled in onSingleTapConfirmed) to perform the attack
-             * onDraw will highlight attackable locations in red
-             */
-        case 2: // capture building
-        	// TODO: capture code
+        if (!build_menu) {
+	        switch (which) {
+	        case 0: // move
+	            Unit unit = map.getField(selected).getUnit();
+	            unit.setPosition(action_location);
+	            map.getField(selected).setUnit(null);
+	            map.getField(action_location).setUnit(unit);
+	            //TODO: end turn for unit
+	            break;
+	        case 1: // attack
+	            attack_location = action_location;
+	            attack_action = true;
+	            /* the user will then select one of the attackable spaces
+	             * (handled in onSingleTapConfirmed) to perform the attack
+	             * onDraw will highlight attackable locations in red
+	             */
+	            break;
+	        case 2: // capture building
+	        	// TODO: capture code
+	        }
+        } else { // build_menu == true
+        	Log.v(null, "building a " + map.getField(selected).getBuilding().getProducableUnits().get(0).getName());
+        	// FIXME: the above line is pure evil
         }
     }
 }
