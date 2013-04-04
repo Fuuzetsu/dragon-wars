@@ -11,6 +11,8 @@ public class GameState {
     GameMap map;
     Logic logic;
     List<Player> players = new ArrayList<Player>();
+    List<Player> playersPlaying;
+    Player currentPlayer;
     Integer turns = 0;
 
     public GameState(GameMap map, Logic logic, List<Player> players) {
@@ -18,7 +20,10 @@ public class GameState {
         this.logic = logic;
 
         this.players = players;
+        this.playersPlaying = this.players;
     }
+
+
 
     public void attack(Unit attacker, Unit defender) {
         Set<Position> attackable = logic.getAttackableUnitPositions(map,
@@ -117,6 +122,16 @@ public class GameState {
                     b.resetCaptureTime();
             }
         }
+    }
+
+    public void nextPlayer() {
+        if (playersPlaying.size() == 0) {
+            advanceTurn();
+            playersPlaying = players;
+        } else {
+            playersPlaying.remove(0);
+        }
+
     }
 
     public void advanceTurn() {
