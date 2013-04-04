@@ -610,11 +610,27 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
             }
         }
 
-        RectF select_dest = getSquare(
+        /* Always draw attackables */
+        if (map.getField(selected).hostsUnit()) {
+            Unit u = map.getField(selected).getUnit();
+            Set<Position> attack_destinations =
+                logic.getAttackableUnitPositions(map, u, selected);
+            //logic.getAttackableFields(map, u);
+            for (Position pos : attack_destinations) {
+                RectF dest = getSquare(
+                    tilesize * pos.getX() + scrollOffset.getX(),
+                    tilesize * pos.getY() + scrollOffset.getY(),
+                    tilesize);
+                canvas.drawRect(dest, attack_high_paint);
+            }
+        }
+
+        RectF dest = getSquare(
             tilesize * selected.getX() + scrollOffset.getX(),
             tilesize * selected.getY() + scrollOffset.getY(),
             tilesize);
-        canvas.drawBitmap(selector, null, select_dest, null);
+        canvas.drawBitmap(selector, null, dest, null);
+
 
         if (selectedField.hostsUnit()) {
             drawInfoBox(canvas, selectedField.getUnit(), selectedField, true);
@@ -855,28 +871,25 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         return true;
     }
 
-    @Override
-    public void onClick(final DialogInterface dialog, final int which) {
-        Log.v(null, "selected option: " + which);
-        switch (which) {
-        case 0: // move
-            Unit unit = map.getField(selected).getUnit();
-            unit.setPosition(newselected);
-            map.getField(selected).setUnit(null);
-            map.getField(newselected).setUnit(unit);
-            //TODO: end turn for unit
-            break;
-        case 1: // attack
-            attack_location = newselected;
-            attack_action = true;
-            /* the user will then select one of the attackable spaces
-             * (handled in onSingleTapConfirmed) to perform the attack
-             * onDraw will highlight attackable locations in red
-             */
-        case 2: // capture building
-        	// TODO: capture code
-        }
-    }
+	@Override
+	public void onClick(final DialogInterface dialog, final int which) {
+		Log.v(null, "selected option: " + which);
+		switch (which) {
+		case 0:
+			Unit unit = map.getField(selected).getUnit();
+            Boolean moved = state.move(unit, newselected);
+            if (moved) {
+                lastUnit = null;
+            }
+			break;
+		case 1:
+			attack_location = newselected;
+			attack_action = true;
+        default:
+            return;
+		}
+
+	}
 }
 
 class DrawingThread extends Thread {

@@ -87,6 +87,20 @@
          in order to avoid having your file be overridden by tools such as "android update project"
     -->
     <!-- version-tag: 1 -->
-    <import file="${sdk.dir}/tools/ant/build.xml" />
+   <property name="java.compilerargs" value="-Xlint:unchecked" />
+   <import file="${sdk.dir}/tools/ant/build.xml" />
 
+
+
+   <target name="test" >
+       <junit>
+           <classpath>
+               <pathelement path="bin/classes" />
+               <pathelement location="libs/junit-4.11.jar" />
+           </classpath>
+           <formatter type="plain" usefile="false" /> <!-- to screen -->
+           <formatter type="plain" /> <!-- to file -->
+           <test name= "com.group7.dragonwars.tests.AllTests" todir="."/>
+       </junit>
+   </target>
 </project>
