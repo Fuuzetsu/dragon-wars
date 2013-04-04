@@ -101,6 +101,10 @@ public class Unit extends DrawableMapObject {
 
     public void reduceHealth(Double damage) {
         this.health -= damage;
+
+        if (this.health < 0) {
+            this.health = 0.0;
+        }
     }
 
     public void setPosition(Position position) {
@@ -108,12 +112,16 @@ public class Unit extends DrawableMapObject {
     }
 
     public void restoreHealth(Double heal) {
-        Double newHealth = this.health = heal;
+        Double newHealth = this.health + heal;
         this.health = (newHealth <= maxHealth) ? newHealth : maxHealth;
     }
 
     public Boolean hasFinishedTurn() {
         return this.hasFinishedTurn;
+    }
+
+    public void setFinishedTurn(Boolean b) {
+        this.hasFinishedTurn = b;
     }
 
     public String toString() {
