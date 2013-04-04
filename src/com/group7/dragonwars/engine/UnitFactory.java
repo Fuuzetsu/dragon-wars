@@ -5,20 +5,20 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class UnitFactory {
-	boolean isRanged;
-	String name;
-	Double maxHealth;
-	Integer maxMovement;
-	Double attack;
-	Double meleeDefense;
-	Double rangeDefense;
-	Double minRange;
-	Double maxRange;
-	Boolean isFlying;
-	Integer productionCost;
-	String spriteLocation;
-	String spriteDir;
-	String spritePack;
+	private boolean isRanged;
+	private String name;
+	private Double maxHealth;
+	private Integer maxMovement;
+	private Double attack;
+	private Double meleeDefense;
+	private Double rangeDefense;
+	private Double minRange;
+	private Double maxRange;
+	private Boolean isFlying;
+	private Integer productionCost;
+	private String spriteLocation;
+	private String spriteDir;
+	private String spritePack;
 	
 	static HashMap<String, UnitFactory> unit_factories;
 
