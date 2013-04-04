@@ -44,6 +44,7 @@ import com.group7.dragonwars.engine.MapReader;
 import com.group7.dragonwars.engine.Position;
 import com.group7.dragonwars.engine.Pair;
 import com.group7.dragonwars.engine.Unit;
+import com.group7.dragonwars.engine.UnitFactory;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -784,33 +785,26 @@ DialogInterface.OnClickListener {
                         }
                     }
                 } else { // selected does not host a unit
-                    //Log.v(null, "Setting selection");
-                    //TODO: here is where we see if something is a building, for unit creation
                     if (map.getField(newselected).hostsBuilding()) {
                         Building building = map.getField(newselected).getBuilding();
-                        if (building.canProduceUnits()) {
-                        	List<Unit> units = building.getProducableUnits();
-                            /* TODO: show another AlertDialog with the options for buildable units
-                             */
-
+                        if (building.getOwner().equals(state.getCurrentPlayer()) && building.canProduceUnits()) {
                             AlertDialog.Builder buildmenu_builder = new AlertDialog.Builder(this.getContext());
                             buildmenu_builder.setTitle("Build");
+
+                        	List<String> units = building.getProduceableUnits();
                             String[] buildable_names = new String[units.size()];
                             for (int i = 0; i < units.size(); ++i) {
-                            	buildable_names[i] = units.get(i).getName();
+                            	buildable_names[i] = units.get(i);
                             }
                             //String[] actions = {"Wait here", "Attack"};
                             buildmenu_builder.setItems(buildable_names, this);
                             buildmenu_builder.create().show();
+                            
                             build_menu = true; // true if the build menu for selected is being shown
-                        }
+                        } // build menu isn't shown if it isn't the user's turn
                     }
                 }
             } else { // attack_action
-                /* TODO: if this position contains a a unit that is attackable 
-                 * by the unit in selected (if it was actually at attack location)
-                 * attack otherwise cancel the attack action
-                 */
                 GameField field = map.getField(selected);
                 if (field.hostsUnit()) {
 	                Unit attacker = field.getUnit();
@@ -897,13 +891,27 @@ DialogInterface.OnClickListener {
 	        	// TODO: capture code
 	        }
         } else { // build_menu == true
-        	Unit unit = map.getField(selected).getBuilding().getProducableUnits().get(which);
-        	// FIXME: the above line is evil
-        	Log.v(null, "building a " + unit.getName());
-        	state.produceUnit(map.getField(selected), unit.getName(), state.getCurrentPlayer());
-        	// FIXME: well, fix GameState.produceUnit()
-        	build_menu = false; // build menu gone now
+        	GameField field = map.getField(selected);
+        	
+        	if (field.hostsBuilding() &&
+        	(field.getBuilding().getProduceableUnits().size() > which) &&
+        	state.getCurrentPlayer().equals(field.getBuilding().getOwner())) {
+	        	String unit_name = map.getField(selected).getBuilding().getProduceableUnits().get(which);
+	        	Log.v(null, "building a " + unit_name);
+	        	boolean result = state.produceUnit(map.getField(selected), unit_name);
+	        	if (!result) {
+	        		alertMessage("Could not build unit " + unit_name + "(cost: " + UnitFactory.getUnitFactories().get(unit_name).getProductionCost() + ")");
+	        	}
+        	} else {
+        		// how did the user manage that?
+        		alertMessage("It's not the building's owner's turn, or there is no building");
+        	}
+        	build_menu = false; // build menu gone
         }
+    }
+    
+    private void alertMessage(String text) {
+    	new AlertDialog.Builder(context).setMessage(text).setPositiveButton("I read that", null).show();
     }
 }
 
