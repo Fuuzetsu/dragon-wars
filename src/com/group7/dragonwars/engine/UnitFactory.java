@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-public class UnitProducer {
+public class UnitFactory {
 	boolean isRanged;
 	String name;
 	Double maxHealth;
@@ -20,9 +20,9 @@ public class UnitProducer {
 	String spriteDir;
 	String spritePack;
 	
-	static HashMap<String, UnitProducer> unit_producers;
+	static HashMap<String, UnitFactory> unit_factories;
 
-	public UnitProducer(boolean isRanged, String name, Double maxHealth,
+	public UnitFactory(boolean isRanged, String name, Double maxHealth,
 			Integer maxMovement, Double attack, Double meleeDefense,
 			Double rangeDefense, Double minRange, Double maxRange,
 			Boolean isFlying, Integer productionCost, String spriteLocation) {
@@ -74,12 +74,12 @@ public class UnitProducer {
 	}
 	
 	static {
-		 unit_producers = new HashMap<String, UnitProducer>();
-		 unit_producers.put("Soldier", new UnitProducer(false, "Soldier", 10.0, 5, 2.0, 1.0, 2.0, 0.0, 0.0, false, 5, "soldier"));
-		 unit_producers.put("Dragon", new UnitProducer(false, "Dragon", 30.0, 7, 3.0, 2.0, 2.0, 0.0, 0.0, true, 7, "small_dragon"));
+		 unit_factories = new HashMap<String, UnitFactory>();
+		 unit_factories.put("Soldier", new UnitFactory(false, "Soldier", 10.0, 5, 2.0, 1.0, 2.0, 0.0, 0.0, false, 5, "soldier"));
+		 unit_factories.put("Dragon", new UnitFactory(false, "Dragon", 30.0, 7, 3.0, 2.0, 2.0, 0.0, 0.0, true, 7, "small_dragon"));
 	}
 	
-	public static HashMap<String, UnitProducer> getUnitProducers() {
-		return unit_producers;
+	public static HashMap<String, UnitFactory> getUnitFactories() {
+		return unit_factories;
 	}
 }
