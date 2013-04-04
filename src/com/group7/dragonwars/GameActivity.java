@@ -52,6 +52,7 @@ import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -748,7 +749,8 @@ DialogInterface.OnClickListener {
                      * (and the unit has not finished it's turn)
                      */
                     GameField selected_field = map.getField(selected);
-                    if (!selected_field.getUnit().hasFinishedTurn()) {
+                    Unit unit = selected_field.getUnit();
+                    if (!unit.hasFinishedTurn()) {
                         List<Position> unit_destinations = getUnitDestinations(selected_field);
                         //Log.v(null, "after destinations");
                         
@@ -793,10 +795,14 @@ DialogInterface.OnClickListener {
 
                             AlertDialog.Builder buildmenu_builder = new AlertDialog.Builder(this.getContext());
                             buildmenu_builder.setTitle("Build");
-                            build_menu = true; // true if the build menu for selected is being shown
+                            String[] buildable_names = new String[units.size()];
+                            for (int i = 0; i < units.size(); ++i) {
+                            	buildable_names[i] = units.get(i).getName();
+                            }
                             //String[] actions = {"Wait here", "Attack"};
-                            buildmenu_builder.setItems(actions, this);
+                            buildmenu_builder.setItems(buildable_names, this);
                             buildmenu_builder.create().show();
+                            build_menu = true; // true if the build menu for selected is being shown
                         }
                     }
                 }
@@ -891,8 +897,12 @@ DialogInterface.OnClickListener {
 	        	// TODO: capture code
 	        }
         } else { // build_menu == true
-        	Log.v(null, "building a " + map.getField(selected).getBuilding().getProducableUnits().get(0).getName());
-        	// FIXME: the above line is pure evil
+        	Unit unit = map.getField(selected).getBuilding().getProducableUnits().get(which);
+        	// FIXME: the above line is evil
+        	Log.v(null, "building a " + unit.getName());
+        	state.produceUnit(map.getField(selected), unit.getName());
+        	// FIXME: well, fix GameState.produceUnit()
+        	build_menu = false; // build menu gone now
         }
     }
 }
