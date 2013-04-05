@@ -41,7 +41,7 @@ public class GameState {
         Pair<Double, Double> damage = logic.calculateDamage(map, attacker,
                                       defender);
         Log.v(null, "Dmg to atckr: " + damage.getRight() + " Dmg to dfndr: " + damage.getLeft());
-        
+
         defender.reduceHealth(damage.getLeft());
 
         Boolean died = removeUnitIfDead(defender);
@@ -141,7 +141,7 @@ public class GameState {
 
     }
 
-    public void advanceTurn() {
+    private void advanceTurn() {
         updateBuildingCaptureCounters();
 
         for (Player p : players) {
