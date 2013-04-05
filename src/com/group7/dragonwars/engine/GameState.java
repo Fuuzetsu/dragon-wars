@@ -150,6 +150,10 @@ public class GameState {
             for (Building b : p.getOwnedBuildings())
                 goldWorth += b.getCaptureWorth();
             p.setGoldAmount(goldWorth + p.getGoldAmount());
+
+            for (Unit u : p.getOwnedUnits()) {
+                u.resetTurnStatistics();
+            }
         }
         ++this.turns;
     }

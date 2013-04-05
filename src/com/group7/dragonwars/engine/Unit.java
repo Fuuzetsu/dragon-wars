@@ -145,6 +145,11 @@ public class Unit extends DrawableMapObject {
         return true;
     }
 
+    public void resetTurnStatistics() {
+        movement = maxMovement;
+        setFinishedTurn(false);
+    }
+
     public Integer getProductionCost() {
         return this.productionCost;
     }
