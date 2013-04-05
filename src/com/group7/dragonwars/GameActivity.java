@@ -845,8 +845,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                     attack_action = false; // no unit to perform action
                 }
             }
+            selected = newselected;
         }
-        selected = newselected;
         return true;
     }
 
