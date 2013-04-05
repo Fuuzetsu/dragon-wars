@@ -14,7 +14,7 @@ public class GameField extends DrawableMapObject {
         if (this.flightOnly)
             canStep = unit.isFlying();
 
-        return this.accessible && canStep;
+        return this.accessible || canStep;
     }
 
     public GameField(String fieldName, Double movementModifier, Double attackModifier,
