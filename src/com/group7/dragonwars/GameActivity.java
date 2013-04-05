@@ -857,8 +857,9 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                         attacker.setPosition(attack_location);
                         map.getField(attack_location).setUnit(attacker);
 
-                        Log.v(null, "attack(!)");
+                        Log.v(null, "attack(!): " + attacker + " attacks " + defender);
                         state.attack(attacker, defender);
+                        
                     } else {
                         attack_action = false; // no target unit
                     }
