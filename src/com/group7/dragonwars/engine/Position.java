@@ -16,14 +16,17 @@ public class Position {
         return this.pair.getRight();
     }
 
-    public Boolean equals(Position other) {
-        return this.getX() == other.getX() && this.getY() == other.getY();
+    public boolean equals(Position other) {
+        if (other == null) {
+            return false;
+        }
 
+        return getX() == other.getX() && getY() == other.getY();
     }
 
     public String toString() {
         return String.format("(%d, %d)", this.pair.getLeft(),
-                             this.pair.getRight());
+                              this.pair.getRight());
     }
 
 }

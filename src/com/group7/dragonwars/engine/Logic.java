@@ -214,16 +214,19 @@ public class Logic {
         Set<Position> atkUnits = new HashSet<Position>();
 
         for (Position p : atkFields) {
-            if (map.getField(p).hostsUnit()) {
-                Player uOwner = map.getField(p).getUnit().getOwner();
+            if (map.isValidField(p)) {
+                if (map.getField(p).hostsUnit()) {
+                    Player uOwner = map.getField(p).getUnit().getOwner();
 
-                if (!uOwner.equals(unit.getOwner()))
-                    atkUnits.add(p);
+                    if (!uOwner.equals(unit.getOwner())) {
+                        atkUnits.add(p);
+                    }
+                }
             }
         }
         return atkUnits;
     }
-    
+
     public Set<Position> getAttackableUnitPositions(GameMap map, Unit unit) {
         /*Set<Position> atkFields = getAttackableFields(map, unit);
         Set<Position> atkUnits = new HashSet<Position>();
@@ -241,15 +244,16 @@ public class Logic {
     	return getAttackableUnitPositions(map, unit, unit.getPosition());
     }
 
-    public Set<Position> getAttackableFields(GameMap map, Unit unit, Position position) {
-        if (!unit.isRanged())
-            return getPositionsInRange(map, position, 1.0);
+    private Set<Position> getAttackableFields(GameMap map, Unit unit, Position position) {
+        if (!unit.isRanged()) {
+            return new HashSet<Position>(getAdjacentPositions(position));
+        }
 
         RangedUnit ru = (RangedUnit) unit;
         return getPositionsInRange(map, position, ru.getMinRange(),
                                    ru.getMaxRange());
     }
-    
+
     public Set<Position> getAttackableFields(GameMap map, Unit unit) {
         /*if (!unit.isRanged())
             return getPositionsInRange(map, unit.getPosition(), 1.0);

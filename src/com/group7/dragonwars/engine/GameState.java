@@ -4,11 +4,15 @@ import java.util.*;
 import java.io.*;
 import java.lang.Math;
 
+import android.util.Log;
+
 public class GameState {
 
     GameMap map;
     Logic logic;
     List<Player> players = new ArrayList<Player>();
+    List<Player> playersPlaying;
+    Player currentPlayer;
     Integer turns = 0;
 
     public GameState(GameMap map, Logic logic, List<Player> players) {
@@ -16,7 +20,10 @@ public class GameState {
         this.logic = logic;
 
         this.players = players;
+        this.playersPlaying = this.players;
     }
+
+
 
     public void attack(Unit attacker, Unit defender) {
         Set<Position> attackable = logic.getAttackableUnitPositions(map,
@@ -41,7 +48,7 @@ public class GameState {
 
     }
 
-    private Boolean move(Unit unit, Position destination) {
+    public Boolean move(Unit unit, Position destination) {
         /* We are assuming that the destination was already
          * checked to be within this unit's reach
          */
@@ -58,7 +65,7 @@ public class GameState {
 
 
         /* Double check */
-        if (unit.getRemainingMovement() > movementCost)
+        if (unit.getRemainingMovement() < movementCost)
             return false;
 
 
@@ -66,8 +73,8 @@ public class GameState {
         destField.setUnit(unit);
         unit.reduceMovement(movementCost);
 
-
         currentField.setUnit(null);
+        unit.setPosition(destination);
 
         return true;
 
@@ -115,6 +122,16 @@ public class GameState {
                     b.resetCaptureTime();
             }
         }
+    }
+
+    public void nextPlayer() {
+        if (playersPlaying.size() == 0) {
+            advanceTurn();
+            playersPlaying = players;
+        } else {
+            playersPlaying.remove(0);
+        }
+
     }
 
     public void advanceTurn() {

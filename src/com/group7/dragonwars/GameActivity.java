@@ -622,6 +622,27 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
             }
         }
 
+        // /* Always draw attackables */
+        // if (map.getField(selected).hostsUnit()) {
+        //     Unit u = map.getField(selected).getUnit();
+        //     Set<Position> attack_destinations =
+        //         logic.getAttackableUnitPositions(map, u, selected);
+        //     //logic.getAttackableFields(map, u);
+        //     for (Position pos : attack_destinations) {
+        //         RectF dest = getSquare(
+        //             tilesize * pos.getX() + scrollOffset.getX(),
+        //             tilesize * pos.getY() + scrollOffset.getY(),
+        //             tilesize);
+        //         canvas.drawRect(dest, attack_high_paint);
+        //     }
+        // }
+
+        // RectF dest = getSquare(
+        //     tilesize * selected.getX() + scrollOffset.getX(),
+        //     tilesize * selected.getY() + scrollOffset.getY(),
+        //     tilesize);
+        // canvas.drawBitmap(selector, null, dest, null);
+
         RectF select_dest = getSquare(
             tilesize * selected.getX() + scrollOffset.getX(),
             tilesize * selected.getY() + scrollOffset.getY(),
@@ -764,7 +785,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                             }
                         }
 
-                        if (contains) { // unit at selected can move to newselected
+                        if (contains) {
                             //Log.v(null, "unit_destinations contains newselected");
                             /* pop up a menu with options:
                              * - Wait (go here and do nothing else
@@ -874,9 +895,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 	        switch (which) {
 	        case 0: // move
 	            Unit unit = map.getField(selected).getUnit();
-	            unit.setPosition(action_location);
-	            map.getField(selected).setUnit(null);
-	            map.getField(action_location).setUnit(unit);
+                Boolean moved = state.move(unit, action_location);
 	            //TODO: end turn for unit
 	            break;
 	        case 1: // attack
