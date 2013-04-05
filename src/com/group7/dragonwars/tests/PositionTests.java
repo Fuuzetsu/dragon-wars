@@ -2,9 +2,15 @@ package com.group7.dragonwars.tests;
 
 import com.group7.dragonwars.engine.Position;
 
-import org.junit.*;
+import java.util.HashSet;
+import java.util.Set;
+
 import junit.framework.*;
+
+import org.junit.*;
 import static org.junit.Assert.*;
+
+
 
 
 public class PositionTests extends TestCase {
@@ -49,5 +55,16 @@ public class PositionTests extends TestCase {
 
     public void testSymmFalse() {
         assertTrue(posOne.equals(posTwo) == posThree.equals(posTwo));
+    }
+
+    public void testHashSetSame() {
+        Set<Position> hSet = new HashSet<Position>();
+        hSet.add(posOne);
+        hSet.add(posThree);
+        hSet.add(posTwo);
+        hSet.add(posOne);
+        hSet.add(posOne);
+        hSet.add(posOne);
+        assertTrue(hSet.size() == 3);
     }
 }
