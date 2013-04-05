@@ -23,8 +23,8 @@ public class Pair<L, R> {
     }
 
     public int hashCode() {
-    	int hashFirst = first != null ? left.hashCode() : 0;
-    	int hashSecond = second != null ? right.hashCode() : 0;
+    	int hashFirst = left != null ? left.hashCode() : 0;
+    	int hashSecond = left != null ? right.hashCode() : 0;
 
     	return (hashFirst + hashSecond) * hashSecond + hashFirst;
     }
