@@ -16,12 +16,23 @@ public class Position {
         return this.pair.getRight();
     }
 
-    public boolean equals(Position other) {
-        if (other == null) {
-            return false;
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
         }
 
-        return getX() == other.getX() && getY() == other.getY();
+        if (!(other instanceof Position)) {
+            return false;
+        }
+        Position that = (Position) other;
+
+        return getX() == that.getX() && getY() == that.getY();
+    }
+
+    @Override
+    public int hashCode() {
+        return pair.hashCode();
     }
 
     public String toString() {

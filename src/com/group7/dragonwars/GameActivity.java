@@ -777,19 +777,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                     if (!unit.hasFinishedTurn()) {
                         List<Position> unit_destinations =
                             getUnitDestinations(selected_field);
-                        // Log.v(null, "after destinations");
 
-                        // FIXME: why doesn't
-                        // unit_destinations.contains(newselected) work?
-                        boolean contains = false;
-                        for (Position pos : unit_destinations) {
-                            if (pos.equals(newselected)) {
-                                contains = true;
-                                break;
-                            }
-                        }
-
-                        if (contains) {
+                        if (unit_destinations.contains(newselected)) {
                             /* pop up a menu with options:
                              * - Wait (go here and do nothing else
                              * - Attack (if there are units to attack)
@@ -841,16 +830,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                         = logic.getAttackableUnitPositions(map, attacker,
                                                            attack_location);
 
-                    // FIXME: copied this from above to ensure it works,
-                    // perhaps .contains(newselected) would work here?
-                    boolean contains = false;
-                    for (Position pos : attack_positions) {
-                        if (pos.equals(newselected)) {
-                            contains = true;
-                            break;
-                        }
-                    }
-                    if (contains && map.getField(newselected).hostsUnit()) {
+                    if (map.getField(newselected).hostsUnit() &&
+                        attack_positions.contains(newselected)) {
                         Unit defender = map.getField(newselected).getUnit();
                         field.setUnit(null);
                         // move attacker to attack
@@ -909,7 +890,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
             case 0: // move
                 Unit unit = map.getField(selected).getUnit();
                 Boolean moved = state.move(unit, action_location);
-                //TODO: end turn for unit
+                unit.setFinishedTurn(moved);
                 break;
             case 1: // attack
                 attack_location = action_location;
@@ -1004,8 +985,19 @@ class FloatPair {
         return this.pair.getRight();
     }
 
-    public Boolean equals(final FloatPair other) {
-        return this.getX() == other.getX() && this.getY() == other.getY();
+    @Override
+    public boolean equals(final Object other) {
+        if (other == other) {
+            return true;
+        }
+
+        if (!(other instanceof FloatPair)) {
+            return false;
+        }
+
+        FloatPair that = (FloatPair) other;
+        return this.getX() == that.getX() && this.getY() == that.getY();
+
     }
 
     public String toString() {
