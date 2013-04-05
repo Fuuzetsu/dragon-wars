@@ -574,6 +574,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
                     if (unit != null) {
                         String un = unit.toString();
+                        
                         canvas.drawBitmap(graphics.get("Units").get(un),
                                           null, dest, null);
                     }
@@ -765,6 +766,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         if (this.map.isValidField(touchX, touchY)) {
             build_menu = false; // the user selected another square
+            GameField newselected_field = map.getField(newselected);
             if (!attack_action) {
                 if (map.getField(selected).hostsUnit()) {
                     //Log.v(null, "A unit is selected!");
@@ -774,7 +776,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                      */
                     GameField selected_field = map.getField(selected);
                     Unit unit = selected_field.getUnit();
-                    if (!unit.hasFinishedTurn() && !selected_field.hostsUnit()) {
+                    if (!unit.hasFinishedTurn() && !map.getField(newselected).hostsUnit()) {
                         List<Position> unit_destinations =
                             getUnitDestinations(selected_field);
 
@@ -799,28 +801,24 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                             newselected = selected; // do not move the selection
                         }
                     }
-                } else { // selected does not host a unit
-                    if (map.getField(newselected).hostsBuilding()) {
-                        Building building
-                            = map.getField(newselected).getBuilding();
-                        if (building.getOwner().equals(state.getCurrentPlayer())
+                } else if (!newselected_field.hostsUnit() && newselected_field.hostsBuilding()) {
+                    Building building = map.getField(newselected).getBuilding();
+                    if (building.getOwner().equals(state.getCurrentPlayer())
                             && building.canProduceUnits()) {
-                            AlertDialog.Builder buildmenu_builder
-                                = new AlertDialog.Builder(this.getContext());
-                            buildmenu_builder.setTitle("Build");
+                        AlertDialog.Builder buildmenu_builder
+                        = new AlertDialog.Builder(this.getContext());
+                        buildmenu_builder.setTitle("Build");
 
-                            List<Unit> units = building.getProducibleUnits();
-                            String[] buildable_names = new String[units.size()];
-                            for (int i = 0; i < units.size(); ++i) {
-                                buildable_names[i] = units.get(i).toString();
-                            }
-                            //String[] actions = {"Wait here", "Attack"};
-                            buildmenu_builder.setItems(buildable_names, this);
-                            buildmenu_builder.create().show();
+                        List<Unit> units = building.getProducibleUnits();
+                        String[] buildable_names = new String[units.size()];
+                        for (int i = 0; i < units.size(); ++i) {
+                            buildable_names[i] = units.get(i).toString();
+                        }
+                        buildmenu_builder.setItems(buildable_names, this);
+                        buildmenu_builder.create().show();
 
-                            build_menu = true; // build menu is being shown
-                        } // build menu isn't shown if it isn't the user's turn
-                    }
+                        build_menu = true; // build menu is being shown
+                    } // build menu isn't shown if it isn't the user's turn
                 }
             } else { // attack_action
                 GameField field = map.getField(selected);
@@ -840,6 +838,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
                         Log.v(null, "attack(!): " + attacker + " attacks " + defender);
                         state.attack(attacker, defender);
+                        attacker.setFinishedTurn(true);
                         
                     } else {
                         attack_action = false; // no target unit
@@ -900,8 +899,6 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                  * onDraw will highlight attackable locations in red
                  */
                 break;
-            case 2: // capture building
-                // TODO: capture code
             }
         } else { // build_menu == true
             GameField field = map.getField(selected);
