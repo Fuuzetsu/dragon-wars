@@ -9,7 +9,7 @@ public class GameField extends DrawableMapObject {
     private Boolean flightOnly, accessible;
 
     public Boolean doesAcceptUnit(Unit unit) {
-        Boolean canStep = true;
+        Boolean canStep = false;
 
         if (this.flightOnly)
             canStep = unit.isFlying();
