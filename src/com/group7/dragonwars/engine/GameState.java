@@ -164,7 +164,6 @@ public class GameState {
     	// :S
     }
 
-    /* I'll just roll with GF and String for now; should be easy to change */
     public Boolean produceUnit(final GameField field, final Unit unit) {
     	// produces a unit "at" a building
         if (!field.hostsBuilding() || field.hostsUnit())
@@ -181,24 +180,17 @@ public class GameState {
             	}
 
                 Unit newUnit = new Unit(u);
+                newUnit.setPosition(building.getPosition());
+                newUnit.setOwner(player);
 
+                player.setGoldAmount(player.getGoldAmount() - unit.getProductionCost());
             	field.setUnit(newUnit);
-            	player.setGoldAmount(player.getGoldAmount() - unit.getProductionCost());
+
                 return true;
             }
         }
 
         return false;
-
-        /*Player player = building.getOwner();
-
-        if (player.getGoldAmount() < unit.getProductionCost())
-            return false;
-
-        unit.setOwner(player);
-        unit.setPosition(building.getPosition());
-        player.setGoldAmount(player.getGoldAmount() - unit.getProductionCost());
-        field.setUnit(unit);*/
     }
 
 }
