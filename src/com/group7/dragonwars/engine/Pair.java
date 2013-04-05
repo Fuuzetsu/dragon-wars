@@ -22,4 +22,10 @@ public class Pair<L, R> {
         return String.format("(%s, %s)", left, right);
     }
 
+    public int hashCode() {
+    	int hashFirst = first != null ? left.hashCode() : 0;
+    	int hashSecond = second != null ? right.hashCode() : 0;
+
+    	return (hashFirst + hashSecond) * hashSecond + hashFirst;
+    }
 }
