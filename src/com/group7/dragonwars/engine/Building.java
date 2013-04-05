@@ -53,23 +53,12 @@ public class Building extends DrawableMapObject {
         return !this.producableUnits.isEmpty();
     }
 
-    public void addProducableUnit(Unit unit) {
+    public void addProducibleUnit(Unit unit) {
         this.producableUnits.add(unit);
     }
 
-    public List<Unit> getProducableUnits() {
+    public List<Unit> getProducibleUnits() {
         return this.producableUnits;
-    }
-    
-    public List<String> getProduceableUnits() {
-    	/* in The Future(tm) buildings could use
-    	 * lists of strings to show what they are
-    	 * capable of producing */ 
-    	LinkedList<String> names = new LinkedList<String>();
-    	for (Unit unit : this.producableUnits) {
-    		names.add(unit.getName());
-    	}
-    	return names;
     }
 
     public String toString() {
@@ -154,7 +143,7 @@ public class Building extends DrawableMapObject {
     public void generateInfo() {
         String r = "";
         if (canProduceUnits()) {
-            for (Unit u : getProducableUnits()) {
+            for (Unit u : getProducibleUnits()) {
                 r += "I can produce " + u + " - "
                     + u.getProductionCost() + "g\n";
             }
