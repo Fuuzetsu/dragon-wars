@@ -2,8 +2,11 @@ package com.group7.dragonwars.tests;
 
 import com.group7.dragonwars.engine.Position;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
 
 import junit.framework.*;
 
@@ -34,7 +37,7 @@ public class PositionTests extends TestCase {
     }
 
     public void testEquality() {
-        assertTrue(posOne.equals(posThree));
+        assertEquals(posThree, posOne);
     }
 
     public void testInequality() {
@@ -65,6 +68,28 @@ public class PositionTests extends TestCase {
         hSet.add(posOne);
         hSet.add(posOne);
         hSet.add(posOne);
-        assertTrue(hSet.size() == 3);
+        assertTrue(hSet.size() == 2);
     }
+
+    public void testListContainsSuccess() {
+        List<Position> pList = new ArrayList<Position>();
+        pList.add(posOne);
+        pList.add(posTwo);
+        assertTrue(pList.contains(posOne));
+    }
+
+    public void testListContainsSuccessDiff() {
+        List<Position> pList = new ArrayList<Position>();
+        pList.add(posOne);
+        pList.add(posTwo);
+        assertTrue(pList.contains(posThree));
+    }
+
+    public void testListContainsFail() {
+        List<Position> pList = new ArrayList<Position>();
+        pList.add(posOne);
+        pList.add(posThree);
+        assertFalse(pList.contains(posTwo));
+    }
+
 }
