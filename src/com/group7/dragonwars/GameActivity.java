@@ -810,7 +810,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                         List<Unit> units = building.getProducibleUnits();
                         String[] buildable_names = new String[units.size()];
                         for (int i = 0; i < units.size(); ++i) {
-                            buildable_names[i] = units.get(i).toString();
+                            buildable_names[i] = units.get(i).toString() + " - " + units.get(i).getProductionCost() + " Gold";
                         }
                         buildmenu_builder.setItems(buildable_names, this);
                         buildmenu_builder.create().show();
@@ -912,7 +912,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                                                    unit);
                 if (!result) {
                     alertMessage(String.format(
-                        "Could not build unit %s (cost: %s)", unit,
+                        "Could not build unit %s (Cost: %s Gold)", unit,
                         unit.getProductionCost()));
                 }
             } else {
