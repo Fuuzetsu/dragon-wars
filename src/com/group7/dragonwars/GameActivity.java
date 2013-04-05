@@ -371,37 +371,32 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     public List<Position> getUnitDestinations(final GameField selectedField) {
         List<Position> unitDests = new ArrayList<Position>(0);
-
-        /* First time clicking */
-        if (lastUnit == null || lastField == null || lastDestinations == null) {
-            lastField = selectedField;
-            if (selectedField.hostsUnit()) {
-                Unit unit = selectedField.getUnit();
-                lastUnit = unit;
-                unitDests = logic.destinations(map, unit);
-                lastDestinations = unitDests;
-            } else {
-                unitDests = new ArrayList<Position>(0);
-                lastDestinations = unitDests;
-            }
+        if (!selectedField.hostsUnit()) {
+            lastUnit = null;
+            lastField = null;
+            return unitDests;
         }
 
-        if (selectedField.equals(lastField) && selectedField.hostsUnit()) {
-            /* Same unit, same place */
-            if (selectedField.getUnit().equals(lastUnit)) {
-                unitDests = lastDestinations;
-            }
-        } else {
-            if (selectedField.hostsUnit()) {
-                unitDests = logic.destinations(map, selectedField.getUnit());
-            }
-            lastDestinations = unitDests;
+        Unit u = selectedField.getUnit();
+        if (u.getOwner() != state.getCurrentPlayer()) {
+            lastUnit = null;
+            lastField = null;
+            return unitDests;
+        }
+
+        if (lastDestinations == null || lastUnit == null || lastField == null) {
+            lastUnit = u;
             lastField = selectedField;
-            lastUnit = selectedField.getUnit(); /* Fine if null */
+            unitDests = logic.destinations(map, u);
+            lastDestinations = unitDests;
+            return unitDests;
+        }
+
+        if (u.equals(lastUnit) && selectedField.equals(lastField)) {
+            return lastDestinations;
         }
 
         return unitDests;
-
     }
 
     public void drawBorder(final Canvas canvas, final Position currentField,
@@ -573,7 +568,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
                     if (unit != null) {
                         String un = unit.toString();
-                        
+
                         canvas.drawBitmap(graphics.get("Units").get(un),
                                           null, dest, null);
                     }
@@ -653,9 +648,9 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         } else {
             drawInfoBox(canvas, null, selectedField, true);
         }
-        
+
         drawCornerBox(canvas, true, true, "Turn " + state.getTurns());
-        
+
         framesSinceLastSecond++;
 
         timeElapsed += System.currentTimeMillis() - startingTime;
@@ -689,10 +684,10 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         if (field.hostsBuilding()) {
             info += "\n" + field.getBuilding().getInfo();
         }
-        
+
         drawCornerBox(canvas, true, false, info);
     }
-    
+
     public void drawCornerBox(Canvas canvas, boolean left, boolean top, String text) {
         Paint textPaint = new Paint();
         textPaint.setColor(Color.WHITE);
@@ -722,7 +717,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                 top ? boxHeight : canvas.getHeight());
         canvas.drawRect(backRect, backPaint);
 
-        
+
         for (Integer i = 0; i < ss.length; ++i) {
             canvas.drawText(ss[i], 0, ss[i].length(),
                     left ? backRect.left : backRect.right,
@@ -850,7 +845,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                         Log.v(null, "attack(!): " + attacker + " attacks " + defender);
                         state.attack(attacker, defender);
                         attacker.setFinishedTurn(true);
-                        
+
                     } else {
                         attack_action = false; // no target unit
                     }
