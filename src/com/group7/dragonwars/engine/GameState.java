@@ -13,7 +13,7 @@ public class GameState {
     List<Player> players = new ArrayList<Player>();
     List<Player> playersPlaying;
     Player currentPlayer;
-    Integer turns = 0;
+    Integer turns = 1;
 
     public GameState(GameMap map, Logic logic, List<Player> players) {
         this.map = map;
