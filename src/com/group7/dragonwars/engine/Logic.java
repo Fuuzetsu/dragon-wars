@@ -103,7 +103,7 @@ public class Logic {
         
         double damage = attacker.getAttack() +
                         (2 * attacker.getAttack() *
-                        (attacker.getHealth()/attacker.getMaxHealth()));
+                        (atkHealth/attacker.getMaxHealth()));
 
         double finalDamage = damage - (((fieldDefense * damage) / 2) + ((unitDefense * damage) / 2));
         Log.v(null, "finalDamage: " + finalDamage + " damage: " + damage + " unitDefense: " + unitDefense + " fieldDefense: " + fieldDefense);
