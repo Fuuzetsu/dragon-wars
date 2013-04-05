@@ -150,7 +150,7 @@ public class Unit extends DrawableMapObject {
     }
 
     public String getInfo() {
-        String r = getName() + " - " + this.getOwner().getName() + "\n";
+        String r = getName() + " ~ " + this.getOwner().getName() + "\n";
         r += "Health: " + getHealth();
         return r + this.info;
     }
