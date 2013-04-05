@@ -555,7 +555,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         canvas.drawColor(Color.BLACK);
 
-        GameField selectedField = map.getField(selected);
+        GameField selectedField = map.isValidField(selected) ? map.getField(selected) : map.getField(0, 0);
         List<Position> unitDests = getUnitDestinations(selectedField);
 
         canvas.drawBitmap(fullMap, scrollOffset.getX(),
