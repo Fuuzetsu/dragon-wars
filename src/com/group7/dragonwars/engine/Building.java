@@ -53,11 +53,11 @@ public class Building extends DrawableMapObject {
         return !this.producableUnits.isEmpty();
     }
 
-    public void addProducableUnit(Unit unit) {
+    public void addProducibleUnit(Unit unit) {
         this.producableUnits.add(unit);
     }
 
-    public List<Unit> getProducableUnits() {
+    public List<Unit> getProducibleUnits() {
         return this.producableUnits;
     }
 
@@ -143,7 +143,7 @@ public class Building extends DrawableMapObject {
     public void generateInfo() {
         String r = "";
         if (canProduceUnits()) {
-            for (Unit u : getProducableUnits()) {
+            for (Unit u : getProducibleUnits()) {
                 r += "I can produce " + u + " - "
                     + u.getProductionCost() + "g\n";
             }

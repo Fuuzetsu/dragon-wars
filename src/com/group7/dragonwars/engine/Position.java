@@ -24,6 +24,10 @@ public class Position {
         return getX() == other.getX() && getY() == other.getY();
     }
 
+    public int hashCode() {
+        return pair.hashCode();
+    }
+
     public String toString() {
         return String.format("(%d, %d)", this.pair.getLeft(),
                               this.pair.getRight());

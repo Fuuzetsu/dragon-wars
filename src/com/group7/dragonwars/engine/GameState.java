@@ -11,6 +11,8 @@ public class GameState {
     GameMap map;
     Logic logic;
     List<Player> players = new ArrayList<Player>();
+    List<Player> playersPlaying;
+    Player currentPlayer;
     Integer turns = 0;
 
     public GameState(GameMap map, Logic logic, List<Player> players) {
@@ -18,7 +20,10 @@ public class GameState {
         this.logic = logic;
 
         this.players = players;
+        this.playersPlaying = this.players;
     }
+
+
 
     public void attack(Unit attacker, Unit defender) {
         Set<Position> attackable = logic.getAttackableUnitPositions(map,
@@ -119,6 +124,16 @@ public class GameState {
         }
     }
 
+    public void nextPlayer() {
+        if (playersPlaying.size() == 0) {
+            advanceTurn();
+            playersPlaying = players;
+        } else {
+            playersPlaying.remove(0);
+        }
+
+    }
+
     public void advanceTurn() {
         updateBuildingCaptureCounters();
 
@@ -144,35 +159,38 @@ public class GameState {
         return this.players;
     }
 
-    /* I'll just roll with GF and String for now; should be easy to change */
-    public Boolean produceUnit(GameField field, String unitName) {
+    public Player getCurrentPlayer() {
+    	return players.get(turns % players.size());
+    	// :S
+    }
 
+    public Boolean produceUnit(final GameField field, final Unit unit) {
+    	// produces a unit "at" a building
         if (!field.hostsBuilding() || field.hostsUnit())
             return false;
 
         Building building = field.getBuilding();
-        Unit unit = null;
-        for (Unit u : building.getProducableUnits())
-            if (u.getName().equals(unitName)) {
-                unit = new Unit(u);
-                break;
+
+        for (Unit u : building.getProducibleUnits()) {
+            if (u.getName().equals(unit.getName())) {
+            	Player player = building.getOwner();
+
+            	if (player.getGoldAmount() < u.getProductionCost()) {
+                    return false;
+            	}
+
+                Unit newUnit = new Unit(u);
+                newUnit.setPosition(building.getPosition());
+                newUnit.setOwner(player);
+
+                player.setGoldAmount(player.getGoldAmount() - unit.getProductionCost());
+            	field.setUnit(newUnit);
+
+                return true;
             }
+        }
 
-        if (unit == null)
-            return false;
-
-        Player player = building.getOwner();
-
-        if (player.getGoldAmount() < unit.getProductionCost())
-            return false;
-
-        unit.setOwner(player);
-        unit.setPosition(building.getPosition());
-        player.setGoldAmount(player.getGoldAmount() - unit.getProductionCost());
-        field.setUnit(unit);
-
-        return true;
-
+        return false;
     }
 
 }

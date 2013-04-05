@@ -50,6 +50,7 @@ public class Unit extends DrawableMapObject {
         this.meleeDefense = unit.getMeleeDefense();
         this.rangeDefense = unit.getRangeDefense();
 
+        this.owner = unit.getOwner();
         this.isFlying = unit.isFlying();
         this.productionCost = unit.getProductionCost();
         this.info = unit.info;
