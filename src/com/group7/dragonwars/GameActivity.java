@@ -41,6 +41,7 @@ import com.group7.dragonwars.engine.GameMap;
 import com.group7.dragonwars.engine.GameState;
 import com.group7.dragonwars.engine.Logic;
 import com.group7.dragonwars.engine.MapReader;
+import com.group7.dragonwars.engine.Player;
 import com.group7.dragonwars.engine.Position;
 import com.group7.dragonwars.engine.Pair;
 import com.group7.dragonwars.engine.Unit;
@@ -654,7 +655,9 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         } else {
             drawInfoBox(canvas, null, selectedField, true);
         }
-
+        
+        drawCornerBox(canvas, true, true, "Turn " + state.getTurns());
+        
         framesSinceLastSecond++;
 
         timeElapsed += System.currentTimeMillis() - startingTime;
@@ -664,9 +667,9 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
             timeElapsed = 0L;
         }
         String fpsS = fps.toString();
-        Paint paint = new Paint();
-        paint.setARGB(255, 255, 255, 255);
-        canvas.drawText("FPS: " + fpsS, this.getWidth() - 80, 20, paint);
+        Player player = state.getCurrentPlayer();
+        drawCornerBox(canvas, false, true, player.getName() + " - " + player.getGoldAmount() + " Gold"
+                + "\nFPS: " + fpsS);
     }
 
     public float getMapDrawWidth() {
@@ -688,11 +691,19 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         if (field.hostsBuilding()) {
             info += field.getBuilding().getInfo();
         }
-
+        
+        drawCornerBox(canvas, true, false, info);
+    }
+    
+    public void drawCornerBox(Canvas canvas, boolean left, boolean top, String text) {
         Paint textPaint = new Paint();
         textPaint.setColor(Color.WHITE);
+        textPaint.setTextAlign(left ? Paint.Align.LEFT : Paint.Align.RIGHT);
 
-        String[] ss = info.split("\n");
+        Paint backPaint = new Paint();
+        backPaint.setARGB(150, 0, 0, 0);
+
+        String[] ss = text.split("\n");
         String longestLine = "";
         for (String s : ss) {
             if (s.length() > longestLine.length()) {
@@ -701,24 +712,23 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         }
 
         Rect bounds = new Rect();
-        Paint paintMeasure = new Paint();
-        paintMeasure.getTextBounds(longestLine, 0,
+        textPaint.getTextBounds(longestLine, 0,
                                    longestLine.length(), bounds);
-        Integer boxWidth = bounds.width(); /* Might have to Math.ceil first */
+        Integer boxWidth = bounds.width(); // Might have to Math.ceil first
         Integer boxHeight = ss.length * bounds.height();
 
-
-        Paint backPaint = new Paint();
-        backPaint.setColor(Color.BLACK);
-        Rect backRect = new Rect(0, canvas.getHeight() - boxHeight,
-                                 boxWidth, canvas.getHeight());
+        Rect backRect = new Rect(left ? 0 : canvas.getWidth() - boxWidth,
+                top ? 0 : canvas.getHeight() - boxHeight,
+                left ? boxWidth : canvas.getWidth(),
+                top ? boxHeight : canvas.getHeight());
         canvas.drawRect(backRect, backPaint);
 
+        
         for (Integer i = 0; i < ss.length; ++i) {
-            canvas.drawText(ss[i], 0, ss[i].length(), 0,
-                            canvas.getHeight() - (bounds.height()
-                                                  * (ss.length - 1 - i)),
-                            textPaint);
+            canvas.drawText(ss[i], 0, ss[i].length(),
+                    left ? backRect.left : backRect.right,
+                    backRect.top + (bounds.height() * (i + 1)),
+                    textPaint);
         }
     }
 
@@ -776,7 +786,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                      */
                     GameField selected_field = map.getField(selected);
                     Unit unit = selected_field.getUnit();
-                    if (!unit.hasFinishedTurn() && (!map.getField(newselected).hostsUnit() || selected.equals(newselected))) {
+                    if (unit.getOwner().equals(state.getCurrentPlayer()) && !unit.hasFinishedTurn() && (!map.getField(newselected).hostsUnit() || selected.equals(newselected))) {
                         List<Position> unit_destinations =
                             getUnitDestinations(selected_field);
 
@@ -984,7 +994,7 @@ class FloatPair {
 
     @Override
     public boolean equals(final Object other) {
-        if (other == other) {
+        if (this == other) {
             return true;
         }
 

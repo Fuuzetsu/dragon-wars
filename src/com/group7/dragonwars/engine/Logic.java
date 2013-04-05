@@ -70,7 +70,7 @@ public class Logic {
 
         Double finalDamage = damage - (((fieldDefense * damage) / 2) + ((unitDefense * damage) / 2));
         Log.v(null, "finalDamage: " + finalDamage + " damage: " + damage + " unitDefense: " + unitDefense + " fieldDefense: " + fieldDefense);
-        return (attacker.getHealth() > 0 ? finalDamage : 0.0);
+        return (attacker.getHealth() > 0.0 ? finalDamage : 0.0);
         
         /*Double attackerMod = attackerField.getAttackModifier();
         Double defenderMod = defenderField.getDefenseModifier();
