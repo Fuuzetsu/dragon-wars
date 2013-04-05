@@ -1003,8 +1003,19 @@ class FloatPair {
         return this.pair.getRight();
     }
 
-    public Boolean equals(final FloatPair other) {
-        return this.getX() == other.getX() && this.getY() == other.getY();
+    @Override
+    public boolean equals(final Object other) {
+        if (other == other) {
+            return true;
+        }
+
+        if (!(other instanceof FloatPair)) {
+            return false;
+        }
+
+        FloatPair that = (FloatPair) other;
+        return this.getX() == that.getX() && this.getY() == that.getY();
+
     }
 
     public String toString() {
