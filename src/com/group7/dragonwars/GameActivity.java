@@ -949,7 +949,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     private void alertMessage(String text) {
         new AlertDialog.Builder(context).setMessage(text)
-            .setPositiveButton("I read that", null).show();
+            .setPositiveButton("OK", null).show();
     }
 }
 
