@@ -10,8 +10,8 @@
             "dir": "drawable",
             "package": "com.group7.dragonwars",
             "movementModifier": 1.0,
-            "attackModifier": 0.0,
-            "defenseModifier": 0.0,
+            "attackModifier": 1.0,
+            "defenseModifier": 1.0,
             "accessible": true,
             "flightOnly": false
         },
@@ -21,8 +21,8 @@
             "dir": "drawable",
             "package": "com.group7.dragonwars",
             "movementModifier": 1.0,
-            "attackModifier": 0.0,
-            "defenseModifier": 0.0,
+            "attackModifier": 1.0,
+            "defenseModifier": 1.0,
             "accessible": false,
             "flightOnly": true
         }
