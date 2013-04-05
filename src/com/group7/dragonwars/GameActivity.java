@@ -69,11 +69,11 @@ public class GameActivity extends Activity {
         // remove the status bar
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                              WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        
+
         Log.d(TAG, "in onCreate");
         setContentView(R.layout.activity_game);
         Log.v(null, "on inCreate");
-        
+
         Button menuButton = (Button) this.findViewById(R.id.menuButton);
         GameView gameView = (GameView) this.findViewById(R.id.gameView);
         menuButton.setOnClickListener(gameView);
@@ -138,7 +138,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     private Double fps = 0.0;
 
     private enum MenuType {NONE, ACTION, BUILD, MENU};
-    
+
     private MenuType whichMenu;
 
     public GameView(final Context ctx, final AttributeSet attrset) {
@@ -147,11 +147,11 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         GameView gameView = (GameView) this.findViewById(R.id.gameView);
         GameMap gm = null;
-        
+
         //this.findViewById(R.id.menuButton).setOnClickListener(gameView);
 
         whichMenu = MenuType.NONE;
-        
+
         Log.d(TAG, "nulling GameMap");
 
         try {
@@ -800,7 +800,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                             actions_builder.setItems(actions, this);
                             actions_builder.create().show();
                             action_location = newselected;
-                            
+
                             // onClick handles the result
                             whichMenu = MenuType.ACTION;
                             newselected = selected; // do not move the selection
@@ -934,8 +934,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         case MENU:
             switch (which) {
             case 0:
-                state.advanceTurn();
-                Log.v(null, "advancing turn");
+                state.nextPlayer();
+                Log.v(null, "advancing player");
                 break;
             }
             break;
