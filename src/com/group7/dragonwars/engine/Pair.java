@@ -28,4 +28,12 @@ public class Pair<L, R> {
 
     	return (hashFirst + hashSecond) * hashSecond + hashFirst;
     }
+
+    public Boolean equals(Pair other) {
+        if (other == null) {
+            return false;
+        }
+
+        return left.equals(other.getLeft()) && right.equals(other.getRight());
+    }
 }
