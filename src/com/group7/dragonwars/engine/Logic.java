@@ -34,32 +34,20 @@ public class Logic {
                 mapPositions.add(new Position(x, y));
 
         for (Position p : mapPositions) {
-            Boolean c = false;
 
-            for (Position x : checked)
-                if (p.equals(x)) {
-                    c = true;
-                    break;
-                }
-
-            if (!map.isValidField(p) || c)
+            if (!map.isValidField(p) || checked.contains(p))
                 continue;
 
             List<Position> path = AStar(map, unit, p);
 
-            for (Position y : path){
-                Boolean b = false;
-                for (Position x : checked)
-                    if (y.equals(x)) {
-                        b = true;
-                        break;
-                    }
-
-                if (!b)
+            for (Position y : path) {
+                if (!checked.containts(y)) {
                     checked.add(y);
-
+                }
             }
+
         }
+
         return checked;
     }
 
