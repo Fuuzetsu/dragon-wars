@@ -37,7 +37,7 @@ public class PositionTests extends TestCase {
     }
 
     public void testEquality() {
-        assertTrue(posOne.equals(posThree));
+        assertEquals(posThree, posOne);
     }
 
     public void testInequality() {
@@ -68,7 +68,7 @@ public class PositionTests extends TestCase {
         hSet.add(posOne);
         hSet.add(posOne);
         hSet.add(posOne);
-        assertTrue(hSet.size() == 3);
+        assertTrue(hSet.size() == 2);
     }
 
     public void testListContainsSuccess() {

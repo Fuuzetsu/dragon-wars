@@ -22,18 +22,26 @@ public class Pair<L, R> {
         return String.format("(%s, %s)", left, right);
     }
 
+    @Override
     public int hashCode() {
     	int hashFirst = left != null ? left.hashCode() : 0;
-    	int hashSecond = left != null ? right.hashCode() : 0;
+    	int hashSecond = right != null ? right.hashCode() : 0;
 
     	return (hashFirst + hashSecond) * hashSecond + hashFirst;
     }
 
-    public Boolean equals(Pair other) {
-        if (other == null) {
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+
+        if (!(other instanceof Pair)) {
             return false;
         }
 
-        return left.equals(other.getLeft()) && right.equals(other.getRight());
+        Pair that = (Pair) other;
+
+        return left.equals(that.getLeft()) && right.equals(that.getRight());
     }
 }
