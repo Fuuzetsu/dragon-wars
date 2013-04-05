@@ -41,7 +41,7 @@ public class Logic {
             List<Position> path = AStar(map, unit, p);
 
             for (Position y : path) {
-                if (!checked.containts(y)) {
+                if (!checked.contains(y)) {
                     checked.add(y);
                 }
             }
