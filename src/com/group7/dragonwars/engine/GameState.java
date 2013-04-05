@@ -36,7 +36,7 @@ public class GameState {
             if (pos.equals(defender.getPosition()))
                 contains = true;
         }
-        if (contains) return;
+        if (!contains) return;
 
         Pair<Double, Double> damage = logic.calculateDamage(map, attacker,
                                       defender);
