@@ -10,8 +10,8 @@
             "dir": "drawable",
             "package": "com.group7.dragonwars",
             "movementModifier": 1.0,
-            "attackModifier": 0.0,
-            "defenseModifier": 0.0,
+            "attackModifier": 1.0,
+            "defenseModifier": 1.1,
             "accessible": true,
             "flightOnly": false
         },
@@ -21,8 +21,8 @@
             "dir": "drawable",
             "package": "com.group7.dragonwars",
             "movementModifier": 1.0,
-            "attackModifier": 0.0,
-            "defenseModifier": 0.0,
+            "attackModifier": 1.0,
+            "defenseModifier": 1.0,
             "accessible": false,
             "flightOnly": true
         }
@@ -39,7 +39,7 @@
             "maxMovement": 5,
             "attack": 2.0,
             "meleeDefense": 1.0,
-            "rangeDefense": 2.0,
+            "rangeDefense": 1.0,
             "productionCost": 5
         },
         "D": {
@@ -54,8 +54,8 @@
             "maxHealth": 30,
             "maxMovement": 7,
             "attack": 3.0,
-            "meleeDefense": 2.0,
-            "rangeDefense": 2.0,
+            "meleeDefense": 1.5,
+            "rangeDefense": 1.0,
             "productionCost": 7
         }
     },
@@ -66,8 +66,8 @@
             "dir": "drawable",
             "package": "com.group7.dragonwars",
             "captureDifficulty": 4,
-            "attackBonus": 3.0,
-            "defenseBonus": 4.0,
+            "attackBonus": 1.0,
+            "defenseBonus": 1.8,
             "goalBuilding": true,
             "captureWorth": 4
         },
@@ -78,7 +78,7 @@
             "package": "com.group7.dragonwars",
             "captureDifficulty": 2,
             "attackBonus": 1.0,
-            "defenseBonus": 1.0,
+            "defenseBonus": 1.5,
             "goalBuilding": false,
             "captureWorth": 2
         }
