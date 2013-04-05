@@ -75,7 +75,7 @@ public class GameActivity extends Activity {
 
         // remove the status bar
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                             WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         Log.d(TAG, "in onCreate");
         setContentView(R.layout.activity_game);
@@ -84,9 +84,9 @@ public class GameActivity extends Activity {
 }
 
 class GameView extends SurfaceView implements SurfaceHolder.Callback,
-OnGestureListener,
-OnDoubleTapListener,
-DialogInterface.OnClickListener {
+                                              OnGestureListener,
+                                              OnDoubleTapListener,
+                                              DialogInterface.OnClickListener {
     private final String TAG = "GameView";
 
     private final int tilesize = 64;
@@ -112,7 +112,7 @@ DialogInterface.OnClickListener {
     private Paint attack_high_paint; // used to highlight possible attacks
 
     private Bitmap fullMap;
-    
+
     private boolean unit_selected; // true if there is a unit at selection
 
     private boolean attack_action;
@@ -124,7 +124,7 @@ DialogInterface.OnClickListener {
      **attack_location is the location of the attack
      *
      */
-    
+
     private boolean build_menu;
     /* true if the build menu is being shown
      * for the building at selected
@@ -173,7 +173,7 @@ DialogInterface.OnClickListener {
 
         context = ctx;
         bm = BitmapFactory.decodeResource(context.getResources(),
-                R.drawable.ic_launcher);
+                                          R.drawable.ic_launcher);
         SurfaceHolder holder = getHolder();
         this.graphics = new HashMap<String, HashMap<String, Bitmap>>();
 
@@ -186,9 +186,9 @@ DialogInterface.OnClickListener {
 
         /* Load selector and highlighters */
         selector = getResource("selector", "drawable",
-                "com.group7.dragonwars");
+                               "com.group7.dragonwars");
         highlighter = getResource("highlight", "drawable",
-                "com.group7.dragonwars");
+                                  "com.group7.dragonwars");
         attack_highlighter = getResource("attack_highlight", "drawable", "com.group7.dragonwars");
 
         holder.addCallback(this);
@@ -216,30 +216,30 @@ DialogInterface.OnClickListener {
     }
 
     private <T extends DrawableMapObject>
-    void putGroup(final String category,
-            final Map<Character, T> objMap) {
+                       void putGroup(final String category,
+                                     final Map<Character, T> objMap) {
         graphics.put(category, new HashMap<String, Bitmap>());
 
         for (Map.Entry<Character, T> ent : objMap.entrySet()) {
             T f = ent.getValue();
             putResource(category, f.getSpriteLocation(), f.getSpriteDir(),
-                    f.getSpritePack(), f.getName());
+                        f.getSpritePack(), f.getName());
         }
     }
 
     private void putResource(final String category, final String resName,
-            final String resDir, final String resPack,
-            final String regName) {
+                             final String resDir, final String resPack,
+                             final String regName) {
         Bitmap bMap = getResource(resName, resDir, resPack);
         graphics.get(category).put(regName, bMap);
     }
 
     private Bitmap getResource(final String resName, final String resDir,
-            final String resPack) {
+                               final String resPack) {
         Integer resourceID = getResources().getIdentifier(resName, resDir,
-                resPack);
+                                                          resPack);
         Bitmap bMap = BitmapFactory.decodeResource(context.getResources(),
-                resourceID);
+                                                   resourceID);
 
         return bMap;
     }
@@ -247,7 +247,7 @@ DialogInterface.OnClickListener {
     /* Helper for loadBorders() */
     private void loadField(final String resName, final String regName) {
         putResource("Fields", resName, "drawable",
-                "com.group7.dragonwars", regName);
+                    "com.group7.dragonwars", regName);
     }
 
     /* TODO do not hardcode */
@@ -289,7 +289,7 @@ DialogInterface.OnClickListener {
                 String gfn = gf.getName();
                 RectF dest = getSquare(tilesize * i, tilesize * j, tilesize);
                 combined.drawBitmap(graphics.get("Fields").get(gfn),
-                        null, dest, null);
+                                    null, dest, null);
 
                 drawBorder(combined, pos, dest);
 
@@ -297,7 +297,7 @@ DialogInterface.OnClickListener {
                     Building b = gf.getBuilding();
                     String n = b.getName();
                     combined.drawBitmap(graphics.get("Buildings").get(n),
-                            null, dest, null);
+                                        null, dest, null);
                 }
             }
         }
@@ -310,8 +310,8 @@ DialogInterface.OnClickListener {
 
         try {
             BufferedReader in = new BufferedReader(
-                    new InputStreamReader(this.getResources()
-                            .openRawResource(resourceid)));
+                new InputStreamReader(this.getResources()
+                                      .openRawResource(resourceid)));
             String line;
 
             while ((line = in.readLine()) != null) {
@@ -336,7 +336,7 @@ DialogInterface.OnClickListener {
 
     @Override
     public void surfaceChanged(final SurfaceHolder arg0, final int arg1,
-            final int arg2, final int arg3) {
+                               final int arg2, final int arg3) {
         // TODO Auto-generated method stub
 
     }
@@ -407,7 +407,7 @@ DialogInterface.OnClickListener {
     }
 
     public void drawBorder(final Canvas canvas, final Position currentField,
-            final RectF dest) {
+                           final RectF dest) {
         /* TODO not hard-code this */
         Integer i = currentField.getX();
         Integer j = currentField.getY();
@@ -446,7 +446,7 @@ DialogInterface.OnClickListener {
         Func<String, Void> drawer = new Func<String, Void>() {
             public Void apply(String sprite) {
                 canvas.drawBitmap(graphics.get("Fields").get(sprite),
-                        null, dest, null);
+                                  null, dest, null);
                 return null; /* Java strikes again */
             }
         };
@@ -539,11 +539,11 @@ DialogInterface.OnClickListener {
         sw = map.isValidField(swp) ? map.getField(swp).toString() : " ";
 
         r.add("" + ne.toString().charAt(0) + n.toString().charAt(0)
-                + nw.toString().charAt(0));
+              + nw.toString().charAt(0));
         r.add("" + e.toString().charAt(0) + c.toString().charAt(0)
-                + w.toString().charAt(0));
+              + w.toString().charAt(0));
         r.add("" + se.toString().charAt(0) + s.toString().charAt(0)
-                + sw.toString().charAt(0));
+              + sw.toString().charAt(0));
 
         return r;
     }
@@ -560,15 +560,15 @@ DialogInterface.OnClickListener {
         List<Position> unitDests = getUnitDestinations(selectedField);
 
         canvas.drawBitmap(fullMap, scrollOffset.getX(),
-                scrollOffset.getY(), null);
+                          scrollOffset.getY(), null);
 
         for (int i = 0; i < map.getWidth(); ++i) {
             for (int j = 0; j < map.getHeight(); j++) {
                 GameField gf = map.getField(i, j);
                 RectF dest = getSquare(
-                        tilesize * i + scrollOffset.getX(),
-                        tilesize * j + scrollOffset.getY(),
-                        tilesize);
+                    tilesize * i + scrollOffset.getX(),
+                    tilesize * j + scrollOffset.getY(),
+                    tilesize);
 
                 if (gf.hostsUnit()) {
                     Unit unit = gf.getUnit();
@@ -576,7 +576,7 @@ DialogInterface.OnClickListener {
                     if (unit != null) {
                         String un = unit.toString();
                         canvas.drawBitmap(graphics.get("Units").get(un),
-                                null, dest, null);
+                                          null, dest, null);
                     }
                 }
                 /* Uncomment to print red grid with some info */
@@ -601,9 +601,9 @@ DialogInterface.OnClickListener {
         /* Destination highlighting */
         for (Position pos : unitDests) {
             RectF dest = getSquare(
-                    tilesize * pos.getX() + scrollOffset.getX(),
-                    tilesize * pos.getY() + scrollOffset.getY(),
-                    tilesize);
+                tilesize * pos.getX() + scrollOffset.getX(),
+                tilesize * pos.getY() + scrollOffset.getY(),
+                tilesize);
             canvas.drawBitmap(highlighter, null, dest, null);
         }
 
@@ -621,11 +621,11 @@ DialogInterface.OnClickListener {
                 canvas.drawBitmap(attack_highlighter, null, attack_dest, null);
             }
         }
-        
+
         RectF select_dest = getSquare(
-                tilesize * selected.getX() + scrollOffset.getX(),
-                tilesize * selected.getY() + scrollOffset.getY(),
-                tilesize);
+            tilesize * selected.getX() + scrollOffset.getX(),
+            tilesize * selected.getY() + scrollOffset.getY(),
+            tilesize);
         canvas.drawBitmap(selector, null, select_dest, null);
 
         if (selectedField.hostsUnit()) {
@@ -657,7 +657,7 @@ DialogInterface.OnClickListener {
     }
 
     public void drawInfoBox(final Canvas canvas, final Unit unit,
-            final GameField field, final boolean left) {
+                            final GameField field, final boolean left) {
         String info = field.getInfo();
 
         if (unit != null) {
@@ -689,13 +689,13 @@ DialogInterface.OnClickListener {
         Paint backPaint = new Paint();
         backPaint.setColor(Color.BLACK);
         Rect backRect = new Rect(0, canvas.getHeight() - boxHeight,
-                boxWidth, canvas.getHeight());
+                                 boxWidth, canvas.getHeight());
         canvas.drawRect(backRect, backPaint);
 
         for (Integer i = 0; i < ss.length; ++i) {
             canvas.drawText(ss[i], 0, ss[i].length(), 0,
-                    canvas.getHeight() - (bounds.height() * (ss.length - 1 - i)),
-                    textPaint);
+                            canvas.getHeight() - (bounds.height() * (ss.length - 1 - i)),
+                            textPaint);
         }
     }
 
@@ -706,7 +706,7 @@ DialogInterface.OnClickListener {
 
     @Override
     public boolean onFling(final MotionEvent e1, final MotionEvent e2,
-            final float velocityX, final float velocityY) {
+                           final float velocityX, final float velocityY) {
         return false;
     }
 
@@ -754,7 +754,7 @@ DialogInterface.OnClickListener {
                     if (!unit.hasFinishedTurn()) {
                         List<Position> unit_destinations = getUnitDestinations(selected_field);
                         //Log.v(null, "after destinations");
-                        
+
                         //FIXME: why doesn't unit_destinations.contains(newselected) work?
                         boolean contains = false;
                         for (Position pos : unit_destinations) {
@@ -763,15 +763,15 @@ DialogInterface.OnClickListener {
                                 break;
                             }
                         }
-                        
+
                         if (contains) { // unit at selected can move to newselected
                             //Log.v(null, "unit_destinations contains newselected");
                             /* pop up a menu with options:
                              * - Wait (go here and do nothing else
                              * - Attack (if there are units to attack)
-                             * Currently, to dismiss/cancel the menu press anywhere 
+                             * Currently, to dismiss/cancel the menu press anywhere
                              * other than the menu and it will go away.
-                             * 
+                             *
                              */
                             AlertDialog.Builder actions_builder = new AlertDialog.Builder(this.getContext());
                             actions_builder.setTitle("Actions");
@@ -799,7 +799,7 @@ DialogInterface.OnClickListener {
                             //String[] actions = {"Wait here", "Attack"};
                             buildmenu_builder.setItems(buildable_names, this);
                             buildmenu_builder.create().show();
-                            
+
                             build_menu = true; // true if the build menu for selected is being shown
                         } // build menu isn't shown if it isn't the user's turn
                     }
@@ -809,7 +809,7 @@ DialogInterface.OnClickListener {
                 if (field.hostsUnit()) {
 	                Unit attacker = field.getUnit();
 	                Set<Position> attack_positions = logic.getAttackableUnitPositions(map, attacker, attack_location);
-	                
+
 	                // FIXME: copied this from above to ensure it works, perhaps .contains(newselected) would work here?
 	                boolean contains = false;
 	                for (Position pos : attack_positions) {
@@ -823,7 +823,7 @@ DialogInterface.OnClickListener {
 	                	field.setUnit(null);
 	                	attacker.setPosition(attack_location);// move attacker to attack
 	                	map.getField(attack_location).setUnit(attacker);
-	                	
+
 	                    Log.v(null, "attack(!)");
 	                    state.attack(attacker, defender);
 	                } else {
@@ -840,7 +840,7 @@ DialogInterface.OnClickListener {
 
     @Override
     public boolean onScroll(final MotionEvent e1, final MotionEvent e2,
-            final float distanceX, final float distanceY) {
+                            final float distanceX, final float distanceY) {
 
         float newX = scrollOffset.getX() - distanceX;
 
@@ -892,10 +892,10 @@ DialogInterface.OnClickListener {
 	        }
         } else { // build_menu == true
         	GameField field = map.getField(selected);
-        	
+
         	if (field.hostsBuilding() &&
-        	(field.getBuilding().getProduceableUnits().size() > which) &&
-        	state.getCurrentPlayer().equals(field.getBuilding().getOwner())) {
+                (field.getBuilding().getProduceableUnits().size() > which) &&
+                state.getCurrentPlayer().equals(field.getBuilding().getOwner())) {
 	        	String unit_name = map.getField(selected).getBuilding().getProduceableUnits().get(which);
 	        	Log.v(null, "building a " + unit_name);
 	        	boolean result = state.produceUnit(map.getField(selected), unit_name);
@@ -909,7 +909,7 @@ DialogInterface.OnClickListener {
         	build_menu = false; // build menu gone
         }
     }
-    
+
     private void alertMessage(String text) {
     	new AlertDialog.Builder(context).setMessage(text).setPositiveButton("I read that", null).show();
     }
@@ -923,7 +923,7 @@ class DrawingThread extends Thread {
     private GameView gview;
 
     public DrawingThread(final SurfaceHolder sholder,
-            final Context ctx, final GameView gv) {
+                         final Context ctx, final GameView gv) {
         surfaceholder = sholder;
         context = ctx;
         run = false;
@@ -971,7 +971,7 @@ class FloatPair {
 
     public String toString() {
         return String.format("(%d, %d)", this.pair.getLeft(),
-                this.pair.getRight());
+                             this.pair.getRight());
     }
 
 }
