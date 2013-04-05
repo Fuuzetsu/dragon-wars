@@ -29,12 +29,19 @@ public class GameState {
         Set<Position> attackable = logic.getAttackableUnitPositions(map,
                                    attacker);
 
-        if (!attackable.contains(defender.getPosition()))
-            return;
+        //if (!attackable.contains(defender.getPosition()))
+        //    return;
+        boolean contains = false;
+        for (Position pos : attackable) {
+            if (pos.equals(defender.getPosition()))
+                contains = true;
+        }
+        if (!contains) return;
 
         Pair<Double, Double> damage = logic.calculateDamage(map, attacker,
                                       defender);
-
+        Log.v(null, "Dmg to atckr: " + damage.getRight() + " Dmg to dfndr: " + damage.getLeft());
+        
         defender.reduceHealth(damage.getLeft());
 
         Boolean died = removeUnitIfDead(defender);
