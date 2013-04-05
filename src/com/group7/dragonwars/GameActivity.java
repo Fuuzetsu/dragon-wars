@@ -821,10 +821,10 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                                 = new AlertDialog.Builder(this.getContext());
                             buildmenu_builder.setTitle("Build");
 
-                            List<String> units = building.getProduceableUnits();
+                            List<Unit> units = building.getProducableUnits();
                             String[] buildable_names = new String[units.size()];
                             for (int i = 0; i < units.size(); ++i) {
-                                buildable_names[i] = units.get(i);
+                                buildable_names[i] = units.get(i).toString();
                             }
                             //String[] actions = {"Wait here", "Attack"};
                             buildmenu_builder.setItems(buildable_names, this);
@@ -926,19 +926,19 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
             GameField field = map.getField(selected);
 
             if (field.hostsBuilding() &&
-                (field.getBuilding().getProduceableUnits().size() > which) &&
+                (field.getBuilding().getProducableUnits().size() > which) &&
                 state.getCurrentPlayer().equals(
                     field.getBuilding().getOwner())) {
-                String unit_name = map.getField(selected)
-                    .getBuilding().getProduceableUnits().get(which);
-                Log.v(null, "building a " + unit_name);
-                boolean result = state.produceUnit(map.getField(selected),
-                                                   unit_name);
+                Unit unit = map.getField(selected)
+                    .getBuilding().getProducableUnits().get(which);
+                Log.v(null, "building a " + unit);
+                Boolean result = state.produceUnit(map.getField(selected),
+                                                   unit);
                 if (!result) {
                     alertMessage(String.format(
-                        "Could not build unit %s (cost: %s)}", unit_name,
+                        "Could not build unit %s (cost: %s)}", unit,
                         UnitFactory.getUnitFactories()
-                        .get(unit_name).getProductionCost()));
+                        .get(unit).getProductionCost()));
                 }
             } else {
                 // how did the user manage that?

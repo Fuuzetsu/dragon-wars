@@ -60,17 +60,6 @@ public class Building extends DrawableMapObject {
     public List<Unit> getProducableUnits() {
         return this.producableUnits;
     }
-    
-    public List<String> getProduceableUnits() {
-    	/* in The Future(tm) buildings could use
-    	 * lists of strings to show what they are
-    	 * capable of producing */ 
-    	LinkedList<String> names = new LinkedList<String>();
-    	for (Unit unit : this.producableUnits) {
-    		names.add(unit.getName());
-    	}
-    	return names;
-    }
 
     public String toString() {
         return getName();

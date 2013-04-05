@@ -158,39 +158,35 @@ public class GameState {
     public List<Player> getPlayers() {
         return this.players;
     }
-    
+
     public Player getCurrentPlayer() {
     	return players.get(turns % players.size());
     	// :S
     }
 
     /* I'll just roll with GF and String for now; should be easy to change */
-    public Boolean produceUnit(GameField field, String unitName) {
+    public Boolean produceUnit(final GameField field, final Unit unit) {
     	// produces a unit "at" a building
         if (!field.hostsBuilding() || field.hostsUnit())
             return false;
 
         Building building = field.getBuilding();
-        Unit unit = null;
-        for (String u : building.getProduceableUnits())
-            if (u.equals(unitName) && UnitFactory.getUnitFactories().containsKey(unitName)) {
+
+        for (Unit u : building.getProducableUnits()) {
+            if (u.getName().equals(unit.getName())) {
             	Player player = building.getOwner();
-            	UnitFactory factory = UnitFactory.getUnitFactories().get(unitName);
-            	
-            	if (player.getGoldAmount() < factory.getProductionCost()) {
+
+            	if (player.getGoldAmount() < u.getProductionCost()) {
                     return false;
             	}
-            	
-            	unit = factory.produceUnit(building.getPosition(), building.getOwner());
-                if (unit == null)
-                    return false;
-                
-            	field.setUnit(unit);
+
+                Unit newUnit = new Unit(u);
+
+            	field.setUnit(newUnit);
             	player.setGoldAmount(player.getGoldAmount() - unit.getProductionCost());
                 return true;
-            } else {
-            	return false; // the building can produce unitName, but there is no producer (!)
             }
+        }
 
         return false;
 
