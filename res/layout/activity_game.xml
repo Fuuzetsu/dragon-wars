@@ -19,7 +19,7 @@
     -->
 
     <com.group7.dragonwars.GameView
-        android:id="@+id/game_view"
+        android:id="@+id/gameView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
 

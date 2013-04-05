@@ -14,6 +14,7 @@ import org.json.JSONException;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
@@ -33,8 +34,12 @@ import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.group7.dragonwars.engine.Building;
 import com.group7.dragonwars.engine.DrawableMapObject;
@@ -64,9 +69,14 @@ public class GameActivity extends Activity {
         // remove the status bar
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                              WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
+        
         Log.d(TAG, "in onCreate");
         setContentView(R.layout.activity_game);
+        Log.v(null, "on inCreate");
+        
+        Button menuButton = (Button) this.findViewById(R.id.menuButton);
+        GameView gameView = (GameView) this.findViewById(R.id.gameView);
+        menuButton.setOnClickListener(gameView);
     }
 
 }
@@ -74,7 +84,8 @@ public class GameActivity extends Activity {
 class GameView extends SurfaceView implements SurfaceHolder.Callback,
                                               OnGestureListener,
                                               OnDoubleTapListener,
-                                              DialogInterface.OnClickListener {
+                                              DialogInterface.OnClickListener,
+                                              OnClickListener {
     private final String TAG = "GameView";
 
     private final int tilesize = 64;
@@ -113,13 +124,6 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
      *
      */
 
-    private boolean build_menu;
-    /* true if the build menu is being shown
-     * for the building at selected
-     * made false if the user presses elsewhere
-     * (or actually builds something)
-     */
-
     private Context context;
     private HashMap<String, HashMap<String, Bitmap>> graphics;
     private Integer orientation;
@@ -133,14 +137,21 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     private Long timeNow = 0L;
     private Double fps = 0.0;
 
+    private enum MenuType {NONE, ACTION, BUILD, MENU};
+    
+    private MenuType whichMenu;
 
     public GameView(final Context ctx, final AttributeSet attrset) {
         super(ctx, attrset);
         Log.d(TAG, "GameView ctor");
 
-        GameView gameView = (GameView) this.findViewById(R.id.game_view);
+        GameView gameView = (GameView) this.findViewById(R.id.gameView);
         GameMap gm = null;
+        
+        //this.findViewById(R.id.menuButton).setOnClickListener(gameView);
 
+        whichMenu = MenuType.NONE;
+        
         Log.d(TAG, "nulling GameMap");
 
         try {
@@ -195,7 +206,6 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         attack_high_paint.setStyle(Paint.Style.FILL);
         attack_high_paint.setARGB(150, 255, 0, 0); // semi-transparent red
 
-        build_menu = false;
         attack_action = false;
 
         /* Prerender combined map */
@@ -673,11 +683,11 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         String info = field.getInfo();
 
         if (unit != null) {
-            info += unit.getInfo();
+            info += "\n" + unit.getInfo();
         }
 
         if (field.hostsBuilding()) {
-            info += field.getBuilding().getInfo();
+            info += "\n" + field.getBuilding().getInfo();
         }
         
         drawCornerBox(canvas, true, false, info);
@@ -686,6 +696,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     public void drawCornerBox(Canvas canvas, boolean left, boolean top, String text) {
         Paint textPaint = new Paint();
         textPaint.setColor(Color.WHITE);
+        textPaint.setTextSize(15);
         textPaint.setTextAlign(left ? Paint.Align.LEFT : Paint.Align.RIGHT);
 
         Paint backPaint = new Paint();
@@ -763,7 +774,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         Position newselected = new Position(touchX, touchY);
 
         if (this.map.isValidField(touchX, touchY)) {
-            build_menu = false; // the user selected another square
+            whichMenu = MenuType.NONE;
             GameField newselected_field = map.getField(newselected);
             if (!attack_action) {
                 if (map.getField(selected).hostsUnit()) {
@@ -790,12 +801,13 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                             AlertDialog.Builder actions_builder =
                                 new AlertDialog.Builder(this.getContext());
                             actions_builder.setTitle("Actions");
-                            String[] actions = {"Wait here", "Attack"};
+                            String[] actions = {"Wait here", "Attack", "Cancel"};
                             actions_builder.setItems(actions, this);
                             actions_builder.create().show();
                             action_location = newselected;
-
+                            
                             // onClick handles the result
+                            whichMenu = MenuType.ACTION;
                             newselected = selected; // do not move the selection
                         }
                     }
@@ -808,14 +820,15 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                         buildmenu_builder.setTitle("Build");
 
                         List<Unit> units = building.getProducibleUnits();
-                        String[] buildable_names = new String[units.size()];
+                        String[] buildable_names = new String[units.size() + 1];
                         for (int i = 0; i < units.size(); ++i) {
                             buildable_names[i] = units.get(i).toString() + " - " + units.get(i).getProductionCost() + " Gold";
                         }
+                        buildable_names[units.size()] = "Cancel";
                         buildmenu_builder.setItems(buildable_names, this);
                         buildmenu_builder.create().show();
 
-                        build_menu = true; // build menu is being shown
+                        whichMenu = MenuType.BUILD;
                     } // build menu isn't shown if it isn't the user's turn
                 }
             } else { // attack_action
@@ -882,7 +895,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     @Override
     public void onClick(final DialogInterface dialog, final int which) {
         Log.v(null, "selected option: " + which);
-        if (!build_menu) {
+        switch (whichMenu) {
+        case ACTION:
             switch (which) {
             case 0: // move
                 Unit unit = map.getField(selected).getUnit();
@@ -898,7 +912,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                  */
                 break;
             }
-        } else { // build_menu == true
+            break;
+        case BUILD:
             GameField field = map.getField(selected);
 
             if (field.hostsBuilding() &&
@@ -915,18 +930,38 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                         "Could not build unit %s (Cost: %s Gold)", unit,
                         unit.getProductionCost()));
                 }
-            } else {
+            } else if (field.getBuilding().getProducibleUnits().size() != which) {
                 // how did the user manage that?
                 alertMessage("It's not the building's owner's turn"
                              + ", or there is no building");
             }
-            build_menu = false; // build menu gone
+            break;
+        case MENU:
+            switch (which) {
+            case 0:
+                state.advanceTurn();
+                Log.v(null, "advancing turn");
+                break;
+            }
+            break;
         }
+        whichMenu = MenuType.NONE;
     }
 
     private void alertMessage(String text) {
         new AlertDialog.Builder(context).setMessage(text)
             .setPositiveButton("OK", null).show();
+    }
+
+    @Override
+    public void onClick(View arg0) {
+        // This onClick if for the Menu button
+        AlertDialog.Builder menu_builder = new AlertDialog.Builder(this.getContext());
+        menu_builder.setTitle("Menu");
+        String[] actions = {"End Turn", "Cancel"};
+        menu_builder.setItems(actions, this);
+        menu_builder.create().show();
+        whichMenu = MenuType.MENU;
     }
 }
 
@@ -999,5 +1034,4 @@ class FloatPair {
         return String.format("(%d, %d)", this.pair.getLeft(),
                              this.pair.getRight());
     }
-
 }
