@@ -776,7 +776,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                      */
                     GameField selected_field = map.getField(selected);
                     Unit unit = selected_field.getUnit();
-                    if (!unit.hasFinishedTurn() && !map.getField(newselected).hostsUnit()) {
+                    if (!unit.hasFinishedTurn() && (!map.getField(newselected).hostsUnit() || selected.equals(newselected))) {
                         List<Position> unit_destinations =
                             getUnitDestinations(selected_field);
 
