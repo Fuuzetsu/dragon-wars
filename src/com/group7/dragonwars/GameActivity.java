@@ -821,7 +821,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                                 = new AlertDialog.Builder(this.getContext());
                             buildmenu_builder.setTitle("Build");
 
-                            List<Unit> units = building.getProducableUnits();
+                            List<Unit> units = building.getProducibleUnits();
                             String[] buildable_names = new String[units.size()];
                             for (int i = 0; i < units.size(); ++i) {
                                 buildable_names[i] = units.get(i).toString();
@@ -926,11 +926,11 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
             GameField field = map.getField(selected);
 
             if (field.hostsBuilding() &&
-                (field.getBuilding().getProducableUnits().size() > which) &&
+                (field.getBuilding().getProducibleUnits().size() > which) &&
                 state.getCurrentPlayer().equals(
                     field.getBuilding().getOwner())) {
                 Unit unit = map.getField(selected)
-                    .getBuilding().getProducableUnits().get(which);
+                    .getBuilding().getProducibleUnits().get(which);
                 Log.v(null, "building a " + unit);
                 Boolean result = state.produceUnit(map.getField(selected),
                                                    unit);

@@ -172,7 +172,7 @@ public class GameState {
 
         Building building = field.getBuilding();
 
-        for (Unit u : building.getProducableUnits()) {
+        for (Unit u : building.getProducibleUnits()) {
             if (u.getName().equals(unit.getName())) {
             	Player player = building.getOwner();
 
