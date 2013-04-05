@@ -44,7 +44,6 @@ import com.group7.dragonwars.engine.MapReader;
 import com.group7.dragonwars.engine.Position;
 import com.group7.dragonwars.engine.Pair;
 import com.group7.dragonwars.engine.Unit;
-import com.group7.dragonwars.engine.UnitFactory;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -937,8 +936,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                 if (!result) {
                     alertMessage(String.format(
                         "Could not build unit %s (cost: %s)}", unit,
-                        UnitFactory.getUnitFactories()
-                        .get(unit).getProductionCost()));
+                        unit.getProductionCost()));
                 }
             } else {
                 // how did the user manage that?
