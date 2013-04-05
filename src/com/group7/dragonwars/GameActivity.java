@@ -935,7 +935,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                                                    unit);
                 if (!result) {
                     alertMessage(String.format(
-                        "Could not build unit %s (cost: %s)}", unit,
+                        "Could not build unit %s (cost: %s)", unit,
                         unit.getProductionCost()));
                 }
             } else {
