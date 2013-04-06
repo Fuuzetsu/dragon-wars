@@ -59,6 +59,8 @@ public class GameState {
 
         List<Position> path = logic.findPath(map, unit, destination);
         Integer movementCost = logic.calculateMovementCost(map, unit, path);
+        System.out.println(path);
+        System.out.println(movementCost);
 
         if (!map.isValidField(destination) || path.size() == 0) {
             return false;

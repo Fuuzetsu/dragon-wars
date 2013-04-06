@@ -16,6 +16,9 @@ public class Logic {
     public Integer calculateMovementCost(GameMap map, Unit unit, List<Position> path) {
         Double totalCost = 0.0;
         for (Position pos : path) {
+            if (pos.equals(unit.getPosition())) {
+                continue;
+            }
             totalCost += getMovementCost(map, unit, pos);
         }
 
@@ -26,30 +29,85 @@ public class Logic {
     }
 
     public List<Position> destinations(GameMap map, Unit unit) {
-        List<Position> checked = new ArrayList<Position>();
-
+        Set<Position> checked = new HashSet<Position>();
+        Set<Position> reachable = new HashSet<Position>();
         List<Position> mapPositions = new ArrayList<Position>();
+
+        Position unitPosition = unit.getPosition();
+
+        /* Fill mapPositions */
         for (int x = 0; x < map.getWidth(); ++x)
             for (int y = 0; y < map.getHeight(); y++)
                 mapPositions.add(new Position(x, y));
 
-        for (Position p : mapPositions) {
 
-            if (!map.isValidField(p) || checked.contains(p))
-                continue;
+        List<Pair<Position, Double>> start
+            = new ArrayList<Pair<Position, Double>>();
+        start.add(new Pair<Position, Double>(
+            unitPosition, 0.0));
 
-            List<Position> path = AStar(map, unit, p);
+        checked.add(unitPosition);
+        reachable.add(unitPosition);
+        List<Pair<Position, Double>> next = nextPositions(map, start);
+        while (next.size() != 0) {
+            System.out.println(next);
+            List<Pair<Position, Double>> newNext = new ArrayList<Pair<Position, Double>>();
+            for (Pair<Position, Double> p : next) {
+                Position pos = p.getLeft();
+                Double cost = p.getRight();
+                checked.add(pos);
+                if (unit.getRemainingMovement() < cost) {
+                    continue;
+                }
 
-            for (Position y : path) {
-                if (!checked.contains(y)) {
-                    checked.add(y);
+                if (map.isValidField(pos) && map.getField(pos).doesAcceptUnit(unit)) {
+                    if (map.getField(pos).hostsUnit()) {
+                        Player op = map.getField(pos).getUnit().getOwner();
+
+                        if (!op.equals(unit.getOwner())) {
+                            continue;
+                        }
+                    }
+                    reachable.add(pos);
+                    List<Pair<Position, Double>> t = new ArrayList<Pair<Position, Double>>();
+                    t.add(p);
+                    List<Pair<Position, Double>> thisNext = nextPositions(map, t);
+                    for (Pair<Position, Double> thisPos : thisNext) {
+                        if (!checked.contains(thisPos.getLeft())) {
+                            newNext.add(thisPos);
+                        }
+                    }
                 }
             }
-
+            next = newNext;
         }
 
-        return checked;
+        return new ArrayList<Position>(reachable);
     }
+
+    public List<Pair<Position, Double>>
+        nextPositions(GameMap map, List<Pair<Position, Double>> toCheck) {
+
+        List<Pair<Position, Double>> result = new ArrayList<Pair<Position, Double>>();
+
+        for (Pair<Position, Double> p : toCheck) {
+            Double costSoFar = p.getRight();
+            Position currentPosition = p.getLeft();
+            List<Position> adj = getAdjacentPositions(currentPosition);
+
+            for (Position pos : adj) {
+                if (map.isValidField(pos)) {
+                    GameField cField = map.getField(pos);
+                    Double newCost = costSoFar + cField.getMovementModifier();
+                    result.add(new Pair<Position, Double>(pos, newCost));
+                }
+            }
+        }
+        System.out.println(result);
+        return result;
+    }
+
+
 
     public Pair<Double, Double> calculateDamage(GameMap map, Unit attacker,
             Unit defender) {
@@ -63,7 +121,7 @@ public class Logic {
 
         Double fieldDefense = defenderField.getDefenseModifier() - 1;
         Double unitDefense = attacker.isRanged() ? defender.getRangeDefense() : defender.getMeleeDefense() - 1;
-        
+
         Double damage = attacker.getAttack() +
                         (2 * attacker.getAttack() *
                         (attacker.getHealth()/attacker.getMaxHealth()));
@@ -71,7 +129,7 @@ public class Logic {
         Double finalDamage = damage - (((fieldDefense * damage) / 2) + ((unitDefense * damage) / 2));
         Log.v(null, "finalDamage: " + finalDamage + " damage: " + damage + " unitDefense: " + unitDefense + " fieldDefense: " + fieldDefense);
         return (attacker.getHealth() > 0.0 ? finalDamage : 0.0);
-        
+
         /*Double attackerMod = attackerField.getAttackModifier();
         Double defenderMod = defenderField.getDefenseModifier();
 
@@ -97,10 +155,10 @@ public class Logic {
     private Double calculateTheoreticalCounterDamage(GameMap map, Unit attacker,
             Unit defender, Double atkHealth) {
         GameField defenderField = map.getField(defender.getPosition());
-        
+
         double fieldDefense = defenderField.getDefenseModifier() - 1;
         double unitDefense = attacker.isRanged() ? defender.getRangeDefense() : defender.getMeleeDefense() - 1;
-        
+
         double damage = attacker.getAttack() +
                         (2 * attacker.getAttack() *
                         (atkHealth/attacker.getMaxHealth()));
@@ -109,7 +167,7 @@ public class Logic {
         Log.v(null, "finalDamage: " + finalDamage + " damage: " + damage + " unitDefense: " + unitDefense + " fieldDefense: " + fieldDefense);
 
         return attacker.getHealth() > 0 ? finalDamage : 0;
-        
+
         /*
         // No defense disadvantage on a counter.
         Double attackerMod = attackerField.getAttackModifier();
@@ -144,18 +202,13 @@ public class Logic {
 
             Position lastPos = poss.get(poss.size() - 1);
 
-            if (lastPos.equals(destination))
+            if (lastPos.equals(destination)) {
                 return poss;
+            }
 
-            Boolean c = false;
-            for (Position x : expanded)
-                if (lastPos.equals(x)) {
-                    c = true;
-                    break;
-                }
-
-            if (c)
+            if (expanded.contains(lastPos)) {
                 continue;
+            }
 
             expanded.add(lastPos);
 
@@ -164,7 +217,8 @@ public class Logic {
             /* Get cost */
             Double g = getMovementCost(map, unit, lastPos);
             Double pathCost = posP.getRight() + h * g;
-
+            System.out.println(poss);
+            System.out.println(pathCost);
             if (pathCost > unit.getRemainingMovement())
             	continue;
 
@@ -179,7 +233,8 @@ public class Logic {
 
                     List<Position> plan = new ArrayList<Position>(poss);
                     plan.add(p);
-                    queue.add(new Pair<List<Position>, Double>(plan, pathCost));
+                    queue.add(new Pair<List<Position>, Double>(
+                        plan, g + map.getField(p).getMovementModifier()));
                 }
             }
         }
