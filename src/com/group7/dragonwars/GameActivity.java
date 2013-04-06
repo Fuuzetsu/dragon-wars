@@ -781,11 +781,15 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                      */
                     GameField selected_field = map.getField(selected);
                     Unit unit = selected_field.getUnit();
-                    if (unit.getOwner().equals(state.getCurrentPlayer()) && !unit.hasFinishedTurn() && (!map.getField(newselected).hostsUnit() || selected.equals(newselected))) {
+                    if (unit.getOwner().equals(state.getCurrentPlayer()) &&
+                        !unit.hasFinishedTurn() &&
+                        (!map.getField(newselected).hostsUnit() ||
+                         selected.equals(newselected))) {
                         List<Position> unit_destinations =
                             getUnitDestinations(selected_field);
 
-                        if (unit_destinations.contains(newselected)) {
+                        if (unit_destinations.contains(newselected) ||
+                            !unit.hasFinishedTurn()) {
                             /* pop up a menu with options:
                              * - Wait (go here and do nothing else
                              * - Attack (if there are units to attack)
@@ -797,17 +801,22 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                             AlertDialog.Builder actions_builder =
                                 new AlertDialog.Builder(this.getContext());
                             actions_builder.setTitle("Actions");
-                            String[] actions = {"Wait here", "Attack", "Cancel"};
+                            String[] actions = {"Wait here", "Attack",
+                                                "Cancel"};
                             actions_builder.setItems(actions, this);
-                            actions_builder.create().show();
+                            AlertDialog ad = actions_builder.create();
+                            ad.show();
                             action_location = newselected;
-
+                            if (unit.hasMoved()) {
+                                ad.getButton(0).setEnabled(false);
+                            }
                             // onClick handles the result
                             whichMenu = MenuType.ACTION;
                             newselected = selected; // do not move the selection
                         }
                     }
-                } else if (!newselected_field.hostsUnit() && newselected_field.hostsBuilding()) {
+                } else if (!newselected_field.hostsUnit() &&
+                           newselected_field.hostsBuilding()) {
                     Building building = map.getField(newselected).getBuilding();
                     if (building.getOwner().equals(state.getCurrentPlayer())
                             && building.canProduceUnits()) {
@@ -818,7 +827,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                         List<Unit> units = building.getProducibleUnits();
                         String[] buildable_names = new String[units.size() + 1];
                         for (int i = 0; i < units.size(); ++i) {
-                            buildable_names[i] = units.get(i).toString() + " - " + units.get(i).getProductionCost() + " Gold";
+                            buildable_names[i] = units.get(i).toString() + " - "
+                                + units.get(i).getProductionCost() + " Gold";
                         }
                         buildable_names[units.size()] = "Cancel";
                         buildmenu_builder.setItems(buildable_names, this);
@@ -843,7 +853,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                         attacker.setPosition(attack_location);
                         map.getField(attack_location).setUnit(attacker);
 
-                        Log.v(null, "attack(!): " + attacker + " attacks " + defender);
+                        Log.v(null, "attack(!): " + attacker
+                              + " attacks " + defender);
                         state.attack(attacker, defender);
                         attacker.setFinishedTurn(true);
 
@@ -925,7 +936,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                         "Could not build unit %s (Cost: %s Gold)", unit,
                         unit.getProductionCost()));
                 }
-            } else if (field.getBuilding().getProducibleUnits().size() != which) {
+            } else if (field.getBuilding().getProducibleUnits().size()
+                       != which) {
                 // how did the user manage that?
                 alertMessage("It's not the building's owner's turn"
                              + ", or there is no building");
@@ -951,7 +963,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     @Override
     public void onClick(View arg0) {
         // This onClick if for the Menu button
-        AlertDialog.Builder menu_builder = new AlertDialog.Builder(this.getContext());
+        AlertDialog.Builder menu_builder
+            = new AlertDialog.Builder(this.getContext());
         menu_builder.setTitle("Menu");
         String[] actions = {"End Turn", "Cancel"};
         menu_builder.setItems(actions, this);
