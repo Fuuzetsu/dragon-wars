@@ -33,7 +33,7 @@ public class Logic {
         Set<Position> reachable = new HashSet<Position>();
 
         Position unitPosition = unit.getPosition();
-        List<Pair<Position, Double>> start
+        List<Node> start
             = new ArrayList<Node>();
         start.add(new Node(unitPosition, 0.0, 0.0));
 
@@ -50,8 +50,9 @@ public class Logic {
                 }
 
                 if (map.getField(n.getPosition()).doesAcceptUnit(unit)) {
-                    if (map.getField(pos).hostsUnit()) {
-                        Player op = map.getField(pos).getUnit().getOwner();
+                    if (map.getField(n.getPosition()).hostsUnit()) {
+                        Player op = map.getField(n.getPosition())
+                            .getUnit().getOwner();
 
                         if (!op.equals(unit.getOwner())) {
                             continue;
@@ -64,12 +65,12 @@ public class Logic {
 
                     for (Node thisNode : thisNext) {
                         if (!checked.contains(thisNode.getPosition())) {
-                            thisNext.add(thisNode);
+                            newNext.add(thisNode);
                         }
                     }
                 }
             }
-            next = thisNext;
+            next = newNext;
         }
 
         return new ArrayList<Position>(reachable);
@@ -78,17 +79,17 @@ public class Logic {
     public List<Node>
         nextPositions(GameMap map, List<Node> toCheck) {
 
-        List<Pair<Position, Double>> result = new ArrayList<Pair<Position, Double>>();
+        List<Node> result = new ArrayList<Node>();
 
-        for (Pair<Position, Double> p : toCheck) {
-            Double costSoFar = p.getRight();
-            Position currentPosition = p.getLeft();
+        for (Node n : toCheck) {
+            Double costSoFar = n.getG();
+            Position currentPosition = n.getPosition();
             List<Position> adj = getValidNeighbours(map, currentPosition);
 
             for (Position pos : adj) {
                 GameField cField = map.getField(pos);
                 Double newCost = costSoFar + cField.getMovementModifier();
-                result.add(new Pair<Position, Double>(pos, newCost));
+                result.add(new Node(pos, newCost, 0.0));
             }
         }
 
