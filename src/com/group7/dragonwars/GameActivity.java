@@ -789,8 +789,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                         List<Position> unit_destinations =
                             getUnitDestinations(selected_field);
 
-                        if (unit_destinations.contains(newselected) &&
-                            !unit.hasFinishedTurn()) {
+                        if (unit_destinations.contains(newselected) ||
+                            selected.equals(newselected)) {
                             /* pop up a menu with options:
                              * - Wait (go here and do nothing else
                              * - Attack (if there are units to attack)
