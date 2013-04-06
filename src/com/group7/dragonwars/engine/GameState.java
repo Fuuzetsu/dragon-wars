@@ -60,17 +60,20 @@ public class GameState {
         List<Position> path = logic.findPath(map, unit, destination);
         Integer movementCost = logic.calculateMovementCost(map, unit, path);
 
-        if (!map.isValidField(destination))
+        if (!map.isValidField(destination) || path.size() == 0) {
             return false;
+        }
 
         GameField destField = map.getField(destination);
-        if (destField.hostsUnit())
+        if (destField.hostsUnit()) {
             return false;
+        }
 
 
         /* Double check */
-        if (unit.getRemainingMovement() < movementCost)
+        if (unit.getRemainingMovement() < movementCost) {
             return false;
+        }
 
 
         GameField currentField = map.getField(unit.getPosition());
