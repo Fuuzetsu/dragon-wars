@@ -156,7 +156,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         Log.d(TAG, "nulling GameMap");
 
         try {
-            gm = MapReader.readMap(readFile(R.raw.cornermap)); // ugh
+            gm = MapReader.readMap(readFile(R.raw.overmap)); // ugh
         } catch (JSONException e) {
             Log.d(TAG, "Failed to load the map: " + e.getMessage());
         }
