@@ -378,7 +378,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         }
 
         Unit u = selectedField.getUnit();
-        if (u.getOwner() != state.getCurrentPlayer()) {
+        if (u.getOwner() != state.getCurrentPlayer() || u.hasFinishedTurn()) {
             lastUnit = null;
             lastField = null;
             return unitDests;
