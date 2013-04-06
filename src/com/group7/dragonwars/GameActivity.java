@@ -717,7 +717,12 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                 top ? 0 : canvas.getHeight() - boxHeight,
                 left ? boxWidth : canvas.getWidth(),
                 top ? boxHeight : canvas.getHeight());
-        canvas.drawRect(backRect, backPaint);
+        float radius = 5f;
+        RectF backRectF = new RectF(backRect.left - radius,
+                backRect.top - radius,
+                backRect.right + radius,
+                backRect.bottom + radius);
+        canvas.drawRoundRect(backRectF, 5f, 5f, backPaint);
 
 
         for (Integer i = 0; i < ss.length; ++i) {
