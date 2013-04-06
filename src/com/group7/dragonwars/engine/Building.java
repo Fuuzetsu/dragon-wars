@@ -111,6 +111,7 @@ public class Building extends DrawableMapObject {
         if (this.remainingCaptureTime <= 0) {
             this.remainingCaptureTime = 0;
             this.owner = this.lastCapturer;
+            this.lastCapturer.addBuilding(this);
         }
     }
 

@@ -190,6 +190,7 @@ public class GameState {
                 newUnit.setOwner(player);
 
                 player.setGoldAmount(player.getGoldAmount() - unit.getProductionCost());
+                player.addUnit(newUnit);
             	field.setUnit(newUnit);
 
                 return true;
