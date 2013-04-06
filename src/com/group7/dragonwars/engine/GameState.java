@@ -79,6 +79,7 @@ public class GameState {
 
         currentField.setUnit(null);
         unit.setPosition(destination);
+        unit.setMoved(true);
 
         return true;
 

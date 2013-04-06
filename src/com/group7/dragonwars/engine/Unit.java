@@ -9,6 +9,7 @@ public class Unit extends DrawableMapObject {
     private Double attack, meleeDefense, rangeDefense;
     private Position position;
     private Boolean hasFinishedTurn = false;
+    private Boolean hasMoved = false;
     private Player owner;
     private Boolean isFlying;
     private Integer productionCost;
@@ -145,8 +146,17 @@ public class Unit extends DrawableMapObject {
         return true;
     }
 
+    public void setMoved(Boolean b) {
+        hasMoved = true;
+    }
+
+    public Boolean hasMoved() {
+        return hasMoved;
+    }
+
     public void resetTurnStatistics() {
         movement = maxMovement;
+        hasMoved = false;
         setFinishedTurn(false);
     }
 

@@ -378,7 +378,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         }
 
         Unit u = selectedField.getUnit();
-        if (u.getOwner() != state.getCurrentPlayer() || u.hasFinishedTurn()) {
+        if (u.getOwner() != state.getCurrentPlayer() ||
+            u.hasFinishedTurn() || u.hasMoved()) {
             lastUnit = null;
             lastField = null;
             return unitDests;
@@ -896,7 +897,6 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
             case 0: // move
                 Unit unit = map.getField(selected).getUnit();
                 Boolean moved = state.move(unit, action_location);
-                unit.setFinishedTurn(moved);
                 break;
             case 1: // attack
                 attack_location = action_location;
