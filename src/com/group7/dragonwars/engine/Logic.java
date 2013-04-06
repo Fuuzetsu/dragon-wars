@@ -76,7 +76,7 @@ public class Logic {
     }
 
     public List<Node>
-        nextPositions(GameMap map, List<Node> toCheck {
+        nextPositions(GameMap map, List<Node> toCheck) {
 
         List<Pair<Position, Double>> result = new ArrayList<Pair<Position, Double>>();
 
