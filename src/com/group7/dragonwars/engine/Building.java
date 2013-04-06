@@ -10,7 +10,7 @@ public class Building extends DrawableMapObject {
     private Player owner;
     private Boolean goalBuilding;
     private Player lastCapturer;
-    private List<Unit> producableUnits = new ArrayList<Unit>();
+    private List<Unit> producibleUnits = new ArrayList<Unit>();
     private Position position;
 
 
@@ -50,15 +50,16 @@ public class Building extends DrawableMapObject {
     }
 
     public Boolean canProduceUnits() {
-        return !this.producableUnits.isEmpty();
+        return !this.producibleUnits.isEmpty();
     }
 
     public void addProducibleUnit(Unit unit) {
-        this.producableUnits.add(unit);
+        this.producibleUnits.add(unit);
+        this.generateInfo(); // Info has changed since producible units have changed
     }
 
     public List<Unit> getProducibleUnits() {
-        return this.producableUnits;
+        return this.producibleUnits;
     }
 
     public String toString() {
@@ -144,12 +145,11 @@ public class Building extends DrawableMapObject {
     public void generateInfo() {
         String r = "";
         if (canProduceUnits()) {
+            r += "Produces:\n";
             for (Unit u : getProducibleUnits()) {
-                r += "I can produce " + u + " - "
-                    + u.getProductionCost() + "g\n";
+                r += u + " - "
+                    + u.getProductionCost() + " Gold\n";
             }
-        } else {
-            r += "I can't produce anything.\n";
         }
 
         this.info = r;
