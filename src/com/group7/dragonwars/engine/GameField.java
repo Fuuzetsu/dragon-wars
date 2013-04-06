@@ -1,28 +1,35 @@
 package com.group7.dragonwars.engine;
 
-public class GameField {
+import java.text.DecimalFormat;
 
-    private String fieldName;
+public class GameField extends DrawableMapObject {
+
     private Unit hostedUnit;
     private Building hostedBuilding;
     private Double movementModifier;
     private Double defenseModifier, attackModifier;
     private Boolean flightOnly, accessible;
-    private String spriteLocation, spriteDir, spritePack;
+    
+    private static DecimalFormat decformat;
+    
+    static {
+        decformat = new DecimalFormat("#.##");
+    }
 
     public Boolean doesAcceptUnit(Unit unit) {
-        Boolean canStep = true;
+        Boolean canStep = false;
 
         if (this.flightOnly)
             canStep = unit.isFlying();
 
-        return this.accessible && canStep;
+        return this.accessible || canStep;
     }
 
     public GameField(String fieldName, Double movementModifier, Double attackModifier,
                      Double defenseModifier, Boolean accessible, Boolean flightOnly,
                      String spriteLocation, String spriteDir, String spritePack) {
-        this.fieldName = fieldName;
+        super(fieldName, spriteLocation, spriteDir, spritePack);
+
         this.hostedUnit = null;
         this.hostedBuilding = null;
         this.movementModifier = movementModifier;
@@ -31,10 +38,7 @@ public class GameField {
         this.accessible = accessible;
         this.flightOnly = flightOnly;
 
-        this.spriteLocation = spriteLocation;
-        this.spriteDir = spriteDir;
-        this.spritePack = spritePack;
-
+        generateInfo();
     }
 
     public Double getDefenseModifier() {
@@ -89,22 +93,14 @@ public class GameField {
     }
 
     public String toString() {
-        return this.getFieldName();
+        return getName();
     }
 
-    public String getFieldName() {
-        return this.fieldName;
-    }
-
-    public String getSpriteLocation() {
-        return this.spriteLocation;
-    }
-
-    public String getSpriteDir() {
-        return this.spriteDir;
-    }
-
-    public String getSpritePack() {
-        return this.spritePack;
+    public void generateInfo() {
+        String r = getName() + "\n";
+        r += "Attack: " + decformat.format(getAttackModifier())
+            + " Defense: " + decformat.format(getDefenseModifier())
+            + " Move: " + decformat.format(getMovementModifier()) + "\n";
+        this.info = r;
     }
 }

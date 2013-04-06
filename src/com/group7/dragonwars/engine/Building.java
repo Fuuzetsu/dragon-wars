@@ -2,24 +2,22 @@ package com.group7.dragonwars.engine;
 
 import java.util.*;
 
-public class Building {
+public class Building extends DrawableMapObject {
 
     private Integer captureWorth;
-    private String buildingName;
     private Integer captureDifficulty, remainingCaptureTime;
     private Double attackBonus, defenseBonus;
     private Player owner;
     private Boolean goalBuilding;
     private Player lastCapturer;
-    private String spriteLocation, spriteDir, spritePack;
-    private List<Unit> producableUnits = new ArrayList<Unit>();
+    private List<Unit> producibleUnits = new ArrayList<Unit>();
     private Position position;
 
 
     public Building(String name, Integer captureDifficulty, Double attackBonus,
                     Double defenseBonus, Boolean goalBuilding, Integer captureWorth,
                     String spriteLocation, String spriteDir, String spritePack) {
-        this.buildingName = name;
+        super(name, spriteLocation, spriteDir, spritePack);
 
         this.captureDifficulty = captureDifficulty;
         this.remainingCaptureTime = this.captureDifficulty;
@@ -30,14 +28,13 @@ public class Building {
         this.goalBuilding = goalBuilding;
         this.captureWorth = captureWorth;
 
-        this.spriteLocation = spriteLocation;
-        this.spriteDir = spriteDir;
-        this.spritePack = spritePack;
+        generateInfo();
 
     }
 
     public Building(Building building) {
-        this.buildingName = building.getBuildingName();
+        super(building.getName(), building.getSpriteLocation(),
+              building.getSpriteDir(), building.getSpritePack());
 
         this.captureDifficulty = building.getCaptureDifficulty();
         this.remainingCaptureTime = this.captureDifficulty;
@@ -48,25 +45,25 @@ public class Building {
         this.goalBuilding = building.isGoalBuilding();
         this.captureWorth = building.getCaptureWorth();
 
-        this.spriteLocation = building.getSpriteLocation();
-        this.spriteDir = building.getSpriteDir();
-        this.spritePack = building.getSpritePack();
+        this.info = building.info;
+
     }
 
     public Boolean canProduceUnits() {
-        return !this.producableUnits.isEmpty();
+        return !this.producibleUnits.isEmpty();
     }
 
-    public void addProducableUnit(Unit unit) {
-        this.producableUnits.add(unit);
+    public void addProducibleUnit(Unit unit) {
+        this.producibleUnits.add(unit);
+        this.generateInfo(); // Info has changed since producible units have changed
     }
 
-    public List<Unit> getProducableUnits() {
-        return this.producableUnits;
+    public List<Unit> getProducibleUnits() {
+        return this.producibleUnits;
     }
 
     public String toString() {
-        return this.buildingName;
+        return getName();
     }
 
     public Player getLastCapturer() {
@@ -75,10 +72,6 @@ public class Building {
 
     public void setLastCapturer(Player player) {
         this.lastCapturer = player;
-    }
-
-    public String getBuildingName() {
-        return this.buildingName;
     }
 
     public Integer getCaptureDifficulty() {
@@ -119,23 +112,12 @@ public class Building {
         if (this.remainingCaptureTime <= 0) {
             this.remainingCaptureTime = 0;
             this.owner = this.lastCapturer;
+            this.lastCapturer.addBuilding(this);
         }
     }
 
     public void resetCaptureTime() {
         this.remainingCaptureTime = this.captureDifficulty;
-    }
-
-    public String getSpriteLocation() {
-        return this.spriteLocation;
-    }
-
-    public String getSpriteDir() {
-        return this.spriteDir;
-    }
-
-    public String getSpritePack() {
-        return this.spritePack;
     }
 
     public Position getPosition() {
@@ -148,5 +130,29 @@ public class Building {
 
     public Integer getCaptureWorth() {
         return this.captureWorth;
+    }
+
+    public String getInfo() {
+        String r = getName();
+        if (hasOwner()) {
+            r += " ~ " + getOwner().getName();
+        }
+        r += "\n";
+
+        return r + this.info;
+    }
+
+    public void generateInfo() {
+        String r = "";
+        if (canProduceUnits()) {
+            r += "Produces:\n";
+            for (Unit u : getProducibleUnits()) {
+                r += " " + u + " - "
+                    + u.getProductionCost() + " Gold\n";
+            }
+        }
+
+        this.info = r;
+
     }
 }

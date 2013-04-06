@@ -7,22 +7,22 @@
         "G": {
             "name": "Grass",
             "file": "grass",
-            "dir": "raw",
+            "dir": "drawable",
             "package": "com.group7.dragonwars",
             "movementModifier": 1.0,
-            "attackModifier": 0.0,
-            "defenseModifier": 0.0,
+            "attackModifier": 1.0,
+            "defenseModifier": 1.1,
             "accessible": true,
             "flightOnly": false
         },
         "W": {
             "name": "Water",
             "file": "sea",
-            "dir": "raw",
+            "dir": "drawable",
             "package": "com.group7.dragonwars",
             "movementModifier": 1.0,
-            "attackModifier": 0.0,
-            "defenseModifier": 0.0,
+            "attackModifier": 1.0,
+            "defenseModifier": 1.0,
             "accessible": false,
             "flightOnly": true
         }
@@ -31,7 +31,7 @@
         "S": {
             "name": "Soldier",
             "file": "soldier",
-            "dir": "raw",
+            "dir": "drawable",
             "package": "com.group7.dragonwars",
             "ranged": false,
             "flying": false,
@@ -39,13 +39,13 @@
             "maxMovement": 5,
             "attack": 2.0,
             "meleeDefense": 1.0,
-            "rangeDefense": 2.0,
+            "rangeDefense": 1.0,
             "productionCost": 5
         },
         "D": {
             "name": "Dragon",
             "file": "small_dragon",
-            "dir": "raw",
+            "dir": "drawable",
             "package": "com.group7.dragonwars",
             "ranged": true,
             "minRange": 2.0,
@@ -54,8 +54,8 @@
             "maxHealth": 30,
             "maxMovement": 7,
             "attack": 3.0,
-            "meleeDefense": 2.0,
-            "rangeDefense": 2.0,
+            "meleeDefense": 1.5,
+            "rangeDefense": 1.0,
             "productionCost": 7
         }
     },
@@ -63,22 +63,22 @@
         "C": {
             "name": "Castle",
             "file": "castle",
-            "dir": "raw",
+            "dir": "drawable",
             "package": "com.group7.dragonwars",
             "captureDifficulty": 4,
-            "attackBonus": 3.0,
-            "defenseBonus": 4.0,
+            "attackBonus": 1.0,
+            "defenseBonus": 1.8,
             "goalBuilding": true,
             "captureWorth": 4
         },
         "V": {
             "name": "Village",
             "file": "village",
-            "dir": "raw",
+            "dir": "drawable",
             "package": "com.group7.dragonwars",
             "captureDifficulty": 2,
             "attackBonus": 1.0,
-            "defenseBonus": 1.0,
+            "defenseBonus": 1.5,
             "goalBuilding": false,
             "captureWorth": 2
         }

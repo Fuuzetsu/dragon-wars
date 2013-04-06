@@ -19,8 +19,17 @@
     -->
 
     <com.group7.dragonwars.GameView
-        android:id="@+id/game_view"
+        android:id="@+id/gameView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
+
+    <Button
+        android:id="@+id/menuButton"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center_horizontal"
+        android:minHeight="0dp"
+        android:text="Menu" />
 
 </FrameLayout>

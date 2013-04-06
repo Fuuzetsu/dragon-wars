@@ -126,7 +126,7 @@ public class MapReader {
 
             for (Integer j = 0; j < prod.length(); ++j) {
                 Unit unit = units.get(prod.getString(j).charAt(0));
-                building.addProducableUnit(unit);
+                building.addProducibleUnit(unit);
             }
 
             Log.d(TAG, "Cast all the values into Java types for building " + i);

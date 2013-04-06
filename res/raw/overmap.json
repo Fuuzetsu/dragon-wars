@@ -1,7 +1,7 @@
 {
-    "mapName": "testfirst",
+    "mapName": "overlapmap",
     "sizeX": 10,
-    "sizeY": 5,
+    "sizeY": 7,
     "players": 2,
     "fields": {
         "G": {
@@ -85,9 +85,11 @@
     },
     "terrain": [
         "WWWWWWWWWW",
-        "WWWGGGWGWW",
-        "WWWGWGGWWW",
-        "WGGGGGWGWW",
+        "GGGGGGGGGG",
+        "WWWWWWWWWW",
+        "WGGGWGGGWW",
+        "GGGGWWGGGG",
+        "GGGGGWWGGG",
         "WWWWWWWWWW"
     ],
     "startingBuildingPos": [

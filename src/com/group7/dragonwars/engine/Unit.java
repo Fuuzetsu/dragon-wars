@@ -1,25 +1,31 @@
 package com.group7.dragonwars.engine;
 
+import java.text.DecimalFormat;
 import java.util.LinkedList;
 
-public class Unit {
+public class Unit extends DrawableMapObject {
 
-    private String name;
     private Integer maxMovement, movement;
     private Double maxHealth, health;
     private Double attack, meleeDefense, rangeDefense;
     private Position position;
     private Boolean hasFinishedTurn = false;
+    private Boolean hasMoved = false;
     private Player owner;
     private Boolean isFlying;
-    private String spriteLocation, spriteDir, spritePack;
     private Integer productionCost;
-
+    
+    private static DecimalFormat decformat;
+    
+    static {
+        decformat = new DecimalFormat("#.##");
+    }
+    
     public Unit(String name, Double maxHealth, Integer maxMovement,
                 Double attack, Double meleeDefense, Double rangeDefense,
                 Boolean isFlying, Integer productionCost, String spriteLocation,
                 String spriteDir, String spritePack) {
-        this.name = name;
+        super(name, spriteLocation, spriteDir, spritePack);
 
         this.maxHealth = maxHealth;
         this.health = this.maxHealth;
@@ -34,14 +40,13 @@ public class Unit {
         this.isFlying = isFlying;
         this.productionCost = productionCost;
 
-        this.spriteLocation = spriteLocation;
-        this.spriteDir = spriteDir;
-        this.spritePack = spritePack;
+        generateInfo();
     }
 
     /* Used for copying the unit template */
     public Unit(Unit unit) {
-        this.name = unit.name;
+        super(unit.getName(), unit.getSpriteLocation(),
+              unit.getSpriteDir(), unit.getSpritePack());
 
         this.maxHealth = unit.getMaxHealth();
         this.health = this.maxHealth;
@@ -53,12 +58,10 @@ public class Unit {
         this.meleeDefense = unit.getMeleeDefense();
         this.rangeDefense = unit.getRangeDefense();
 
+        this.owner = unit.getOwner();
         this.isFlying = unit.isFlying();
         this.productionCost = unit.getProductionCost();
-
-        this.spriteLocation = unit.getSpriteLocation();
-        this.spriteDir = unit.getSpriteDir();
-        this.spritePack = unit.getSpritePack();
+        this.info = unit.info;
     }
 
     public Boolean isDead() {
@@ -107,6 +110,10 @@ public class Unit {
 
     public void reduceHealth(Double damage) {
         this.health -= damage;
+
+        if (this.health < 0) {
+            this.health = 0.0;
+        }
     }
 
     public void setPosition(Position position) {
@@ -114,7 +121,7 @@ public class Unit {
     }
 
     public void restoreHealth(Double heal) {
-        Double newHealth = this.health = heal;
+        Double newHealth = this.health + heal;
         this.health = (newHealth <= maxHealth) ? newHealth : maxHealth;
     }
 
@@ -122,8 +129,12 @@ public class Unit {
         return this.hasFinishedTurn;
     }
 
+    public void setFinishedTurn(Boolean b) {
+        this.hasFinishedTurn = b;
+    }
+
     public String toString() {
-        return this.name;
+        return getName();
     }
 
     public Boolean isRanged() {
@@ -134,22 +145,6 @@ public class Unit {
         return this.isFlying;
     }
 
-    public String getSpriteLocation() {
-        return this.spriteLocation;
-    }
-
-    public String getSpriteDir() {
-        return this.spriteDir;
-    }
-
-    public String getSpritePack() {
-        return this.spritePack;
-    }
-
-    public String getUnitName() {
-        return this.name;
-    }
-
     public Boolean reduceMovement(Integer amount) {
         if (this.movement - amount < 0)
             return false;
@@ -158,7 +153,36 @@ public class Unit {
         return true;
     }
 
+    public void setMoved(Boolean b) {
+        hasMoved = true;
+    }
+
+    public Boolean hasMoved() {
+        return hasMoved;
+    }
+
+    public void resetTurnStatistics() {
+        movement = maxMovement;
+        hasMoved = false;
+        setFinishedTurn(false);
+    }
+
     public Integer getProductionCost() {
         return this.productionCost;
+    }
+
+    public String getInfo() {
+        String r = getName() + " ~ " + this.getOwner().getName() + "\n";
+        r += "Health: " + decformat.format(getHealth());
+        return r + this.info;
+    }
+
+    public void generateInfo() {
+        String  r =  "/"  + decformat.format(getMaxHealth()) + "\n";
+        r += "Attack: " + decformat.format(getAttack()) + "\n";
+        r += "Defense: " + decformat.format(getMeleeDefense()) + " (Melee) "
+            + decformat.format(getRangeDefense()) + " (Ranged)\n";
+
+        this.info = r;
     }
 }

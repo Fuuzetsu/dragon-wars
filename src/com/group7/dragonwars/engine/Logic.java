@@ -16,6 +16,9 @@ public class Logic {
     public Integer calculateMovementCost(GameMap map, Unit unit, List<Position> path) {
         Double totalCost = 0.0;
         for (Position pos : path) {
+            if (pos.equals(unit.getPosition())) {
+                continue;
+            }
             totalCost += getMovementCost(map, unit, pos);
         }
 
@@ -26,42 +29,74 @@ public class Logic {
     }
 
     public List<Position> destinations(GameMap map, Unit unit) {
-        List<Position> checked = new ArrayList<Position>();
+        Set<Position> checked = new HashSet<Position>();
+        Set<Position> reachable = new HashSet<Position>();
 
-        List<Position> mapPositions = new ArrayList<Position>();
-        for (int x = 0; x < map.getWidth(); ++x)
-            for (int y = 0; y < map.getHeight(); y++)
-                mapPositions.add(new Position(x, y));
+        Position unitPosition = unit.getPosition();
+        List<Node> start
+            = new ArrayList<Node>();
+        start.add(new Node(unitPosition, 0.0, 0.0));
 
-        for (Position p : mapPositions) {
-            Boolean c = false;
+        checked.add(unitPosition);
+        reachable.add(unitPosition);
 
-            for (Position x : checked)
-                if (p.equals(x)) {
-                    c = true;
-                    break;
+        List<Node> next = nextPositions(map, start);
+        while (next.size() != 0) {
+            List<Node> newNext = new ArrayList<Node>();
+            for (Node n : next) {
+                checked.add(n.getPosition());
+                if (unit.getRemainingMovement() < n.getG()) {
+                    continue;
                 }
 
-            if (!map.isValidField(p) || c)
-                continue;
+                if (map.getField(n.getPosition()).doesAcceptUnit(unit)) {
+                    if (map.getField(n.getPosition()).hostsUnit()) {
+                        Player op = map.getField(n.getPosition())
+                            .getUnit().getOwner();
 
-            List<Position> path = AStar(map, unit, p);
-
-            for (Position y : path){
-                Boolean b = false;
-                for (Position x : checked)
-                    if (y.equals(x)) {
-                        b = true;
-                        break;
+                        if (!op.equals(unit.getOwner())) {
+                            continue;
+                        }
                     }
+                    reachable.add(n.getPosition());
+                    List<Node> thisNext = new ArrayList<Node>(5);
+                    thisNext.add(n);
+                    thisNext = nextPositions(map, thisNext);
 
-                if (!b)
-                    checked.add(y);
+                    for (Node thisNode : thisNext) {
+                        if (!checked.contains(thisNode.getPosition())) {
+                            newNext.add(thisNode);
+                        }
+                    }
+                }
+            }
+            next = newNext;
+        }
 
+        return new ArrayList<Position>(reachable);
+    }
+
+    public List<Node>
+        nextPositions(GameMap map, List<Node> toCheck) {
+
+        List<Node> result = new ArrayList<Node>();
+
+        for (Node n : toCheck) {
+            Double costSoFar = n.getG();
+            Position currentPosition = n.getPosition();
+            List<Position> adj = getValidNeighbours(map, currentPosition);
+
+            for (Position pos : adj) {
+                GameField cField = map.getField(pos);
+                Double newCost = costSoFar + cField.getMovementModifier();
+                result.add(new Node(pos, newCost, 0.0));
             }
         }
-        return checked;
+
+        return result;
     }
+
+
 
     public Pair<Double, Double> calculateDamage(GameMap map, Unit attacker,
             Unit defender) {
@@ -71,11 +106,20 @@ public class Logic {
     }
 
     public Double calculateRawDamage(GameMap map, Unit attacker, Unit defender) {
-        final Double DEFENDER_DISADVANTAGE = 0.75;
-        GameField attackerField = map.getField(attacker.getPosition());
         GameField defenderField = map.getField(defender.getPosition());
 
-        Double attackerMod = attackerField.getAttackModifier();
+        Double fieldDefense = defenderField.getDefenseModifier() - 1;
+        Double unitDefense = attacker.isRanged() ? defender.getRangeDefense() : defender.getMeleeDefense() - 1;
+
+        Double damage = attacker.getAttack() +
+                        (2 * attacker.getAttack() *
+                        (attacker.getHealth()/attacker.getMaxHealth()));
+
+        Double finalDamage = damage - (((fieldDefense * damage) / 2) + ((unitDefense * damage) / 2));
+        Log.v(null, "finalDamage: " + finalDamage + " damage: " + damage + " unitDefense: " + unitDefense + " fieldDefense: " + fieldDefense);
+        return (attacker.getHealth() > 0.0 ? finalDamage : 0.0);
+
+        /*Double attackerMod = attackerField.getAttackModifier();
         Double defenderMod = defenderField.getDefenseModifier();
 
         Double defense = defender.getHealth() * (defenderMod / 100);
@@ -85,7 +129,7 @@ public class Logic {
 
         Double damage = rawDamage - defense;
 
-        return (defense < 0) ? 0 : damage;
+        return (defense < 0) ? 0 : damage;*/
     }
 
     public Double calculateCounterDamage(GameMap map, Unit attacker, Unit defender) {
@@ -99,10 +143,22 @@ public class Logic {
 
     private Double calculateTheoreticalCounterDamage(GameMap map, Unit attacker,
             Unit defender, Double atkHealth) {
-        /* No defense disadvantage on a counter. */
-        GameField attackerField = map.getField(attacker.getPosition());
         GameField defenderField = map.getField(defender.getPosition());
 
+        double fieldDefense = defenderField.getDefenseModifier() - 1;
+        double unitDefense = attacker.isRanged() ? defender.getRangeDefense() : defender.getMeleeDefense() - 1;
+
+        double damage = attacker.getAttack() +
+                        (2 * attacker.getAttack() *
+                        (atkHealth/attacker.getMaxHealth()));
+
+        double finalDamage = damage - (((fieldDefense * damage) / 2) + ((unitDefense * damage) / 2));
+        Log.v(null, "finalDamage: " + finalDamage + " damage: " + damage + " unitDefense: " + unitDefense + " fieldDefense: " + fieldDefense);
+
+        return attacker.getHealth() > 0 ? finalDamage : 0;
+
+        /*
+        // No defense disadvantage on a counter.
         Double attackerMod = attackerField.getAttackModifier();
         Double defenderMod = defenderField.getDefenseModifier();
 
@@ -113,68 +169,73 @@ public class Logic {
         Double damage = rawDamage - defense;
 
         return (defense < 0) ? 0 : damage;
+        */
     }
 
     private List<Position> AStar(GameMap map, Unit unit, Position destination) {
         if (!map.isValidField(destination))
             return new ArrayList<Position>(0);
 
-        List<Position> expanded = new ArrayList<Position>();
-        Comparator<Pair<List<Position>, Double>> comp = new AStarComparator();
-        PriorityQueue<Pair<List<Position>, Double>> queue = new PriorityQueue<Pair<List<Position>, Double>>(
-            10, comp);
-        List<Position> root = new ArrayList<Position>();
-        root.add(unit.getPosition());
+        PriorityQueue<Node> openSet
+            = new PriorityQueue<Node>(10, new AStarComparator());
+        Set<Node> closedSet = new HashSet<Node>();
 
-        queue.add(new Pair<List<Position>, Double>(root, 0.0));
+        Node root = new Node(unit.getPosition(), 0.0,
+                             1.0 * getManhattanDistance(
+                                 unit.getPosition(), destination));
+        openSet.add(root);
 
-        while (queue.size() != 0) {
-            Pair<List<Position>, Double> posP = queue.poll();
-            List<Position> poss = posP.getLeft();
+        while (openSet.size() != 0) {
+            Node current = openSet.poll();
 
-            Position lastPos = poss.get(poss.size() - 1);
+            if (current.getPosition().equals(destination)) {
+                return reconstructPath(current);
+            }
 
-            if (lastPos.equals(destination))
-                return poss;
+            closedSet.add(current);
 
-            Boolean c = false;
-            for (Position x : expanded)
-                if (lastPos.equals(x)) {
-                    c = true;
-                    break;
+            for (Position n : getValidNeighbours(map, current.getPosition())) {
+                GameField gf = map.getField(n);
+                Node neigh = new Node(n, gf.getMovementModifier(),
+                                      1.0 * getManhattanDistance(
+                                          unit.getPosition(), destination));
+                //neigh.setParent(current);
+
+                Double tentG = current.getG() + neigh.getG();
+
+                if (closedSet.contains(neigh)) {
+                    if (tentG >= neigh.getG()) {
+                        continue;
+                    }
                 }
 
-            if (c)
-                continue;
-
-            expanded.add(lastPos);
-
-            /* Get heuristic */
-            Integer h = getManhattanDistance(lastPos, destination);
-            /* Get cost */
-            Double g = getMovementCost(map, unit, lastPos);
-            Double pathCost = posP.getRight() + h * g;
-
-            if (pathCost > unit.getRemainingMovement())
-            	continue;
-
-            for (Position p : getAdjacentPositions(lastPos)) {
-                if (map.isValidField(p) && map.getField(p).doesAcceptUnit(unit)) {
-                    if (map.getField(p).hostsUnit()) {
-                        Player op = map.getField(p).getUnit().getOwner();
-
-                        if (!op.equals(unit.getOwner()))
-                            continue;
+                if ((!openSet.contains(neigh)) || tentG < neigh.getG()) {
+                    neigh.setParent(current);
+                    if (!openSet.contains(neigh)) {
+                        openSet.add(neigh);
                     }
-
-                    List<Position> plan = new ArrayList<Position>(poss);
-                    plan.add(p);
-                    queue.add(new Pair<List<Position>, Double>(plan, pathCost));
                 }
             }
         }
 
-        return new ArrayList<Position>(); /* Search failed */
+        return new ArrayList<Position>(0); /* Search failed */
+
+    }
+
+    private List<Position> getValidNeighbours(GameMap map, Position pos) {
+        List<Position> positions = new ArrayList<Position>(4);
+        positions.add(new Position(pos.getX(), pos.getY() + 1));
+        positions.add(new Position(pos.getX(), pos.getY() - 1));
+        positions.add(new Position(pos.getX() + 1, pos.getY()));
+        positions.add(new Position(pos.getX() - 1, pos.getY()));
+        List<Position> validPositions = new ArrayList<Position>(4);
+        for (Position p : positions) {
+            if (map.isValidField(p)) {
+                validPositions.add(p);
+            }
+        }
+
+        return validPositions;
     }
 
     private List<Position> getAdjacentPositions(Position pos) {
@@ -187,16 +248,85 @@ public class Logic {
     }
 
     private class AStarComparator implements
-        Comparator<Pair<List<Position>, Double>> {
-        public int compare(Pair<List<Position>, Double> p1,
-                           Pair<List<Position>, Double> p2) {
-            if (p1.getRight() < p2.getRight())
-                return -1;
-
-            if (p1.getRight() > p2.getRight())
+        Comparator<Node> {
+        public int compare(Node a, Node b) {
+            Double t = a.getF() - b.getF();
+            if (t > 0) {
                 return 1;
+            }
+
+            if (t < 0) {
+                return -1;
+            }
 
             return 0;
+        }
+    }
+
+    private List<Position> reconstructPath(Node node) {
+        List<Position> path = new ArrayList<Position>();
+        path.add(node.getPosition());
+        Node parent = node.getParent();
+        while (parent != null) {
+            path.add(parent.getPosition());
+            parent = parent.getParent();
+        }
+        return path;
+    }
+
+    private class Node {
+        private Node parent;
+        private Position p;
+        private Double g, h;
+
+        public Node(Position p, Double g, Double h) {
+            this.p = p;
+            this.g = g;
+            this.h = h;
+        }
+
+        public Node getParent() {
+            return parent;
+        }
+
+        public void setParent(Node parent) {
+            this.parent = parent;
+            this.g = this.g + parent.getG();
+        }
+
+        public Double getH() {
+            return h;
+        }
+
+        public Double getG() {
+            return g;
+        }
+
+        public Double getF() {
+            return h + g;
+        }
+
+        public Position getPosition() {
+            return p;
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if (this == other) {
+                return true;
+            }
+
+            if (!(other instanceof Node)) {
+                return false;
+            }
+
+            Node that = (Node) other;
+            return p.equals(that.getPosition());
+        }
+
+        @Override
+        public int hashCode() {
+            return p.hashCode();
         }
     }
 
@@ -209,8 +339,26 @@ public class Logic {
         return map.getField(origin).getMovementModifier();
     }
 
+    public Set<Position> getAttackableUnitPositions(GameMap map, Unit unit, Position position) {
+    	Set<Position> atkFields = getAttackableFields(map, unit, position);
+        Set<Position> atkUnits = new HashSet<Position>();
+
+        for (Position p : atkFields) {
+            if (map.isValidField(p)) {
+                if (map.getField(p).hostsUnit()) {
+                    Player uOwner = map.getField(p).getUnit().getOwner();
+
+                    if (!uOwner.equals(unit.getOwner())) {
+                        atkUnits.add(p);
+                    }
+                }
+            }
+        }
+        return atkUnits;
+    }
+
     public Set<Position> getAttackableUnitPositions(GameMap map, Unit unit) {
-        Set<Position> atkFields = getAttackableFields(map, unit);
+        /*Set<Position> atkFields = getAttackableFields(map, unit);
         Set<Position> atkUnits = new HashSet<Position>();
 
         for (Position p : atkFields) {
@@ -222,16 +370,28 @@ public class Logic {
             }
         }
 
-        return atkUnits;
+        return atkUnits;*/
+    	return getAttackableUnitPositions(map, unit, unit.getPosition());
     }
 
-    private Set<Position> getAttackableFields(GameMap map, Unit unit) {
-        if (!unit.isRanged())
+    private Set<Position> getAttackableFields(GameMap map, Unit unit, Position position) {
+        if (!unit.isRanged()) {
+            return new HashSet<Position>(getAdjacentPositions(position));
+        }
+
+        RangedUnit ru = (RangedUnit) unit;
+        return getPositionsInRange(map, position, ru.getMinRange(),
+                                   ru.getMaxRange());
+    }
+
+    public Set<Position> getAttackableFields(GameMap map, Unit unit) {
+        /*if (!unit.isRanged())
             return getPositionsInRange(map, unit.getPosition(), 1.0);
 
         RangedUnit ru = (RangedUnit) unit;
         return getPositionsInRange(map, ru.getPosition(), ru.getMinRange(),
-                                   ru.getMaxRange());
+                                   ru.getMaxRange());*/
+    	return getAttackableFields(map, unit, unit.getPosition());
     }
 
     private Set<Position> getPositionsInRange(GameMap map, Position origin,
