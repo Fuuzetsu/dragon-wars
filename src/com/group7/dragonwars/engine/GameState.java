@@ -11,16 +11,13 @@ public class GameState {
     GameMap map;
     Logic logic;
     List<Player> players = new ArrayList<Player>();
-    List<Player> playersPlaying;
-    Player currentPlayer;
-    Integer turns = 0;
+    Integer playerIndex = 0;
+    Integer turns = 1;
 
     public GameState(GameMap map, Logic logic, List<Player> players) {
         this.map = map;
         this.logic = logic;
-
         this.players = players;
-        this.playersPlaying = this.players;
     }
 
 
@@ -41,7 +38,7 @@ public class GameState {
         Pair<Double, Double> damage = logic.calculateDamage(map, attacker,
                                       defender);
         Log.v(null, "Dmg to atckr: " + damage.getRight() + " Dmg to dfndr: " + damage.getLeft());
-        
+
         defender.reduceHealth(damage.getLeft());
 
         Boolean died = removeUnitIfDead(defender);
@@ -63,17 +60,20 @@ public class GameState {
         List<Position> path = logic.findPath(map, unit, destination);
         Integer movementCost = logic.calculateMovementCost(map, unit, path);
 
-        if (!map.isValidField(destination))
+        if (!map.isValidField(destination) || path.size() == 0) {
             return false;
+        }
 
         GameField destField = map.getField(destination);
-        if (destField.hostsUnit())
+        if (destField.hostsUnit()) {
             return false;
+        }
 
 
         /* Double check */
-        if (unit.getRemainingMovement() < movementCost)
+        if (unit.getRemainingMovement() < movementCost) {
             return false;
+        }
 
 
         GameField currentField = map.getField(unit.getPosition());
@@ -82,6 +82,7 @@ public class GameState {
 
         currentField.setUnit(null);
         unit.setPosition(destination);
+        unit.setMoved(true);
 
         return true;
 
@@ -132,16 +133,14 @@ public class GameState {
     }
 
     public void nextPlayer() {
-        if (playersPlaying.size() == 0) {
+        playerIndex++;
+        if (playerIndex == players.size()) {
+            playerIndex = 0;
             advanceTurn();
-            playersPlaying = players;
-        } else {
-            playersPlaying.remove(0);
         }
-
     }
 
-    public void advanceTurn() {
+    private void advanceTurn() {
         updateBuildingCaptureCounters();
 
         for (Player p : players) {
@@ -150,6 +149,10 @@ public class GameState {
             for (Building b : p.getOwnedBuildings())
                 goldWorth += b.getCaptureWorth();
             p.setGoldAmount(goldWorth + p.getGoldAmount());
+
+            for (Unit u : p.getOwnedUnits()) {
+                u.resetTurnStatistics();
+            }
         }
         ++this.turns;
     }
@@ -167,8 +170,7 @@ public class GameState {
     }
 
     public Player getCurrentPlayer() {
-    	return players.get(turns % players.size());
-    	// :S
+        return players.get(playerIndex);
     }
 
     public Boolean produceUnit(final GameField field, final Unit unit) {
@@ -191,6 +193,7 @@ public class GameState {
                 newUnit.setOwner(player);
 
                 player.setGoldAmount(player.getGoldAmount() - unit.getProductionCost());
+                player.addUnit(newUnit);
             	field.setUnit(newUnit);
 
                 return true;

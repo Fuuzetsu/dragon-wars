@@ -4,7 +4,7 @@ import com.group7.dragonwars.engine.Building;
 import com.group7.dragonwars.engine.Player;
 import com.group7.dragonwars.engine.Unit;
 
-import org.junit.*;
+import static junit.framework.Assert.*;
 import junit.framework.TestCase;
 
 
