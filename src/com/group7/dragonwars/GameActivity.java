@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -141,6 +142,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     private enum MenuType {NONE, ACTION, BUILD, MENU};
 
     private MenuType whichMenu;
+    
+    private DecimalFormat decformat;
 
     public GameView(final Context ctx, final AttributeSet attrset) {
         super(ctx, attrset);
@@ -206,6 +209,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         attack_high_paint = new Paint();
         attack_high_paint.setStyle(Paint.Style.FILL);
         attack_high_paint.setARGB(150, 255, 0, 0); // semi-transparent red
+        
+        decformat = new DecimalFormat("#.##");
 
         attack_action = false;
 
@@ -556,7 +561,6 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         canvas.drawBitmap(fullMap, scrollOffset.getX(),
                           scrollOffset.getY(), null);
-
         for (int i = 0; i < map.getWidth(); ++i) {
             for (int j = 0; j < map.getHeight(); j++) {
                 GameField gf = map.getField(i, j);
@@ -661,7 +665,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
             framesSinceLastSecond = 0L;
             timeElapsed = 0L;
         }
-        String fpsS = fps.toString();
+        String fpsS = decformat.format(fps);
         Player player = state.getCurrentPlayer();
         drawCornerBox(canvas, false, true, player.getName() + " - " + player.getGoldAmount() + " Gold"
                 + "\nFPS: " + fpsS);
@@ -694,6 +698,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         Paint textPaint = new Paint();
         textPaint.setColor(Color.WHITE);
         textPaint.setTextSize(15);
+        // textPaint.setAntiAlias(true); /* uncomment for better text, worse fps */
         textPaint.setTextAlign(left ? Paint.Align.LEFT : Paint.Align.RIGHT);
 
         Paint backPaint = new Paint();

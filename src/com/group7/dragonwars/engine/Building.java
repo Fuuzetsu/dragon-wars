@@ -147,7 +147,7 @@ public class Building extends DrawableMapObject {
         if (canProduceUnits()) {
             r += "Produces:\n";
             for (Unit u : getProducibleUnits()) {
-                r += u + " - "
+                r += " " + u + " - "
                     + u.getProductionCost() + " Gold\n";
             }
         }
