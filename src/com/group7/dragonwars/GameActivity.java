@@ -17,6 +17,7 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnShowListener;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -804,12 +805,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                             String[] actions = {"Wait here", "Attack",
                                                 "Cancel"};
                             actions_builder.setItems(actions, this);
-                            AlertDialog ad = actions_builder.create();
-                            ad.show();
+                            actions_builder.create().show();
                             action_location = newselected;
-                            if (unit.hasMoved()) {
-                                ad.getButton(0).setEnabled(false);
-                            }
                             // onClick handles the result
                             whichMenu = MenuType.ACTION;
                             newselected = selected; // do not move the selection
