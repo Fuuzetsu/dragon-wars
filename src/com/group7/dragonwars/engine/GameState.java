@@ -11,16 +11,13 @@ public class GameState {
     GameMap map;
     Logic logic;
     List<Player> players = new ArrayList<Player>();
-    List<Player> playersPlaying;
-    Player currentPlayer;
+    Integer playerIndex = 0;
     Integer turns = 1;
 
     public GameState(GameMap map, Logic logic, List<Player> players) {
         this.map = map;
         this.logic = logic;
-
         this.players = players;
-        this.playersPlaying = this.players;
     }
 
 
@@ -132,13 +129,11 @@ public class GameState {
     }
 
     public void nextPlayer() {
-        if (playersPlaying.size() == 0) {
+        playerIndex++;
+        if (playerIndex == players.size()) {
+            playerIndex = 0;
             advanceTurn();
-            playersPlaying = players;
-        } else {
-            playersPlaying.remove(0);
         }
-
     }
 
     private void advanceTurn() {
@@ -171,8 +166,7 @@ public class GameState {
     }
 
     public Player getCurrentPlayer() {
-    	return players.get(turns % players.size());
-    	// :S
+        return players.get(playerIndex);
     }
 
     public Boolean produceUnit(final GameField field, final Unit unit) {
