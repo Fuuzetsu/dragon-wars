@@ -50,7 +50,6 @@ public class Logic {
         reachable.add(unitPosition);
         List<Pair<Position, Double>> next = nextPositions(map, start);
         while (next.size() != 0) {
-            System.out.println(next);
             List<Pair<Position, Double>> newNext = new ArrayList<Pair<Position, Double>>();
             for (Pair<Position, Double> p : next) {
                 Position pos = p.getLeft();
@@ -103,7 +102,6 @@ public class Logic {
                 }
             }
         }
-        System.out.println(result);
         return result;
     }
 
@@ -187,59 +185,66 @@ public class Logic {
         if (!map.isValidField(destination))
             return new ArrayList<Position>(0);
 
-        List<Position> expanded = new ArrayList<Position>();
-        Comparator<Pair<List<Position>, Double>> comp = new AStarComparator();
-        PriorityQueue<Pair<List<Position>, Double>> queue = new PriorityQueue<Pair<List<Position>, Double>>(
-            10, comp);
-        List<Position> root = new ArrayList<Position>();
-        root.add(unit.getPosition());
+        PriorityQueue<Node> openSet
+            = new PriorityQueue<Node>(10, new AStarComparator());
+        Set<Node> closedSet = new HashSet<Node>();
 
-        queue.add(new Pair<List<Position>, Double>(root, 0.0));
+        Node root = new Node(unit.getPosition(), 0.0,
+                             1.0 * getManhattanDistance(
+                                 unit.getPosition(), destination));
+        openSet.add(root);
 
-        while (queue.size() != 0) {
-            Pair<List<Position>, Double> posP = queue.poll();
-            List<Position> poss = posP.getLeft();
+        while (openSet.size() != 0) {
+            Node current = openSet.poll();
 
-            Position lastPos = poss.get(poss.size() - 1);
-
-            if (lastPos.equals(destination)) {
-                return poss;
+            if (current.getPosition().equals(destination)) {
+                return reconstructPath(current);
             }
 
-            if (expanded.contains(lastPos)) {
-                continue;
-            }
+            closedSet.add(current);
 
-            expanded.add(lastPos);
+            for (Position n : getValidNeighbours(map, current.getPosition())) {
+                GameField gf = map.getField(n);
+                Node neigh = new Node(n, gf.getMovementModifier(),
+                                      1.0 * getManhattanDistance(
+                                          unit.getPosition(), destination));
+                //neigh.setParent(current);
 
-            /* Get heuristic */
-            Integer h = getManhattanDistance(lastPos, destination);
-            /* Get cost */
-            Double g = getMovementCost(map, unit, lastPos);
-            Double pathCost = posP.getRight() + h * g;
-            System.out.println(poss);
-            System.out.println(pathCost);
-            if (pathCost > unit.getRemainingMovement())
-            	continue;
+                Double tentG = current.getG() + neigh.getG();
 
-            for (Position p : getAdjacentPositions(lastPos)) {
-                if (map.isValidField(p) && map.getField(p).doesAcceptUnit(unit)) {
-                    if (map.getField(p).hostsUnit()) {
-                        Player op = map.getField(p).getUnit().getOwner();
-
-                        if (!op.equals(unit.getOwner()))
-                            continue;
+                if (closedSet.contains(neigh)) {
+                    if (tentG >= neigh.getG()) {
+                        continue;
                     }
+                }
 
-                    List<Position> plan = new ArrayList<Position>(poss);
-                    plan.add(p);
-                    queue.add(new Pair<List<Position>, Double>(
-                        plan, g + map.getField(p).getMovementModifier()));
+                if ((!openSet.contains(neigh)) || tentG < neigh.getG()) {
+                    neigh.setParent(current);
+                    if (!openSet.contains(neigh)) {
+                        openSet.add(neigh);
+                    }
                 }
             }
         }
 
-        return new ArrayList<Position>(); /* Search failed */
+        return new ArrayList<Position>(0); /* Search failed */
+
+    }
+
+    private List<Position> getValidNeighbours(GameMap map, Position pos) {
+        List<Position> positions = new ArrayList<Position>(4);
+        positions.add(new Position(pos.getX(), pos.getY() + 1));
+        positions.add(new Position(pos.getX(), pos.getY() - 1));
+        positions.add(new Position(pos.getX() + 1, pos.getY()));
+        positions.add(new Position(pos.getX() - 1, pos.getY()));
+        List<Position> validPositions = new ArrayList<Position>(4);
+        for (Position p : positions) {
+            if (map.isValidField(p)) {
+                validPositions.add(p);
+            }
+        }
+
+        return validPositions;
     }
 
     private List<Position> getAdjacentPositions(Position pos) {
@@ -252,16 +257,85 @@ public class Logic {
     }
 
     private class AStarComparator implements
-        Comparator<Pair<List<Position>, Double>> {
-        public int compare(Pair<List<Position>, Double> p1,
-                           Pair<List<Position>, Double> p2) {
-            if (p1.getRight() < p2.getRight())
-                return -1;
-
-            if (p1.getRight() > p2.getRight())
+        Comparator<Node> {
+        public int compare(Node a, Node b) {
+            Double t = a.getF() - b.getF();
+            if (t > 0) {
                 return 1;
+            }
+
+            if (t < 0) {
+                return -1;
+            }
 
             return 0;
+        }
+    }
+
+    private List<Position> reconstructPath(Node node) {
+        List<Position> path = new ArrayList<Position>();
+        path.add(node.getPosition());
+        Node parent = node.getParent();
+        while (parent != null) {
+            path.add(parent.getPosition());
+            parent = parent.getParent();
+        }
+        return path;
+    }
+
+    private class Node {
+        private Node parent;
+        private Position p;
+        private Double g, h;
+
+        public Node(Position p, Double g, Double h) {
+            this.p = p;
+            this.g = g;
+            this.h = h;
+        }
+
+        public Node getParent() {
+            return parent;
+        }
+
+        public void setParent(Node parent) {
+            this.parent = parent;
+            this.g = this.g + parent.getG();
+        }
+
+        public Double getH() {
+            return h;
+        }
+
+        public Double getG() {
+            return g;
+        }
+
+        public Double getF() {
+            return h + g;
+        }
+
+        public Position getPosition() {
+            return p;
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if (this == other) {
+                return true;
+            }
+
+            if (!(other instanceof Node)) {
+                return false;
+            }
+
+            Node that = (Node) other;
+            return p.equals(that.getPosition());
+        }
+
+        @Override
+        public int hashCode() {
+            return p.hashCode();
         }
     }
 
