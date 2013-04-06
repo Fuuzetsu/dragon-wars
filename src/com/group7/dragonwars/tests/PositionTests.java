@@ -8,12 +8,8 @@ import java.util.List;
 import java.util.Set;
 
 
-import junit.framework.*;
-
-import org.junit.*;
-import static org.junit.Assert.*;
-
-
+import junit.framework.TestCase;
+import static junit.framework.Assert.*;
 
 
 public class PositionTests extends TestCase {
