@@ -182,7 +182,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         this.graphics = new HashMap<String, HashMap<String, Bitmap>>();
 
         /* Load and colour all the sprites we'll need */
-        Log.d(TAG, "Initialising graphics.")
+        Log.d(TAG, "Initialising graphics.");
         initialiseGraphics();
         Log.d(TAG, "Done initalising graphics.");
 
@@ -584,7 +584,6 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     }
 
     public void doDraw(final Canvas canvas) {
-        final int FLAG_GRAY = Color.rgb(156, 156, 156);
         Long startingTime = System.currentTimeMillis();
 
 
@@ -607,17 +606,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
                 if (gf.hostsBuilding()) {
                     Player owner = gf.getBuilding().getOwner();
-                    Bitmap colourFlag;
-                    if (owner.hasFlag()) {
-                        colourFlag = owner.getFlag();
-                    } else {
-                        Bitmap flagBitmap = graphics.get("Misc").get("flag");
-                        colourFlag = BitmapChanger.changeColour(
-                            flagBitmap, FLAG_GRAY, owner.getColour());
-                        owner.setFlag(colourFlag);
-                    }
-
-                    canvas.drawBitmap(colourFlag, null, dest, null);
+                    canvas.drawBitmap(owner.getFlag(), null, dest, null);
                 }
 
 
@@ -626,9 +615,9 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
                     if (unit != null) {
                         String un = unit.toString();
+                        Bitmap unitGfx = unit.getOwner().getUnitSprite(un);
 
-                        canvas.drawBitmap(graphics.get("Units").get(un),
-                                          null, dest, null);
+                        canvas.drawBitmap(unitGfx, null, dest, null);
                     }
                 }
                 /* Uncomment to print red grid with some info */
