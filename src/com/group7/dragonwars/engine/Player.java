@@ -2,7 +2,10 @@ package com.group7.dragonwars.engine;
 
 import android.graphics.Bitmap;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.List;
+
 
 public class Player {
     private String name;
@@ -10,6 +13,7 @@ public class Player {
     private Integer gold = 5;
     private Integer colour;
     private Bitmap flag;
+    private Map<String, Bitmap> unitSprites;
 
     List<Unit> ownedUnits = new ArrayList<Unit>();
     List<Building> ownedBuildings = new ArrayList<Building>();
@@ -82,5 +86,13 @@ public class Player {
 
     public void setFlag(Bitmap flag) {
         this.flag = flag;
+    }
+
+    public Bitmap getUnitSprite(final String unitName) {
+        return unitSprites.get(unitName);
+    }
+
+    public void setUnitSprites(final  Map<String, Bitmap> sprites) {
+        unitSprites = sprites;
     }
 }

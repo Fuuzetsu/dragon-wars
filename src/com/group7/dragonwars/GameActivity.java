@@ -181,6 +181,29 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         SurfaceHolder holder = getHolder();
         this.graphics = new HashMap<String, HashMap<String, Bitmap>>();
 
+        /* Load and colour all the sprites we'll need */
+        Log.d(TAG, "Initialising graphics.");
+        initialiseGraphics();
+        Log.d(TAG, "Done initalising graphics.");
+
+        holder.addCallback(this);
+
+        selected = new Position(0, 0);
+        action_location = new Position(0, 0);
+
+        gestureDetector = new GestureDetector(this.getContext(), this);
+        scrollOffset = new FloatPair(0f, 0f);
+
+
+        decformat = new DecimalFormat("#.##");
+
+        attack_action = false;
+
+    }
+
+    private void initialiseGraphics() {
+        final int DEAD_COLOUR = Color.rgb(156, 156, 156);
+
         /* Register game fields */
         putGroup("Fields", map.getGameFieldMap());
         putGroup("Units", map.getUnitMap());
@@ -196,14 +219,6 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                                   "com.group7.dragonwars");
         attack_highlighter = getResource("attack_highlight", "drawable", "com.group7.dragonwars");
 
-        holder.addCallback(this);
-
-        selected = new Position(0, 0);
-        action_location = new Position(0, 0);
-
-        gestureDetector = new GestureDetector(this.getContext(), this);
-        scrollOffset = new FloatPair(0f, 0f);
-
         move_high_paint = new Paint();
         move_high_paint.setStyle(Paint.Style.FILL);
         move_high_paint.setARGB(150, 0, 0, 255); // semi-transparent blue
@@ -212,12 +227,28 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         attack_high_paint.setStyle(Paint.Style.FILL);
         attack_high_paint.setARGB(150, 255, 0, 0); // semi-transparent red
 
-        decformat = new DecimalFormat("#.##");
-
-        attack_action = false;
-
         /* Prerender combined map */
         fullMap = combineMap();
+
+        /* Colour and save sprites for each player */
+        for (Player p : state.getPlayers()) {
+            /* Flag */
+            Bitmap flagBitmap = graphics.get("Misc").get("flag");
+            Bitmap colourFlag = BitmapChanger.changeColour(
+                flagBitmap, DEAD_COLOUR, p.getColour());
+            p.setFlag(colourFlag);
+
+            /* All possible units */
+            Map<String, Bitmap> personalUnits = new HashMap<String, Bitmap>();
+            for (Map.Entry<String, Bitmap> uGfx :
+                     graphics.get("Units").entrySet()) {
+                Bitmap uBmap = uGfx.getValue();
+                Bitmap personal = BitmapChanger.changeColour(
+                    uBmap, DEAD_COLOUR, p.getColour());
+                personalUnits.put(uGfx.getKey(), personal);
+            }
+            p.setUnitSprites(personalUnits);
+        }
 
     }
 
@@ -555,7 +586,6 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     }
 
     public void doDraw(final Canvas canvas) {
-        final int FLAG_GRAY = Color.rgb(156, 156, 156);
         Long startingTime = System.currentTimeMillis();
 
 
@@ -578,17 +608,12 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
                 if (gf.hostsBuilding()) {
                     Player owner = gf.getBuilding().getOwner();
-                    Bitmap colourFlag;
-                    if (owner.hasFlag()) {
-                        colourFlag = owner.getFlag();
+                    if (owner.getName().equals("Gaia")) { /* TODO proper Gaia handling */
+                        canvas.drawBitmap(graphics.get("Misc").get("flag"),
+                                          null, dest, null);
                     } else {
-                        Bitmap flagBitmap = graphics.get("Misc").get("flag");
-                        colourFlag = BitmapChanger.changeColour(
-                            flagBitmap, FLAG_GRAY, owner.getColour());
-                        owner.setFlag(colourFlag);
+                        canvas.drawBitmap(owner.getFlag(), null, dest, null);
                     }
-
-                    canvas.drawBitmap(colourFlag, null, dest, null);
                 }
 
 
@@ -597,9 +622,14 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
                     if (unit != null) {
                         String un = unit.toString();
-
-                        canvas.drawBitmap(graphics.get("Units").get(un),
-                                          null, dest, null);
+                        Player owner = unit.getOwner();
+                        if (owner.getName().equals("Gaia")) { /* TODO proper Gaia handling */
+                            canvas.drawBitmap(graphics.get("Units").get(un),
+                                              null, dest, null);
+                        } else {
+                            Bitmap unitGfx = owner.getUnitSprite(un);
+                            canvas.drawBitmap(unitGfx, null, dest, null);
+                        }
                     }
                 }
                 /* Uncomment to print red grid with some info */
