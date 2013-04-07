@@ -133,7 +133,7 @@ public class GameState {
         }
     }
 
-    public void nextPlayer() {
+    public void nextPlayer() throws GameFinishedException {
         Iterator<Player> iter = players.iter();
 
         while (iter.hasNext()) {
@@ -144,24 +144,14 @@ public class GameState {
         }
 
         if (players.size() <= 1) {
-            gameFinished = true;
+            throw new GameFinishedException(players.get(0));
         }
-        return;
 
         playerIndex++;
         if (playerIndex == players.size()) {
             playerIndex = 0;
             advanceTurn();
         }
-    }
-
-    private Player getWinningPlayer() {
-        if (!gameFinished) {
-            return null;
-        }
-
-        /* Only one player left at this stage */
-        return players.get(0);
     }
 
     private void advanceTurn() {
