@@ -273,7 +273,7 @@ public class MapReader {
             String pack = f.getString("package");
             String dir = f.getString("dir");
             Boolean accessible = f.getBoolean("accessible");
-            Boolean flightOnly = accessible ? f.getBoolean("flightOnly") : false;
+            Boolean flightOnly = f.getBoolean("flightOnly");
             Double movementModifier = f.getDouble("movementModifier");
             Double attackModifier = f.getDouble("attackModifier");
             Double defenseModifier = f.getDouble("defenseModifier");
