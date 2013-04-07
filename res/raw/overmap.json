@@ -3,7 +3,7 @@
     "sizeX": 10,
     "sizeY": 7,
     "players": 2,
-    "playerColours": [ 16776961, 256 ],
+    "playerColours": [ -16776961, -256 ],
     "fields": {
         "G": {
             "name": "Grass",
