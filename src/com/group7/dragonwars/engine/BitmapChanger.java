@@ -16,7 +16,7 @@ public static class BitmapChanger {
         replacement.getPixels(pixels, 0, replacement.getWidth(), 0, 0,
                               replacement.getWidth(),replacement.getHeight());
 
-        for (Integer i =0; i < allPxs; i++) {
+        for (Integer i = 0; i < allPxs; i++) {
             if (allpixels[i] == originalColour) {
                 allpixels[i] = replacementColour;
             }
