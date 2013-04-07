@@ -1083,6 +1083,7 @@ class FloatPair {
         return this.pair.getRight();
     }
 
+
     @Override
     public boolean equals(final Object other) {
         if (this == other) {
