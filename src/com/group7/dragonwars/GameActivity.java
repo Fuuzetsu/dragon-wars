@@ -185,7 +185,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         putGroup("Fields", map.getGameFieldMap());
         putGroup("Units", map.getUnitMap());
         putGroup("Buildings", map.getBuildingMap());
-        putResource("Misc", "flag", "flag", "drawable", "com.group7.dragonwars");
+        putResource("Misc", "flag", "drawable", "com.group7.dragonwars", "flag");
 
         loadBorders();
 
