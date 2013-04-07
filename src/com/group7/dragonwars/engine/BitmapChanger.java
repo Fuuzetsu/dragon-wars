@@ -1,6 +1,7 @@
 package com.group7.dragonwars.engine;
 
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.Color;
 
 public class BitmapChanger {
@@ -10,7 +11,9 @@ public class BitmapChanger {
     public static Bitmap changeColour(final Bitmap templateBitmap,
                                       final Integer originalColour,
                                       final Integer replacementColour) {
-        Bitmap replacement = Bitmap.createBitmap(templateBitmap);
+
+        Bitmap replacement = templateBitmap.copy(Bitmap.Config.ARGB_8888, true);
+
         Integer allPxs = replacement.getHeight() * replacement.getWidth();
 
         int[] allpixels = new int[allPxs];

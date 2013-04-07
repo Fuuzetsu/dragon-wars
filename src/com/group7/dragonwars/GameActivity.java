@@ -555,7 +555,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     }
 
     public void doDraw(final Canvas canvas) {
-        final int FLAG_GRAY = (255 << 24) | (156 << 16) | (156 << 8) | 156;
+        final int FLAG_GRAY = Color.rgb(156, 156, 156);
         Long startingTime = System.currentTimeMillis();
 
 
