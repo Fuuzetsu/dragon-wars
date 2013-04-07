@@ -17,8 +17,8 @@ public class UnitTests extends TestCase {
     }
 
     public void setUp() {
-        Player s = new Player("Shana");
-        Player r = new Player("Rori");
+        Player s = new Player("Shana", 0);
+        Player r = new Player("Rori", 0);
         this.u = new Unit("Nietono", 2.0, 2, 2.0,
                           2.0, 2.0, false, 2, "fake",
                           "fakeDir", "fake.pack");
@@ -49,13 +49,13 @@ public class UnitTests extends TestCase {
     }
 
     public void testSetOwnerSuccess() {
-        Player n = new Player("Akarin");
+        Player n = new Player("Akarin", 0);
         u.setOwner(n);
         assertEquals(u.getOwner(), n);
     }
 
     public void testSetOwnerFail() {
-        Player n = new Player("Akarin");
+        Player n = new Player("Akarin", 0);
         Player x = u.getOwner();
         u.setOwner(n);
         assertFalse(u.getOwner().equals(x));

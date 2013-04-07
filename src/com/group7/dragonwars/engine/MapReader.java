@@ -134,7 +134,7 @@ public class MapReader {
 
             /* TODO proper choice of player */
             if (playerOwner == 0)
-                building.setOwner(new Player("Gaia"));
+                building.setOwner(new Player("Gaia", 0));
             else {
                 Player p = players.get(playerOwner - 1);
                 building.setOwner(p);
@@ -167,7 +167,7 @@ public class MapReader {
 
             /* TODO proper choice of player */
             if (playerOwner == 0)
-                unit.setOwner(new Player("Gaia"));
+                unit.setOwner(new Player("Gaia", 0));
             else {
                 Log.d(TAG, "Getting player " + playerOwner);
                 Player p = players.get(playerOwner - 1);
