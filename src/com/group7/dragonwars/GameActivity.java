@@ -231,7 +231,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         fullMap = combineMap();
 
         /* Colour and save sprites for each player */
-        for (Player p : map.getPlayers()) {
+        for (Player p : state.getPlayers()) {
             /* Flag */
             Bitmap flagBitmap = graphics.get("Misc").get("flag");
             Bitmap colourFlag = BitmapChanger.changeColour(
@@ -249,6 +249,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
             }
             p.setUnitSprites(personalUnits);
         }
+
     }
 
     private <T extends DrawableMapObject>
@@ -607,7 +608,12 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
                 if (gf.hostsBuilding()) {
                     Player owner = gf.getBuilding().getOwner();
-                    canvas.drawBitmap(owner.getFlag(), null, dest, null);
+                    if (owner.getName().equals("Gaia")) { /* TODO proper Gaia handling */
+                        canvas.drawBitmap(graphics.get("Misc").get("flag"),
+                                          null, dest, null);
+                    } else {
+                        canvas.drawBitmap(owner.getFlag(), null, dest, null);
+                    }
                 }
 
 
@@ -616,9 +622,14 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
                     if (unit != null) {
                         String un = unit.toString();
-                        Bitmap unitGfx = unit.getOwner().getUnitSprite(un);
-
-                        canvas.drawBitmap(unitGfx, null, dest, null);
+                        Player owner = unit.getOwner();
+                        if (owner.getName().equals("Gaia")) { /* TODO proper Gaia handling */
+                            canvas.drawBitmap(graphics.get("Units").get(un),
+                                              null, dest, null);
+                        } else {
+                            Bitmap unitGfx = owner.getUnitSprite(un);
+                            canvas.drawBitmap(unitGfx, null, dest, null);
+                        }
                     }
                 }
                 /* Uncomment to print red grid with some info */
