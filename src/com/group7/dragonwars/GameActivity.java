@@ -42,6 +42,7 @@ import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.group7.dragonwars.engine.Building;
 import com.group7.dragonwars.engine.BitmapChanger;
@@ -1006,8 +1007,18 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         case MENU:
             switch (which) {
             case 0:
-                state.nextPlayer();
-                Log.v(null, "advancing player");
+                try {
+                    state.nextPlayer();
+                    Log.v(null, "advancing player");
+                }
+                catch (GameFinishedException e) {
+                    Player winner = e.getWinner();
+                    Toast.makeText(getApplicationContext(),
+                                   String.format("%s has won the game!",
+                                                 winner.getName()),
+                                   Toast.LENGTH_LONG).show();
+                    /* TODO finish game somehow */
+                }
                 break;
             }
             break;
