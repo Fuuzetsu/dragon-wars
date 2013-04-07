@@ -134,7 +134,7 @@ public class GameState {
     }
 
     public void nextPlayer() throws GameFinishedException {
-        Iterator<Player> iter = players.iter();
+        Iterator<Player> iter = players.iterator();
 
         while (iter.hasNext()) {
             Player p = iter.next();

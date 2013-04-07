@@ -49,6 +49,7 @@ import com.group7.dragonwars.engine.BitmapChanger;
 import com.group7.dragonwars.engine.DrawableMapObject;
 import com.group7.dragonwars.engine.Func;
 import com.group7.dragonwars.engine.GameField;
+import com.group7.dragonwars.engine.GameFinishedException;
 import com.group7.dragonwars.engine.GameMap;
 import com.group7.dragonwars.engine.GameState;
 import com.group7.dragonwars.engine.Logic;
@@ -1013,7 +1014,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                 }
                 catch (GameFinishedException e) {
                     Player winner = e.getWinner();
-                    Toast.makeText(getApplicationContext(),
+                    Toast.makeText(context,
                                    String.format("%s has won the game!",
                                                  winner.getName()),
                                    Toast.LENGTH_LONG).show();
