@@ -6,11 +6,14 @@ public class Player {
     private String name;
     private Boolean lost;
     private Integer gold = 5;
+    private int colour;
+
     List<Unit> ownedUnits = new ArrayList<Unit>();
     List<Building> ownedBuildings = new ArrayList<Building>();
 
-    public Player(String name) {
+    public Player(String name, final Integer colour) {
         this.name = name;
+        this.colour = colour;
         this.lost = false;
     }
 
