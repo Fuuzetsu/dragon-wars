@@ -1,16 +1,22 @@
 package com.group7.dragonwars.engine;
 
+import android.graphics.Bitmap;
+
 import java.util.*;
 
 public class Player {
     private String name;
     private Boolean lost;
     private Integer gold = 5;
+    private Integer colour;
+    private Bitmap flag;
+
     List<Unit> ownedUnits = new ArrayList<Unit>();
     List<Building> ownedBuildings = new ArrayList<Building>();
 
-    public Player(String name) {
+    public Player(String name, final Integer colour) {
         this.name = name;
+        this.colour = colour;
         this.lost = false;
     }
 
@@ -47,7 +53,7 @@ public class Player {
     }
 
     public String toString() {
-        return this.name;
+        return String.format("%s / %d", name, colour);
     }
 
     public Integer getGoldAmount() {
@@ -60,5 +66,21 @@ public class Player {
 
     public List<Building> getOwnedBuildings() {
         return this.ownedBuildings;
+    }
+
+    public Integer getColour() {
+        return this.colour;
+    }
+
+    public Bitmap getFlag() {
+        return flag;
+    }
+
+    public Boolean hasFlag() {
+        return flag != null;
+    }
+
+    public void setFlag(Bitmap flag) {
+        this.flag = flag;
     }
 }

@@ -55,7 +55,7 @@ public class GameFieldTests extends TestCase {
     }
 
     public void testUnitHostSuccess() {
-        Player s = new Player("Shana");
+        Player s = new Player("Shana", 0);
         Unit u = new Unit("Nietono", 2.0, 2, 2.0,
                           2.0, 2.0, false, 2, "fake",
                           "fakeDir", "fake.pack");
@@ -71,7 +71,7 @@ public class GameFieldTests extends TestCase {
     }
 
     public void testAcceptsUnit() {
-        Player s = new Player("Shana");
+        Player s = new Player("Shana", 0);
         Unit u = new Unit("Nietono", 2.0, 2, 2.0,
                           2.0, 2.0, false, 2, "fake",
                           "fakeDir", "fake.pack");
