@@ -237,6 +237,10 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                              final String resDir, final String resPack,
                              final String regName) {
         Bitmap bMap = getResource(resName, resDir, resPack);
+        if (!graphics.contains(category)) {
+            graphics.put(category, new HashMap<String, Bitmap>());
+        }
+
         graphics.get(category).put(regName, bMap);
     }
 
