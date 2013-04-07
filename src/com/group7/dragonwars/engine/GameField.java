@@ -1,5 +1,7 @@
 package com.group7.dragonwars.engine;
 
+import java.text.DecimalFormat;
+
 public class GameField extends DrawableMapObject {
 
     private Unit hostedUnit;
@@ -7,6 +9,12 @@ public class GameField extends DrawableMapObject {
     private Double movementModifier;
     private Double defenseModifier, attackModifier;
     private Boolean flightOnly, accessible;
+    
+    private static DecimalFormat decformat;
+    
+    static {
+        decformat = new DecimalFormat("#.##");
+    }
 
     public Boolean doesAcceptUnit(Unit unit) {
         Boolean canStep = false;
@@ -90,9 +98,9 @@ public class GameField extends DrawableMapObject {
 
     public void generateInfo() {
         String r = getName() + "\n";
-        r += "Attack: " + getAttackModifier()
-            + " Defense: " + getDefenseModifier()
-            + " Move: " + getMovementModifier() + "\n";
+        r += "Attack: " + decformat.format(getAttackModifier())
+            + " Defense: " + decformat.format(getDefenseModifier())
+            + " Move: " + decformat.format(getMovementModifier()) + "\n";
         this.info = r;
     }
 }

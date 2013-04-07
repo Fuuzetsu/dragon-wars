@@ -1,5 +1,6 @@
 package com.group7.dragonwars.engine;
 
+import java.text.DecimalFormat;
 import java.util.LinkedList;
 
 public class Unit extends DrawableMapObject {
@@ -13,7 +14,13 @@ public class Unit extends DrawableMapObject {
     private Player owner;
     private Boolean isFlying;
     private Integer productionCost;
-
+    
+    private static DecimalFormat decformat;
+    
+    static {
+        decformat = new DecimalFormat("#.##");
+    }
+    
     public Unit(String name, Double maxHealth, Integer maxMovement,
                 Double attack, Double meleeDefense, Double rangeDefense,
                 Boolean isFlying, Integer productionCost, String spriteLocation,
@@ -166,15 +173,15 @@ public class Unit extends DrawableMapObject {
 
     public String getInfo() {
         String r = getName() + " ~ " + this.getOwner().getName() + "\n";
-        r += "Health: " + getHealth();
+        r += "Health: " + decformat.format(getHealth());
         return r + this.info;
     }
 
     public void generateInfo() {
-        String  r =  "/"  + getMaxHealth() + "\n";
-        r += "Attack: " + getAttack() + "\n";
-        r += "Defense: " + getMeleeDefense() + " (Melee) "
-            + getRangeDefense() + " (Ranged)\n";
+        String  r =  "/"  + decformat.format(getMaxHealth()) + "\n";
+        r += "Attack: " + decformat.format(getAttack()) + "\n";
+        r += "Defense: " + decformat.format(getMeleeDefense()) + " (Melee) "
+            + decformat.format(getRangeDefense()) + " (Ranged)\n";
 
         this.info = r;
     }
