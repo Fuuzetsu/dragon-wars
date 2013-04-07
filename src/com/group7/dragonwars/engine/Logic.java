@@ -73,7 +73,14 @@ public class Logic {
             next = newNext;
         }
 
-        return new ArrayList<Position>(reachable);
+        List<Position> shown = new ArrayList<Position>();
+        for (Position p : reachable) {
+            if (map.getField(p).canBeStoppedOn()) {
+                shown.add(p);
+            }
+        }
+
+        return shown;
     }
 
     public List<Node>
