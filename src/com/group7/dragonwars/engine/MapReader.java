@@ -28,12 +28,13 @@ public class MapReader {
         JSONArray terrain = m.getJSONArray("terrain");
         JSONArray startingBuildingPos = m.getJSONArray("startingBuildingPos");
         JSONArray startingUnitPos = m.getJSONArray("startingUnitPos");
+        JSONArray playerColours = m.getJSONArray("playerColours");
 
 
         /* Make a fake player list for now */
         List<Player> playerList = new ArrayList<Player>();
         for (Integer i = 0; i < players; ++i)
-            playerList.add(new Player("Player " + (i + 1)));
+            playerList.add(new Player("Player " + (i + 1), playerColours.getInt(i)));
 
         /* Fill in a HashMap for look-up */
         HashMap<Character, JSONObject> fields = new HashMap<Character, JSONObject>();
