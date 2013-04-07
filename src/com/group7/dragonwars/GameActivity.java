@@ -44,6 +44,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.group7.dragonwars.engine.Building;
+import com.group7.dragonwars.engine.BitmapChanger;
 import com.group7.dragonwars.engine.DrawableMapObject;
 import com.group7.dragonwars.engine.Func;
 import com.group7.dragonwars.engine.GameField;
@@ -142,7 +143,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     private enum MenuType {NONE, ACTION, BUILD, MENU};
 
     private MenuType whichMenu;
-    
+
     private DecimalFormat decformat;
 
     public GameView(final Context ctx, final AttributeSet attrset) {
@@ -184,6 +185,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         putGroup("Fields", map.getGameFieldMap());
         putGroup("Units", map.getUnitMap());
         putGroup("Buildings", map.getBuildingMap());
+        putResource("Misc", "flag", "flag", "drawable", "com.group7.dragonwars");
 
         loadBorders();
 
@@ -209,7 +211,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         attack_high_paint = new Paint();
         attack_high_paint.setStyle(Paint.Style.FILL);
         attack_high_paint.setARGB(150, 255, 0, 0); // semi-transparent red
-        
+
         decformat = new DecimalFormat("#.##");
 
         attack_action = false;
@@ -549,6 +551,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     }
 
     public void doDraw(final Canvas canvas) {
+        final int FLAG_GRAY = (255 << 24) | (156 << 16) | (156 << 8) | 156;
         Long startingTime = System.currentTimeMillis();
 
 
@@ -568,6 +571,12 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                     tilesize * i + scrollOffset.getX(),
                     tilesize * j + scrollOffset.getY(),
                     tilesize);
+
+                if (gf.hostsBuilding()) {
+                    canvas.drawBitmap(graphics.get("Misc").get("flag"),
+                                      null, dest, null);
+                }
+
 
                 if (gf.hostsUnit()) {
                     Unit unit = gf.getUnit();
