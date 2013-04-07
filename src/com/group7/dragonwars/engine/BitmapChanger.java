@@ -3,7 +3,9 @@ package com.group7.dragonwars.engine;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 
-public static class BitmapChanger {
+public class BitmapChanger {
+
+    private BitmapChanger() {}
 
     public static Bitmap changeColour(final Bitmap templateBitmap,
                                       final Integer originalColour,
