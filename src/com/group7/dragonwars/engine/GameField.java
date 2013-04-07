@@ -9,9 +9,9 @@ public class GameField extends DrawableMapObject {
     private Double movementModifier;
     private Double defenseModifier, attackModifier;
     private Boolean flightOnly, accessible;
-    
+
     private static DecimalFormat decformat;
-    
+
     static {
         decformat = new DecimalFormat("#.##");
     }
@@ -63,6 +63,10 @@ public class GameField extends DrawableMapObject {
 
     public Double getMovementModifier() {
         return this.movementModifier;
+    }
+
+    public Boolean canBeStoppedOn() {
+        return accessible;
     }
 
 
