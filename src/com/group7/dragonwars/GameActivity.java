@@ -240,7 +240,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
             /* All possible units */
             Map<String, Bitmap> personalUnits = new HashMap<String, Bitmap>();
-            for (Map.Entry<String, Bitmap> uGfx : graphics.get("Units")) {
+            for (Map.Entry<String, Bitmap> uGfx :
+                     graphics.get("Units").entrySet()) {
                 Bitmap uBmap = uGfx.getValue();
                 Bitmap personal = BitmapChanger.changeColour(
                     uBmap, DEAD_COLOUR, p.getColour());
