@@ -3,6 +3,7 @@
     "sizeX": 10,
     "sizeY": 7,
     "players": 2,
+    "playerColours": [ -16776961, -256 ],
     "fields": {
         "G": {
             "name": "Grass",
@@ -101,7 +102,7 @@
         },
         {"building": "V",
          "posX": 3,
-         "posY": 2,
+         "posY": 4,
          "owner": 2,
          "produces": ["D", "S"]
         },
@@ -113,13 +114,13 @@
         },
         {"building": "C",
          "posX": 2,
-         "posY": 2,
+         "posY": 4,
          "owner": 2,
          "produces": ["D", "S"]
         },
         {"building": "C",
          "posX": 5,
-         "posY": 2,
+         "posY": 3,
          "owner": 2,
          "produces": ["S"]
         }
@@ -137,7 +138,7 @@
         },
         {"unit": "S",
          "posX": 5,
-         "posY": 2,
+         "posY": 3,
          "owner": 2
         }
     ]

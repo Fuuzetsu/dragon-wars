@@ -17,8 +17,8 @@ public class PlayerTests extends TestCase {
     }
 
     public void setUp() {
-        this.p = new Player("Shana");
-        this.r = new Player("Yukari");
+        this.p = new Player("Shana", 0);
+        this.r = new Player("Yukari", 0);
     }
 
     public void tearDown() {

@@ -10,8 +10,8 @@ public class PlayerAI extends Player {
     //Evaluator evaluator;
     List<AtomicAction> actions;
 
-    public PlayerAI(String name, GameState gamestate) {
-        super(name);
+    public PlayerAI(String name, Integer colour, GameState gamestate) {
+        super(name, colour);
         gameState = gamestate;
     }
 
