@@ -1,5 +1,7 @@
 package com.group7.dragonwars.engine;
 
+import android.graphics.Bitmap;
+
 import java.util.*;
 
 public class Player {
@@ -7,6 +9,7 @@ public class Player {
     private Boolean lost;
     private Integer gold = 5;
     private Integer colour;
+    private Bitmap flag;
 
     List<Unit> ownedUnits = new ArrayList<Unit>();
     List<Building> ownedBuildings = new ArrayList<Building>();
@@ -67,5 +70,17 @@ public class Player {
 
     public Integer getColour() {
         return this.colour;
+    }
+
+    public Bitmap getFlag() {
+        return flag;
+    }
+
+    public Boolean hasFlag() {
+        return flag != null;
+    }
+
+    public void setFlag(Bitmap flag) {
+        this.flag = flag;
     }
 }

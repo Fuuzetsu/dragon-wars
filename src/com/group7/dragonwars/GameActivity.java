@@ -577,10 +577,17 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                     tilesize);
 
                 if (gf.hostsBuilding()) {
-                    Bitmap flagBitmap = graphics.get("Misc").get("flag");
-                    Integer newColour = gf.getBuilding().getOwner().getColour();
-                    Bitmap colourFlag = BitmapChanger.changeColour(
-                        flagBitmap, FLAG_GRAY, newColour);
+                    Player owner = gf.getBuilding().getOwner();
+                    Bitmap colourFlag;
+                    if (owner.hasFlag()) {
+                        colourFlag = owner.getFlag();
+                    } else {
+                        Bitmap flagBitmap = graphics.get("Misc").get("flag");
+                        colourFlag = BitmapChanger.changeColour(
+                            flagBitmap, FLAG_GRAY, owner.getColour());
+                        owner.setFlag(colourFlag);
+                    }
+
                     canvas.drawBitmap(colourFlag, null, dest, null);
                 }
 
