@@ -11,6 +11,9 @@ public class BitmapChanger {
     public static Bitmap changeColour(final Bitmap templateBitmap,
                                       final Integer originalColour,
                                       final Integer replacementColour) {
+        if (replacementColour == 0) {
+            return templateBitmap;
+        }
 
         Bitmap replacement = templateBitmap.copy(Bitmap.Config.ARGB_8888, true);
 
