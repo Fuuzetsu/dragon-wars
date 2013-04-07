@@ -88,12 +88,11 @@ public class Player {
         this.flag = flag;
     }
 
-    public void getUnitSprite(final String unitName) {
+    public Bitmap getUnitSprite(final String unitName) {
         return unitSprites.get(unitName);
     }
 
-    public Map<String, Bitmap> setUnitSprites(
-        final Map<String, Bitmap> sprites) {
+    public void setUnitSprites(final  Map<String, Bitmap> sprites) {
         unitSprites = sprites;
     }
 }
