@@ -6,7 +6,7 @@ public class Player {
     private String name;
     private Boolean lost;
     private Integer gold = 5;
-    private int colour;
+    private Integer colour;
 
     List<Unit> ownedUnits = new ArrayList<Unit>();
     List<Building> ownedBuildings = new ArrayList<Building>();
@@ -63,5 +63,9 @@ public class Player {
 
     public List<Building> getOwnedBuildings() {
         return this.ownedBuildings;
+    }
+
+    public Integer getColour() {
+        return this.colour;
     }
 }
