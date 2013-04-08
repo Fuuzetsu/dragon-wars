@@ -596,6 +596,11 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         GameField selectedField = map.isValidField(selected) ? map.getField(selected) : map.getField(0, 0);
         List<Position> unitDests = getUnitDestinations(selectedField);
 
+        Player player = state.getCurrentPlayer();
+        
+        Paint playerPaint = new Paint();
+        playerPaint.setColor(player.getColour());
+
         canvas.drawBitmap(fullMap, scrollOffset.getX(),
                           scrollOffset.getY(), null);
         for (int i = 0; i < map.getWidth(); ++i) {
@@ -701,11 +706,16 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
             tilesize * selected.getY() + scrollOffset.getY(),
             tilesize);
         canvas.drawBitmap(selector, null, select_dest, null);
-
+        
+        double offsetTiles = -scrollOffset.getX() / (double)tilesize;
+        double tpw = canvas.getWidth() / (double)tilesize;
+        Log.v(null, "osT = " + offsetTiles + " s.gX - osT = " + (selected.getX() - offsetTiles) + " tpw / 2 = " + tpw / 2);
+        boolean infoLeft = (selected.getX() - offsetTiles) > (tpw / 2);
+        
         if (selectedField.hostsUnit()) {
-            drawInfoBox(canvas, selectedField.getUnit(), selectedField, true);
+            drawInfoBox(canvas, selectedField.getUnit(), selectedField, infoLeft);
         } else {
-            drawInfoBox(canvas, null, selectedField, true);
+            drawInfoBox(canvas, null, selectedField, infoLeft);
         }
 
         drawCornerBox(canvas, true, true, "Turn " + state.getTurns());
@@ -718,10 +728,10 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
             framesSinceLastSecond = 0L;
             timeElapsed = 0L;
         }
+        
         String fpsS = decformat.format(fps);
-        Player player = state.getCurrentPlayer();
         drawCornerBox(canvas, false, true, player.getName() + " - " + player.getGoldAmount() + " Gold"
-                + "\nFPS: " + fpsS);
+                + "\nFPS: " + fpsS, true, playerPaint);
     }
 
     public float getMapDrawWidth() {
@@ -744,10 +754,14 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
             info += "\n" + field.getBuilding().getInfo();
         }
 
-        drawCornerBox(canvas, true, false, info);
+        drawCornerBox(canvas, left, false, info);
     }
 
     public void drawCornerBox(Canvas canvas, boolean left, boolean top, String text) {
+    	drawCornerBox(canvas, left, top, text, false, null);
+    }
+    
+    public void drawCornerBox(Canvas canvas, boolean left, boolean top, String text, boolean box, Paint boxPaint) {
         Paint textPaint = new Paint();
         textPaint.setColor(Color.WHITE);
         textPaint.setTextSize(15);
@@ -776,13 +790,19 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                 left ? boxWidth : canvas.getWidth(),
                 top ? boxHeight : canvas.getHeight());
         float radius = 5f;
-        RectF backRectF = new RectF(backRect.left - radius,
+        RectF backRectF = new RectF(backRect.left - radius - (box && !left ? radius + boxHeight : 0),
                 backRect.top - radius,
-                backRect.right + radius,
+                backRect.right + radius + (box && left ? radius + boxHeight : 0),
                 backRect.bottom + radius);
         canvas.drawRoundRect(backRectF, 5f, 5f, backPaint);
 
-
+        if (box) {
+        	canvas.drawRect(new RectF(left ? backRect.right + radius : backRect.left - radius - boxHeight,
+					backRect.top,
+					left ? backRect.right + radius + boxHeight : backRect.left - radius,
+					backRect.top + boxHeight), boxPaint);
+        }
+        
         for (Integer i = 0; i < ss.length; ++i) {
             canvas.drawText(ss[i], 0, ss[i].length(),
                     left ? backRect.left : backRect.right,
