@@ -42,12 +42,14 @@ import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.group7.dragonwars.engine.Building;
 import com.group7.dragonwars.engine.BitmapChanger;
 import com.group7.dragonwars.engine.DrawableMapObject;
 import com.group7.dragonwars.engine.Func;
 import com.group7.dragonwars.engine.GameField;
+import com.group7.dragonwars.engine.GameFinishedException;
 import com.group7.dragonwars.engine.GameMap;
 import com.group7.dragonwars.engine.GameState;
 import com.group7.dragonwars.engine.Logic;
@@ -1006,8 +1008,18 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         case MENU:
             switch (which) {
             case 0:
-                state.nextPlayer();
-                Log.v(null, "advancing player");
+                try {
+                    state.nextPlayer();
+                    Log.v(null, "advancing player");
+                }
+                catch (GameFinishedException e) {
+                    Player winner = e.getWinner();
+                    Toast.makeText(context,
+                                   String.format("%s has won the game!",
+                                                 winner.getName()),
+                                   Toast.LENGTH_LONG).show();
+                    /* TODO finish game somehow */
+                }
                 break;
             }
             break;
@@ -1082,6 +1094,7 @@ class FloatPair {
     public Float getY() {
         return this.pair.getRight();
     }
+
 
     @Override
     public boolean equals(final Object other) {

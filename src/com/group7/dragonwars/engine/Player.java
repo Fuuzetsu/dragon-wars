@@ -44,6 +44,10 @@ public class Player {
         ownedUnits.remove(unit);
     }
 
+    public void removeBuilding(Building building) {
+        ownedBuildings.remove(building);
+    }
+
     public List<Unit> getOwnedUnits() {
         return this.ownedUnits;
     }

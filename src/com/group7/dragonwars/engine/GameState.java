@@ -8,11 +8,12 @@ import android.util.Log;
 
 public class GameState {
 
-    GameMap map;
-    Logic logic;
-    List<Player> players = new ArrayList<Player>();
-    Integer playerIndex = 0;
-    Integer turns = 1;
+    private GameMap map;
+    private Logic logic;
+    private List<Player> players = new ArrayList<Player>();
+    private Integer playerIndex = 0;
+    private Integer turns = 1;
+    private Boolean gameFinished = false;
 
     public GameState(GameMap map, Logic logic, List<Player> players) {
         this.map = map;
@@ -132,7 +133,20 @@ public class GameState {
         }
     }
 
-    public void nextPlayer() {
+    public void nextPlayer() throws GameFinishedException {
+        Iterator<Player> iter = players.iterator();
+
+        while (iter.hasNext()) {
+            Player p = iter.next();
+            if (p.hasLost()) {
+                iter.remove();
+            }
+        }
+
+        if (players.size() <= 1) {
+            throw new GameFinishedException(players.get(0));
+        }
+
         playerIndex++;
         if (playerIndex == players.size()) {
             playerIndex = 0;
