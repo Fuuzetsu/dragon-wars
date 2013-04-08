@@ -41,7 +41,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.TextView;
 
 import com.group7.dragonwars.engine.Building;
 import com.group7.dragonwars.engine.BitmapChanger;
@@ -109,9 +108,6 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     private Bitmap highlighter;
     private Bitmap selector;
     private Bitmap attack_highlighter;
-
-    private Paint move_high_paint; // used to highlight movements
-    private Paint attack_high_paint; // used to highlight possible attacks
 
     private Bitmap fullMap;
 
@@ -218,14 +214,6 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         highlighter = getResource("highlight", "drawable",
                                   "com.group7.dragonwars");
         attack_highlighter = getResource("attack_highlight", "drawable", "com.group7.dragonwars");
-
-        move_high_paint = new Paint();
-        move_high_paint.setStyle(Paint.Style.FILL);
-        move_high_paint.setARGB(150, 0, 0, 255); // semi-transparent blue
-
-        attack_high_paint = new Paint();
-        attack_high_paint.setStyle(Paint.Style.FILL);
-        attack_high_paint.setARGB(150, 255, 0, 0); // semi-transparent red
 
         /* Prerender combined map */
         fullMap = combineMap();
@@ -709,7 +697,6 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         
         double offsetTiles = -scrollOffset.getX() / (double)tilesize;
         double tpw = canvas.getWidth() / (double)tilesize;
-        Log.v(null, "osT = " + offsetTiles + " s.gX - osT = " + (selected.getX() - offsetTiles) + " tpw / 2 = " + tpw / 2);
         boolean infoLeft = (selected.getX() - offsetTiles) > (tpw / 2);
         
         if (selectedField.hostsUnit()) {
