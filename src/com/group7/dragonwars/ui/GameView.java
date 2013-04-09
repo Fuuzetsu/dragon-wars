@@ -98,7 +98,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     private Context context;
     private HashMap<String, HashMap<String, Bitmap>> graphics;
-    private Integer orientation;
 
     private GameField lastField;
     private Unit lastUnit;
