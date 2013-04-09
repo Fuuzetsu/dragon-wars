@@ -502,50 +502,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         }
     }
 
-    /* Debug method */
-    private List<String> getFieldSquare(final Position p) {
-        List<String> r = new ArrayList<String>();
-
-        Integer i, j;
-        i = p.getX();
-        j = p.getY();
-
-        Position nep, np, nwp, ep, cp, wp, sep, sp, swp;
-        String ne, n, nw, e, c, w, se, s, sw;
-
-        nep = new Position(i - 1, j - 1);
-        np = new Position(i, j - 1);
-        nwp = new Position(i + 1, j - 1);
-
-        ep = new Position(i - 1, j);
-        cp = new Position(i, j);
-        wp = new Position(i + 1, j);
-
-        sep = new Position(i - 1, j + 1);
-        sp = new Position(i, j + 1);
-        swp = new Position(i + 1, j + 1);
-
-        ne = map.isValidField(nep) ? map.getField(nep).toString() : " ";
-        n = map.isValidField(np) ? map.getField(np).toString() : " ";
-        nw = map.isValidField(nwp) ? map.getField(nwp).toString() : " ";
-
-        e = map.isValidField(ep) ? map.getField(ep).toString() : " ";
-        c = map.isValidField(cp) ? map.getField(cp).toString() : " ";
-        w = map.isValidField(wp) ? map.getField(wp).toString() : " ";
-
-        se = map.isValidField(sep) ? map.getField(sep).toString() : " ";
-        s = map.isValidField(sp) ? map.getField(sp).toString() : " ";
-        sw = map.isValidField(swp) ? map.getField(swp).toString() : " ";
-
-        r.add("" + ne.toString().charAt(0) + n.toString().charAt(0)
-              + nw.toString().charAt(0));
-        r.add("" + e.toString().charAt(0) + c.toString().charAt(0)
-              + w.toString().charAt(0));
-        r.add("" + se.toString().charAt(0) + s.toString().charAt(0)
-              + sw.toString().charAt(0));
-
-        return r;
-    }
 
     public void doDraw(final Canvas canvas) {
         Long startingTime = System.currentTimeMillis();
@@ -599,22 +555,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                         }
                     }
                 }
-                /* Uncomment to print red grid with some info */
-                // Paint p = new Paint();
-                // p.setColor(Color.RED);
-                // canvas.drawText(pos.toString() + gfn.charAt(0),
-                //                 tilesize * i + scrollOffset.getX(),
-                //                 tilesize * j + scrollOffset.getY() + 64, p);
-                // List<String> aoe = getFieldSquare(pos);
-                // for (int x = 0; x < aoe.size(); ++x)
-                // canvas.drawText(aoe.get(x), tilesize * i
-                //                 + scrollOffset.getX(),
-                //                 tilesize * j + scrollOffset.getY()
-                //                 + 20 + (x * 10), p);
-                // Paint r = new Paint();
-                // r.setStyle(Paint.Style.STROKE);
-                // r.setColor(Color.RED);
-                // canvas.drawRect(dest, r);
             }
         }
 
