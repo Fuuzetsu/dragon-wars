@@ -66,7 +66,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     private final int tilesize = 64;
 
-    private Bitmap bm;
     private GameState state;
     private Logic logic;
     private GameMap map;
@@ -146,8 +145,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         this.state = new GameState(map, logic, map.getPlayers());
 
         context = ctx;
-        bm = BitmapFactory.decodeResource(context.getResources(),
-                                          R.drawable.ic_launcher);
         SurfaceHolder holder = getHolder();
         this.graphics = new HashMap<String, HashMap<String, Bitmap>>();
 
