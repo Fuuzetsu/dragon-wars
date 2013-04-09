@@ -659,7 +659,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
     }
 
     public void drawCornerBox(Canvas canvas, boolean left, boolean top, String text) {
-    	drawCornerBox(canvas, left, top, text, false, null);
+        drawCornerBox(canvas, left, top, text, false, null);
     }
 
     public void drawCornerBox(Canvas canvas, boolean left, boolean top, String text, boolean box, Paint boxPaint) {
@@ -698,10 +698,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         canvas.drawRoundRect(backRectF, 5f, 5f, backPaint);
 
         if (box) {
-        	canvas.drawRect(new RectF(left ? backRect.right + radius : backRect.left - radius - boxHeight,
-					backRect.top,
-					left ? backRect.right + radius + boxHeight : backRect.left - radius,
-					backRect.top + boxHeight), boxPaint);
+            canvas.drawRect(new RectF(left ? backRect.right + radius : backRect.left - radius - boxHeight,
+                    backRect.top,
+                    left ? backRect.right + radius + boxHeight : backRect.left - radius,
+                    backRect.top + boxHeight), boxPaint);
         }
 
         for (Integer i = 0; i < ss.length; ++i) {
