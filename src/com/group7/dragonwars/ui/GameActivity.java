@@ -1,4 +1,4 @@
-package com.group7.dragonwars;
+package com.group7.dragonwars.ui;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

@@ -1,4 +1,4 @@
-package com.group7.dragonwars;
+package com.group7.dragonwars.ui;
 
 import android.os.Bundle;
 import android.app.Activity;
