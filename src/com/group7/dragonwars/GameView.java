@@ -1,4 +1,4 @@
-package com.group7.dragonwars.ui;
+package com.group7.dragonwars;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -554,27 +554,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                 canvas.drawBitmap(attack_highlighter, null, attack_dest, null);
             }
         }
-
-        // /* Always draw attackables */
-        // if (map.getField(selected).hostsUnit()) {
-        //     Unit u = map.getField(selected).getUnit();
-        //     Set<Position> attack_destinations =
-        //         logic.getAttackableUnitPositions(map, u, selected);
-        //     //logic.getAttackableFields(map, u);
-        //     for (Position pos : attack_destinations) {
-        //         RectF dest = getSquare(
-        //             tilesize * pos.getX() + scrollOffset.getX(),
-        //             tilesize * pos.getY() + scrollOffset.getY(),
-        //             tilesize);
-        //         canvas.drawRect(dest, attack_high_paint);
-        //     }
-        // }
-
-        // RectF dest = getSquare(
-        //     tilesize * selected.getX() + scrollOffset.getX(),
-        //     tilesize * selected.getY() + scrollOffset.getY(),
-        //     tilesize);
-        // canvas.drawBitmap(selector, null, dest, null);
 
         RectF select_dest = getSquare(
             tilesize * selected.getX() + scrollOffset.getX(),
