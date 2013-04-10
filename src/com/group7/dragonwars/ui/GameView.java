@@ -120,21 +120,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         Log.d(TAG, "GameView ctor");
 
         GameView gameView = (GameView) this.findViewById(R.id.gameView);
-        GameMap gm = null;
 
         try {
-            gm = MapReader.readMap(readFile(R.raw.overmap)); // ugh
+            map = MapReader.readMap(readFile(R.raw.overmap)); // ugh
         } catch (JSONException e) {
             Log.d(TAG, "Failed to load the map: " + e.getMessage());
         }
 
-        if (gm == null) {
-            Log.d(TAG, "gm is null");
+        if (map == null) {
+            Log.d(TAG, "map is null");
             System.exit(1);
         }
 
-        Log.d(TAG, "before setMap");
-        gameView.setMap(gm);
         this.state = new GameState(map, logic, map.getPlayers());
 
         context = ctx;
@@ -311,10 +308,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         }
 
         return text;
-    }
-
-    public void setMap(final GameMap newmap) {
-        this.map = newmap;
     }
 
     @Override
