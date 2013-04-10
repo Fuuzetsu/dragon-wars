@@ -738,7 +738,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                             AlertDialog.Builder actions_builder =
                                 new AlertDialog.Builder(this.getContext());
                             actions_builder.setTitle("Actions");
-                            String[] actions = {"Wait here", "Attack",
+                            String[] actions = {"Move", "Attack",
                                                 "Cancel"};
                             actions_builder.setItems(actions, this);
                             actions_builder.create().show();
