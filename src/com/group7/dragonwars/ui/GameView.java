@@ -605,7 +605,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         String fpsS = decformat.format(fps);
         drawCornerBox(canvas, false, true, player.getName() + " - " + player.getGoldAmount() + " Gold"
-                + "\nFPS: " + fpsS, true, playerPaint);
+                      + "\nFPS: " + fpsS, true, playerPaint);
     }
 
     public float getMapDrawWidth() {
@@ -655,33 +655,33 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         Rect bounds = new Rect();
         textPaint.getTextBounds(longestLine, 0,
-                                   longestLine.length(), bounds);
+                                longestLine.length(), bounds);
         Integer boxWidth = bounds.width(); // Might have to Math.ceil first
         Integer boxHeight = ss.length * bounds.height();
 
         Rect backRect = new Rect(left ? 0 : canvas.getWidth() - boxWidth,
-                top ? 0 : canvas.getHeight() - boxHeight,
-                left ? boxWidth : canvas.getWidth(),
-                top ? boxHeight : canvas.getHeight());
+                                 top ? 0 : canvas.getHeight() - boxHeight,
+                                 left ? boxWidth : canvas.getWidth(),
+                                 top ? boxHeight : canvas.getHeight());
         float radius = 5f;
         RectF backRectF = new RectF(backRect.left - radius - (box && !left ? radius + boxHeight : 0),
-                backRect.top - radius,
-                backRect.right + radius + (box && left ? radius + boxHeight : 0),
-                backRect.bottom + radius);
+                                    backRect.top - radius,
+                                    backRect.right + radius + (box && left ? radius + boxHeight : 0),
+                                    backRect.bottom + radius);
         canvas.drawRoundRect(backRectF, 5f, 5f, backPaint);
 
         if (box) {
             canvas.drawRect(new RectF(left ? backRect.right + radius : backRect.left - radius - boxHeight,
-                    backRect.top,
-                    left ? backRect.right + radius + boxHeight : backRect.left - radius,
-                    backRect.top + boxHeight), boxPaint);
+                                      backRect.top,
+                                      left ? backRect.right + radius + boxHeight : backRect.left - radius,
+                                      backRect.top + boxHeight), boxPaint);
         }
 
         for (Integer i = 0; i < ss.length; ++i) {
             canvas.drawText(ss[i], 0, ss[i].length(),
-                    left ? backRect.left : backRect.right,
-                    backRect.top + (bounds.height() * (i + 1)),
-                    textPaint);
+                            left ? backRect.left : backRect.right,
+                            backRect.top + (bounds.height() * (i + 1)),
+                            textPaint);
         }
     }
 
@@ -773,9 +773,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                            newselected_field.hostsBuilding()) {
                     Building building = map.getField(newselected).getBuilding();
                     if (building.getOwner().equals(state.getCurrentPlayer())
-                            && building.canProduceUnits()) {
+                        && building.canProduceUnits()) {
                         AlertDialog.Builder buildmenu_builder
-                        = new AlertDialog.Builder(this.getContext());
+                            = new AlertDialog.Builder(this.getContext());
                         buildmenu_builder.setTitle("Build");
 
                         List<Unit> units = building.getProducibleUnits();
