@@ -79,6 +79,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     private DrawingThread dt;
     private Bitmap highlighter;
+    private Bitmap pathHighlighter;
     private Bitmap selector;
     private Bitmap attack_highlighter;
 
@@ -165,7 +166,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                                "com.group7.dragonwars");
         highlighter = getResource("highlight", "drawable",
                                   "com.group7.dragonwars");
-        attack_highlighter = getResource("attack_highlight", "drawable", "com.group7.dragonwars");
+        pathHighlighter = getResource("path_highlight", "drawable",
+                                      "com.group7.dragonwars");
+        attack_highlighter = getResource("attack_highlight", "drawable",
+                                         "com.group7.dragonwars");
 
         /* Prerender combined map */
         fullMap = combineMap();
@@ -538,7 +542,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                 tilesize * pos.getX() + scrollOffset.getX(),
                 tilesize * pos.getY() + scrollOffset.getY(),
                 tilesize);
-            canvas.drawBitmap(highlighter, null, dest, null);
+            if (path != null && path.contains(pos)) {
+                canvas.drawBitmap(pathHighlighter, null, dest, null);
+            } else {
+                canvas.drawBitmap(highlighter, null, dest, null);
+            }
         }
 
         /* Sometimes draw attackables */
@@ -727,7 +735,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                             getUnitDestinations(selected_field);
 
                         if (unit_destinations.contains(newselected) ||
-                            selected.equals(newselected) {
+                            selected.equals(newselected)) {
                                 if (path == null) {
                                     path = logic.findPath(map, unit, newselected);
                                 } else if (path.contains(newselected)) {
