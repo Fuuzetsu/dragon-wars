@@ -1,4 +1,4 @@
-package com.group7.dragonwars;
+package com.group7.dragonwars.ui;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -27,7 +27,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -40,13 +39,15 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
-import android.widget.Button;
+import android.widget.Toast;
 
 import com.group7.dragonwars.engine.Building;
 import com.group7.dragonwars.engine.BitmapChanger;
 import com.group7.dragonwars.engine.DrawableMapObject;
+import com.group7.dragonwars.engine.FloatPair;
 import com.group7.dragonwars.engine.Func;
 import com.group7.dragonwars.engine.GameField;
+import com.group7.dragonwars.engine.GameFinishedException;
 import com.group7.dragonwars.engine.GameMap;
 import com.group7.dragonwars.engine.GameState;
 import com.group7.dragonwars.engine.Logic;
@@ -56,52 +57,24 @@ import com.group7.dragonwars.engine.Player;
 import com.group7.dragonwars.engine.Position;
 import com.group7.dragonwars.engine.Unit;
 
-public class GameActivity extends Activity {
-    private static final String TAG = "GameActivity";
-    private Integer orientation;
-    private Boolean orientationChanged = false;
-
-    @Override
-    protected final void onCreate(final Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        // remove the title bar
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-        // remove the status bar
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                             WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-        Log.d(TAG, "in onCreate");
-        setContentView(R.layout.activity_game);
-        Log.v(null, "on inCreate");
-
-        Button menuButton = (Button) this.findViewById(R.id.menuButton);
-        GameView gameView = (GameView) this.findViewById(R.id.gameView);
-        menuButton.setOnClickListener(gameView);
-    }
-
-}
-
-class GameView extends SurfaceView implements SurfaceHolder.Callback,
-                                              OnGestureListener,
-                                              OnDoubleTapListener,
-                                              DialogInterface.OnClickListener,
-                                              OnClickListener {
+public class GameView extends SurfaceView implements SurfaceHolder.Callback,
+                                                     OnGestureListener,
+                                                     OnDoubleTapListener,
+                                                     DialogInterface.OnClickListener,
+                                                     OnClickListener {
     private final String TAG = "GameView";
 
     private final int tilesize = 64;
 
-    private Bitmap bm;
     private GameState state;
-    private Logic logic;
+    private Logic logic = new Logic();
     private GameMap map;
-    private Position selected; // Currently selected position
+    private Position selected = new Position(0, 0);
 
     private Position attack_location;
-    private Position action_location;
+    private Position action_location = new Position(0, 0);;
 
-    private FloatPair scrollOffset; // offset caused by scrolling, in pixels
+    private FloatPair scrollOffset = new FloatPair(0f, 0f);
     private GestureDetector gestureDetector;
 
     private DrawingThread dt;
@@ -113,7 +86,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     private boolean unit_selected; // true if there is a unit at selection
 
-    private boolean attack_action;
+    private boolean attack_action = false;
     /* true if during an attack action:
      * user selects a unit, selects a field
      * chooses attack
@@ -124,8 +97,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
      */
 
     private Context context;
-    private HashMap<String, HashMap<String, Bitmap>> graphics;
-    private Integer orientation;
+    private HashMap<String, HashMap<String, Bitmap>> graphics
+        = new HashMap<String, HashMap<String, Bitmap>>();
 
     private GameField lastField;
     private Unit lastUnit;
@@ -138,44 +111,31 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     private enum MenuType {NONE, ACTION, BUILD, MENU};
 
-    private MenuType whichMenu;
+    private MenuType whichMenu = MenuType.NONE;
 
-    private DecimalFormat decformat;
+    private DecimalFormat decformat = new DecimalFormat("#.##");
 
     public GameView(final Context ctx, final AttributeSet attrset) {
         super(ctx, attrset);
         Log.d(TAG, "GameView ctor");
 
         GameView gameView = (GameView) this.findViewById(R.id.gameView);
-        GameMap gm = null;
-
-        //this.findViewById(R.id.menuButton).setOnClickListener(gameView);
-
-        whichMenu = MenuType.NONE;
-
-        Log.d(TAG, "nulling GameMap");
 
         try {
-            gm = MapReader.readMap(readFile(R.raw.overmap)); // ugh
+            map = MapReader.readMap(readFile(R.raw.overmap)); // ugh
         } catch (JSONException e) {
             Log.d(TAG, "Failed to load the map: " + e.getMessage());
         }
 
-        if (gm == null) {
-            Log.d(TAG, "gm is null");
+        if (map == null) {
+            Log.d(TAG, "map is null");
             System.exit(1);
         }
 
-        Log.d(TAG, "before setMap");
-        gameView.setMap(gm);
-        this.logic = new Logic();
         this.state = new GameState(map, logic, map.getPlayers());
 
         context = ctx;
-        bm = BitmapFactory.decodeResource(context.getResources(),
-                                          R.drawable.ic_launcher);
         SurfaceHolder holder = getHolder();
-        this.graphics = new HashMap<String, HashMap<String, Bitmap>>();
 
         /* Load and colour all the sprites we'll need */
         Log.d(TAG, "Initialising graphics.");
@@ -184,16 +144,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         holder.addCallback(this);
 
-        selected = new Position(0, 0);
-        action_location = new Position(0, 0);
-
         gestureDetector = new GestureDetector(this.getContext(), this);
-        scrollOffset = new FloatPair(0f, 0f);
-
-
-        decformat = new DecimalFormat("#.##");
-
-        attack_action = false;
 
     }
 
@@ -357,10 +308,6 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         }
 
         return text;
-    }
-
-    public void setMap(final GameMap newmap) {
-        this.map = newmap;
     }
 
     @Override
@@ -528,50 +475,6 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         }
     }
 
-    /* Debug method */
-    private List<String> getFieldSquare(final Position p) {
-        List<String> r = new ArrayList<String>();
-
-        Integer i, j;
-        i = p.getX();
-        j = p.getY();
-
-        Position nep, np, nwp, ep, cp, wp, sep, sp, swp;
-        String ne, n, nw, e, c, w, se, s, sw;
-
-        nep = new Position(i - 1, j - 1);
-        np = new Position(i, j - 1);
-        nwp = new Position(i + 1, j - 1);
-
-        ep = new Position(i - 1, j);
-        cp = new Position(i, j);
-        wp = new Position(i + 1, j);
-
-        sep = new Position(i - 1, j + 1);
-        sp = new Position(i, j + 1);
-        swp = new Position(i + 1, j + 1);
-
-        ne = map.isValidField(nep) ? map.getField(nep).toString() : " ";
-        n = map.isValidField(np) ? map.getField(np).toString() : " ";
-        nw = map.isValidField(nwp) ? map.getField(nwp).toString() : " ";
-
-        e = map.isValidField(ep) ? map.getField(ep).toString() : " ";
-        c = map.isValidField(cp) ? map.getField(cp).toString() : " ";
-        w = map.isValidField(wp) ? map.getField(wp).toString() : " ";
-
-        se = map.isValidField(sep) ? map.getField(sep).toString() : " ";
-        s = map.isValidField(sp) ? map.getField(sp).toString() : " ";
-        sw = map.isValidField(swp) ? map.getField(swp).toString() : " ";
-
-        r.add("" + ne.toString().charAt(0) + n.toString().charAt(0)
-              + nw.toString().charAt(0));
-        r.add("" + e.toString().charAt(0) + c.toString().charAt(0)
-              + w.toString().charAt(0));
-        r.add("" + se.toString().charAt(0) + s.toString().charAt(0)
-              + sw.toString().charAt(0));
-
-        return r;
-    }
 
     public void doDraw(final Canvas canvas) {
         Long startingTime = System.currentTimeMillis();
@@ -585,7 +488,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         List<Position> unitDests = getUnitDestinations(selectedField);
 
         Player player = state.getCurrentPlayer();
-        
+
         Paint playerPaint = new Paint();
         playerPaint.setColor(player.getColour());
 
@@ -625,22 +528,6 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
                         }
                     }
                 }
-                /* Uncomment to print red grid with some info */
-                // Paint p = new Paint();
-                // p.setColor(Color.RED);
-                // canvas.drawText(pos.toString() + gfn.charAt(0),
-                //                 tilesize * i + scrollOffset.getX(),
-                //                 tilesize * j + scrollOffset.getY() + 64, p);
-                // List<String> aoe = getFieldSquare(pos);
-                // for (int x = 0; x < aoe.size(); ++x)
-                // canvas.drawText(aoe.get(x), tilesize * i
-                //                 + scrollOffset.getX(),
-                //                 tilesize * j + scrollOffset.getY()
-                //                 + 20 + (x * 10), p);
-                // Paint r = new Paint();
-                // r.setStyle(Paint.Style.STROKE);
-                // r.setColor(Color.RED);
-                // canvas.drawRect(dest, r);
             }
         }
 
@@ -694,11 +581,11 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
             tilesize * selected.getY() + scrollOffset.getY(),
             tilesize);
         canvas.drawBitmap(selector, null, select_dest, null);
-        
+
         double offsetTiles = -scrollOffset.getX() / (double)tilesize;
         double tpw = canvas.getWidth() / (double)tilesize;
         boolean infoLeft = (selected.getX() - offsetTiles) > (tpw / 2);
-        
+
         if (selectedField.hostsUnit()) {
             drawInfoBox(canvas, selectedField.getUnit(), selectedField, infoLeft);
         } else {
@@ -715,7 +602,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
             framesSinceLastSecond = 0L;
             timeElapsed = 0L;
         }
-        
+
         String fpsS = decformat.format(fps);
         drawCornerBox(canvas, false, true, player.getName() + " - " + player.getGoldAmount() + " Gold"
                 + "\nFPS: " + fpsS, true, playerPaint);
@@ -745,9 +632,9 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
     }
 
     public void drawCornerBox(Canvas canvas, boolean left, boolean top, String text) {
-    	drawCornerBox(canvas, left, top, text, false, null);
+        drawCornerBox(canvas, left, top, text, false, null);
     }
-    
+
     public void drawCornerBox(Canvas canvas, boolean left, boolean top, String text, boolean box, Paint boxPaint) {
         Paint textPaint = new Paint();
         textPaint.setColor(Color.WHITE);
@@ -784,12 +671,12 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         canvas.drawRoundRect(backRectF, 5f, 5f, backPaint);
 
         if (box) {
-        	canvas.drawRect(new RectF(left ? backRect.right + radius : backRect.left - radius - boxHeight,
-					backRect.top,
-					left ? backRect.right + radius + boxHeight : backRect.left - radius,
-					backRect.top + boxHeight), boxPaint);
+            canvas.drawRect(new RectF(left ? backRect.right + radius : backRect.left - radius - boxHeight,
+                    backRect.top,
+                    left ? backRect.right + radius + boxHeight : backRect.left - radius,
+                    backRect.top + boxHeight), boxPaint);
         }
-        
+
         for (Integer i = 0; i < ss.length; ++i) {
             canvas.drawText(ss[i], 0, ss[i].length(),
                     left ? backRect.left : backRect.right,
@@ -1013,8 +900,18 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         case MENU:
             switch (which) {
             case 0:
-                state.nextPlayer();
-                Log.v(null, "advancing player");
+                try {
+                    state.nextPlayer();
+                    Log.v(null, "advancing player");
+                }
+                catch (GameFinishedException e) {
+                    Player winner = e.getWinner();
+                    Toast.makeText(context,
+                                   String.format("%s has won the game!",
+                                                 winner.getName()),
+                                   Toast.LENGTH_LONG).show();
+                    /* TODO finish game somehow */
+                }
                 break;
             }
             break;
@@ -1037,76 +934,5 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback,
         menu_builder.setItems(actions, this);
         menu_builder.create().show();
         whichMenu = MenuType.MENU;
-    }
-}
-
-class DrawingThread extends Thread {
-    private boolean run;
-    private Canvas canvas;
-    private SurfaceHolder surfaceholder;
-    private Context context;
-    private GameView gview;
-
-    public DrawingThread(final SurfaceHolder sholder,
-                         final Context ctx, final GameView gv) {
-        surfaceholder = sholder;
-        context = ctx;
-        run = false;
-        gview = gv;
-    }
-
-    public void setRunning(final boolean newrun) {
-        run = newrun;
-    }
-
-    @Override
-    public void run() {
-        super.run();
-
-        while (run) {
-            canvas = surfaceholder.lockCanvas();
-
-            if (canvas != null) {
-                gview.doDraw(canvas);
-                surfaceholder.unlockCanvasAndPost(canvas);
-            }
-        }
-    }
-
-}
-
-class FloatPair {
-    private Pair<Float, Float> pair;
-
-    public FloatPair(final Float x, final Float y) {
-        this.pair = new Pair<Float, Float>(x, y);
-    }
-
-    public Float getX() {
-        return this.pair.getLeft();
-    }
-
-    public Float getY() {
-        return this.pair.getRight();
-    }
-
-    @Override
-    public boolean equals(final Object other) {
-        if (this == other) {
-            return true;
-        }
-
-        if (!(other instanceof FloatPair)) {
-            return false;
-        }
-
-        FloatPair that = (FloatPair) other;
-        return this.getX() == that.getX() && this.getY() == that.getY();
-
-    }
-
-    public String toString() {
-        return String.format("(%d, %d)", this.pair.getLeft(),
-                             this.pair.getRight());
     }
 }
