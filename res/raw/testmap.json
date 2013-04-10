@@ -3,6 +3,7 @@
     "sizeX": 10,
     "sizeY": 5,
     "players": 2,
+    "playerColours": [ -16776961, -256 ],
     "fields": {
         "G": {
             "name": "Grass",
@@ -10,8 +11,8 @@
             "dir": "drawable",
             "package": "com.group7.dragonwars",
             "movementModifier": 1.0,
-            "attackModifier": 0.0,
-            "defenseModifier": 0.0,
+            "attackModifier": 1.0,
+            "defenseModifier": 1.1,
             "accessible": true,
             "flightOnly": false
         },
@@ -21,8 +22,8 @@
             "dir": "drawable",
             "package": "com.group7.dragonwars",
             "movementModifier": 1.0,
-            "attackModifier": 0.0,
-            "defenseModifier": 0.0,
+            "attackModifier": 1.0,
+            "defenseModifier": 1.0,
             "accessible": false,
             "flightOnly": true
         }
@@ -39,7 +40,7 @@
             "maxMovement": 5,
             "attack": 2.0,
             "meleeDefense": 1.0,
-            "rangeDefense": 2.0,
+            "rangeDefense": 1.0,
             "productionCost": 5
         },
         "D": {
@@ -54,8 +55,8 @@
             "maxHealth": 30,
             "maxMovement": 7,
             "attack": 3.0,
-            "meleeDefense": 2.0,
-            "rangeDefense": 2.0,
+            "meleeDefense": 1.0,
+            "rangeDefense": 1.5,
             "productionCost": 7
         }
     },
@@ -67,7 +68,7 @@
             "package": "com.group7.dragonwars",
             "captureDifficulty": 4,
             "attackBonus": 3.0,
-            "defenseBonus": 4.0,
+            "defenseBonus": 1.8,
             "goalBuilding": true,
             "captureWorth": 4
         },

@@ -28,12 +28,13 @@ public class MapReader {
         JSONArray terrain = m.getJSONArray("terrain");
         JSONArray startingBuildingPos = m.getJSONArray("startingBuildingPos");
         JSONArray startingUnitPos = m.getJSONArray("startingUnitPos");
+        JSONArray playerColours = m.getJSONArray("playerColours");
 
 
         /* Make a fake player list for now */
         List<Player> playerList = new ArrayList<Player>();
         for (Integer i = 0; i < players; ++i)
-            playerList.add(new Player("Player " + (i + 1)));
+            playerList.add(new Player("Player " + (i + 1), playerColours.getInt(i)));
 
         /* Fill in a HashMap for look-up */
         HashMap<Character, JSONObject> fields = new HashMap<Character, JSONObject>();
@@ -126,14 +127,14 @@ public class MapReader {
 
             for (Integer j = 0; j < prod.length(); ++j) {
                 Unit unit = units.get(prod.getString(j).charAt(0));
-                building.addProducableUnit(unit);
+                building.addProducibleUnit(unit);
             }
 
             Log.d(TAG, "Cast all the values into Java types for building " + i);
 
             /* TODO proper choice of player */
             if (playerOwner == 0)
-                building.setOwner(new Player("Gaia"));
+                building.setOwner(new Player("Gaia", 0));
             else {
                 Player p = players.get(playerOwner - 1);
                 building.setOwner(p);
@@ -166,7 +167,7 @@ public class MapReader {
 
             /* TODO proper choice of player */
             if (playerOwner == 0)
-                unit.setOwner(new Player("Gaia"));
+                unit.setOwner(new Player("Gaia", 0));
             else {
                 Log.d(TAG, "Getting player " + playerOwner);
                 Player p = players.get(playerOwner - 1);
@@ -272,7 +273,7 @@ public class MapReader {
             String pack = f.getString("package");
             String dir = f.getString("dir");
             Boolean accessible = f.getBoolean("accessible");
-            Boolean flightOnly = accessible ? f.getBoolean("flightOnly") : false;
+            Boolean flightOnly = f.getBoolean("flightOnly");
             Double movementModifier = f.getDouble("movementModifier");
             Double attackModifier = f.getDouble("attackModifier");
             Double defenseModifier = f.getDouble("defenseModifier");

@@ -4,29 +4,41 @@ import java.util.*;
 import java.io.*;
 import java.lang.Math;
 
+import android.util.Log;
+
 public class GameState {
 
-    GameMap map;
-    Logic logic;
-    List<Player> players = new ArrayList<Player>();
-    Integer turns = 0;
+    private GameMap map;
+    private Logic logic;
+    private List<Player> players = new ArrayList<Player>();
+    private Integer playerIndex = 0;
+    private Integer turns = 1;
+    private Boolean gameFinished = false;
 
     public GameState(GameMap map, Logic logic, List<Player> players) {
         this.map = map;
         this.logic = logic;
-
         this.players = players;
     }
+
+
 
     public void attack(Unit attacker, Unit defender) {
         Set<Position> attackable = logic.getAttackableUnitPositions(map,
                                    attacker);
 
-        if (!attackable.contains(defender.getPosition()))
-            return;
+        //if (!attackable.contains(defender.getPosition()))
+        //    return;
+        boolean contains = false;
+        for (Position pos : attackable) {
+            if (pos.equals(defender.getPosition()))
+                contains = true;
+        }
+        if (!contains) return;
 
         Pair<Double, Double> damage = logic.calculateDamage(map, attacker,
                                       defender);
+        Log.v(null, "Dmg to atckr: " + damage.getRight() + " Dmg to dfndr: " + damage.getLeft());
 
         defender.reduceHealth(damage.getLeft());
 
@@ -41,7 +53,7 @@ public class GameState {
 
     }
 
-    private Boolean move(Unit unit, Position destination) {
+    public Boolean move(Unit unit, Position destination) {
         /* We are assuming that the destination was already
          * checked to be within this unit's reach
          */
@@ -49,25 +61,29 @@ public class GameState {
         List<Position> path = logic.findPath(map, unit, destination);
         Integer movementCost = logic.calculateMovementCost(map, unit, path);
 
-        if (!map.isValidField(destination))
+        if (!map.isValidField(destination) || path.size() == 0) {
             return false;
+        }
 
         GameField destField = map.getField(destination);
-        if (destField.hostsUnit())
+        if (destField.hostsUnit()) {
             return false;
+        }
 
 
         /* Double check */
-        if (unit.getRemainingMovement() > movementCost)
+        if (unit.getRemainingMovement() < movementCost) {
             return false;
+        }
 
 
         GameField currentField = map.getField(unit.getPosition());
         destField.setUnit(unit);
         unit.reduceMovement(movementCost);
 
-
         currentField.setUnit(null);
+        unit.setPosition(destination);
+        unit.setMoved(true);
 
         return true;
 
@@ -117,7 +133,28 @@ public class GameState {
         }
     }
 
-    public void advanceTurn() {
+    public void nextPlayer() throws GameFinishedException {
+        Iterator<Player> iter = players.iterator();
+
+        while (iter.hasNext()) {
+            Player p = iter.next();
+            if (p.hasLost()) {
+                iter.remove();
+            }
+        }
+
+        if (players.size() <= 1) {
+            throw new GameFinishedException(players.get(0));
+        }
+
+        playerIndex++;
+        if (playerIndex == players.size()) {
+            playerIndex = 0;
+            advanceTurn();
+        }
+    }
+
+    private void advanceTurn() {
         updateBuildingCaptureCounters();
 
         for (Player p : players) {
@@ -126,6 +163,10 @@ public class GameState {
             for (Building b : p.getOwnedBuildings())
                 goldWorth += b.getCaptureWorth();
             p.setGoldAmount(goldWorth + p.getGoldAmount());
+
+            for (Unit u : p.getOwnedUnits()) {
+                u.resetTurnStatistics();
+            }
         }
         ++this.turns;
     }
@@ -142,35 +183,38 @@ public class GameState {
         return this.players;
     }
 
-    /* I'll just roll with GF and String for now; should be easy to change */
-    public Boolean produceUnit(GameField field, String unitName) {
+    public Player getCurrentPlayer() {
+        return players.get(playerIndex);
+    }
 
+    public Boolean produceUnit(final GameField field, final Unit unit) {
+    	// produces a unit "at" a building
         if (!field.hostsBuilding() || field.hostsUnit())
             return false;
 
         Building building = field.getBuilding();
-        Unit unit = null;
-        for (Unit u : building.getProducableUnits())
-            if (u.getName().equals(unitName)) {
-                unit = new Unit(u);
-                break;
+
+        for (Unit u : building.getProducibleUnits()) {
+            if (u.getName().equals(unit.getName())) {
+            	Player player = building.getOwner();
+
+            	if (player.getGoldAmount() < u.getProductionCost()) {
+                    return false;
+            	}
+
+                Unit newUnit = new Unit(u);
+                newUnit.setPosition(building.getPosition());
+                newUnit.setOwner(player);
+
+                player.setGoldAmount(player.getGoldAmount() - unit.getProductionCost());
+                player.addUnit(newUnit);
+            	field.setUnit(newUnit);
+
+                return true;
             }
+        }
 
-        if (unit == null)
-            return false;
-
-        Player player = building.getOwner();
-
-        if (player.getGoldAmount() < unit.getProductionCost())
-            return false;
-
-        unit.setOwner(player);
-        unit.setPosition(building.getPosition());
-        player.setGoldAmount(player.getGoldAmount() - unit.getProductionCost());
-        field.setUnit(unit);
-
-        return true;
-
+        return false;
     }
 
 }

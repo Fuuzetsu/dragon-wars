@@ -1,16 +1,26 @@
 package com.group7.dragonwars.engine;
 
-import java.util.*;
+import android.graphics.Bitmap;
+
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.List;
+
 
 public class Player {
     private String name;
     private Boolean lost;
     private Integer gold = 5;
+    private Integer colour;
+    private Bitmap flag;
+    private Map<String, Bitmap> unitSprites;
+
     List<Unit> ownedUnits = new ArrayList<Unit>();
     List<Building> ownedBuildings = new ArrayList<Building>();
 
-    public Player(String name) {
+    public Player(String name, final Integer colour) {
         this.name = name;
+        this.colour = colour;
         this.lost = false;
     }
 
@@ -34,6 +44,10 @@ public class Player {
         ownedUnits.remove(unit);
     }
 
+    public void removeBuilding(Building building) {
+        ownedBuildings.remove(building);
+    }
+
     public List<Unit> getOwnedUnits() {
         return this.ownedUnits;
     }
@@ -47,7 +61,7 @@ public class Player {
     }
 
     public String toString() {
-        return this.name;
+        return String.format("%s / %d", name, colour);
     }
 
     public Integer getGoldAmount() {
@@ -60,5 +74,29 @@ public class Player {
 
     public List<Building> getOwnedBuildings() {
         return this.ownedBuildings;
+    }
+
+    public Integer getColour() {
+        return this.colour;
+    }
+
+    public Bitmap getFlag() {
+        return flag;
+    }
+
+    public Boolean hasFlag() {
+        return flag != null;
+    }
+
+    public void setFlag(Bitmap flag) {
+        this.flag = flag;
+    }
+
+    public Bitmap getUnitSprite(final String unitName) {
+        return unitSprites.get(unitName);
+    }
+
+    public void setUnitSprites(final  Map<String, Bitmap> sprites) {
+        unitSprites = sprites;
     }
 }

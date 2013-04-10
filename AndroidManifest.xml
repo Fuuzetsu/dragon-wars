@@ -33,6 +33,10 @@
             android:label="@string/title_activity_game"
             android:theme="@style/FullscreenTheme" >
         </activity>
+        <uses-library android:name="android.test.runner" />
     </application>
+    <instrumentation android:name="android.test.InstrumentationTestRunner"
+                     android:targetPackage="com.group7.dragonwars"
+                     android:label="Tests for com.group7.dragonwars"/>
 
 </manifest>
