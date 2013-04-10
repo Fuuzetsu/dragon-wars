@@ -882,6 +882,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                 try {
                     state.nextPlayer();
                     Log.v(null, "advancing player");
+                    Toast.makeText(context,
+                                   String.format("%ss turn!",
+                                                 state.getCurrentPlayer()),
+                                   Toast.LENGTH_LONG).show();
                 }
                 catch (GameFinishedException e) {
                     Player winner = e.getWinner();
