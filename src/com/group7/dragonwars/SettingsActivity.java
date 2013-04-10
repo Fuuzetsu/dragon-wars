@@ -1,4 +1,4 @@
-package com.group7.dragonwars.ui;
+package com.group7.dragonwars;
 
 import android.annotation.TargetApi;
 import android.content.Context;
