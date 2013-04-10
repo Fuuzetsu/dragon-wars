@@ -149,7 +149,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
     }
 
     private void initialiseGraphics() {
-        final int DEAD_COLOUR = Color.rgb(156, 156, 156);
+        final int DEAD_COLOUR = Color.rgb(211, 31, 45);
 
         /* Register game fields */
         putGroup("Fields", map.getGameFieldMap());
