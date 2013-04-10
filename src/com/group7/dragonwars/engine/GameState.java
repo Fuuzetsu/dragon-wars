@@ -14,6 +14,7 @@ public class GameState {
     private Integer playerIndex = 0;
     private Integer turns = 1;
     private Boolean gameFinished = false;
+    private Statistics stats = new Statistics();
 
     public GameState(GameMap map, Logic logic, List<Player> players) {
         this.map = map;
