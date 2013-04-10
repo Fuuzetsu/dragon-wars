@@ -13,12 +13,12 @@ public class Statistics {
 
     private void putIfNotPresent(final String stat) {
         if (!sMap.containsKey(stat)) {
-            setStatistic(stat, 0);
+            setStatistic(stat, 0.0);
         }
     }
 
     public void increaseStatistic(final String stat) {
-        increaseStatistic(stat, 1);
+        increaseStatistic(stat, 1.0);
     }
 
     public void increaseStatistic(final String stat, final Double amount) {
@@ -27,7 +27,7 @@ public class Statistics {
     }
 
     public void decreaseStatistic(final String stat) {
-        increaseStatistic(stat, -1);
+        increaseStatistic(stat, -1.0);
     }
 
     public void decreaseStatistic(final String stat, final Double amount) {

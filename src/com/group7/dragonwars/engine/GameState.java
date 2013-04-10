@@ -90,7 +90,7 @@ public class GameState {
         unit.setPosition(destination);
         unit.setMoved(true);
 
-        stats.increaseStatistic("Distance traveled", movementCost);
+        stats.increaseStatistic("Distance traveled", 1.0 * movementCost);
 
         return true;
 
@@ -100,7 +100,7 @@ public class GameState {
         if (unit.isDead()) {
             map.getField(unit.getPosition()).setUnit(null);
             unit.getOwner().removeUnit(unit);
-            stats.increaseStatistics("Units killed");
+            stats.increaseStatistic("Units killed");
             return true;
         }
 
@@ -176,7 +176,7 @@ public class GameState {
                 goldWorth += b.getCaptureWorth();
             p.setGoldAmount(goldWorth + p.getGoldAmount());
 
-            stats.increaseStatistic("Gold received", goldWorth);
+            stats.increaseStatistic("Gold received", 1.0 * goldWorth);
 
             for (Unit u : p.getOwnedUnits()) {
                 u.resetTurnStatistics();
