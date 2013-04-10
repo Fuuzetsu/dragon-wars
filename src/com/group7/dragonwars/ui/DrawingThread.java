@@ -2,7 +2,7 @@ package com.group7.dragonwars.ui;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.SurfaceHolder;
+import android.view.SurfaceHolder;
 
 
 public class DrawingThread extends Thread {

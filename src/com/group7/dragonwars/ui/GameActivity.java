@@ -3,7 +3,10 @@ package com.group7.dragonwars.ui;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+
 
 public class GameActivity extends Activity {
     private static final String TAG = "GameActivity";
