@@ -103,6 +103,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
     private GameField lastField;
     private Unit lastUnit;
     private List<Position> lastDestinations;
+    private List<Position> path;
 
     private Long timeElapsed = 0L;
     private Long framesSinceLastSecond = 0L;
@@ -726,27 +727,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                             getUnitDestinations(selected_field);
 
                         if (unit_destinations.contains(newselected) ||
-                            selected.equals(newselected)) {
-                            /* pop up a menu with options:
-                             * - Wait (go here and do nothing else
-                             * - Attack (if there are units to attack)
-                             * Currently, to dismiss/cancel the menu
-                             * press anywhere
-                             * other than the menu and it will go away.
-                             *
-                             */
-                            AlertDialog.Builder actions_builder =
-                                new AlertDialog.Builder(this.getContext());
-                            actions_builder.setTitle("Actions");
-                            String[] actions = {"Move", "Attack",
-                                                "Cancel"};
-                            actions_builder.setItems(actions, this);
-                            actions_builder.create().show();
-                            action_location = newselected;
-                            // onClick handles the result
-                            whichMenu = MenuType.ACTION;
-                            newselected = selected; // do not move the selection
-                        }
+                            selected.equals(newselected) {
+                                if (path == null) {
+                                    path = logic.findPath(map, unit, newselected);
+                                } else if (path.contains(newselected)) {
+                                    state.move(unit, newselected);
+                                    path = null;
+                                }
+                            }
                     }
                 } else if (!newselected_field.hostsUnit() &&
                            newselected_field.hostsBuilding()) {
