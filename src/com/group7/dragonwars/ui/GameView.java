@@ -67,14 +67,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
     private final int tilesize = 64;
 
     private GameState state;
-    private Logic logic;
+    private Logic logic = new Logic();
     private GameMap map;
-    private Position selected; // Currently selected position
+    private Position selected = new Position(0, 0);
 
     private Position attack_location;
-    private Position action_location;
+    private Position action_location = new Position(0, 0);;
 
-    private FloatPair scrollOffset; // offset caused by scrolling, in pixels
+    private FloatPair scrollOffset = new FloatPair(0f, 0f);
     private GestureDetector gestureDetector;
 
     private DrawingThread dt;
@@ -86,7 +86,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     private boolean unit_selected; // true if there is a unit at selection
 
-    private boolean attack_action;
+    private boolean attack_action = false;
     /* true if during an attack action:
      * user selects a unit, selects a field
      * chooses attack
@@ -97,7 +97,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
      */
 
     private Context context;
-    private HashMap<String, HashMap<String, Bitmap>> graphics;
+    private HashMap<String, HashMap<String, Bitmap>> graphics
+        = new HashMap<String, HashMap<String, Bitmap>>();
 
     private GameField lastField;
     private Unit lastUnit;
@@ -110,9 +111,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     private enum MenuType {NONE, ACTION, BUILD, MENU};
 
-    private MenuType whichMenu;
+    private MenuType whichMenu = MenuType.NONE;
 
-    private DecimalFormat decformat;
+    private DecimalFormat decformat = new DecimalFormat("#.##");
 
     public GameView(final Context ctx, final AttributeSet attrset) {
         super(ctx, attrset);
@@ -120,12 +121,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         GameView gameView = (GameView) this.findViewById(R.id.gameView);
         GameMap gm = null;
-
-        //this.findViewById(R.id.menuButton).setOnClickListener(gameView);
-
-        whichMenu = MenuType.NONE;
-
-        Log.d(TAG, "nulling GameMap");
 
         try {
             gm = MapReader.readMap(readFile(R.raw.overmap)); // ugh
@@ -140,12 +135,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         Log.d(TAG, "before setMap");
         gameView.setMap(gm);
-        this.logic = new Logic();
         this.state = new GameState(map, logic, map.getPlayers());
 
         context = ctx;
         SurfaceHolder holder = getHolder();
-        this.graphics = new HashMap<String, HashMap<String, Bitmap>>();
 
         /* Load and colour all the sprites we'll need */
         Log.d(TAG, "Initialising graphics.");
@@ -154,16 +147,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         holder.addCallback(this);
 
-        selected = new Position(0, 0);
-        action_location = new Position(0, 0);
-
         gestureDetector = new GestureDetector(this.getContext(), this);
-        scrollOffset = new FloatPair(0f, 0f);
-
-
-        decformat = new DecimalFormat("#.##");
-
-        attack_action = false;
 
     }
 
