@@ -61,7 +61,7 @@ public class Player {
     }
 
     public String toString() {
-        return String.format("%s / %d", name, colour);
+        return name;
     }
 
     public Integer getGoldAmount() {
