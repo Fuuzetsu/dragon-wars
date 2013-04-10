@@ -26,7 +26,7 @@ public class Statistics {
         setStatistic(stat, sMap.get(stat) + amount);
     }
 
-    public void decreaseStatistc(final String stat) {
+    public void decreaseStatistic(final String stat) {
         increaseStatistic(stat, -1);
     }
 

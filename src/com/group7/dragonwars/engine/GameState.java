@@ -44,13 +44,17 @@ public class GameState {
         defender.reduceHealth(damage.getLeft());
 
         Boolean died = removeUnitIfDead(defender);
+        stats.increaseStatistic("Damage dealt", damage.getLeft());
 
-        if (died)
+        if (died) {
             return;
+        }
 
         /* Possibly counter */
         attacker.reduceHealth(damage.getRight());
         removeUnitIfDead(attacker);
+
+        stats.increaseStatistic("Damage received", damage.getRight());
 
     }
 
@@ -86,6 +90,8 @@ public class GameState {
         unit.setPosition(destination);
         unit.setMoved(true);
 
+        stats.increaseStatistic("Distance traveled", movementCost);
+
         return true;
 
     }
@@ -94,6 +100,7 @@ public class GameState {
         if (unit.isDead()) {
             map.getField(unit.getPosition()).setUnit(null);
             unit.getOwner().removeUnit(unit);
+            stats.increaseStatistics("Units killed");
             return true;
         }
 
@@ -134,6 +141,10 @@ public class GameState {
         }
     }
 
+    public Statistics getStatistics() {
+        return stats;
+    }
+
     public void nextPlayer() throws GameFinishedException {
         Iterator<Player> iter = players.iterator();
 
@@ -165,11 +176,14 @@ public class GameState {
                 goldWorth += b.getCaptureWorth();
             p.setGoldAmount(goldWorth + p.getGoldAmount());
 
+            stats.increaseStatistic("Gold received", goldWorth);
+
             for (Unit u : p.getOwnedUnits()) {
                 u.resetTurnStatistics();
             }
         }
         ++this.turns;
+        stats.increaseStatistic("Turns taken");
     }
 
     public Integer getTurns() {
@@ -210,7 +224,7 @@ public class GameState {
                 player.setGoldAmount(player.getGoldAmount() - unit.getProductionCost());
                 player.addUnit(newUnit);
             	field.setUnit(newUnit);
-
+                stats.increaseStatistic("Units produced");
                 return true;
             }
         }
