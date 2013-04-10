@@ -5,10 +5,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class Statistics {
-    private Map<String, Integer> sMap;
+    private Map<String, Double> sMap;
 
     public Statistics() {
-        this.sMap = new TreeMap<String, Integer>();
+        this.sMap = new TreeMap<String, Double>();
     }
 
     private void putIfNotPresent(final String stat) {
@@ -21,7 +21,7 @@ public class Statistics {
         increaseStatistic(stat, 1);
     }
 
-    public void increaseStatistic(final String stat, final Integer amount) {
+    public void increaseStatistic(final String stat, final Double amount) {
         putIfNotPresent(stat);
         setStatistic(stat, sMap.get(stat) + amount);
     }
@@ -30,15 +30,15 @@ public class Statistics {
         increaseStatistic(stat, -1);
     }
 
-    public void decreaseStatistic(final String stat, final Integer amount) {
+    public void decreaseStatistic(final String stat, final Double amount) {
         increaseStatistic(stat, -amount);
     }
 
-    public void setStatistic(final String stat, final Integer amount) {
+    public void setStatistic(final String stat, final Double amount) {
         sMap.put(stat, amount);
     }
 
-    public Integer getStatistic(final String stat) {
+    public Double getStatistic(final String stat) {
         putIfNotPresent(stat);
         return sMap.get(stat);
     }
@@ -46,7 +46,7 @@ public class Statistics {
     @Override
     public String toString() {
         String r = "";
-        for (Map.Entry<String, Integer> ent : sMap.entrySet()) {
+        for (Map.Entry<String, Double> ent : sMap.entrySet()) {
             r += String.format("%s: %d\n", ent.getKey(), ent.getValue());
         }
 
