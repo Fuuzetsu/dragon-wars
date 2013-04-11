@@ -738,14 +738,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                             selected.equals(newselected)) {
                                 if (path == null) {
                                     path = logic.findPath(map, unit, newselected);
-                                } else if (path.contains(newselected)) {
-                                    state.move(unit, newselected);
-                                    path = null;
+                                } else {
+                                    if (path.contains(newselected)) {
+                                        state.move(unit, newselected);
+                                    } else {
+                                        path = logic.findPath(map, unit, newselected);
+                                    }
                                 }
+                                newselected = selected;
                             }
                     }
                 } else if (!newselected_field.hostsUnit() &&
                            newselected_field.hostsBuilding()) {
+                    path = null;
                     Building building = map.getField(newselected).getBuilding();
                     if (building.getOwner().equals(state.getCurrentPlayer())
                         && building.canProduceUnits()) {
