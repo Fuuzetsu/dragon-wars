@@ -203,10 +203,12 @@ public class Logic {
 
             for (Position n : getValidNeighbours(map, current.getPosition())) {
                 GameField gf = map.getField(n);
+                if (!gf.doesAcceptUnit(unit)) {
+                    continue;
+                }
                 Node neigh = new Node(n, gf.getMovementModifier(),
                                       1.0 * getManhattanDistance(
                                           unit.getPosition(), destination));
-                //neigh.setParent(current);
 
                 Double tentG = current.getG() + neigh.getG();
 
