@@ -357,6 +357,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         if (!selectedField.hostsUnit()) {
             lastUnit = null;
             lastField = null;
+            path = null;
             return unitDests;
         }
 
@@ -365,6 +366,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
             u.hasFinishedTurn() || u.hasMoved()) {
             lastUnit = null;
             lastField = null;
+            path = null;
             return unitDests;
         }
 
@@ -373,6 +375,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
             lastField = selectedField;
             unitDests = logic.destinations(map, u);
             lastDestinations = unitDests;
+            path = null;
             return unitDests;
         }
 
@@ -542,10 +545,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                 tilesize * pos.getX() + scrollOffset.getX(),
                 tilesize * pos.getY() + scrollOffset.getY(),
                 tilesize);
-            if (path != null && path.contains(pos)) {
+            canvas.drawBitmap(highlighter, null, dest, null);
+        }
+
+        if (unitDests.size() > 0 && path != null) {
+            for (Position pos : path) {
+                RectF dest = getSquare(
+                    tilesize * pos.getX() + scrollOffset.getX(),
+                    tilesize * pos.getY() + scrollOffset.getY(),
+                    tilesize);
                 canvas.drawBitmap(pathHighlighter, null, dest, null);
-            } else {
-                canvas.drawBitmap(highlighter, null, dest, null);
             }
         }
 
