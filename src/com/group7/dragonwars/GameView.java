@@ -79,6 +79,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     private DrawingThread dt;
     private Bitmap highlighter;
+    private Bitmap pathHighlighter;
     private Bitmap selector;
     private Bitmap attack_highlighter;
 
@@ -86,23 +87,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     private boolean unit_selected; // true if there is a unit at selection
 
-    private boolean attack_action = false;
-    /* true if during an attack action:
-     * user selects a unit, selects a field
-     * chooses attack
-     **attack_move is now true
-     * selects another field
-     **attack_location is the location of the attack
-     *
-     */
-
     private Context context;
     private HashMap<String, HashMap<String, Bitmap>> graphics
         = new HashMap<String, HashMap<String, Bitmap>>();
 
     private GameField lastField;
     private Unit lastUnit;
+    private Set<Position> lastAttackables;
     private List<Position> lastDestinations;
+    private List<Position> path;
 
     private Long timeElapsed = 0L;
     private Long framesSinceLastSecond = 0L;
@@ -164,7 +157,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                                "com.group7.dragonwars");
         highlighter = getResource("highlight", "drawable",
                                   "com.group7.dragonwars");
-        attack_highlighter = getResource("attack_highlight", "drawable", "com.group7.dragonwars");
+        pathHighlighter = getResource("path_highlight", "drawable",
+                                      "com.group7.dragonwars");
+        attack_highlighter = getResource("attack_highlight", "drawable",
+                                         "com.group7.dragonwars");
 
         /* Prerender combined map */
         fullMap = combineMap();
@@ -352,22 +348,38 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         if (!selectedField.hostsUnit()) {
             lastUnit = null;
             lastField = null;
+            lastAttackables = null;
+            path = null;
             return unitDests;
         }
 
         Unit u = selectedField.getUnit();
         if (u.getOwner() != state.getCurrentPlayer() ||
-            u.hasFinishedTurn() || u.hasMoved()) {
+            u.hasFinishedTurn()) {
             lastUnit = null;
             lastField = null;
+            path = null;
+            lastAttackables = null;
+
             return unitDests;
         }
 
-        if (lastDestinations == null || lastUnit == null || lastField == null) {
+        if (u.hasMoved()) {
+            lastUnit = null;
+            lastField = null;
+            path = null;
+            lastAttackables = logic.getAttackableUnitPositions(map, u);
+            return unitDests;
+        }
+
+        if (lastDestinations == null || lastUnit == null || lastField == null ||
+            lastAttackables == null) {
             lastUnit = u;
             lastField = selectedField;
             unitDests = logic.destinations(map, u);
             lastDestinations = unitDests;
+            lastAttackables = logic.getAttackableUnitPositions(map, u);
+            path = null;
             return unitDests;
         }
 
@@ -540,20 +552,30 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
             canvas.drawBitmap(highlighter, null, dest, null);
         }
 
-        /* Sometimes draw attackables */
-        if (attack_action && map.getField(selected).hostsUnit()) {
-            Unit u = map.getField(selected).getUnit();
-            Set<Position> attack_destinations =
-                logic.getAttackableUnitPositions(map, u, attack_location);
-            //logic.getAttackableFields(map, u);
-            for (Position pos : attack_destinations) {
-                RectF attack_dest = getSquare(
+        if (unitDests.size() > 0 && path != null) {
+            for (Position pos : path) {
+                RectF dest = getSquare(
                     tilesize * pos.getX() + scrollOffset.getX(),
                     tilesize * pos.getY() + scrollOffset.getY(),
                     tilesize);
-                canvas.drawBitmap(attack_highlighter, null, attack_dest, null);
+                canvas.drawBitmap(pathHighlighter, null, dest, null);
             }
         }
+
+        /* Always draw attackables */
+        if (map.getField(selected).hostsUnit()) {
+            Unit u = map.getField(selected).getUnit();
+            if (lastAttackables != null) {
+                for (Position pos : lastAttackables) {
+                    RectF attack_dest = getSquare(
+                        tilesize * pos.getX() + scrollOffset.getX(),
+                        tilesize * pos.getY() + scrollOffset.getY(),
+                        tilesize);
+                    canvas.drawBitmap(attack_highlighter, null, attack_dest, null);
+                }
+            }
+        }
+
 
         RectF select_dest = getSquare(
             tilesize * selected.getX() + scrollOffset.getX(),
@@ -709,7 +731,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         if (this.map.isValidField(touchX, touchY)) {
             whichMenu = MenuType.NONE;
             GameField newselected_field = map.getField(newselected);
-            if (!attack_action) {
+            if (lastAttackables == null || !lastAttackables.contains(newselected)) {
                 if (map.getField(selected).hostsUnit()) {
                     //Log.v(null, "A unit is selected!");
                     /* If the user currently has a unit selected and
@@ -727,29 +749,21 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
                         if (unit_destinations.contains(newselected) ||
                             selected.equals(newselected)) {
-                            /* pop up a menu with options:
-                             * - Wait (go here and do nothing else
-                             * - Attack (if there are units to attack)
-                             * Currently, to dismiss/cancel the menu
-                             * press anywhere
-                             * other than the menu and it will go away.
-                             *
-                             */
-                            AlertDialog.Builder actions_builder =
-                                new AlertDialog.Builder(this.getContext());
-                            actions_builder.setTitle("Actions");
-                            String[] actions = {"Move", "Attack",
-                                                "Cancel"};
-                            actions_builder.setItems(actions, this);
-                            actions_builder.create().show();
-                            action_location = newselected;
-                            // onClick handles the result
-                            whichMenu = MenuType.ACTION;
-                            newselected = selected; // do not move the selection
-                        }
+                                if (path == null) {
+                                    path = logic.findPath(map, unit, newselected);
+                                } else {
+                                    if (path.contains(newselected)) {
+                                        state.move(unit, newselected);
+                                    } else {
+                                        path = logic.findPath(map, unit, newselected);
+                                    }
+                                }
+                                newselected = selected;
+                            }
                     }
                 } else if (!newselected_field.hostsUnit() &&
                            newselected_field.hostsBuilding()) {
+                    path = null;
                     Building building = map.getField(newselected).getBuilding();
                     if (building.getOwner().equals(state.getCurrentPlayer())
                         && building.canProduceUnits()) {
@@ -770,33 +784,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                         whichMenu = MenuType.BUILD;
                     } // build menu isn't shown if it isn't the user's turn
                 }
-            } else { // attack_action
+            } else { // attack
                 GameField field = map.getField(selected);
-                if (field.hostsUnit()) {
-                    Unit attacker = field.getUnit();
-                    Set<Position> attack_positions
-                        = logic.getAttackableUnitPositions(map, attacker,
-                                                           attack_location);
+                Unit attacker = field.getUnit();
+                Unit defender = map.getField(newselected).getUnit();
 
-                    if (map.getField(newselected).hostsUnit() &&
-                        attack_positions.contains(newselected)) {
-                        Unit defender = map.getField(newselected).getUnit();
-                        field.setUnit(null);
-                        // move attacker to attack
-                        attacker.setPosition(attack_location);
-                        map.getField(attack_location).setUnit(attacker);
-
-                        Log.v(null, "attack(!): " + attacker
-                              + " attacks " + defender);
-                        state.attack(attacker, defender);
-                        attacker.setFinishedTurn(true);
-
-                    } else {
-                        attack_action = false; // no target unit
-                    }
-                } else {
-                    attack_action = false; // no unit to perform action
-                }
+                Log.v(null, "attack(!): " + attacker
+                      + " attacks " + defender);
+                state.attack(attacker, defender);
+                attacker.setFinishedTurn(true);
             }
             selected = newselected;
         }
@@ -836,22 +832,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
     public void onClick(final DialogInterface dialog, final int which) {
         Log.v(null, "selected option: " + which);
         switch (whichMenu) {
-        case ACTION:
-            switch (which) {
-            case 0: // move
-                Unit unit = map.getField(selected).getUnit();
-                Boolean moved = state.move(unit, action_location);
-                break;
-            case 1: // attack
-                attack_location = action_location;
-                attack_action = true;
-                /* the user will then select one of the attackable spaces
-                 * (handled in onSingleTapConfirmed) to perform the attack
-                 * onDraw will highlight attackable locations in red
-                 */
-                break;
-            }
-            break;
         case BUILD:
             GameField field = map.getField(selected);
 
