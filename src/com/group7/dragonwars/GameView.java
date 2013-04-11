@@ -103,6 +103,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     private GameField lastField;
     private Unit lastUnit;
+    private Set<Position> lastAttackables;
     private List<Position> lastDestinations;
     private List<Position> path;
 
@@ -357,24 +358,37 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         if (!selectedField.hostsUnit()) {
             lastUnit = null;
             lastField = null;
+            lastAttackables = null;
             path = null;
             return unitDests;
         }
 
         Unit u = selectedField.getUnit();
         if (u.getOwner() != state.getCurrentPlayer() ||
-            u.hasFinishedTurn() || u.hasMoved()) {
+            u.hasFinishedTurn()) {
             lastUnit = null;
             lastField = null;
             path = null;
+            lastAttackables = null;
+
             return unitDests;
         }
 
-        if (lastDestinations == null || lastUnit == null || lastField == null) {
+        if (u.hasMoved()) {
+            lastUnit = null;
+            lastField = null;
+            path = null;
+            lastAttackables = logic.getAttackableUnitPositions(map, u);
+            return unitDests;
+        }
+
+        if (lastDestinations == null || lastUnit == null || lastField == null ||
+            lastAttackables == null) {
             lastUnit = u;
             lastField = selectedField;
             unitDests = logic.destinations(map, u);
             lastDestinations = unitDests;
+            lastAttackables = logic.getAttackableUnitPositions(map, u);
             path = null;
             return unitDests;
         }
@@ -561,10 +575,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         /* Always draw attackables */
         if (map.getField(selected).hostsUnit()) {
             Unit u = map.getField(selected).getUnit();
-            if (u.getOwner().equals(state.getCurrentPlayer())) {
-                Set<Position> attack_destinations =
-                    logic.getAttackableUnitPositions(map, u);
-                for (Position pos : attack_destinations) {
+            if (lastAttackables != null) {
+                for (Position pos : lastAttackables) {
                     RectF attack_dest = getSquare(
                         tilesize * pos.getX() + scrollOffset.getX(),
                         tilesize * pos.getY() + scrollOffset.getY(),
