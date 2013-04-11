@@ -741,7 +741,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         if (this.map.isValidField(touchX, touchY)) {
             whichMenu = MenuType.NONE;
             GameField newselected_field = map.getField(newselected);
-            if (!attack_action) {
+            if (lastAttackables == null || !lastAttackables.contains(newselected)) {
                 if (map.getField(selected).hostsUnit()) {
                     //Log.v(null, "A unit is selected!");
                     /* If the user currently has a unit selected and
@@ -794,21 +794,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                         whichMenu = MenuType.BUILD;
                     } // build menu isn't shown if it isn't the user's turn
                 }
-            } else { // attack_action
+            } else { // attack
                 GameField field = map.getField(selected);
                 if (field.hostsUnit()) {
                     Unit attacker = field.getUnit();
-                    Set<Position> attack_positions
-                        = logic.getAttackableUnitPositions(map, attacker,
-                                                           attack_location);
 
-                    if (map.getField(newselected).hostsUnit() &&
-                        attack_positions.contains(newselected)) {
+                    if (map.getField(newselected).hostsUnit()) {
                         Unit defender = map.getField(newselected).getUnit();
-                        field.setUnit(null);
-                        // move attacker to attack
-                        attacker.setPosition(attack_location);
-                        map.getField(attack_location).setUnit(attacker);
 
                         Log.v(null, "attack(!): " + attacker
                               + " attacks " + defender);
@@ -860,22 +852,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
     public void onClick(final DialogInterface dialog, final int which) {
         Log.v(null, "selected option: " + which);
         switch (whichMenu) {
-        case ACTION:
-            switch (which) {
-            case 0: // move
-                Unit unit = map.getField(selected).getUnit();
-                Boolean moved = state.move(unit, action_location);
-                break;
-            case 1: // attack
-                attack_location = action_location;
-                attack_action = true;
-                /* the user will then select one of the attackable spaces
-                 * (handled in onSingleTapConfirmed) to perform the attack
-                 * onDraw will highlight attackable locations in red
-                 */
-                break;
-            }
-            break;
         case BUILD:
             GameField field = map.getField(selected);
 
