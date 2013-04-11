@@ -87,16 +87,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     private boolean unit_selected; // true if there is a unit at selection
 
-    private boolean attack_action = false;
-    /* true if during an attack action:
-     * user selects a unit, selects a field
-     * chooses attack
-     **attack_move is now true
-     * selects another field
-     **attack_location is the location of the attack
-     *
-     */
-
     private Context context;
     private HashMap<String, HashMap<String, Bitmap>> graphics
         = new HashMap<String, HashMap<String, Bitmap>>();
@@ -796,23 +786,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                 }
             } else { // attack
                 GameField field = map.getField(selected);
-                if (field.hostsUnit()) {
-                    Unit attacker = field.getUnit();
+                Unit attacker = field.getUnit();
+                Unit defender = map.getField(newselected).getUnit();
 
-                    if (map.getField(newselected).hostsUnit()) {
-                        Unit defender = map.getField(newselected).getUnit();
-
-                        Log.v(null, "attack(!): " + attacker
-                              + " attacks " + defender);
-                        state.attack(attacker, defender);
-                        attacker.setFinishedTurn(true);
-
-                    } else {
-                        attack_action = false; // no target unit
-                    }
-                } else {
-                    attack_action = false; // no unit to perform action
-                }
+                Log.v(null, "attack(!): " + attacker
+                      + " attacks " + defender);
+                state.attack(attacker, defender);
+                attacker.setFinishedTurn(true);
             }
             selected = newselected;
         }
