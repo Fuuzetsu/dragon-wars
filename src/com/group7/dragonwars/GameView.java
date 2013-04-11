@@ -558,11 +558,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
             }
         }
 
-        /* Sometimes draw attackables */
-        if (attack_action && map.getField(selected).hostsUnit()) {
+        /* Always draw attackables */
+        if (map.getField(selected).hostsUnit()) {
             Unit u = map.getField(selected).getUnit();
             Set<Position> attack_destinations =
-                logic.getAttackableUnitPositions(map, u, attack_location);
+                logic.getAttackableUnitPositions(map, u);
             //logic.getAttackableFields(map, u);
             for (Position pos : attack_destinations) {
                 RectF attack_dest = getSquare(
@@ -572,6 +572,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                 canvas.drawBitmap(attack_highlighter, null, attack_dest, null);
             }
         }
+
 
         RectF select_dest = getSquare(
             tilesize * selected.getX() + scrollOffset.getX(),

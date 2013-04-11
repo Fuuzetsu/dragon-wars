@@ -256,6 +256,32 @@ public class Logic {
         return positions;
     }
 
+    private List<Position> getValidSurroundingPositions(final GameMap map,
+                                                        final Position pos) {
+        List<Position> positions = getValidNeighbours(map, pos);
+        Position nep, nwp, sep, swp;
+        Integer i = pos.getX(), j = pos.getY();
+        nep = new Position(i - 1, j - 1);
+        if (map.isValidField(nep)) {
+            positions.add(nep);
+        }
+        nwp = new Position(i + 1, j - 1);
+        if (map.isValidField(nwp)) {
+            positions.add(nwp);
+        }
+        sep = new Position(i - 1, j + 1);
+        if (map.isValidField(sep)) {
+            positions.add(sep);
+        }
+        swp = new Position(i + 1, j + 1);
+        if (map.isValidField(swp)) {
+            positions.add(swp);
+        }
+
+        return positions;
+
+    }
+
     private class AStarComparator implements
         Comparator<Node> {
         public int compare(Node a, Node b) {
@@ -385,7 +411,8 @@ public class Logic {
 
     private Set<Position> getAttackableFields(GameMap map, Unit unit, Position position) {
         if (!unit.isRanged()) {
-            return new HashSet<Position>(getAdjacentPositions(position));
+            return new HashSet<Position>(
+                getValidSurroundingPositions(map, position));
         }
 
         RangedUnit ru = (RangedUnit) unit;
