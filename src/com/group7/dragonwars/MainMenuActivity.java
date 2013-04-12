@@ -60,6 +60,7 @@ public class MainMenuActivity extends Activity implements OnClickListener {
         if (v == this.btnBattle) {
             Intent intent = new Intent(this, GameActivity.class);
             startActivity(intent);
+            finish();
         }
     }
 }
