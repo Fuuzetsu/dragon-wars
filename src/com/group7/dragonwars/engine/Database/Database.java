@@ -2,17 +2,15 @@ package com.group7.dragonwars.engine.Database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
 
 public class Database
 {
 	//Database Name "dw_high_scores"
-	//Table Name 	"HIGH_SCORES"
+	//Table Name 	"high_scores"
 	//UserName		"Player"
 	//Password		"Password"
 	
@@ -35,11 +33,19 @@ public class Database
 	
 	public Database(String dbhost) throws SQLException
 	{
-		String host = "jdbc:derby://localhost:1527/dw_high_scores"; //this is an example of where the DB may be hosted.
-		
-		conn = DriverManager.getConnection( dbhost, uName, uPass);  //connect to DB
-		
-		Statement statement = conn.createStatement( );
+		try
+		{
+			String host = "jdbc:derby://localhost:1527/dw_high_scores"; //this is an example of where the DB may be hosted.
+			
+			conn = DriverManager.getConnection( dbhost, uName, uPass);  //connect to DB
+			
+			Statement statement = conn.createStatement( );
+		}
+		catch(Exception e)
+		{
+			System.out.println("DB offline.\n High score functionality unavailable");
+			throw new SQLException();
+		}
 	}
 	
 	public void deleteLocalScores()
@@ -53,8 +59,8 @@ public class Database
 		//delete the local copy of scores
 		deleteLocalScores();
 		
-		//Delete table "dw_high_scores"
-		String SQL = "DROP TABLE dw_high_scores";
+		//Delete table "high_scores"
+		String SQL = "DROP TABLE high_scores";
 		result = statement.executeQuery( SQL );
 		
 		
@@ -68,13 +74,17 @@ public class Database
 		 */
 		
 		//Create table "dw_high_scores"; (gamename, player1name, player2name, score, set gamename as primary key)
-		SQL = "CREATE TABLE dw_high_scores( GAMENAME VARCHAR (20) NOT NULL, PLAYER1NAME VARCHAR (20) NOT NULL, PLAYER2NAME VARCHAR (20) NOT NULL, SCORE INT NOT NULL, PRIMARY KEY (GAMENAME));";
+		SQL = "CREATE TABLE high_scores( GAMENAME VARCHAR (20) NOT NULL, PLAYER1NAME VARCHAR (20) NOT NULL, PLAYER2NAME VARCHAR (20) NOT NULL, SCORE INT NOT NULL, PRIMARY KEY (GAMENAME));";
 		result = statement.executeQuery( SQL );
 	}
 	
 	public void AddHighScore(String gamename, String player1name, String player2name, int score) throws SQLException
 	{
-		String SQL = "INSERT INTO dw_high_score VALUES ('"+ gamename +"', '"+ player1name + "', '" + player2name + "', " + score + ")";
+		//Add local high score
+		scores.add("'"+ gamename +"', '"+ player1name + "', '" + player2name + "', " + score);
+		
+		//Add high score to table by using INSERT
+		String SQL = "INSERT INTO high_score VALUES ('"+ gamename +"', '"+ player1name + "', '" + player2name + "', " + score + ")";
 		result = statement.executeQuery( SQL );
 	}
 	
@@ -84,7 +94,7 @@ public class Database
 		deleteLocalScores();
 		
 		//get all rows from the table
-		String SQL = "select * from dw_high_scores";
+		String SQL = "select * from high_scores";
 		result = statement.executeQuery( SQL );
 		
 		
