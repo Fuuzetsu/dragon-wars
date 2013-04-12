@@ -114,7 +114,7 @@ public class Unit extends DrawableMapObject {
     }
 
     public void reduceHealth(Double damage) {
-        this.lastDamage = damage;
+        this.lastDamage = -damage;
         this.health -= damage;
 
         if (this.health < 0) {
