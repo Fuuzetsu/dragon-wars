@@ -94,6 +94,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
     private Paint cornerBoxTextPaint;
     private Paint cornerBoxBackPaint;
     private Paint unitHealthPaint;
+    private Paint unitHealthOutlinePaint;
 
     private Bitmap fullMap;
 
@@ -167,6 +168,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         unitHealthPaint.setAntiAlias(true);
         unitHealthPaint.setTextSize(15);
         unitHealthPaint.setTextAlign(Align.RIGHT);
+        
+        unitHealthOutlinePaint = new Paint();
+        unitHealthOutlinePaint.setColor(Color.BLACK);
+        unitHealthOutlinePaint.setStyle(Paint.Style.STROKE);
+        unitHealthOutlinePaint.setStrokeWidth(2);
+        unitHealthOutlinePaint.setAntiAlias(unitHealthPaint.isAntiAlias());
+        unitHealthOutlinePaint.setTextSize(unitHealthPaint.getTextSize());
+        unitHealthOutlinePaint.setTextAlign(unitHealthPaint.getTextAlign());
 
     }
 
@@ -599,6 +608,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                             Bitmap unitGfx = owner.getUnitSprite(un);
                             canvas.drawBitmap(unitGfx, null, dest, null);
                             String healthText = decformat.format(unit.getHealth());
+                            canvas.drawText(healthText, dest.right, dest.bottom, unitHealthOutlinePaint);
                             canvas.drawText(healthText, dest.right, dest.bottom, unitHealthPaint);
                         }
                     }
