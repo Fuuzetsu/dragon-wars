@@ -115,7 +115,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         GameView gameView = (GameView) this.findViewById(R.id.gameView);
 
         try {
-            map = MapReader.readMap(readFile(R.raw.overmap)); // ugh
+            map = MapReader.readMap(readFile(R.raw.mixmap));
         } catch (JSONException e) {
             Log.d(TAG, "Failed to load the map: " + e.getMessage());
         }
@@ -142,7 +142,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
     }
 
     private void initialiseGraphics() {
-        final int DEAD_COLOUR = Color.rgb(156, 156, 156);
+        final int DEAD_COLOUR = Color.rgb(211, 31, 45);
 
         /* Register game fields */
         putGroup("Fields", map.getGameFieldMap());
@@ -164,6 +164,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         /* Prerender combined map */
         fullMap = combineMap();
+        recycleBorders();
 
         /* Colour and save sprites for each player */
         for (Player p : state.getPlayers()) {
@@ -226,22 +227,39 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                     "com.group7.dragonwars", regName);
     }
 
-    /* TODO do not hardcode */
     private void loadBorders() {
-        loadField("water_grass_edge1", "Top grass->water border");
-        loadField("water_grass_edge2", "Right grass->water border");
-        loadField("water_grass_edge3", "Bottom grass->water border");
-        loadField("water_grass_edge4", "Left grass->water border");
+        List<String> borderList = new ArrayList<String>();
+        borderList.add("water");
+        borderList.add("sand");
+        borderList.add("grass");
+        borderList.add("lava");
 
-        loadField("grass_water_corner1", "Water->grass corner NE");
-        loadField("grass_water_corner2", "Water->grass corner SE");
-        loadField("grass_water_corner3", "Water->grass corner SW");
-        loadField("grass_water_corner4", "Water->grass corner NW");
+        for (String b : borderList) {
+            for (Integer i = 1; i <= 4; i++) {
+                loadField(String.format("border_%s_%d", b, i),
+                          String.format("border %s %d", b, i));
+                loadField(String.format("corner_%s_%d", b, i),
+                          String.format("corner %s %d", b, i));
+                loadField(String.format("fullcorner_%s_%d", b, i),
+                          String.format("fullcorner %s %d", b, i));
+            }
+        }
+    }
 
-        loadField("water_grass_corner1", "Grass->water corner SW");
-        loadField("water_grass_corner2", "Grass->water corner NW");
-        loadField("water_grass_corner3", "Grass->water corner NE");
-        loadField("water_grass_corner4", "Grass->water corner SE");
+    private void recycleBorders() {
+        List<String> borderList = new ArrayList<String>();
+        borderList.add("water");
+        borderList.add("sand");
+        borderList.add("grass");
+        borderList.add("lava");
+
+        for (String b : borderList) {
+            for (Integer i = 1; i <= 4; i++) {
+                graphics.get("Fields").get(String.format("border %s %d", b, i)).recycle();
+                graphics.get("Fields").get(String.format("corner %s %d", b, i)).recycle();
+                graphics.get("Fields").get(String.format("fullcorner %s %d", b, i)).recycle();
+            }
+        }
     }
 
     /*
@@ -398,34 +416,34 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         final String FAKE = "NoTaReAlTiL3";
 
-        String gfn = map.getField(currentField).getName();
+        String gfn = map.getField(currentField).getSpriteLocation();
 
         Position nep, np, nwp, ep, cp, wp, sep, sp, swp;
         String ne, n, nw, e, c, w, se, s, sw;
 
-        nep = new Position(i - 1, j - 1);
+        nep = new Position(i + 1, j - 1);
         np = new Position(i, j - 1);
-        nwp = new Position(i + 1, j - 1);
+        nwp = new Position(i - 1, j - 1);
 
-        ep = new Position(i - 1, j);
+        ep = new Position(i + 1, j);
         cp = new Position(i, j);
-        wp = new Position(i + 1, j);
+        wp = new Position(i - 1, j);
 
-        sep = new Position(i - 1, j + 1);
+        sep = new Position(i + 1, j + 1);
         sp = new Position(i, j + 1);
-        swp = new Position(i + 1, j + 1);
+        swp = new Position(i - 1, j + 1);
 
-        ne = map.isValidField(nep) ? map.getField(nep).toString() : FAKE;
-        n = map.isValidField(np) ? map.getField(np).toString() : FAKE;
-        nw = map.isValidField(nwp) ? map.getField(nwp).toString() : FAKE;
+        ne = map.isValidField(nep) ? map.getField(nep).getSpriteLocation() : FAKE;
+        n = map.isValidField(np) ? map.getField(np).getSpriteLocation() : FAKE;
+        nw = map.isValidField(nwp) ? map.getField(nwp).getSpriteLocation() : FAKE;
 
-        e = map.isValidField(ep) ? map.getField(ep).toString() : FAKE;
-        c = map.isValidField(cp) ? map.getField(cp).toString() : FAKE;
-        w = map.isValidField(wp) ? map.getField(wp).toString() : FAKE;
+        e = map.isValidField(ep) ? map.getField(ep).getSpriteLocation() : FAKE;
+        c = map.isValidField(cp) ? map.getField(cp).getSpriteLocation() : FAKE;
+        w = map.isValidField(wp) ? map.getField(wp).getSpriteLocation() : FAKE;
 
-        se = map.isValidField(sep) ? map.getField(sep).toString() : FAKE;
-        s = map.isValidField(sp) ? map.getField(sp).toString() : FAKE;
-        sw = map.isValidField(swp) ? map.getField(swp).toString() : FAKE;
+        se = map.isValidField(sep) ? map.getField(sep).getSpriteLocation() : FAKE;
+        s = map.isValidField(sp) ? map.getField(sp).getSpriteLocation() : FAKE;
+        sw = map.isValidField(swp) ? map.getField(swp).getSpriteLocation() : FAKE;
 
         Func<String, Void> drawer = new Func<String, Void>() {
             public Void apply(String sprite) {
@@ -434,54 +452,68 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                 return null; /* Java strikes again */
             }
         };
+        List<String> land = new ArrayList<String>();
+        land.add("grass");
+        land.add("sand");
+        List<String> liquid = new ArrayList<String>();
+        liquid.add("water");
+        liquid.add("lava");
+        if (liquid.contains(gfn)) {
 
-        if (gfn.equals("Water")) {
-            if (w.equals("Grass")) {
-                drawer.apply("Right grass->water border");
+            if (land.contains(s)) {
+                drawer.apply(String.format("border %s %d", s, 1));
             }
 
-            if (e.equals("Grass")) {
-                drawer.apply("Left grass->water border");
+            if (land.contains(e)) {
+                drawer.apply(String.format("border %s %d", e, 2));
             }
 
-            if (s.equals("Grass")) {
-                drawer.apply("Top grass->water border");
+            if (land.contains(n)) {
+                drawer.apply(String.format("border %s %d", n, 3));
             }
 
-            if (n.equals("Grass")) {
-                drawer.apply("Bottom grass->water border");
+            if (land.contains(w)) {
+                drawer.apply(String.format("border %s %d", w, 4));
             }
 
-            if (s.equals("Water") && w.equals("Water") && sw.equals("Grass")) {
-                drawer.apply("Grass->water corner SW");
+            if (liquid.contains(s) && liquid.contains(e) && land.contains(se)) {
+                drawer.apply(String.format("corner %s %d", se, 1));
             }
 
-            if (s.equals("Water") && e.equals("Water") && se.equals("Grass")) {
-                drawer.apply("Grass->water corner SE");
+            if (liquid.contains(n) && liquid.contains(e) && land.contains(ne)) {
+                drawer.apply(String.format("corner %s %d", ne, 2));
             }
 
-            if (n.equals("Water") && w.equals("Water") && nw.equals("Grass")) {
-                drawer.apply("Grass->water corner NW");
+            if (liquid.contains(n) && liquid.contains(w) && land.contains(nw)) {
+                drawer.apply(String.format("corner %s %d", nw, 3));
             }
 
-            if (n.equals("Water") && e.equals("Water") && ne.equals("Grass")) {
-                drawer.apply("Grass->water corner NE");
+            if (liquid.contains(s) && liquid.contains(w) && land.contains(sw)) {
+                drawer.apply(String.format("corner %s %d", sw, 4));
             }
 
-            if (w.equals("Grass") && s.equals("Grass") && sw.equals("Grass")) {
-                drawer.apply("Water->grass corner SW");
+            if (land.contains(s) && land.contains(e) && land.contains(se)) {
+                if (s.equals(e) && e.equals(se)) {
+                    drawer.apply(String.format("fullcorner %s %d", s, 1));
+                }
             }
 
-            if (e.equals("Grass") && s.equals("Grass") && se.equals("Grass")) {
-                drawer.apply("Water->grass corner SE");
+            if (land.contains(n) && land.contains(e) && land.contains(ne)) {
+                if (n.equals(e) && e.equals(ne)) {
+                    drawer.apply(String.format("fullcorner %s %d", n, 2));
+                }
             }
 
-            if (w.equals("Grass") && n.equals("Grass") && nw.equals("Grass")) {
-                drawer.apply("Water->grass corner NW");
+            if (land.contains(n) && land.contains(w) && land.contains(nw)) {
+                if (n.equals(w) && w.equals(nw)) {
+                    drawer.apply(String.format("fullcorner %s %d", n, 3));
+                }
             }
 
-            if (e.equals("Grass") && n.equals("Grass") && ne.equals("Grass")) {
-                drawer.apply("Water->grass corner NE");
+            if (land.contains(s) && land.contains(w) && land.contains(sw)) {
+                if (s.equals(w) && w.equals(sw)) {
+                    drawer.apply(String.format("fullcorner %s %d", s, 4));
+                }
             }
 
         }
