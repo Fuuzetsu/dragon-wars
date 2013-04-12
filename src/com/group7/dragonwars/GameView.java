@@ -115,7 +115,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         GameView gameView = (GameView) this.findViewById(R.id.gameView);
 
         try {
-            map = MapReader.readMap(readFile(R.raw.overmap)); // ugh
+            map = MapReader.readMap(readFile(R.raw.mixmap));
         } catch (JSONException e) {
             Log.d(TAG, "Failed to load the map: " + e.getMessage());
         }
