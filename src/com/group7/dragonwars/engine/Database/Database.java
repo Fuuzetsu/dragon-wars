@@ -2,6 +2,7 @@ package com.group7.dragonwars.engine.Database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
@@ -41,8 +42,17 @@ public class Database
 		Statement statement = conn.createStatement( );
 	}
 	
+	public void deleteLocalScores()
+	{
+		//delete local copy of scores
+		scores.clear();
+	}
+	
 	public void ResetScores() throws SQLException
 	{
+		//delete the local copy of scores
+		deleteLocalScores();
+		
 		//Delete table "dw_high_scores"
 		String SQL = "DROP TABLE dw_high_scores";
 		result = statement.executeQuery( SQL );
@@ -70,8 +80,36 @@ public class Database
 	
 	public void PullHighscores() throws SQLException
 	{
+		//delete the local copy of scores
+		deleteLocalScores();
+		
+		//get all rows from the table
 		String SQL = "select * from dw_high_scores";
 		result = statement.executeQuery( SQL );
+		
+		
+		//get metadata, used to parse row
+		//ResultSetMetaData metadata = result.getMetaData();
+		
+		//get number of rows in the table
+		int numRows = result.getFetchSize();
+		
+		for(int rowNum = 1; rowNum <= numRows; rowNum++)
+		{
+			//set current row
+			result.absolute(rowNum);
+			
+			//get row column by column 
+			String rowData = "";
+			
+			for(int column = 1; column <= 4; column++)
+			{
+				rowData += result.getString(column);
+			}
+			
+			//add the row to the set of scores ready for printing
+			scores.add(rowData);
+		}
 	}
 }
 
