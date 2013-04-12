@@ -228,20 +228,35 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     /* TODO do not hardcode */
     private void loadBorders() {
-        loadField("water_grass_edge1", "Top grass->water border");
-        loadField("water_grass_edge2", "Right grass->water border");
-        loadField("water_grass_edge3", "Bottom grass->water border");
-        loadField("water_grass_edge4", "Left grass->water border");
+        List<String> borderList = new ArrayList<String>();
+        borderList.add("sea");
+        borderList.add("sand");
+        borderList.add("grass");
+        borderList.add("lava");
 
-        loadField("grass_water_corner1", "Water->grass corner NE");
-        loadField("grass_water_corner2", "Water->grass corner SE");
-        loadField("grass_water_corner3", "Water->grass corner SW");
-        loadField("grass_water_corner4", "Water->grass corner NW");
+        for (String b : borderList) {
+            for (Integer i = 0; i < 4; i++) {
+                loadField(String.format("border_%s_%d", b, i),
+                          String.format("border %s %d"));
+                loadField(String.format("corner_%s_%d", b, i),
+                          String.format("corner %s %d"));
+            }
+        }
 
-        loadField("water_grass_corner1", "Grass->water corner SW");
-        loadField("water_grass_corner2", "Grass->water corner NW");
-        loadField("water_grass_corner3", "Grass->water corner NE");
-        loadField("water_grass_corner4", "Grass->water corner SE");
+        // loadField("water_grass_edge1", "Top grass->water border");
+        // loadField("water_grass_edge2", "Right grass->water border");
+        // loadField("water_grass_edge3", "Bottom grass->water border");
+        // loadField("water_grass_edge4", "Left grass->water border");
+
+        // loadField("grass_water_corner1", "Water->grass corner NE");
+        // loadField("grass_water_corner2", "Water->grass corner SE");
+        // loadField("grass_water_corner3", "Water->grass corner SW");
+        // loadField("grass_water_corner4", "Water->grass corner NW");
+
+        // loadField("water_grass_corner1", "Grass->water corner SW");
+        // loadField("water_grass_corner2", "Grass->water corner NW");
+        // loadField("water_grass_corner3", "Grass->water corner NE");
+        // loadField("water_grass_corner4", "Grass->water corner SE");
     }
 
     /*
