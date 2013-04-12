@@ -26,6 +26,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Align;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
@@ -92,6 +93,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
     
     private Paint cornerBoxTextPaint;
     private Paint cornerBoxBackPaint;
+    private Paint unitHealthPaint;
 
     private Bitmap fullMap;
 
@@ -158,6 +160,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         cornerBoxBackPaint = new Paint();
         cornerBoxBackPaint.setARGB(150, 0, 0, 0);
+        
+        unitHealthPaint = new Paint();
+        unitHealthPaint.setColor(Color.WHITE);
+        unitHealthPaint.setStyle(Paint.Style.FILL);
+        unitHealthPaint.setAntiAlias(true);
+        unitHealthPaint.setTextSize(15);
+        unitHealthPaint.setTextAlign(Align.RIGHT);
 
     }
 
@@ -589,6 +598,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                         } else {
                             Bitmap unitGfx = owner.getUnitSprite(un);
                             canvas.drawBitmap(unitGfx, null, dest, null);
+                            String healthText = decformat.format(unit.getHealth());
+                            canvas.drawText(healthText, dest.right, dest.bottom, unitHealthPaint);
                         }
                     }
                 }
