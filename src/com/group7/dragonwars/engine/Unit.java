@@ -6,7 +6,7 @@ import java.util.LinkedList;
 public class Unit extends DrawableMapObject {
 
     private Integer maxMovement, movement;
-    private Double maxHealth, health;
+    private Double maxHealth, health, lastDamage;
     private Double attack, meleeDefense, rangeDefense;
     private Position position;
     private Boolean hasFinishedTurn = false;
@@ -29,6 +29,7 @@ public class Unit extends DrawableMapObject {
 
         this.maxHealth = maxHealth;
         this.health = this.maxHealth;
+        this.lastDamage = 0.0;
 
         this.maxMovement = maxMovement;
         this.movement = this.maxMovement;
@@ -75,6 +76,10 @@ public class Unit extends DrawableMapObject {
     public Double getMaxHealth() {
         return this.maxHealth;
     }
+    
+    public Double getLastDamage() {
+        return this.lastDamage;
+    }
 
     public Double getAttack() {
         return this.attack;
@@ -109,6 +114,7 @@ public class Unit extends DrawableMapObject {
     }
 
     public void reduceHealth(Double damage) {
+        this.lastDamage = damage;
         this.health -= damage;
 
         if (this.health < 0) {

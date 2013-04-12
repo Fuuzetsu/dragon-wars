@@ -157,7 +157,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         cornerBoxTextPaint.setColor(Color.WHITE);
         cornerBoxTextPaint.setStyle(Paint.Style.FILL);
         cornerBoxTextPaint.setTextSize(15);
-        // textPaint.setAntiAlias(true); /* uncomment for better text, worse fps */
+        // cornerBoxTextPaint.setAntiAlias(true); /* uncomment for better text, worse fps */
 
         cornerBoxBackPaint = new Paint();
         cornerBoxBackPaint.setARGB(150, 0, 0, 0);
