@@ -13,6 +13,7 @@ import java.util.Set;
 
 import org.json.JSONException;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -27,6 +28,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -57,6 +59,11 @@ import com.group7.dragonwars.engine.Player;
 import com.group7.dragonwars.engine.Position;
 import com.group7.dragonwars.engine.Unit;
 
+/* Please tell me if the below causes problems, Android/Eclipse
+ * suddenly decided to refuse to compile without it (because
+ * GestureDetector was only introduced in API level 3 (Cupcake)
+ */
+@TargetApi(Build.VERSION_CODES.CUPCAKE)
 public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                                                      OnGestureListener,
                                                      OnDoubleTapListener,
@@ -82,6 +89,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
     private Bitmap pathHighlighter;
     private Bitmap selector;
     private Bitmap attack_highlighter;
+    
+    private Paint cornerBoxTextPaint;
+    private Paint cornerBoxBackPaint;
 
     private Bitmap fullMap;
 
@@ -138,6 +148,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         holder.addCallback(this);
 
         gestureDetector = new GestureDetector(this.getContext(), this);
+        
+
+        cornerBoxTextPaint = new Paint();
+        cornerBoxTextPaint.setColor(Color.WHITE);
+        cornerBoxTextPaint.setStyle(Paint.Style.FILL);
+        cornerBoxTextPaint.setTextSize(15);
+        // textPaint.setAntiAlias(true); /* uncomment for better text, worse fps */
+
+        cornerBoxBackPaint = new Paint();
+        cornerBoxBackPaint.setARGB(150, 0, 0, 0);
 
     }
 
@@ -669,15 +689,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
     }
 
     public void drawCornerBox(Canvas canvas, boolean left, boolean top, String text, boolean box, Paint boxPaint) {
-        Paint textPaint = new Paint();
-        textPaint.setColor(Color.WHITE);
-        textPaint.setTextSize(15);
-        // textPaint.setAntiAlias(true); /* uncomment for better text, worse fps */
-        textPaint.setTextAlign(left ? Paint.Align.LEFT : Paint.Align.RIGHT);
-
-        Paint backPaint = new Paint();
-        backPaint.setARGB(150, 0, 0, 0);
-
+        cornerBoxTextPaint.setTextAlign(left ? Paint.Align.LEFT : Paint.Align.RIGHT);
+        
         String[] ss = text.split("\n");
         String longestLine = "";
         for (String s : ss) {
@@ -687,7 +700,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         }
 
         Rect bounds = new Rect();
-        textPaint.getTextBounds(longestLine, 0,
+        cornerBoxTextPaint.getTextBounds(longestLine, 0,
                                 longestLine.length(), bounds);
         Integer boxWidth = bounds.width(); // Might have to Math.ceil first
         Integer boxHeight = ss.length * bounds.height();
@@ -701,7 +714,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                                     backRect.top - radius,
                                     backRect.right + radius + (box && left ? radius + boxHeight : 0),
                                     backRect.bottom + radius);
-        canvas.drawRoundRect(backRectF, 5f, 5f, backPaint);
+        canvas.drawRoundRect(backRectF, 5f, 5f, cornerBoxBackPaint);
 
         if (box) {
             canvas.drawRect(new RectF(left ? backRect.right + radius : backRect.left - radius - boxHeight,
@@ -714,7 +727,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
             canvas.drawText(ss[i], 0, ss[i].length(),
                             left ? backRect.left : backRect.right,
                             backRect.top + (bounds.height() * (i + 1)),
-                            textPaint);
+                            cornerBoxTextPaint);
         }
     }
 
