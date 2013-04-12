@@ -476,19 +476,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                 drawer.apply(String.format("border %s %d", w, 4));
             }
 
-            if (s.equals(gfn) && e.equals(gfn) && land.contains(se)) {
+            if (liquid.contains(s) && liquid.contains(e) && land.contains(se)) {
                 drawer.apply(String.format("corner %s %d", se, 1));
             }
 
-            if (n.equals(gfn) && e.equals(gfn) && land.contains(ne)) {
+            if (liquid.contains(n) && liquid.contains(e) && land.contains(ne)) {
                 drawer.apply(String.format("corner %s %d", ne, 2));
             }
 
-            if (n.equals(gfn) && w.equals(gfn) && land.contains(nw)) {
+            if (liquid.contains(n) && liquid.contains(w) && land.contains(nw)) {
                 drawer.apply(String.format("corner %s %d", nw, 3));
             }
 
-            if (s.equals(gfn) && w.equals(gfn) && land.contains(sw)) {
+            if (liquid.contains(s) && liquid.contains(w) && land.contains(sw)) {
                 drawer.apply(String.format("corner %s %d", sw, 4));
             }
 
