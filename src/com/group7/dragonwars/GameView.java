@@ -164,6 +164,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         /* Prerender combined map */
         fullMap = combineMap();
+        recycleBorders();
 
         /* Colour and save sprites for each player */
         for (Player p : state.getPlayers()) {
@@ -222,12 +223,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     /* Helper for loadBorders() */
     private void loadField(final String resName, final String regName) {
-        Log.d(TAG, "Loading field " + regName + " from " + resName);
         putResource("Fields", resName, "drawable",
                     "com.group7.dragonwars", regName);
     }
 
-    /* TODO do not hardcode */
     private void loadBorders() {
         List<String> borderList = new ArrayList<String>();
         borderList.add("water");
@@ -245,21 +244,22 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                           String.format("fullcorner %s %d", b, i));
             }
         }
+    }
 
-        // loadField("water_grass_edge1", "Top grass->water border");
-        // loadField("water_grass_edge2", "Right grass->water border");
-        // loadField("water_grass_edge3", "Bottom grass->water border");
-        // loadField("water_grass_edge4", "Left grass->water border");
+    private void recycleBorders() {
+        List<String> borderList = new ArrayList<String>();
+        borderList.add("water");
+        borderList.add("sand");
+        borderList.add("grass");
+        borderList.add("lava");
 
-        // loadField("grass_water_corner1", "Water->grass corner NE");
-        // loadField("grass_water_corner2", "Water->grass corner SE");
-        // loadField("grass_water_corner3", "Water->grass corner SW");
-        // loadField("grass_water_corner4", "Water->grass corner NW");
-
-        // loadField("water_grass_corner1", "Grass->water corner SW");
-        // loadField("water_grass_corner2", "Grass->water corner NW");
-        // loadField("water_grass_corner3", "Grass->water corner NE");
-        // loadField("water_grass_corner4", "Grass->water corner SE");
+        for (String b : borderList) {
+            for (Integer i = 1; i <= 4; i++) {
+                graphics.get("Fields").get(String.format("border %s %d", b, i)).recycle();
+                graphics.get("Fields").get(String.format("corner %s %d", b, i)).recycle();
+                graphics.get("Fields").get(String.format("fullcorner %s %d", b, i)).recycle();
+            }
+        }
     }
 
     /*
@@ -447,7 +447,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         Func<String, Void> drawer = new Func<String, Void>() {
             public Void apply(String sprite) {
-                Log.d(TAG, "Drawing border " + sprite);
                 canvas.drawBitmap(graphics.get("Fields").get(sprite),
                                   null, dest, null);
                 return null; /* Java strikes again */
