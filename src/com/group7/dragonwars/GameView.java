@@ -95,6 +95,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
     private Paint cornerBoxBackPaint;
     private Paint unitHealthPaint;
     private Paint unitHealthOutlinePaint;
+    
+    private Paint showDamagePaint;
+    private int showDamageTimeout = 0;
+    private Unit showDamageAttacker = null;
+    private Unit showDamageDefender = null;
+    private int showDamageSeconds = 4;
 
     private Bitmap fullMap;
 
@@ -157,7 +163,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         cornerBoxTextPaint.setColor(Color.WHITE);
         cornerBoxTextPaint.setStyle(Paint.Style.FILL);
         cornerBoxTextPaint.setTextSize(15);
-        // textPaint.setAntiAlias(true); /* uncomment for better text, worse fps */
+        // cornerBoxTextPaint.setAntiAlias(true); /* uncomment for better text, worse fps */
 
         cornerBoxBackPaint = new Paint();
         cornerBoxBackPaint.setARGB(150, 0, 0, 0);
@@ -176,6 +182,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         unitHealthOutlinePaint.setAntiAlias(unitHealthPaint.isAntiAlias());
         unitHealthOutlinePaint.setTextSize(unitHealthPaint.getTextSize());
         unitHealthOutlinePaint.setTextAlign(unitHealthPaint.getTextAlign());
+        
+        showDamagePaint = new Paint();
+        showDamagePaint.setColor(Color.RED);
+        showDamagePaint.setStyle(Paint.Style.FILL);
+        showDamagePaint.setFakeBoldText(true);
+        showDamagePaint.setAntiAlias(unitHealthPaint.isAntiAlias());
+        showDamagePaint.setTextSize(unitHealthPaint.getTextSize());
+        showDamagePaint.setTextAlign(Align.CENTER);
+        
 
     }
 
@@ -366,7 +381,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
     public void surfaceChanged(final SurfaceHolder arg0, final int arg1,
                                final int arg2, final int arg3) {
         // TODO Auto-generated method stub
-
     }
 
     @Override
@@ -379,7 +393,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
     @Override
     public void surfaceDestroyed(final SurfaceHolder arg0) {
         dt.setRunning(false);
-
         try {
             dt.join();
         } catch (InterruptedException e) {
@@ -561,7 +574,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
     public void doDraw(final Canvas canvas) {
         Long startingTime = System.currentTimeMillis();
 
-
         Configuration c = getResources().getConfiguration();
 
         canvas.drawColor(Color.BLACK);
@@ -615,6 +627,29 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                 }
             }
         }
+        
+        if (showDamageTimeout > 0) {
+            Log.v(null, "showDamageTimeout " + showDamageTimeout);
+            if (showDamageAttacker != null && !showDamageAttacker.isDead()) {
+                RectF dest = getSquare(
+                    tilesize * showDamageAttacker.getPosition().getX() + scrollOffset.getX(),
+                    tilesize * showDamageAttacker.getPosition().getY() + scrollOffset.getY(),
+                    tilesize);
+                canvas.drawText(decformat.format(showDamageAttacker.getLastDamage()), dest.right - (tilesize / 2), dest.top, showDamagePaint);
+            }
+            if (showDamageDefender != null && !showDamageDefender.isDead()) {
+                RectF dest = getSquare(
+                    tilesize * showDamageDefender.getPosition().getX() + scrollOffset.getX(),
+                    tilesize * showDamageDefender.getPosition().getY() + scrollOffset.getY(),
+                    tilesize);
+                canvas.drawText(decformat.format(showDamageDefender.getLastDamage()), dest.right - (tilesize / 2), dest.top, showDamagePaint);
+            }
+            --showDamageTimeout;
+            if (showDamageTimeout == 0) {
+                showDamageAttacker = null;
+                showDamageDefender = null;
+            }
+        }
 
         /* Destination highlighting */
         for (Position pos : unitDests) {
@@ -634,7 +669,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                 canvas.drawBitmap(pathHighlighter, null, dest, null);
             }
         }
-
+        
         /* Always draw attackables */
         if (map.getField(selected).hostsUnit()) {
             Unit u = map.getField(selected).getUnit();
@@ -648,7 +683,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                 }
             }
         }
-
+        
+        
 
         RectF select_dest = getSquare(
             tilesize * selected.getX() + scrollOffset.getX(),
@@ -859,6 +895,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                       + " attacks " + defender);
                 state.attack(attacker, defender);
                 attacker.setFinishedTurn(true);
+
+                // please, someone find a better way to do this
+                showDamageAttacker = attacker;
+                showDamageDefender = defender;
+                showDamageTimeout = fps.intValue() * showDamageSeconds;
+                // basically it uses fps to calculate how many frames it needs to show the damage for
             }
             selected = newselected;
         }
