@@ -203,10 +203,12 @@ public class Logic {
 
             for (Position n : getValidNeighbours(map, current.getPosition())) {
                 GameField gf = map.getField(n);
+                if (!gf.doesAcceptUnit(unit)) {
+                    continue;
+                }
                 Node neigh = new Node(n, gf.getMovementModifier(),
                                       1.0 * getManhattanDistance(
                                           unit.getPosition(), destination));
-                //neigh.setParent(current);
 
                 Double tentG = current.getG() + neigh.getG();
 
@@ -252,6 +254,32 @@ public class Logic {
         positions.add(new Position(pos.getX() + 1, pos.getY()));
         positions.add(new Position(pos.getX() - 1, pos.getY()));
         return positions;
+    }
+
+    private List<Position> getValidSurroundingPositions(final GameMap map,
+                                                        final Position pos) {
+        List<Position> positions = getValidNeighbours(map, pos);
+        Position nep, nwp, sep, swp;
+        Integer i = pos.getX(), j = pos.getY();
+        nep = new Position(i - 1, j - 1);
+        if (map.isValidField(nep)) {
+            positions.add(nep);
+        }
+        nwp = new Position(i + 1, j - 1);
+        if (map.isValidField(nwp)) {
+            positions.add(nwp);
+        }
+        sep = new Position(i - 1, j + 1);
+        if (map.isValidField(sep)) {
+            positions.add(sep);
+        }
+        swp = new Position(i + 1, j + 1);
+        if (map.isValidField(swp)) {
+            positions.add(swp);
+        }
+
+        return positions;
+
     }
 
     private class AStarComparator implements
@@ -383,7 +411,8 @@ public class Logic {
 
     private Set<Position> getAttackableFields(GameMap map, Unit unit, Position position) {
         if (!unit.isRanged()) {
-            return new HashSet<Position>(getAdjacentPositions(position));
+            return new HashSet<Position>(
+                getValidSurroundingPositions(map, position));
         }
 
         RangedUnit ru = (RangedUnit) unit;
