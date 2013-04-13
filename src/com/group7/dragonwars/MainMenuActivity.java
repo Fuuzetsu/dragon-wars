@@ -20,6 +20,7 @@ public class MainMenuActivity extends Activity implements OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
         setContentView(R.layout.activity_main_menu);
         this.btnBattle = (Button)this.findViewById(R.id.btnBattle);
         this.btnBattle.setOnClickListener(this);
@@ -46,27 +47,6 @@ public class MainMenuActivity extends Activity implements OnClickListener {
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }
-        
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.activity_main_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case R.id.menu_settings:
-            Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);
-            return true;
-
-        default:
-            return super.onOptionsItemSelected(item);
         }
     }
 

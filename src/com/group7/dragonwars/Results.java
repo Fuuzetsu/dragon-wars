@@ -11,12 +11,4 @@ public class Results extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.results, menu);
-        return true;
-    }
-
 }

@@ -45,13 +45,6 @@ public class MapSelectActivity extends Activity implements OnItemClickListener {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.map_select, menu);
-        return true;
-    }
-
-    @Override
     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
         // TODO Auto-generated method stub
         if (position < mapFileNames.length) {

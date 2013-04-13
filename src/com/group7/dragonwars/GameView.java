@@ -949,7 +949,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     @Override
     public void onClick(View arg0) {
-        // This onClick if for the Menu button
+        // This onClick is for the Menu button
+        showMenu();
+    }
+    
+    public void showMenu() {
         AlertDialog.Builder menu_builder
             = new AlertDialog.Builder(this.getContext());
         menu_builder.setTitle("Menu");

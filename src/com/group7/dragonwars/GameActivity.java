@@ -18,6 +18,7 @@ import android.app.Activity;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -91,5 +92,15 @@ public class GameActivity extends Activity {
         }
         return text;
     }
-
+    
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) { 
+        if (keyCode == KeyEvent.KEYCODE_MENU) {
+            GameView gameView = (GameView) this.findViewById(R.id.gameView);
+            gameView.showMenu();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event); 
+    } 
+    
 }
