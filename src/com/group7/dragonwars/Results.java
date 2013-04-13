@@ -1,8 +1,7 @@
 package com.group7.dragonwars;
 
-import android.os.Bundle;
 import android.app.Activity;
-import android.view.Menu;
+import android.os.Bundle;
 
 public class Results extends Activity {
 

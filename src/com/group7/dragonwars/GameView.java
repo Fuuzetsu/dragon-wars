@@ -87,8 +87,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     private Bitmap fullMap = null;
 
-    private boolean unit_selected; // true if there is a unit at selection
-
     private Context context;
     private HashMap<String, HashMap<String, Bitmap>> graphics
         = new HashMap<String, HashMap<String, Bitmap>>();
@@ -101,7 +99,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     private Long timeElapsed = 0L;
     private Long framesSinceLastSecond = 0L;
-    //private Long timeNow = 0L;
     private Double fps = 0.0;
 
     private enum MenuType {NONE, ACTION, BUILD, MENU};

@@ -9,13 +9,11 @@ public class DrawingThread extends Thread {
     private boolean run;
     private Canvas canvas;
     private SurfaceHolder surfaceholder;
-    private Context context;
     private GameView gview;
 
     public DrawingThread(final SurfaceHolder sholder,
                          final Context ctx, final GameView gv) {
         surfaceholder = sholder;
-        context = ctx;
         run = false;
         gview = gv;
     }
