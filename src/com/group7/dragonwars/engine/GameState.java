@@ -193,6 +193,10 @@ public class GameState {
     public GameMap getMap() {
         return this.map;
     }
+    
+    public Logic getLogic() {
+        return this.logic;
+    }
 
     public List<Player> getPlayers() {
         return this.players;

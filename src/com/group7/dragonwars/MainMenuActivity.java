@@ -1,8 +1,13 @@
 package com.group7.dragonwars;
 
+import java.io.IOException;
+import java.lang.reflect.Field;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.AssetManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,6 +38,18 @@ public class MainMenuActivity extends Activity implements OnClickListener {
         // 6. onDestroy (state lost)
         //Toast.makeText(getApplicationContext(), "If the user had a game in progress when they quit the app (without properly saving and exiting), we will offer to resume it now (we are nice like that)", Toast.LENGTH_LONG).show();
         super.onStart();
+        
+        AssetManager ass = getAssets();
+        try {
+            String[] files = ass.list("maps");
+            for (int i = 0; i < files.length; ++i) {
+                Log.v(null, "File " + i + " " + files[i]);
+            }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
     }
 
     @Override
@@ -58,8 +75,9 @@ public class MainMenuActivity extends Activity implements OnClickListener {
     @Override
     public void onClick(View v) {
         if (v == this.btnBattle) {
-            Intent intent = new Intent(this, GameActivity.class);
+            Intent intent = new Intent(this, MapSelectActivity.class);
             startActivity(intent);
+            finish();
         }
     }
 }

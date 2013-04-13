@@ -4,10 +4,9 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
-    <uses-sdk
-        android:targetSdkVersion="16" />
+    <uses-sdk android:targetSdkVersion="16" />
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -33,10 +32,18 @@
             android:label="@string/title_activity_game"
             android:theme="@style/FullscreenTheme" >
         </activity>
+
         <uses-library android:name="android.test.runner" />
+
+        <activity
+            android:name="com.group7.dragonwars.MapSelectActivity"
+            android:label="@string/title_activity_map_select" >
+        </activity>
     </application>
-    <instrumentation android:name="android.test.InstrumentationTestRunner"
-                     android:targetPackage="com.group7.dragonwars"
-                     android:label="Tests for com.group7.dragonwars"/>
+
+    <instrumentation
+        android:name="android.test.InstrumentationTestRunner"
+        android:label="Tests for com.group7.dragonwars"
+        android:targetPackage="com.group7.dragonwars" />
 
 </manifest>
