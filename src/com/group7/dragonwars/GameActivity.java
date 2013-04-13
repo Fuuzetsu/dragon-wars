@@ -26,6 +26,8 @@ import android.widget.Button;
 public class GameActivity extends Activity {
     private static final String TAG = "GameActivity";
 
+    private GameState state = null;
+    
     @Override
     protected final void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,12 +40,8 @@ public class GameActivity extends Activity {
                              WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         Log.d(TAG, "in onCreate");
-        setContentView(R.layout.activity_game);
-        Log.v(null, "on inCreate");
-
-        Button menuButton = (Button) this.findViewById(R.id.menuButton);
-        GameView gameView = (GameView) this.findViewById(R.id.gameView);
-        menuButton.setOnClickListener(gameView);
+        setContentView(R.layout.loading_screen);
+        Log.d(TAG, "on inCreate");
     }
     
     @Override
@@ -62,8 +60,11 @@ public class GameActivity extends Activity {
             System.exit(1);
         }
 
-        GameState state = new GameState(map, new Logic(), map.getPlayers());
+        state = new GameState(map, new Logic(), map.getPlayers());
+        setContentView(R.layout.activity_game);
         GameView gameView = (GameView) this.findViewById(R.id.gameView);
+        Button menuButton = (Button) this.findViewById(R.id.menuButton);
+        menuButton.setOnClickListener(gameView);
         gameView.setState(state);
     }
     
