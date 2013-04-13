@@ -77,12 +77,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
     private Bitmap pathHighlighter;
     private Bitmap selector;
     private Bitmap attack_highlighter;
-    
+
     private Paint cornerBoxTextPaint;
     private Paint cornerBoxBackPaint;
     private Paint unitHealthPaint;
     private Paint unitHealthOutlinePaint;
-    
+
     private Paint showDamagePaint;
     private int showDamageTimeout = 0;
     private Unit showDamageAttacker = null;
@@ -124,7 +124,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         holder.addCallback(this);
 
         gestureDetector = new GestureDetector(this.getContext(), this);
-        
+
         // Initialise paints
         cornerBoxTextPaint = new Paint();
         cornerBoxTextPaint.setColor(Color.WHITE);
@@ -134,14 +134,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         cornerBoxBackPaint = new Paint();
         cornerBoxBackPaint.setARGB(150, 0, 0, 0);
-        
+
         unitHealthPaint = new Paint();
         unitHealthPaint.setColor(Color.WHITE);
         unitHealthPaint.setStyle(Paint.Style.FILL);
         unitHealthPaint.setAntiAlias(true);
         unitHealthPaint.setTextSize(15);
         unitHealthPaint.setTextAlign(Align.RIGHT);
-        
+
         unitHealthOutlinePaint = new Paint();
         unitHealthOutlinePaint.setColor(Color.BLACK);
         unitHealthOutlinePaint.setStyle(Paint.Style.STROKE);
@@ -149,7 +149,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         unitHealthOutlinePaint.setAntiAlias(unitHealthPaint.isAntiAlias());
         unitHealthOutlinePaint.setTextSize(unitHealthPaint.getTextSize());
         unitHealthOutlinePaint.setTextAlign(unitHealthPaint.getTextAlign());
-        
+
         showDamagePaint = new Paint();
         showDamagePaint.setColor(Color.RED);
         showDamagePaint.setStyle(Paint.Style.FILL);
@@ -159,7 +159,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         showDamagePaint.setTextAlign(Align.CENTER);
 
     }
-    
+
     public void setState(GameState state) {
         this.state = state;
         this.map = state.getMap();
@@ -172,9 +172,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         initialiseGraphics();
         Log.d(TAG, "Done initalising graphics.");
     }
-    
+
     private void initialiseGraphics() {
-        final int DEAD_COLOUR = Color.rgb(211, 31, 45);
+        final int DEAD_COLOUR = Color.rgb(156, 156, 156);
 
         /* Register game fields */
         putGroup("Fields", map.getGameFieldMap());
@@ -584,7 +584,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                 }
             }
         }
-        
+
         if (showDamageTimeout > 0) {
             Log.d(TAG, "showDamageTimeout " + showDamageTimeout);
             if (showDamageAttacker != null && !showDamageAttacker.isDead()) {
@@ -626,7 +626,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                 canvas.drawBitmap(pathHighlighter, null, dest, null);
             }
         }
-        
+
         /* Always draw attackables */
         if (map.getField(selected).hostsUnit()) {
             Unit u = map.getField(selected).getUnit();
@@ -640,8 +640,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                 }
             }
         }
-        
-        
+
+
 
         RectF select_dest = getSquare(
             tilesize * selected.getX() + scrollOffset.getX(),
@@ -704,7 +704,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     public void drawCornerBox(Canvas canvas, boolean left, boolean top, String text, boolean box, Paint boxPaint) {
         cornerBoxTextPaint.setTextAlign(left ? Paint.Align.LEFT : Paint.Align.RIGHT);
-        
+
         String[] ss = text.split("\n");
         String longestLine = "";
         for (String s : ss) {
