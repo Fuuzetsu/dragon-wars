@@ -11,7 +11,6 @@ import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -66,9 +65,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
     private GameMap map = null;
     private Position selected = new Position(0, 0);
 
-    private Position attack_location;
-    private Position action_location = new Position(0, 0);;
-
     private FloatPair scrollOffset = new FloatPair(0f, 0f);
     private GestureDetector gestureDetector;
 
@@ -105,7 +101,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     private Long timeElapsed = 0L;
     private Long framesSinceLastSecond = 0L;
-    private Long timeNow = 0L;
+    //private Long timeNow = 0L;
     private Double fps = 0.0;
 
     private enum MenuType {NONE, ACTION, BUILD, MENU};
@@ -531,8 +527,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         }
         Long startingTime = System.currentTimeMillis();
 
-        Configuration c = getResources().getConfiguration();
-
         canvas.drawColor(Color.BLACK);
 
         GameField selectedField = map.isValidField(selected) ? map.getField(selected) : map.getField(0, 0);
@@ -629,7 +623,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         /* Always draw attackables */
         if (map.getField(selected).hostsUnit()) {
-            Unit u = map.getField(selected).getUnit();
             if (lastAttackables != null) {
                 for (Position pos : lastAttackables) {
                     RectF attack_dest = getSquare(

@@ -2,20 +2,16 @@ package com.group7.dragonwars;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 
-import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.AssetManager;
-import android.util.Log;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 
 public class MapSelectActivity extends Activity implements OnItemClickListener {
