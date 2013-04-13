@@ -1,9 +1,5 @@
 package com.group7.dragonwars;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,15 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.json.JSONException;
-
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnShowListener;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -39,13 +30,11 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
 
-import com.group7.dragonwars.engine.Building;
 import com.group7.dragonwars.engine.BitmapChanger;
+import com.group7.dragonwars.engine.Building;
 import com.group7.dragonwars.engine.DrawableMapObject;
 import com.group7.dragonwars.engine.FloatPair;
 import com.group7.dragonwars.engine.Func;
@@ -54,8 +43,6 @@ import com.group7.dragonwars.engine.GameFinishedException;
 import com.group7.dragonwars.engine.GameMap;
 import com.group7.dragonwars.engine.GameState;
 import com.group7.dragonwars.engine.Logic;
-import com.group7.dragonwars.engine.MapReader;
-import com.group7.dragonwars.engine.Pair;
 import com.group7.dragonwars.engine.Player;
 import com.group7.dragonwars.engine.Position;
 import com.group7.dragonwars.engine.Unit;
@@ -75,8 +62,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
     private final int tilesize = 64;
 
     private GameState state;
-    private Logic logic = new Logic();
-    private GameMap map;
+    private Logic logic;
+    private GameMap map = null;
     private Position selected = new Position(0, 0);
 
     private Position attack_location;
@@ -102,7 +89,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
     private Unit showDamageDefender = null;
     private int showDamageSeconds = 4;
 
-    private Bitmap fullMap;
+    private Bitmap fullMap = null;
 
     private boolean unit_selected; // true if there is a unit at selection
 
@@ -131,34 +118,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         super(ctx, attrset);
         Log.d(TAG, "GameView ctor");
 
-        GameView gameView = (GameView) this.findViewById(R.id.gameView);
-
-        try {
-            map = MapReader.readMap(readFile(R.raw.mixmap));
-        } catch (JSONException e) {
-            Log.d(TAG, "Failed to load the map: " + e.getMessage());
-        }
-
-        if (map == null) {
-            Log.d(TAG, "map is null");
-            System.exit(1);
-        }
-
-        this.state = new GameState(map, logic, map.getPlayers());
-
         context = ctx;
         SurfaceHolder holder = getHolder();
-
-        /* Load and colour all the sprites we'll need */
-        Log.d(TAG, "Initialising graphics.");
-        initialiseGraphics();
-        Log.d(TAG, "Done initalising graphics.");
 
         holder.addCallback(this);
 
         gestureDetector = new GestureDetector(this.getContext(), this);
         
-
+        // Initialise paints
         cornerBoxTextPaint = new Paint();
         cornerBoxTextPaint.setColor(Color.WHITE);
         cornerBoxTextPaint.setStyle(Paint.Style.FILL);
@@ -190,10 +157,22 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         showDamagePaint.setAntiAlias(unitHealthPaint.isAntiAlias());
         showDamagePaint.setTextSize(unitHealthPaint.getTextSize());
         showDamagePaint.setTextAlign(Align.CENTER);
-        
 
     }
+    
+    public void setState(GameState state) {
+        this.state = state;
+        this.map = state.getMap();
+        this.logic = state.getLogic();
 
+        /* Load and colour all the sprites we'll need
+         * Because we no longer do this in GameActivity.onCreate, everything is better
+         */
+        Log.d(TAG, "Initialising graphics.");
+        initialiseGraphics();
+        Log.d(TAG, "Done initalising graphics.");
+    }
+    
     private void initialiseGraphics() {
         final int DEAD_COLOUR = Color.rgb(211, 31, 45);
 
@@ -350,31 +329,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         }
 
         return result;
-    }
-
-    private List<String> readFile(final int resourceid) {
-        List<String> text = new ArrayList<String>();
-
-        try {
-            BufferedReader in = new BufferedReader(
-                new InputStreamReader(this.getResources()
-                                      .openRawResource(resourceid)));
-            String line;
-
-            while ((line = in.readLine()) != null) {
-                text.add(line);
-            }
-
-            in.close();
-        } catch (FileNotFoundException fnf) {
-            System.err.println("Couldn't find " + fnf.getMessage());
-            System.exit(1);
-        } catch (IOException ioe) {
-            System.err.println("Couldn't read " + ioe.getMessage());
-            System.exit(1);
-        }
-
-        return text;
     }
 
     @Override
@@ -572,6 +526,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
 
     public void doDraw(final Canvas canvas) {
+        if (map == null) {
+            return; // don't bother drawing until map != null
+        }
         Long startingTime = System.currentTimeMillis();
 
         Configuration c = getResources().getConfiguration();

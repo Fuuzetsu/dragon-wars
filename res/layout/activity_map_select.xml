@@ -9,11 +9,14 @@
     tools:context=".MapSelectActivity" >
 
     <ListView
-        android:id="@+id/listView1"
+        android:id="@+id/mapList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" >
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true" >
+
     </ListView>
 
 </RelativeLayout>
