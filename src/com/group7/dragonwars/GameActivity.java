@@ -25,8 +25,6 @@ import android.widget.Button;
 
 public class GameActivity extends Activity {
     private static final String TAG = "GameActivity";
-    private Integer orientation;
-    private Boolean orientationChanged = false;
 
     @Override
     protected final void onCreate(final Bundle savedInstanceState) {

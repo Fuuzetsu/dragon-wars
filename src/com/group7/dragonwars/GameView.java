@@ -1,9 +1,5 @@
 package com.group7.dragonwars;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,15 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.json.JSONException;
-
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnShowListener;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -39,13 +30,11 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
 
-import com.group7.dragonwars.engine.Building;
 import com.group7.dragonwars.engine.BitmapChanger;
+import com.group7.dragonwars.engine.Building;
 import com.group7.dragonwars.engine.DrawableMapObject;
 import com.group7.dragonwars.engine.FloatPair;
 import com.group7.dragonwars.engine.Func;
@@ -54,8 +43,6 @@ import com.group7.dragonwars.engine.GameFinishedException;
 import com.group7.dragonwars.engine.GameMap;
 import com.group7.dragonwars.engine.GameState;
 import com.group7.dragonwars.engine.Logic;
-import com.group7.dragonwars.engine.MapReader;
-import com.group7.dragonwars.engine.Pair;
 import com.group7.dragonwars.engine.Player;
 import com.group7.dragonwars.engine.Position;
 import com.group7.dragonwars.engine.Unit;
@@ -170,7 +157,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         showDamagePaint.setAntiAlias(unitHealthPaint.isAntiAlias());
         showDamagePaint.setTextSize(unitHealthPaint.getTextSize());
         showDamagePaint.setTextAlign(Align.CENTER);
-        
 
     }
     
@@ -179,7 +165,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         this.map = state.getMap();
         this.logic = state.getLogic();
 
-        /* Load and colour all the sprites we'll need */
+        /* Load and colour all the sprites we'll need
+         * Because we no longer do this in GameActivity.onCreate, everything is better
+         */
         Log.d(TAG, "Initialising graphics.");
         initialiseGraphics();
         Log.d(TAG, "Done initalising graphics.");
