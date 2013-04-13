@@ -586,7 +586,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         }
         
         if (showDamageTimeout > 0) {
-            Log.v(null, "showDamageTimeout " + showDamageTimeout);
+            Log.d(TAG, "showDamageTimeout " + showDamageTimeout);
             if (showDamageAttacker != null && !showDamageAttacker.isDead()) {
                 RectF dest = getSquare(
                     tilesize * showDamageAttacker.getPosition().getX() + scrollOffset.getX(),
@@ -792,7 +792,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
             GameField newselected_field = map.getField(newselected);
             if (lastAttackables == null || !lastAttackables.contains(newselected)) {
                 if (map.getField(selected).hostsUnit()) {
-                    //Log.v(null, "A unit is selected!");
+                    //Log.d(TAG, "A unit is selected!");
                     /* If the user currently has a unit selected and
                      * selects a field that this unit could move to
                      * (and the unit has not finished it's turn)
@@ -848,7 +848,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                 Unit attacker = field.getUnit();
                 Unit defender = map.getField(newselected).getUnit();
 
-                Log.v(null, "attack(!): " + attacker
+                Log.d(TAG, "attack(!): " + attacker
                       + " attacks " + defender);
                 state.attack(attacker, defender);
                 attacker.setFinishedTurn(true);
@@ -895,7 +895,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     @Override
     public void onClick(final DialogInterface dialog, final int which) {
-        Log.v(null, "selected option: " + which);
+        Log.d(TAG, "selected option: " + which);
         switch (whichMenu) {
         case BUILD:
             GameField field = map.getField(selected);
@@ -906,7 +906,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                     field.getBuilding().getOwner())) {
                 Unit unit = map.getField(selected)
                     .getBuilding().getProducibleUnits().get(which);
-                Log.v(null, "building a " + unit);
+                Log.d(TAG, "building a " + unit);
                 Boolean result = state.produceUnit(map.getField(selected),
                                                    unit);
                 if (!result) {
@@ -926,7 +926,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
             case 0:
                 try {
                     state.nextPlayer();
-                    Log.v(null, "advancing player");
+                    Log.d(TAG, "advancing player");
                     Toast.makeText(context,
                                    String.format("%s's turn!",
                                                  state.getCurrentPlayer()),

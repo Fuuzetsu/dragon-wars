@@ -39,7 +39,7 @@ public class GameActivity extends Activity {
 
         Log.d(TAG, "in onCreate");
         setContentView(R.layout.activity_game);
-        Log.v(null, "on inCreate");
+        Log.d(TAG, "on inCreate");
 
         Button menuButton = (Button) this.findViewById(R.id.menuButton);
         GameView gameView = (GameView) this.findViewById(R.id.gameView);

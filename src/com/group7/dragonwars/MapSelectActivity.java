@@ -58,7 +58,6 @@ public class MapSelectActivity extends Activity implements OnItemClickListener {
     @Override
     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
         // TODO Auto-generated method stub
-        Log.v(null, "position " + position + " id " + id);
         if (position < mapFileNames.length) {
             Intent intent = new Intent(this, GameActivity.class);
             Bundle b = new Bundle();
