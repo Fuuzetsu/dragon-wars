@@ -377,7 +377,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         }
 
         Unit u = selectedField.getUnit();
-        if (u.getOwner() != state.getCurrentPlayer() ||
+        if (state.getCurrentPlayer().isAI() || u.getOwner() != state.getCurrentPlayer() ||
             u.hasFinishedTurn()) {
             lastUnit = null;
             lastField = null;
@@ -789,75 +789,77 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         if (this.map.isValidField(touchX, touchY)) {
             whichMenu = MenuType.NONE;
-            GameField newselected_field = map.getField(newselected);
-            if (lastAttackables == null || !lastAttackables.contains(newselected)) {
-                if (map.getField(selected).hostsUnit()) {
-                    //Log.d(TAG, "A unit is selected!");
-                    /* If the user currently has a unit selected and
-                     * selects a field that this unit could move to
-                     * (and the unit has not finished it's turn)
-                     */
-                    GameField selected_field = map.getField(selected);
-                    Unit unit = selected_field.getUnit();
-                    if (unit.getOwner().equals(state.getCurrentPlayer()) &&
-                        !unit.hasFinishedTurn() &&
-                        (!map.getField(newselected).hostsUnit() ||
-                         selected.equals(newselected))) {
-                        List<Position> unit_destinations =
-                            getUnitDestinations(selected_field);
-
-                        if (unit_destinations.contains(newselected) ||
-                            selected.equals(newselected)) {
-                                if (path == null) {
-                                    path = logic.findPath(map, unit, newselected);
-                                } else {
-                                    if (path.contains(newselected)) {
-                                        state.move(unit, newselected);
-                                    } else {
+            if (!state.getCurrentPlayer().isAI()) {
+                GameField newselected_field = map.getField(newselected);
+                if (lastAttackables == null || !lastAttackables.contains(newselected)) {
+                    if (map.getField(selected).hostsUnit()) {
+                        //Log.d(TAG, "A unit is selected!");
+                        /* If the user currently has a unit selected and
+                         * selects a field that this unit could move to
+                         * (and the unit has not finished it's turn)
+                         */
+                        GameField selected_field = map.getField(selected);
+                        Unit unit = selected_field.getUnit();
+                        if (unit.getOwner().equals(state.getCurrentPlayer()) &&
+                            !unit.hasFinishedTurn() &&
+                            (!map.getField(newselected).hostsUnit() ||
+                             selected.equals(newselected))) {
+                            List<Position> unit_destinations =
+                                getUnitDestinations(selected_field);
+    
+                            if (unit_destinations.contains(newselected) ||
+                                selected.equals(newselected)) {
+                                    if (path == null) {
                                         path = logic.findPath(map, unit, newselected);
+                                    } else {
+                                        if (path.contains(newselected)) {
+                                            state.move(unit, newselected);
+                                        } else {
+                                            path = logic.findPath(map, unit, newselected);
+                                        }
                                     }
+                                    newselected = selected;
                                 }
-                                newselected = selected;
-                            }
-                    }
-                } else if (!newselected_field.hostsUnit() &&
-                           newselected_field.hostsBuilding()) {
-                    path = null;
-                    Building building = map.getField(newselected).getBuilding();
-                    if (building.getOwner().equals(state.getCurrentPlayer())
-                        && building.canProduceUnits()) {
-                        AlertDialog.Builder buildmenu_builder
-                            = new AlertDialog.Builder(this.getContext());
-                        buildmenu_builder.setTitle("Build");
-
-                        List<Unit> units = building.getProducibleUnits();
-                        String[] buildable_names = new String[units.size() + 1];
-                        for (int i = 0; i < units.size(); ++i) {
-                            buildable_names[i] = units.get(i).toString() + " - "
-                                + units.get(i).getProductionCost() + " Gold";
                         }
-                        buildable_names[units.size()] = "Cancel";
-                        buildmenu_builder.setItems(buildable_names, this);
-                        buildmenu_builder.create().show();
-
-                        whichMenu = MenuType.BUILD;
-                    } // build menu isn't shown if it isn't the user's turn
+                    } else if (!newselected_field.hostsUnit() &&
+                               newselected_field.hostsBuilding()) {
+                        path = null;
+                        Building building = map.getField(newselected).getBuilding();
+                        if (building.getOwner().equals(state.getCurrentPlayer())
+                            && building.canProduceUnits()) {
+                            AlertDialog.Builder buildmenu_builder
+                                = new AlertDialog.Builder(this.getContext());
+                            buildmenu_builder.setTitle("Build");
+    
+                            List<Unit> units = building.getProducibleUnits();
+                            String[] buildable_names = new String[units.size() + 1];
+                            for (int i = 0; i < units.size(); ++i) {
+                                buildable_names[i] = units.get(i).toString() + " - "
+                                    + units.get(i).getProductionCost() + " Gold";
+                            }
+                            buildable_names[units.size()] = "Cancel";
+                            buildmenu_builder.setItems(buildable_names, this);
+                            buildmenu_builder.create().show();
+    
+                            whichMenu = MenuType.BUILD;
+                        } // build menu isn't shown if it isn't the user's turn
+                    }
+                } else { // attack
+                    GameField field = map.getField(selected);
+                    Unit attacker = field.getUnit();
+                    Unit defender = map.getField(newselected).getUnit();
+    
+                    Log.d(TAG, "attack(!): " + attacker
+                          + " attacks " + defender);
+                    state.attack(attacker, defender);
+                    attacker.setFinishedTurn(true);
+    
+                    // please, someone find a better way to do this
+                    showDamageAttacker = attacker;
+                    showDamageDefender = defender;
+                    showDamageTimeout = fps.intValue() * showDamageSeconds;
+                    // basically it uses fps to calculate how many frames it needs to show the damage for
                 }
-            } else { // attack
-                GameField field = map.getField(selected);
-                Unit attacker = field.getUnit();
-                Unit defender = map.getField(newselected).getUnit();
-
-                Log.d(TAG, "attack(!): " + attacker
-                      + " attacks " + defender);
-                state.attack(attacker, defender);
-                attacker.setFinishedTurn(true);
-
-                // please, someone find a better way to do this
-                showDamageAttacker = attacker;
-                showDamageDefender = defender;
-                showDamageTimeout = fps.intValue() * showDamageSeconds;
-                // basically it uses fps to calculate how many frames it needs to show the damage for
             }
             selected = newselected;
         }

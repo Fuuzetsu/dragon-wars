@@ -14,6 +14,14 @@ public class PlayerAI extends Player {
         super(name, colour);
         gameState = gamestate;
     }
+    
+    public boolean isAI() {
+        return true;
+        /* this is to be used to determine whether the user should be
+         * allowed to control the current player's units' actions via
+         * the touchscreen
+         */
+    }
 
     public void takeTurn() {
         UpdateActions();
