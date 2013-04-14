@@ -1,5 +1,5 @@
 {
-    "mapName": "testfirst",
+    "mapName": "Corner Test",
     "sizeX": 10,
     "sizeY": 5,
     "players": 2,
@@ -55,8 +55,8 @@
             "maxHealth": 30,
             "maxMovement": 7,
             "attack": 3.0,
-            "meleeDefense": 1.0,
-            "rangeDefense": 1.5,
+            "meleeDefense": 1.5,
+            "rangeDefense": 1.0,
             "productionCost": 7
         }
     },
@@ -67,7 +67,7 @@
             "dir": "drawable",
             "package": "com.group7.dragonwars",
             "captureDifficulty": 4,
-            "attackBonus": 3.0,
+            "attackBonus": 1.0,
             "defenseBonus": 1.8,
             "goalBuilding": true,
             "captureWorth": 4
@@ -79,64 +79,68 @@
             "package": "com.group7.dragonwars",
             "captureDifficulty": 2,
             "attackBonus": 1.0,
-            "defenseBonus": 1.0,
+            "defenseBonus": 1.5,
             "goalBuilding": false,
             "captureWorth": 2
         }
     },
     "terrain": [
-        "WWWWWWWWWW",
-        "WWWGGGWGWW",
-        "WWWGWGGWWW",
-        "WGGGGGWGWW",
-        "WWWWWWWWWW"
+        "WWWWWWWWWWW",
+        "WWWWWWWGGWW",
+        "WWGGGGGGGWW",
+        "WWGWWWWWGWW",
+        "WWGWWWWWGWW",
+        "WGGGGGGGGWW",
+        "WGGGGGGGGWW",
+        "WWWWWWWWWWW",
+        "WWWWWWWWWWW"
     ],
     "startingBuildingPos": [
         {"building": "C",
-         "posX": 4,
-         "posY": 1,
+         "posX": 2,
+         "posY": 4,
          "owner": 1,
          "produces": ["S"]
         },
         {"building": "V",
-         "posX": 3,
-         "posY": 2,
-         "owner": 2,
-         "produces": ["D", "S"]
-        },
-        {"building": "C",
-         "posX": 3,
-         "posY": 3,
-         "owner": 0,
-         "produces": []
-        },
-        {"building": "C",
          "posX": 2,
          "posY": 2,
          "owner": 2,
          "produces": ["D", "S"]
         },
+        {"building": "V",
+         "posX": 6,
+         "posY": 6,
+         "owner": 0,
+         "produces": []
+        },
         {"building": "C",
-         "posX": 5,
-         "posY": 2,
+         "posX": 4,
+         "posY": 6,
+         "owner": 2,
+         "produces": ["D", "S"]
+        },
+        {"building": "C",
+         "posX": 8,
+         "posY": 5,
          "owner": 2,
          "produces": ["S"]
         }
     ],
     "startingUnitPos": [
         {"unit": "S",
-         "posX": 3,
-         "posY": 1,
+         "posX": 2,
+         "posY": 5,
          "owner": 1
         },
         {"unit": "D",
          "posX": 2,
-         "posY": 3,
+         "posY": 6,
          "owner": 2
         },
         {"unit": "S",
-         "posX": 5,
-         "posY": 2,
+         "posX": 6,
+         "posY": 6,
          "owner": 2
         }
     ]

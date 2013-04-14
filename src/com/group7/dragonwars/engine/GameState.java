@@ -1,8 +1,10 @@
 package com.group7.dragonwars.engine;
 
-import java.util.*;
-import java.io.*;
-import java.lang.Math;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import android.util.Log;
 
@@ -11,6 +13,7 @@ public class GameState {
     private GameMap map;
     private Logic logic;
     private List<Player> players = new ArrayList<Player>();
+    private Player winner = null;
     private Integer playerIndex = 0;
     private Integer turns = 1;
     private Boolean gameFinished = false;
@@ -21,8 +24,6 @@ public class GameState {
         this.logic = logic;
         this.players = players;
     }
-
-
 
     public void attack(Unit attacker, Unit defender) {
         Set<Position> attackable = logic.getAttackableUnitPositions(map,
@@ -156,6 +157,8 @@ public class GameState {
         }
 
         if (players.size() <= 1) {
+            this.winner = players.get(0);
+            this.gameFinished = true;
             throw new GameFinishedException(players.get(0));
         }
 
@@ -193,13 +196,29 @@ public class GameState {
     public GameMap getMap() {
         return this.map;
     }
+    
+    public Logic getLogic() {
+        return this.logic;
+    }
 
     public List<Player> getPlayers() {
         return this.players;
     }
 
     public Player getCurrentPlayer() {
-        return players.get(playerIndex);
+        if (players.size() > playerIndex) {
+            return players.get(playerIndex);
+        } else {
+            return players.get(players.size() - 1);
+        }
+    }
+    
+    public Player getWinner() {
+        return this.winner;
+    }
+    
+    public boolean isGameFinished() {
+        return gameFinished;
     }
 
     public Boolean produceUnit(final GameField field, final Unit unit) {

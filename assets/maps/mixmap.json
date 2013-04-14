@@ -1,7 +1,7 @@
 {
-    "mapName": "testfirst",
-    "sizeX": 10,
-    "sizeY": 5,
+    "mapName": "Large Test",
+    "sizeX": 20,
+    "sizeY": 18,
     "players": 2,
     "playerColours": [ -16776961, -256 ],
     "fields": {
@@ -16,6 +16,17 @@
             "accessible": true,
             "flightOnly": false
         },
+        "S": {
+            "name": "Sand",
+            "file": "sand",
+            "dir": "drawable",
+            "package": "com.group7.dragonwars",
+            "movementModifier": 2.0,
+            "attackModifier": 0.9,
+            "defenseModifier": 1.3,
+            "accessible": true,
+            "flightOnly": false
+        },
         "W": {
             "name": "Water",
             "file": "water",
@@ -26,7 +37,19 @@
             "defenseModifier": 1.0,
             "accessible": false,
             "flightOnly": true
+        },
+        "L": {
+            "name": "Lava",
+            "file": "lava",
+            "dir": "drawable",
+            "package": "com.group7.dragonwars",
+            "movementModifier": 1.0,
+            "attackModifier": 1.0,
+            "defenseModifier": 1.0,
+            "accessible": false,
+            "flightOnly": false
         }
+
     },
     "units": {
         "S": {
@@ -55,8 +78,8 @@
             "maxHealth": 30,
             "maxMovement": 7,
             "attack": 3.0,
-            "meleeDefense": 1.5,
-            "rangeDefense": 1.0,
+            "meleeDefense": 1.0,
+            "rangeDefense": 1.5,
             "productionCost": 7
         }
     },
@@ -67,7 +90,7 @@
             "dir": "drawable",
             "package": "com.group7.dragonwars",
             "captureDifficulty": 4,
-            "attackBonus": 1.0,
+            "attackBonus": 3.0,
             "defenseBonus": 1.8,
             "goalBuilding": true,
             "captureWorth": 4
@@ -79,49 +102,59 @@
             "package": "com.group7.dragonwars",
             "captureDifficulty": 2,
             "attackBonus": 1.0,
-            "defenseBonus": 1.5,
+            "defenseBonus": 1.0,
             "goalBuilding": false,
             "captureWorth": 2
         }
     },
     "terrain": [
-        "WWWWWWWWWWW",
-        "WWWWWWWGGWW",
-        "WWGGGGGGGWW",
-        "WWGWWWWWGWW",
-        "WWGWWWWWGWW",
-        "WGGGGGGGGWW",
-        "WGGGGGGGGWW",
-        "WWWWWWWWWWW",
-        "WWWWWWWWWWW"
+        "LLLLLLLLGWWWSSSWWWWW",
+        "LLLLLLLLGWWWSLSSSSSS",
+        "LLLLLLLLGGWWSSLLLLLL",
+        "GGGGGGGGGWWWSSSSSSSS",
+        "GWWWWWWWGWWWWWWWWWWW",
+        "GGGGGGGGGGGGGGGGGGGG",
+        "LLLLLLLLLLLLLLLLLLLL",
+        "LLLLLLLLLLSLLLLLLLLL",
+        "LLLLLLLLLLLLLLLLLLLL",
+        "SSSSSSSSSSSSSSSSSSSS",
+        "LLLLLLLLSWWWSSSWWWWW",
+        "LLGLLLLLSWWWSLSSSSSS",
+        "LLGLLLLLWWWWSSLLLLLL",
+        "GGGGGGGGGWWWSSSSSSSS",
+        "GWWWWWWWGWWWWWWWWWWW",
+        "GGGGGGGGGGGGGGGGGGGG",
+        "LLLLLLLLLLLLLLLLLLLL",
+        "LLLLLLLLLLSLLLLLLLLL",
+        "LLLLLLLLLLLLLLLLLLLL"
     ],
     "startingBuildingPos": [
         {"building": "C",
-         "posX": 2,
-         "posY": 4,
+         "posX": 4,
+         "posY": 5,
          "owner": 1,
          "produces": ["S"]
         },
         {"building": "V",
-         "posX": 2,
-         "posY": 2,
+         "posX": 3,
+         "posY": 5,
          "owner": 2,
          "produces": ["D", "S"]
         },
-        {"building": "V",
-         "posX": 6,
-         "posY": 6,
+        {"building": "C",
+         "posX": 3,
+         "posY": 9,
          "owner": 0,
          "produces": []
         },
         {"building": "C",
-         "posX": 4,
-         "posY": 6,
+         "posX": 2,
+         "posY": 9,
          "owner": 2,
          "produces": ["D", "S"]
         },
         {"building": "C",
-         "posX": 8,
+         "posX": 5,
          "posY": 5,
          "owner": 2,
          "produces": ["S"]
@@ -129,18 +162,18 @@
     ],
     "startingUnitPos": [
         {"unit": "S",
-         "posX": 2,
-         "posY": 5,
+         "posX": 7,
+         "posY": 9,
          "owner": 1
         },
         {"unit": "D",
-         "posX": 2,
-         "posY": 6,
+         "posX": 4,
+         "posY": 5,
          "owner": 2
         },
         {"unit": "S",
-         "posX": 6,
-         "posY": 6,
+         "posX": 2,
+         "posY": 9,
          "owner": 2
         }
     ]
