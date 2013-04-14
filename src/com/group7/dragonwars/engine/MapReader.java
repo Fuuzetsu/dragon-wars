@@ -2,8 +2,16 @@ package com.group7.dragonwars.engine;
 
 /* Generates a GameField based on a flat text file. Test solution. */
 
+import android.app.Activity;
+import android.content.res.AssetManager;
 import android.util.Log;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
+import java.io.IOException;
+
 import java.util.*;
+
 import org.json.*;
 
 
@@ -81,13 +89,37 @@ public class MapReader {
 
 
         List<List<GameField>> grid = MapReader.listifyJSONArray(new MapReader.TerrainGetter(fields), terrain);
-        //List<List<Building>> buildingGrid = MapReader.listifyJSONArray(new MapReader.BuildingGetter(buildings), buildingPos);
 
         MapReader.setBuildings(grid, playerList, units, buildingsInfo, startingBuildingPos);
         MapReader.spawnUnits(grid, playerList, units, startingUnitPos);
 
         return new GameMap(grid, units, buildingsInfo, fieldsInfo, playerList);
 
+    }
+
+    public static GameMap readMapFromFile(final String fileName,
+                                    final Activity activity) throws JSONException {
+        AssetManager am = activity.getAssets();
+        List<String> text = new ArrayList<String>();
+
+        try {
+            BufferedReader in = new BufferedReader(
+                new InputStreamReader(am.open(fileName)));
+            String line;
+
+            while ((line = in.readLine()) != null) {
+                text.add(line);
+            }
+
+            in.close();
+        } catch (FileNotFoundException fnf) {
+            System.err.println("Couldn't find " + fnf.getMessage());
+            System.exit(1);
+        } catch (IOException ioe) {
+            System.err.println("Couldn't read " + ioe.getMessage());
+            System.exit(1);
+        }
+        return MapReader.readMap(text);
     }
 
     private static <O> List<List<O>> listifyJSONArray
