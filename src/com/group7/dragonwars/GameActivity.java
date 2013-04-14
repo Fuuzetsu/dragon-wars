@@ -31,7 +31,7 @@ public class GameActivity extends Activity {
     private static final String TAG = "GameActivity";
 
     private GameState state = null;
-    
+
     @Override
     protected final void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +47,7 @@ public class GameActivity extends Activity {
         //setContentView(R.layout.loading_screen);
         Log.d(TAG, "on inCreate");
     }
-    
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -55,7 +55,7 @@ public class GameActivity extends Activity {
         String mapFileName = b.getString("mapFileName");
         GameMap map = null;
         try {
-            map = MapReader.readMap(readFile(mapFileName));
+            map = MapReader.readMapFromFile(mapFileName, this);
         } catch (JSONException e) {
             Log.d(TAG, "Failed to load the map: " + e.getMessage());
         }
@@ -71,41 +71,17 @@ public class GameActivity extends Activity {
         menuButton.setOnClickListener(gameView);
         gameView.setState(state, this);
     }
-    
-    private List<String> readFile(final String fileName) {
-        AssetManager am = this.getAssets();
-        List<String> text = new ArrayList<String>();
 
-        try {
-            BufferedReader in = new BufferedReader(
-                new InputStreamReader(am.open(fileName)));
-            String line;
-
-            while ((line = in.readLine()) != null) {
-                text.add(line);
-            }
-
-            in.close();
-        } catch (FileNotFoundException fnf) {
-            System.err.println("Couldn't find " + fnf.getMessage());
-            System.exit(1);
-        } catch (IOException ioe) {
-            System.err.println("Couldn't read " + ioe.getMessage());
-            System.exit(1);
-        }
-        return text;
-    }
-    
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) { 
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_MENU) {
             GameView gameView = (GameView) this.findViewById(R.id.gameView);
             gameView.showMenu();
             return true;
         }
-        return super.onKeyDown(keyCode, event); 
-    } 
-    
+        return super.onKeyDown(keyCode, event);
+    }
+
     public void endGame() {
         setContentView(R.layout.loading_screen);
         Intent intent = new Intent(this, Results.class);
@@ -120,5 +96,5 @@ public class GameActivity extends Activity {
         startActivity(intent);
         finish();
     }
-    
+
 }

@@ -2,8 +2,16 @@ package com.group7.dragonwars.engine;
 
 /* Generates a GameField based on a flat text file. Test solution. */
 
+import android.app.Activity;
+import android.content.res.AssetManager;
 import android.util.Log;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
+import java.io.IOException;
+
 import java.util.*;
+
 import org.json.*;
 
 
@@ -81,13 +89,62 @@ public class MapReader {
 
 
         List<List<GameField>> grid = MapReader.listifyJSONArray(new MapReader.TerrainGetter(fields), terrain);
-        //List<List<Building>> buildingGrid = MapReader.listifyJSONArray(new MapReader.BuildingGetter(buildings), buildingPos);
 
         MapReader.setBuildings(grid, playerList, units, buildingsInfo, startingBuildingPos);
         MapReader.spawnUnits(grid, playerList, units, startingUnitPos);
 
         return new GameMap(grid, units, buildingsInfo, fieldsInfo, playerList);
 
+    }
+
+    public static String getBasicMapInformation(final String filename,
+                                                final Activity activity) throws JSONException {
+        String jsonSource = "";
+
+        for (String s : MapReader.readFile(filename, activity)) {
+            jsonSource += s + "\n";
+        }
+
+        JSONObject m = new JSONObject(jsonSource);
+        String mapName = m.getString("mapName");
+        Integer sizeX = m.getInt("sizeX");
+        Integer sizeY = m.getInt("sizeY");
+        Integer players = m.getInt("players");
+
+        String result = String.format("%s - %dx%d - %d Players", mapName,
+                                      sizeX, sizeY, players);
+        return result;
+
+    }
+
+    public static GameMap readMapFromFile(final String filename,
+                                          final Activity activity) throws JSONException {
+        return MapReader.readMap(MapReader.readFile(filename, activity));
+    }
+
+    private static List<String> readFile(final String filename,
+                                         final Activity activity) {
+        AssetManager am = activity.getAssets();
+        List<String> text = new ArrayList<String>();
+
+        try {
+            BufferedReader in = new BufferedReader(
+                new InputStreamReader(am.open(filename)));
+            String line;
+
+            while ((line = in.readLine()) != null) {
+                text.add(line);
+            }
+
+            in.close();
+        } catch (FileNotFoundException fnf) {
+            System.err.println("Couldn't find " + fnf.getMessage());
+            System.exit(1);
+        } catch (IOException ioe) {
+            System.err.println("Couldn't read " + ioe.getMessage());
+            System.exit(1);
+        }
+        return text;
     }
 
     private static <O> List<List<O>> listifyJSONArray
