@@ -1,6 +1,5 @@
 package com.group7.dragonwars;
 
-import java.io.File;
 import java.io.IOException;
 
 import android.app.Activity;
@@ -13,12 +12,16 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.group7.dragonwars.engine.MapReader;
+import com.group7.dragonwars.engine.Pair;
 
 import org.json.JSONException;
 
 public class MapSelectActivity extends Activity implements OnItemClickListener {
-    private String[] mapInfo = {};
+    private List<Pair<String, String>> mapInfo = new ArrayList<Pair<String, String>>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,14 +37,20 @@ public class MapSelectActivity extends Activity implements OnItemClickListener {
         AssetManager assman = getAssets();
         ListView mapList = (ListView)this.findViewById(R.id.mapList);
         try {
-            mapInfo = assman.list("maps");
+            String[] files = assman.list("maps");
 
-            for (int i = 0; i < mapInfo.length; ++i) {
-                mapInfo[i] = MapReader.getBasicMapInformation("maps/" + mapInfo[i], this);
+            for (int i = 0; i < files.length; ++i) {
+                String path = files[i];
+                String info = MapReader.getBasicMapInformation("maps/" + path, this);
+                mapInfo.add(new Pair<String, String>(path, info));
+            }
+            String[] displayInfo = new String[mapInfo.size()];
+            for (Integer i = 0; i < mapInfo.size(); i++) {
+                displayInfo[i] = mapInfo.get(i).getRight();
             }
             ArrayAdapter<String> adapter =
                 new ArrayAdapter<String>(getBaseContext(),
-                                         android.R.layout.simple_list_item_1, mapInfo);
+                                         android.R.layout.simple_list_item_1, displayInfo);
             mapList.setAdapter(adapter);
         } catch (IOException e) {
             e.printStackTrace();
@@ -53,11 +62,11 @@ public class MapSelectActivity extends Activity implements OnItemClickListener {
     @Override
     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
         // TODO Auto-generated method stub
-        if (position < mapInfo.length) {
+        if (position < mapInfo.size()) {
             setContentView(R.layout.loading_screen);
             Intent intent = new Intent(this, GameActivity.class);
             Bundle b = new Bundle();
-            b.putString("mapFileName", mapInfo[position]);
+            b.putString("mapFileName", mapInfo.get(position).getLeft());
             intent.putExtras(b);
             startActivity(intent);
             finish();
