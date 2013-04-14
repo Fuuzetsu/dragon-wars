@@ -40,8 +40,8 @@ public class MapSelectActivity extends Activity implements OnItemClickListener {
             String[] files = assman.list("maps");
 
             for (int i = 0; i < files.length; ++i) {
-                String path = files[i];
-                String info = MapReader.getBasicMapInformation("maps/" + path, this);
+                String path = "maps/" + files[i];
+                String info = MapReader.getBasicMapInformation(path, this);
                 mapInfo.add(new Pair<String, String>(path, info));
             }
             String[] displayInfo = new String[mapInfo.size()];
