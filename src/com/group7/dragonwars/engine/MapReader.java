@@ -97,14 +97,20 @@ public class MapReader {
 
     }
 
-    public static GameMap readMapFromFile(final String fileName,
-                                    final Activity activity) throws JSONException {
+
+    public static GameMap readMapFromFile(final String filename,
+                                          final Activity activity) throws JSONException {
+        return MapReader.readMap(MapReader.readFile(filename, activity));
+    }
+
+    private static List<String> readFile(final String filename,
+                                         final Activity activity) {
         AssetManager am = activity.getAssets();
         List<String> text = new ArrayList<String>();
 
         try {
             BufferedReader in = new BufferedReader(
-                new InputStreamReader(am.open(fileName)));
+                new InputStreamReader(am.open(filename)));
             String line;
 
             while ((line = in.readLine()) != null) {
@@ -119,7 +125,7 @@ public class MapReader {
             System.err.println("Couldn't read " + ioe.getMessage());
             System.exit(1);
         }
-        return MapReader.readMap(text);
+        return text;
     }
 
     private static <O> List<List<O>> listifyJSONArray
