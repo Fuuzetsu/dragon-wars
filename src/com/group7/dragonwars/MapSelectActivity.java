@@ -13,9 +13,13 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.group7.dragonwars.engine.MapReader;
+
+import org.json.JSONException;
+
 public class MapSelectActivity extends Activity implements OnItemClickListener {
-    private String[]  mapFileNames = {};
-    
+    private String[] mapInfo = {};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,15 +34,18 @@ public class MapSelectActivity extends Activity implements OnItemClickListener {
         AssetManager assman = getAssets();
         ListView mapList = (ListView)this.findViewById(R.id.mapList);
         try {
-            mapFileNames = assman.list("maps");
-            //String[] mapNames = new String[mapFileNames.length];
-            for (int i = 0; i < mapFileNames.length; ++i) {
-                mapFileNames[i] = new File("maps", mapFileNames[i]).toString();
+            mapInfo = assman.list("maps");
+
+            for (int i = 0; i < mapInfo.length; ++i) {
+                mapInfo[i] = MapReader.getBasicMapInformation("maps/" + mapInfo[i], this);
             }
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, mapFileNames);
+            ArrayAdapter<String> adapter =
+                new ArrayAdapter<String>(getBaseContext(),
+                                         android.R.layout.simple_list_item_1, mapInfo);
             mapList.setAdapter(adapter);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
@@ -46,11 +53,11 @@ public class MapSelectActivity extends Activity implements OnItemClickListener {
     @Override
     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
         // TODO Auto-generated method stub
-        if (position < mapFileNames.length) {
+        if (position < mapInfo.length) {
             setContentView(R.layout.loading_screen);
             Intent intent = new Intent(this, GameActivity.class);
             Bundle b = new Bundle();
-            b.putString("mapFileName", mapFileNames[position]);
+            b.putString("mapFileName", mapInfo[position]);
             intent.putExtras(b);
             startActivity(intent);
             finish();
