@@ -15,7 +15,7 @@ import android.widget.ListView;
 
 public class MapSelectActivity extends Activity implements OnItemClickListener {
     private String[]  mapFileNames = {};
-    private ArrayAdapter<String> adapter;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +35,7 @@ public class MapSelectActivity extends Activity implements OnItemClickListener {
             for (int i = 0; i < mapFileNames.length; ++i) {
                 mapFileNames[i] = new File("maps", mapFileNames[i]).toString();
             }
-            adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, mapFileNames);
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, mapFileNames);
             mapList.setAdapter(adapter);
         } catch (IOException e) {
             // TODO Auto-generated catch block

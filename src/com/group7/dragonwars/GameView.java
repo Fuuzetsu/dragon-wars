@@ -47,8 +47,10 @@ import com.group7.dragonwars.engine.Position;
 import com.group7.dragonwars.engine.Unit;
 
 /* Please tell me if the below causes problems, Android/Eclipse
- * suddenly decided to refuse to compile without it (because
- * GestureDetector was only introduced in API level 3 (Cupcake)
+ * suddenly decided to refuse to compile anything without it
+ * (apparently because GestureDetector was only introduced in 
+ * API level 3 (Cupcake), however we've been using it ever since
+ * we had scrolling and it's never caused a problem before)
  */
 @TargetApi(Build.VERSION_CODES.CUPCAKE)
 public class GameView extends SurfaceView implements SurfaceHolder.Callback,
@@ -107,6 +109,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     private DecimalFormat decformat = new DecimalFormat("#.##");
 
+    private GameActivity activity;
+
     public GameView(final Context ctx, final AttributeSet attrset) {
         super(ctx, attrset);
         Log.d(TAG, "GameView ctor");
@@ -153,10 +157,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     }
 
-    public void setState(GameState state) {
+    public void setState(GameState state, GameActivity activity) {
         this.state = state;
         this.map = state.getMap();
         this.logic = state.getLogic();
+        this.activity = activity;
 
         /* Load and colour all the sprites we'll need
          * Because we no longer do this in GameActivity.onCreate, everything is better
@@ -519,8 +524,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
 
     public void doDraw(final Canvas canvas) {
-        if (map == null) {
-            return; // don't bother drawing until map != null
+        if (map == null || state.isGameFinished()) {
+            return; // don't bother drawing until map != null or when the game is over
         }
         Long startingTime = System.currentTimeMillis();
 
@@ -575,29 +580,30 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                 }
             }
         }
-
-        if (showDamageTimeout > 0) {
-            Log.d(TAG, "showDamageTimeout " + showDamageTimeout);
-            if (showDamageAttacker != null && !showDamageAttacker.isDead()) {
-                RectF dest = getSquare(
-                    tilesize * showDamageAttacker.getPosition().getX() + scrollOffset.getX(),
-                    tilesize * showDamageAttacker.getPosition().getY() + scrollOffset.getY(),
-                    tilesize);
-                canvas.drawText(decformat.format(showDamageAttacker.getLastDamage()), dest.right - (tilesize / 2), dest.top, showDamagePaint);
+        try {
+            if (showDamageTimeout > 0) {
+                Log.d(TAG, "showDamageTimeout " + showDamageTimeout);
+                if (showDamageAttacker != null && !showDamageAttacker.isDead()) {
+                    RectF dest = getSquare(
+                        tilesize * showDamageAttacker.getPosition().getX() + scrollOffset.getX(),
+                        tilesize * showDamageAttacker.getPosition().getY() + scrollOffset.getY(),
+                        tilesize);
+                    canvas.drawText(decformat.format(showDamageAttacker.getLastDamage()), dest.right - (tilesize / 2), dest.top, showDamagePaint);
+                }
+                if (showDamageDefender != null && !showDamageDefender.isDead()) {
+                    RectF dest = getSquare(
+                        tilesize * showDamageDefender.getPosition().getX() + scrollOffset.getX(),
+                        tilesize * showDamageDefender.getPosition().getY() + scrollOffset.getY(),
+                        tilesize);
+                    canvas.drawText(decformat.format(showDamageDefender.getLastDamage()), dest.right - (tilesize / 2), dest.top, showDamagePaint);
+                }
+                --showDamageTimeout;
+                if (showDamageTimeout == 0) {
+                    showDamageAttacker = null;
+                    showDamageDefender = null;
+                }
             }
-            if (showDamageDefender != null && !showDamageDefender.isDead()) {
-                RectF dest = getSquare(
-                    tilesize * showDamageDefender.getPosition().getX() + scrollOffset.getX(),
-                    tilesize * showDamageDefender.getPosition().getY() + scrollOffset.getY(),
-                    tilesize);
-                canvas.drawText(decformat.format(showDamageDefender.getLastDamage()), dest.right - (tilesize / 2), dest.top, showDamagePaint);
-            }
-            --showDamageTimeout;
-            if (showDamageTimeout == 0) {
-                showDamageAttacker = null;
-                showDamageDefender = null;
-            }
-        }
+        } catch (IllegalArgumentException e) {}
 
         /* Destination highlighting */
         for (Position pos : unitDests) {
@@ -798,18 +804,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                                 getUnitDestinations(selected_field);
     
                             if (unit_destinations.contains(newselected) ||
-                                selected.equals(newselected)) {
-                                    if (path == null) {
-                                        path = logic.findPath(map, unit, newselected);
-                                    } else {
-                                        if (path.contains(newselected)) {
-                                            state.move(unit, newselected);
-                                        } else {
-                                            path = logic.findPath(map, unit, newselected);
-                                        }
-                                    }
+                                    selected.equals(newselected)) {
+                                if (path == null) {
+                                    path = logic.findPath(map, unit, newselected);
                                     newselected = selected;
+                                } else {
+                                    if (path.contains(newselected)) {
+                                        state.move(unit, newselected);
+                                    } else {
+                                        path = logic.findPath(map, unit, newselected);
+                                        newselected = selected;
+                                    }
                                 }
+                            }
                         }
                     } else if (!newselected_field.hostsUnit() &&
                                newselected_field.hostsBuilding()) {
@@ -931,6 +938,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                                                  winner.getName()),
                                    Toast.LENGTH_LONG).show();
                     /* TODO finish game somehow */
+                    Log.d(TAG, state.getStatistics().toString());
+                    dt.setRunning(false);
+                    activity.endGame();
                 }
                 break;
             }
