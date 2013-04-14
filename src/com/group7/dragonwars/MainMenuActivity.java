@@ -64,7 +64,6 @@ public class MainMenuActivity extends Activity implements OnClickListener {
         }
 
         if (v == this.btnStats) {
-            Log.d("Main menu activity", "Stats clicked");
             setContentView(R.layout.loading_screen);
             Intent intent = new Intent(this, StatisticsActivity.class);
             startActivity(intent);
