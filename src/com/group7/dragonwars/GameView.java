@@ -11,7 +11,6 @@ import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -48,8 +47,10 @@ import com.group7.dragonwars.engine.Position;
 import com.group7.dragonwars.engine.Unit;
 
 /* Please tell me if the below causes problems, Android/Eclipse
- * suddenly decided to refuse to compile without it (because
- * GestureDetector was only introduced in API level 3 (Cupcake)
+ * suddenly decided to refuse to compile anything without it
+ * (apparently because GestureDetector was only introduced in 
+ * API level 3 (Cupcake), however we've been using it ever since
+ * we had scrolling and it's never caused a problem before)
  */
 @TargetApi(Build.VERSION_CODES.CUPCAKE)
 public class GameView extends SurfaceView implements SurfaceHolder.Callback,
@@ -65,9 +66,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
     private Logic logic;
     private GameMap map = null;
     private Position selected = new Position(0, 0);
-
-    private Position attack_location;
-    private Position action_location = new Position(0, 0);;
 
     private FloatPair scrollOffset = new FloatPair(0f, 0f);
     private GestureDetector gestureDetector;
@@ -91,8 +89,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     private Bitmap fullMap = null;
 
-    private boolean unit_selected; // true if there is a unit at selection
-
     private Context context;
     private HashMap<String, HashMap<String, Bitmap>> graphics
         = new HashMap<String, HashMap<String, Bitmap>>();
@@ -105,7 +101,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     private Long timeElapsed = 0L;
     private Long framesSinceLastSecond = 0L;
-    private Long timeNow = 0L;
     private Double fps = 0.0;
 
     private enum MenuType {NONE, ACTION, BUILD, MENU};
@@ -113,6 +108,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
     private MenuType whichMenu = MenuType.NONE;
 
     private DecimalFormat decformat = new DecimalFormat("#.##");
+
+    private GameActivity activity;
 
     public GameView(final Context ctx, final AttributeSet attrset) {
         super(ctx, attrset);
@@ -160,10 +157,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     }
 
-    public void setState(GameState state) {
+    public void setState(GameState state, GameActivity activity) {
         this.state = state;
         this.map = state.getMap();
         this.logic = state.getLogic();
+        this.activity = activity;
 
         /* Load and colour all the sprites we'll need
          * Because we no longer do this in GameActivity.onCreate, everything is better
@@ -526,12 +524,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
 
     public void doDraw(final Canvas canvas) {
-        if (map == null) {
-            return; // don't bother drawing until map != null
+        if (map == null || state.isGameFinished()) {
+            return; // don't bother drawing until map != null or when the game is over
         }
         Long startingTime = System.currentTimeMillis();
-
-        Configuration c = getResources().getConfiguration();
 
         canvas.drawColor(Color.BLACK);
 
@@ -584,29 +580,30 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                 }
             }
         }
-
-        if (showDamageTimeout > 0) {
-            Log.d(TAG, "showDamageTimeout " + showDamageTimeout);
-            if (showDamageAttacker != null && !showDamageAttacker.isDead()) {
-                RectF dest = getSquare(
-                    tilesize * showDamageAttacker.getPosition().getX() + scrollOffset.getX(),
-                    tilesize * showDamageAttacker.getPosition().getY() + scrollOffset.getY(),
-                    tilesize);
-                canvas.drawText(decformat.format(showDamageAttacker.getLastDamage()), dest.right - (tilesize / 2), dest.top, showDamagePaint);
+        try {
+            if (showDamageTimeout > 0) {
+                Log.d(TAG, "showDamageTimeout " + showDamageTimeout);
+                if (showDamageAttacker != null && !showDamageAttacker.isDead()) {
+                    RectF dest = getSquare(
+                        tilesize * showDamageAttacker.getPosition().getX() + scrollOffset.getX(),
+                        tilesize * showDamageAttacker.getPosition().getY() + scrollOffset.getY(),
+                        tilesize);
+                    canvas.drawText(decformat.format(showDamageAttacker.getLastDamage()), dest.right - (tilesize / 2), dest.top, showDamagePaint);
+                }
+                if (showDamageDefender != null && !showDamageDefender.isDead()) {
+                    RectF dest = getSquare(
+                        tilesize * showDamageDefender.getPosition().getX() + scrollOffset.getX(),
+                        tilesize * showDamageDefender.getPosition().getY() + scrollOffset.getY(),
+                        tilesize);
+                    canvas.drawText(decformat.format(showDamageDefender.getLastDamage()), dest.right - (tilesize / 2), dest.top, showDamagePaint);
+                }
+                --showDamageTimeout;
+                if (showDamageTimeout == 0) {
+                    showDamageAttacker = null;
+                    showDamageDefender = null;
+                }
             }
-            if (showDamageDefender != null && !showDamageDefender.isDead()) {
-                RectF dest = getSquare(
-                    tilesize * showDamageDefender.getPosition().getX() + scrollOffset.getX(),
-                    tilesize * showDamageDefender.getPosition().getY() + scrollOffset.getY(),
-                    tilesize);
-                canvas.drawText(decformat.format(showDamageDefender.getLastDamage()), dest.right - (tilesize / 2), dest.top, showDamagePaint);
-            }
-            --showDamageTimeout;
-            if (showDamageTimeout == 0) {
-                showDamageAttacker = null;
-                showDamageDefender = null;
-            }
-        }
+        } catch (IllegalArgumentException e) {}
 
         /* Destination highlighting */
         for (Position pos : unitDests) {
@@ -629,7 +626,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         /* Always draw attackables */
         if (map.getField(selected).hostsUnit()) {
-            Unit u = map.getField(selected).getUnit();
             if (lastAttackables != null) {
                 for (Position pos : lastAttackables) {
                     RectF attack_dest = getSquare(
@@ -808,18 +804,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                                 getUnitDestinations(selected_field);
     
                             if (unit_destinations.contains(newselected) ||
-                                selected.equals(newselected)) {
-                                    if (path == null) {
-                                        path = logic.findPath(map, unit, newselected);
-                                    } else {
-                                        if (path.contains(newselected)) {
-                                            state.move(unit, newselected);
-                                        } else {
-                                            path = logic.findPath(map, unit, newselected);
-                                        }
-                                    }
+                                    selected.equals(newselected)) {
+                                if (path == null) {
+                                    path = logic.findPath(map, unit, newselected);
                                     newselected = selected;
+                                } else {
+                                    if (path.contains(newselected)) {
+                                        state.move(unit, newselected);
+                                    } else {
+                                        path = logic.findPath(map, unit, newselected);
+                                        newselected = selected;
+                                    }
                                 }
+                            }
                         }
                     } else if (!newselected_field.hostsUnit() &&
                                newselected_field.hostsBuilding()) {
@@ -941,6 +938,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                                                  winner.getName()),
                                    Toast.LENGTH_LONG).show();
                     /* TODO finish game somehow */
+                    Log.d(TAG, state.getStatistics().toString());
+                    dt.setRunning(false);
+                    activity.endGame();
                 }
                 break;
             }
@@ -956,7 +956,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     @Override
     public void onClick(View arg0) {
-        // This onClick if for the Menu button
+        // This onClick is for the Menu button
+        showMenu();
+    }
+    
+    public void showMenu() {
         AlertDialog.Builder menu_builder
             = new AlertDialog.Builder(this.getContext());
         menu_builder.setTitle("Menu");

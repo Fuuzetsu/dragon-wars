@@ -1,5 +1,6 @@
 package com.group7.dragonwars.engine;
 
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -42,14 +43,17 @@ public class Statistics {
         putIfNotPresent(stat);
         return sMap.get(stat);
     }
+    
+    public Set<Entry<String, Double>> getEntrySet() {
+        return sMap.entrySet();
+    }
 
     @Override
     public String toString() {
         String r = "";
         for (Map.Entry<String, Double> ent : sMap.entrySet()) {
-            r += String.format("%s: %d\n", ent.getKey(), ent.getValue());
+            r += ent.getKey() + ": "  + ent.getValue().doubleValue() + "\n";
         }
-
         return r;
     }
 
