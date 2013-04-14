@@ -48,7 +48,7 @@ import com.group7.dragonwars.engine.Unit;
 
 /* Please tell me if the below causes problems, Android/Eclipse
  * suddenly decided to refuse to compile anything without it
- * (apparently because GestureDetector was only introduced in 
+ * (apparently because GestureDetector was only introduced in
  * API level 3 (Cupcake), however we've been using it ever since
  * we had scrolling and it's never caused a problem before)
  */
@@ -802,7 +802,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                              selected.equals(newselected))) {
                             List<Position> unit_destinations =
                                 getUnitDestinations(selected_field);
-    
+
                             if (unit_destinations.contains(newselected) ||
                                     selected.equals(newselected)) {
                                 if (path == null) {
@@ -827,7 +827,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                             AlertDialog.Builder buildmenu_builder
                                 = new AlertDialog.Builder(this.getContext());
                             buildmenu_builder.setTitle("Build");
-    
+
                             List<Unit> units = building.getProducibleUnits();
                             String[] buildable_names = new String[units.size() + 1];
                             for (int i = 0; i < units.size(); ++i) {
@@ -837,7 +837,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                             buildable_names[units.size()] = "Cancel";
                             buildmenu_builder.setItems(buildable_names, this);
                             buildmenu_builder.create().show();
-    
+
                             whichMenu = MenuType.BUILD;
                         } // build menu isn't shown if it isn't the user's turn
                     }
@@ -845,12 +845,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                     GameField field = map.getField(selected);
                     Unit attacker = field.getUnit();
                     Unit defender = map.getField(newselected).getUnit();
-    
+
                     Log.d(TAG, "attack(!): " + attacker
                           + " attacks " + defender);
                     state.attack(attacker, defender);
                     attacker.setFinishedTurn(true);
-    
+
                     // please, someone find a better way to do this
                     showDamageAttacker = attacker;
                     showDamageDefender = defender;
@@ -959,7 +959,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         // This onClick is for the Menu button
         showMenu();
     }
-    
+
     public void showMenu() {
         AlertDialog.Builder menu_builder
             = new AlertDialog.Builder(this.getContext());
