@@ -93,10 +93,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
     private HashMap<String, HashMap<String, Bitmap>> graphics
         = new HashMap<String, HashMap<String, Bitmap>>();
 
-    private Long timeElapsed = 0L;
-    private Long framesSinceLastSecond = 0L;
-    private Double fps = 0.0;
-
     private enum MenuType {NONE, ACTION, BUILD, MENU};
 
     private MenuType whichMenu = MenuType.NONE;
@@ -475,7 +471,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         if (map == null || state.isGameFinished()) {
             return; // don't bother drawing until map != null or when the game is over
         }
-        Long startingTime = System.currentTimeMillis();
+        state.startFrame();
 
         canvas.drawColor(Color.BLACK);
 
@@ -603,18 +599,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         drawCornerBox(canvas, true, true, "Turn " + state.getTurns());
 
-        framesSinceLastSecond++;
-
-        timeElapsed += System.currentTimeMillis() - startingTime;
-        if (timeElapsed >= 1000) {
-            fps = framesSinceLastSecond / (timeElapsed * 0.001);
-            framesSinceLastSecond = 0L;
-            timeElapsed = 0L;
-        }
-
-        String fpsS = decformat.format(fps);
+        String fpsS = decformat.format(state.getFps());
         drawCornerBox(canvas, false, true, player.getName() + " - " + player.getGoldAmount() + " Gold"
                       + "\nFPS: " + fpsS, true, playerPaint);
+
+        state.endFrame();
     }
 
     public float getMapDrawWidth() {
@@ -793,9 +782,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                     attacker.setFinishedTurn(true);
 
                     // please, someone find a better way to do this
+                    /* Oh God, what the fuck; protip: the FPS counter is inaccurate */
                     showDamageAttacker = attacker;
                     showDamageDefender = defender;
-                    showDamageTimeout = fps.intValue() * showDamageSeconds;
+                    showDamageTimeout = state.getFps().intValue() * showDamageSeconds;
                     // basically it uses fps to calculate how many frames it needs to show the damage for
                 }
             }

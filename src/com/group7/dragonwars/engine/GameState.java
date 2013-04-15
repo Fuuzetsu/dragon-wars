@@ -31,6 +31,19 @@ public class GameState {
         return info.getUnitDestinations(field);
     }
 
+
+    public void startFrame() {
+        info.startFrame();
+    }
+
+    public void endFrame() {
+        info.endFrame();
+    }
+
+    public Double getFps() {
+        return info.getFps();
+    }
+
     public List<Position> getCurrentPath() {
         return info.getPath();
     }

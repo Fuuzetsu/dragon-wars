@@ -18,6 +18,7 @@ public class InformationState {
     private List<Position> lastDestinations;
     private Unit lastUnit;
     private List<Position> path;
+    private Long startingTime;
     private Long timeElapsed = 0L;
     private Long framesSinceLastSecond = 0L;
     private Double fps = 0.0;
@@ -103,6 +104,26 @@ public class InformationState {
         }
 
         return unitDests;
+    }
+
+    public void startFrame() {
+        startingTime = System.currentTimeMillis();
+    }
+
+    public void endFrame() {
+        framesSinceLastSecond++;
+
+        timeElapsed += System.currentTimeMillis() - startingTime;
+
+        if (timeElapsed >= 1000) {
+            fps = framesSinceLastSecond / (timeElapsed * 0.001);
+            framesSinceLastSecond = 0L;
+            timeElapsed = 0L;
+        }
+    }
+
+    public Double getFps() {
+        return fps;
     }
 
 
