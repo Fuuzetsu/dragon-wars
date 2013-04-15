@@ -11,6 +11,7 @@ import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -331,9 +332,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     @Override
     public void surfaceChanged(final SurfaceHolder arg0, final int arg1,
-                               final int arg2, final int arg3) {
-        // TODO Auto-generated method stub
-    }
+                               final int arg2, final int arg3) {}
 
     @Override
     public void surfaceCreated(final SurfaceHolder arg0) {
@@ -348,7 +347,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         try {
             dt.join();
         } catch (InterruptedException e) {
-            // TODO something, perhaps, but what?
             return;
         }
     }
@@ -922,7 +920,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
             break;
         case MENU:
             switch (which) {
-            case 0:
+            case 0: // End Turn
                 try {
                     state.nextPlayer();
                     Log.d(TAG, "advancing player");
@@ -937,12 +935,17 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                                    String.format("%s has won the game!",
                                                  winner.getName()),
                                    Toast.LENGTH_LONG).show();
-                    /* TODO finish game somehow */
                     Log.d(TAG, state.getStatistics().toString());
                     dt.setRunning(false);
                     activity.endGame();
                 }
                 break;
+            case 1: // Quit Game
+                // TODO: not just immediately quit the game
+                dt.setRunning(false);
+                state.setGameFinished(true);
+                Intent intent = new Intent(activity, MainMenuActivity.class);
+                activity.startActivity(intent);
             }
             break;
         }
@@ -964,7 +967,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         AlertDialog.Builder menu_builder
             = new AlertDialog.Builder(this.getContext());
         menu_builder.setTitle("Menu");
-        String[] actions = {"End Turn", "Cancel"};
+        String[] actions = {"End Turn", "Quit Game", "Cancel"};
         menu_builder.setItems(actions, this);
         menu_builder.create().show();
         whichMenu = MenuType.MENU;

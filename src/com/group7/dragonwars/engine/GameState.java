@@ -1,6 +1,5 @@
 package com.group7.dragonwars.engine;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -219,6 +218,10 @@ public class GameState {
     
     public boolean isGameFinished() {
         return gameFinished;
+    }
+    
+    public void setGameFinished(boolean gameFinished) {
+        this.gameFinished = gameFinished;
     }
 
     public Boolean produceUnit(final GameField field, final Unit unit) {
