@@ -48,7 +48,7 @@ import com.group7.dragonwars.engine.Unit;
 
 /* Please tell me if the below causes problems, Android/Eclipse
  * suddenly decided to refuse to compile anything without it
- * (apparently because GestureDetector was only introduced in 
+ * (apparently because GestureDetector was only introduced in
  * API level 3 (Cupcake), however we've been using it ever since
  * we had scrolling and it's never caused a problem before)
  */
@@ -92,12 +92,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
     private Context context;
     private HashMap<String, HashMap<String, Bitmap>> graphics
         = new HashMap<String, HashMap<String, Bitmap>>();
-
-    private GameField lastField;
-    private Unit lastUnit;
-    private Set<Position> lastAttackables;
-    private List<Position> lastDestinations;
-    private List<Position> path;
 
     private Long timeElapsed = 0L;
     private Long framesSinceLastSecond = 0L;
@@ -364,52 +358,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         return new RectF(x, y, x + length, y + length);
     }
 
-    public List<Position> getUnitDestinations(final GameField selectedField) {
-        List<Position> unitDests = new ArrayList<Position>(0);
-        if (!selectedField.hostsUnit()) {
-            lastUnit = null;
-            lastField = null;
-            lastAttackables = null;
-            path = null;
-            return unitDests;
-        }
-
-        Unit u = selectedField.getUnit();
-        if (state.getCurrentPlayer().isAI() || u.getOwner() != state.getCurrentPlayer() ||
-            u.hasFinishedTurn()) {
-            lastUnit = null;
-            lastField = null;
-            path = null;
-            lastAttackables = null;
-
-            return unitDests;
-        }
-
-        if (u.hasMoved()) {
-            lastUnit = null;
-            lastField = null;
-            path = null;
-            lastAttackables = logic.getAttackableUnitPositions(map, u);
-            return unitDests;
-        }
-
-        if (lastDestinations == null || lastUnit == null || lastField == null ||
-            lastAttackables == null) {
-            lastUnit = u;
-            lastField = selectedField;
-            unitDests = logic.destinations(map, u);
-            lastDestinations = unitDests;
-            lastAttackables = logic.getAttackableUnitPositions(map, u);
-            path = null;
-            return unitDests;
-        }
-
-        if (u.equals(lastUnit) && selectedField.equals(lastField)) {
-            return lastDestinations;
-        }
-
-        return unitDests;
-    }
 
     public void drawBorder(final Canvas canvas, final Position currentField,
                            final RectF dest) {
@@ -532,7 +480,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         canvas.drawColor(Color.BLACK);
 
         GameField selectedField = map.isValidField(selected) ? map.getField(selected) : map.getField(0, 0);
-        List<Position> unitDests = getUnitDestinations(selectedField);
+        List<Position> unitDests = state.getUnitDestinations(selectedField);
 
         Player player = state.getCurrentPlayer();
 
@@ -614,8 +562,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
             canvas.drawBitmap(highlighter, null, dest, null);
         }
 
-        if (unitDests.size() > 0 && path != null) {
-            for (Position pos : path) {
+        if (unitDests.size() > 0) {
+            for (Position pos : state.getCurrentPath()) {
                 RectF dest = getSquare(
                     tilesize * pos.getX() + scrollOffset.getX(),
                     tilesize * pos.getY() + scrollOffset.getY(),
@@ -626,14 +574,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         /* Always draw attackables */
         if (map.getField(selected).hostsUnit()) {
-            if (lastAttackables != null) {
-                for (Position pos : lastAttackables) {
-                    RectF attack_dest = getSquare(
-                        tilesize * pos.getX() + scrollOffset.getX(),
-                        tilesize * pos.getY() + scrollOffset.getY(),
-                        tilesize);
-                    canvas.drawBitmap(attack_highlighter, null, attack_dest, null);
-                }
+            for (Position pos : state.getAttackables()) {
+                RectF attack_dest = getSquare(
+                    tilesize * pos.getX() + scrollOffset.getX(),
+                    tilesize * pos.getY() + scrollOffset.getY(),
+                    tilesize);
+                canvas.drawBitmap(attack_highlighter, null, attack_dest, null);
             }
         }
 
@@ -787,7 +733,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
             whichMenu = MenuType.NONE;
             if (!state.getCurrentPlayer().isAI()) {
                 GameField newselected_field = map.getField(newselected);
-                if (lastAttackables == null || !lastAttackables.contains(newselected)) {
+                if (!state.getAttackables().contains(newselected)) {
                     if (map.getField(selected).hostsUnit()) {
                         //Log.d(TAG, "A unit is selected!");
                         /* If the user currently has a unit selected and
@@ -801,33 +747,28 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                             (!map.getField(newselected).hostsUnit() ||
                              selected.equals(newselected))) {
                             List<Position> unit_destinations =
-                                getUnitDestinations(selected_field);
-    
+                                state.getUnitDestinations(selected_field);
+
                             if (unit_destinations.contains(newselected) ||
                                     selected.equals(newselected)) {
-                                if (path == null) {
-                                    path = logic.findPath(map, unit, newselected);
-                                    newselected = selected;
+                                if (state.getCurrentPath().contains(newselected)) {
+                                    state.move(unit, newselected);
                                 } else {
-                                    if (path.contains(newselected)) {
-                                        state.move(unit, newselected);
-                                    } else {
-                                        path = logic.findPath(map, unit, newselected);
-                                        newselected = selected;
-                                    }
+                                    state.setPath(logic.findPath(map, unit, newselected));
+                                    newselected = selected;
                                 }
                             }
                         }
                     } else if (!newselected_field.hostsUnit() &&
                                newselected_field.hostsBuilding()) {
-                        path = null;
+                        state.setPath(null);
                         Building building = map.getField(newselected).getBuilding();
                         if (building.getOwner().equals(state.getCurrentPlayer())
                             && building.canProduceUnits()) {
                             AlertDialog.Builder buildmenu_builder
                                 = new AlertDialog.Builder(this.getContext());
                             buildmenu_builder.setTitle("Build");
-    
+
                             List<Unit> units = building.getProducibleUnits();
                             String[] buildable_names = new String[units.size() + 1];
                             for (int i = 0; i < units.size(); ++i) {
@@ -837,7 +778,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                             buildable_names[units.size()] = "Cancel";
                             buildmenu_builder.setItems(buildable_names, this);
                             buildmenu_builder.create().show();
-    
+
                             whichMenu = MenuType.BUILD;
                         } // build menu isn't shown if it isn't the user's turn
                     }
@@ -845,12 +786,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                     GameField field = map.getField(selected);
                     Unit attacker = field.getUnit();
                     Unit defender = map.getField(newselected).getUnit();
-    
+
                     Log.d(TAG, "attack(!): " + attacker
                           + " attacks " + defender);
                     state.attack(attacker, defender);
                     attacker.setFinishedTurn(true);
-    
+
                     // please, someone find a better way to do this
                     showDamageAttacker = attacker;
                     showDamageDefender = defender;
@@ -959,7 +900,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         // This onClick is for the Menu button
         showMenu();
     }
-    
+
     public void showMenu() {
         AlertDialog.Builder menu_builder
             = new AlertDialog.Builder(this.getContext());
