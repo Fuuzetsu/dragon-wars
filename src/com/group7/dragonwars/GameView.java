@@ -356,23 +356,23 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                 if (gf.hostsUnit()) {
                     Unit unit = gf.getUnit();
 
-                    if (unit != null) {
-                        String un = unit.toString();
-                        Player owner = unit.getOwner();
-                        if (owner.getName().equals("Gaia")) { /* TODO proper Gaia handling */
-                            canvas.drawBitmap(graphics.get("Units").get(un),
-                                              null, dest, null);
-                        } else {
-                            Bitmap unitGfx = owner.getUnitSprite(un);
-                            canvas.drawBitmap(unitGfx, null, dest, null);
-                            String healthText = decformat.format(unit.getHealth());
-                            canvas.drawText(healthText, dest.right, dest.bottom, unitHealthOutlinePaint);
-                            canvas.drawText(healthText, dest.right, dest.bottom, unitHealthPaint);
-                        }
+                    String un = unit.toString();
+                    Player owner = unit.getOwner();
+                    if (owner.getName().equals("Gaia")) { /* TODO proper Gaia handling */
+                        canvas.drawBitmap(graphics.get("Units").get(un),
+                                          null, dest, null);
+                    } else {
+                        Bitmap unitGfx = owner.getUnitSprite(un);
+                        canvas.drawBitmap(unitGfx, null, dest, null);
+                        String healthText = decformat.format(unit.getHealth());
+                        canvas.drawText(healthText, dest.right, dest.bottom, unitHealthOutlinePaint);
+                        canvas.drawText(healthText, dest.right, dest.bottom, unitHealthPaint);
                     }
                 }
             }
         }
+
+
         try {
             Long currentTime = System.currentTimeMillis();
             if (damageTimeEnd > currentTime) {
@@ -398,7 +398,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                 showDamageAttacker = null;
                 showDamageDefender = null;
             }
-        } catch (IllegalArgumentException e) {}
+        } catch (IllegalArgumentException e) {} /* Why is this here? */
 
 
         highlightPositions(canvas, unitDests, "highlighter");
