@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -36,7 +35,6 @@ import com.group7.dragonwars.engine.BitmapChanger;
 import com.group7.dragonwars.engine.Building;
 import com.group7.dragonwars.engine.DrawableMapObject;
 import com.group7.dragonwars.engine.FloatPair;
-import com.group7.dragonwars.engine.Func;
 import com.group7.dragonwars.engine.GameField;
 import com.group7.dragonwars.engine.GameFinishedException;
 import com.group7.dragonwars.engine.GameMap;
@@ -90,8 +88,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
     private Bitmap fullMap = null;
 
     private Context context;
-    private HashMap<String, HashMap<String, Bitmap>> graphics
-        = new HashMap<String, HashMap<String, Bitmap>>();
+    private Map<String, Map<String, Bitmap>> graphics =
+        new HashMap<String, Map<String, Bitmap>>();
+
 
     private enum MenuType {NONE, ACTION, BUILD, MENU};
 
@@ -183,7 +182,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                                          "com.group7.dragonwars");
 
         /* Prerender combined map */
-        fullMap = combineMap();
+        fullMap = BitmapChanger.combineMap(state.getMap(), tilesize, graphics);
         recycleBorders();
 
         /* Colour and save sprites for each player */
@@ -282,42 +281,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         }
     }
 
-    /*
-     * This method will combine the static part of the map into
-     * a single bitmap. This should make it far faster to render
-     * and prevent any tearing while scrolling the map
-     */
-    private Bitmap combineMap() {
-        Bitmap result = null;
-        Integer width = map.getWidth() * tilesize;
-        Integer height = map.getHeight() * tilesize;
-
-        result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-
-        Canvas combined = new Canvas(result);
-
-        for (int i = 0; i < map.getWidth(); ++i) {
-            for (int j = 0; j < map.getHeight(); j++) {
-                Position pos = new Position(i, j);
-                GameField gf = map.getField(i, j);
-                String gfn = gf.getName();
-                RectF dest = getSquare(tilesize * i, tilesize * j, tilesize);
-                combined.drawBitmap(graphics.get("Fields").get(gfn),
-                                    null, dest, null);
-
-                drawBorder(combined, pos, dest);
-
-                if (gf.hostsBuilding()) {
-                    Building b = gf.getBuilding();
-                    String n = b.getName();
-                    combined.drawBitmap(graphics.get("Buildings").get(n),
-                                        null, dest, null);
-                }
-            }
-        }
-
-        return result;
-    }
 
     @Override
     public void surfaceChanged(final SurfaceHolder arg0, final int arg1,
@@ -353,119 +316,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
     public RectF getSquare(final float x, final float y, final float length) {
         return new RectF(x, y, x + length, y + length);
     }
-
-
-    public void drawBorder(final Canvas canvas, final Position currentField,
-                           final RectF dest) {
-        /* TODO not hard-code this */
-        Integer i = currentField.getX();
-        Integer j = currentField.getY();
-
-        final String FAKE = "NoTaReAlTiL3";
-
-        String gfn = map.getField(currentField).getSpriteLocation();
-
-        Position nep, np, nwp, ep, cp, wp, sep, sp, swp;
-        String ne, n, nw, e, c, w, se, s, sw;
-
-        nep = new Position(i + 1, j - 1);
-        np = new Position(i, j - 1);
-        nwp = new Position(i - 1, j - 1);
-
-        ep = new Position(i + 1, j);
-        cp = new Position(i, j);
-        wp = new Position(i - 1, j);
-
-        sep = new Position(i + 1, j + 1);
-        sp = new Position(i, j + 1);
-        swp = new Position(i - 1, j + 1);
-
-        ne = map.isValidField(nep) ? map.getField(nep).getSpriteLocation() : FAKE;
-        n = map.isValidField(np) ? map.getField(np).getSpriteLocation() : FAKE;
-        nw = map.isValidField(nwp) ? map.getField(nwp).getSpriteLocation() : FAKE;
-
-        e = map.isValidField(ep) ? map.getField(ep).getSpriteLocation() : FAKE;
-        c = map.isValidField(cp) ? map.getField(cp).getSpriteLocation() : FAKE;
-        w = map.isValidField(wp) ? map.getField(wp).getSpriteLocation() : FAKE;
-
-        se = map.isValidField(sep) ? map.getField(sep).getSpriteLocation() : FAKE;
-        s = map.isValidField(sp) ? map.getField(sp).getSpriteLocation() : FAKE;
-        sw = map.isValidField(swp) ? map.getField(swp).getSpriteLocation() : FAKE;
-
-        Func<String, Void> drawer = new Func<String, Void>() {
-            public Void apply(String sprite) {
-                canvas.drawBitmap(graphics.get("Fields").get(sprite),
-                                  null, dest, null);
-                return null; /* Java strikes again */
-            }
-        };
-        List<String> land = new ArrayList<String>();
-        land.add("grass");
-        land.add("sand");
-        List<String> liquid = new ArrayList<String>();
-        liquid.add("water");
-        liquid.add("lava");
-        if (liquid.contains(gfn)) {
-
-            if (land.contains(s)) {
-                drawer.apply(String.format("border %s %d", s, 1));
-            }
-
-            if (land.contains(e)) {
-                drawer.apply(String.format("border %s %d", e, 2));
-            }
-
-            if (land.contains(n)) {
-                drawer.apply(String.format("border %s %d", n, 3));
-            }
-
-            if (land.contains(w)) {
-                drawer.apply(String.format("border %s %d", w, 4));
-            }
-
-            if (liquid.contains(s) && liquid.contains(e) && land.contains(se)) {
-                drawer.apply(String.format("corner %s %d", se, 1));
-            }
-
-            if (liquid.contains(n) && liquid.contains(e) && land.contains(ne)) {
-                drawer.apply(String.format("corner %s %d", ne, 2));
-            }
-
-            if (liquid.contains(n) && liquid.contains(w) && land.contains(nw)) {
-                drawer.apply(String.format("corner %s %d", nw, 3));
-            }
-
-            if (liquid.contains(s) && liquid.contains(w) && land.contains(sw)) {
-                drawer.apply(String.format("corner %s %d", sw, 4));
-            }
-
-            if (land.contains(s) && land.contains(e) && land.contains(se)) {
-                if (s.equals(e) && e.equals(se)) {
-                    drawer.apply(String.format("fullcorner %s %d", s, 1));
-                }
-            }
-
-            if (land.contains(n) && land.contains(e) && land.contains(ne)) {
-                if (n.equals(e) && e.equals(ne)) {
-                    drawer.apply(String.format("fullcorner %s %d", n, 2));
-                }
-            }
-
-            if (land.contains(n) && land.contains(w) && land.contains(nw)) {
-                if (n.equals(w) && w.equals(nw)) {
-                    drawer.apply(String.format("fullcorner %s %d", n, 3));
-                }
-            }
-
-            if (land.contains(s) && land.contains(w) && land.contains(sw)) {
-                if (s.equals(w) && w.equals(sw)) {
-                    drawer.apply(String.format("fullcorner %s %d", s, 4));
-                }
-            }
-
-        }
-    }
-
 
     public void doDraw(final Canvas canvas) {
         if (map == null || state.isGameFinished()) {
