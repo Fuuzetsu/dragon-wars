@@ -397,11 +397,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
 
         highlightPositions(canvas, unitDests, "highlighter");
-
-        if (unitDests.size() > 0) {
-            highlightPositions(canvas, state.getCurrentPath(), "pathHighlighter");
-        }
-
+        highlightPositions(canvas, state.getCurrentPath(), "pathHighlighter");
         highlightPositions(canvas, state.getAttackables(), "attackHighlighter");
 
 

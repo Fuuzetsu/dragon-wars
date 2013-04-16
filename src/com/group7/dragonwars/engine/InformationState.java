@@ -31,7 +31,8 @@ public class InformationState {
 
 
     public List<Position> getPath() {
-        if (path == null) {
+        if (path == null || lastDestinations == null ||
+            lastDestinations.size() == 0) {
             return new ArrayList<Position>(0);
         }
 
