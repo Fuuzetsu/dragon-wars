@@ -2,6 +2,7 @@ package com.group7.dragonwars;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -397,39 +398,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
             }
         } catch (IllegalArgumentException e) {}
 
-        /* Destination highlighting */
-        for (Position pos : unitDests) {
-            RectF dest = getSquare(
-                tilesize * pos.getX() + scrollOffset.getX(),
-                tilesize * pos.getY() + scrollOffset.getY(),
-                tilesize);
-            canvas.drawBitmap(graphics.get("Highlighters").get("highlighter"),
-                              null, dest, null);
-        }
+
+        highlightPositions(canvas, unitDests, "highlighter");
 
         if (unitDests.size() > 0) {
-            for (Position pos : state.getCurrentPath()) {
-                RectF dest = getSquare(
-                    tilesize * pos.getX() + scrollOffset.getX(),
-                    tilesize * pos.getY() + scrollOffset.getY(),
-                    tilesize);
-                canvas.drawBitmap(graphics.get("Highlighters").get("pathHighlighter")
-                                  , null, dest, null);
-            }
+            highlightPositions(canvas, state.getCurrentPath(), "pathHighlighter");
         }
 
-        /* Always draw attackables */
-        if (map.getField(selected).hostsUnit()) {
-            for (Position pos : state.getAttackables()) {
-                RectF attack_dest = getSquare(
-                    tilesize * pos.getX() + scrollOffset.getX(),
-                    tilesize * pos.getY() + scrollOffset.getY(),
-                    tilesize);
-                canvas.drawBitmap(graphics.get("Highlighters").get("attackHighlighter"),
-                                  null, attack_dest, null);
-            }
-        }
-
+        highlightPositions(canvas, state.getAttackables(), "attackHighlighter");
 
 
         RectF select_dest = getSquare(
@@ -456,6 +432,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                       + "\nFPS: " + fpsS, true, playerPaint);
 
         state.endFrame();
+    }
+
+    public void highlightPositions(final Canvas canvas,
+                                   final Collection<Position> positions,
+                                   final String highlighter) {
+        for (Position pos : positions) {
+            RectF dest = getSquare(
+                tilesize * pos.getX() + scrollOffset.getX(),
+                tilesize * pos.getY() + scrollOffset.getY(),
+                tilesize);
+            canvas.drawBitmap(graphics.get("Highlighters").get(highlighter),
+                              null, dest, null);
+        }
     }
 
     public float getMapDrawWidth() {
