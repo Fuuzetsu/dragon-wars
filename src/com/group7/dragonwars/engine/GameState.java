@@ -17,11 +17,42 @@ public class GameState {
     private Integer turns = 1;
     private Boolean gameFinished = false;
     private Statistics stats = new Statistics();
+    private InformationState info;
 
     public GameState(GameMap map, Logic logic, List<Player> players) {
         this.map = map;
         this.logic = logic;
         this.players = players;
+        this.info = new InformationState(this);
+    }
+
+    public List<Position> getUnitDestinations(GameField field) {
+        return info.getUnitDestinations(field);
+    }
+
+
+    public void startFrame() {
+        info.startFrame();
+    }
+
+    public void endFrame() {
+        info.endFrame();
+    }
+
+    public Double getFps() {
+        return info.getFps();
+    }
+
+    public List<Position> getCurrentPath() {
+        return info.getPath();
+    }
+
+    public void setPath(List<Position> path) {
+        info.setPath(path);
+    }
+
+    public Set<Position> getAttackables() {
+        return info.getAttackables();
     }
 
     public void attack(Unit attacker, Unit defender) {
@@ -195,7 +226,7 @@ public class GameState {
     public GameMap getMap() {
         return this.map;
     }
-    
+
     public Logic getLogic() {
         return this.logic;
     }
@@ -211,11 +242,11 @@ public class GameState {
             return players.get(players.size() - 1);
         }
     }
-    
+
     public Player getWinner() {
         return this.winner;
     }
-    
+
     public boolean isGameFinished() {
         return gameFinished;
     }
