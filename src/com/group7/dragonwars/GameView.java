@@ -179,7 +179,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
 
         /* Prerender combined map */
-        state.setStaticMap(BitmapChanger.combineMap(state.getMap(), tilesize, graphics));
+        map.setImage((BitmapChanger.combineMap(map, tilesize, graphics)));
         recycleBorders();
 
         /* Colour and save sprites for each player */
@@ -312,13 +312,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
     public void doDraw(final Canvas canvas) {
         state.startFrame();
 
-        if (state.getMap() == null || state.isGameFinished()) {
+        if (map == null || state.isGameFinished()) {
             return; // don't bother drawing until map != null or when the game is over
         }
 
         canvas.drawColor(Color.BLACK);
 
         GameField selectedField = map.isValidField(selected) ? map.getField(selected) : map.getField(0, 0);
+
         List<Position> unitDests = state.getUnitDestinations(selectedField);
 
         Player player = state.getCurrentPlayer();
@@ -326,7 +327,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         Paint playerPaint = new Paint();
         playerPaint.setColor(player.getColour());
 
-        canvas.drawBitmap(state.getStaticMap(), scrollOffset.getX(),
+        canvas.drawBitmap(map.getImage(), scrollOffset.getX(),
                           scrollOffset.getY(), null);
         for (int i = 0; i < map.getWidth(); ++i) {
             for (int j = 0; j < map.getHeight(); j++) {
