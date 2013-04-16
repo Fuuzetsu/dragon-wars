@@ -69,10 +69,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
     private GestureDetector gestureDetector;
 
     private DrawingThread dt;
-    private Bitmap highlighter;
-    private Bitmap pathHighlighter;
-    private Bitmap selector;
-    private Bitmap attack_highlighter;
 
     private Paint cornerBoxTextPaint;
     private Paint cornerBoxBackPaint;
@@ -169,17 +165,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         putGroup("Buildings", map.getBuildingMap());
         putResource("Misc", "flag", "drawable", "com.group7.dragonwars", "flag");
 
+        /* Load selector and highlighters */
+        putResource("Highlighters", "selector", "drawable",
+                    "com.group7.dragonwars", "selector");
+        putResource("Highlighters", "highlight", "drawable",
+                    "com.group7.dragonwars", "highlighter");
+        putResource("Highlighters", "path_highlight", "drawable",
+                    "com.group7.dragonwars", "pathHighlighter");
+        putResource("Highlighters", "attack_highlight", "drawable",
+                    "com.group7.dragonwars", "attackHighlighter");
+
         loadBorders();
 
-        /* Load selector and highlighters */
-        selector = getResource("selector", "drawable",
-                               "com.group7.dragonwars");
-        highlighter = getResource("highlight", "drawable",
-                                  "com.group7.dragonwars");
-        pathHighlighter = getResource("path_highlight", "drawable",
-                                      "com.group7.dragonwars");
-        attack_highlighter = getResource("attack_highlight", "drawable",
-                                         "com.group7.dragonwars");
+
 
         /* Prerender combined map */
         fullMap = BitmapChanger.combineMap(state.getMap(), tilesize, graphics);
@@ -405,7 +403,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                 tilesize * pos.getX() + scrollOffset.getX(),
                 tilesize * pos.getY() + scrollOffset.getY(),
                 tilesize);
-            canvas.drawBitmap(highlighter, null, dest, null);
+            canvas.drawBitmap(graphics.get("Highlighters").get("highlighter"),
+                              null, dest, null);
         }
 
         if (unitDests.size() > 0) {
@@ -414,7 +413,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                     tilesize * pos.getX() + scrollOffset.getX(),
                     tilesize * pos.getY() + scrollOffset.getY(),
                     tilesize);
-                canvas.drawBitmap(pathHighlighter, null, dest, null);
+                canvas.drawBitmap(graphics.get("Highlighters").get("pathHighlighter")
+                                  , null, dest, null);
             }
         }
 
@@ -425,7 +425,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                     tilesize * pos.getX() + scrollOffset.getX(),
                     tilesize * pos.getY() + scrollOffset.getY(),
                     tilesize);
-                canvas.drawBitmap(attack_highlighter, null, attack_dest, null);
+                canvas.drawBitmap(graphics.get("Highlighters").get("attackHighlighter"),
+                                  null, attack_dest, null);
             }
         }
 
@@ -435,7 +436,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
             tilesize * selected.getX() + scrollOffset.getX(),
             tilesize * selected.getY() + scrollOffset.getY(),
             tilesize);
-        canvas.drawBitmap(selector, null, select_dest, null);
+        canvas.drawBitmap(graphics.get("Highlighters").get("selector"),
+                          null, select_dest, null);
 
         double offsetTiles = -scrollOffset.getX() / (double)tilesize;
         double tpw = canvas.getWidth() / (double)tilesize;
