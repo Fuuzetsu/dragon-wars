@@ -82,8 +82,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
     private Unit showDamageDefender = null;
     private int showDamageSeconds = 4;
 
-    private Bitmap fullMap = null;
-
     private Context context;
     private Map<String, Map<String, Bitmap>> graphics =
         new HashMap<String, Map<String, Bitmap>>();
@@ -181,7 +179,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
 
         /* Prerender combined map */
-        fullMap = BitmapChanger.combineMap(state.getMap(), tilesize, graphics);
+        state.setStaticMap(BitmapChanger.combineMap(state.getMap(), tilesize, graphics));
         recycleBorders();
 
         /* Colour and save sprites for each player */
@@ -328,7 +326,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         Paint playerPaint = new Paint();
         playerPaint.setColor(player.getColour());
 
-        canvas.drawBitmap(fullMap, scrollOffset.getX(),
+        canvas.drawBitmap(state.getStaticMap(), scrollOffset.getX(),
                           scrollOffset.getY(), null);
         for (int i = 0; i < map.getWidth(); ++i) {
             for (int j = 0; j < map.getHeight(); j++) {

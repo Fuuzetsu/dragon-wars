@@ -7,10 +7,12 @@ import java.util.List;
 import java.util.Set;
 
 import android.util.Log;
+import android.graphics.Bitmap;
 
 public class GameState {
 
     private GameMap map;
+    private Bitmap staticMap;
     private Logic logic;
     private List<Player> players = new ArrayList<Player>();
     private Player winner = null;
@@ -25,6 +27,14 @@ public class GameState {
         this.logic = logic;
         this.players = players;
         this.info = new InformationState(this);
+    }
+
+    public Bitmap getStaticMap() {
+        return staticMap;
+    }
+
+    public void setStaticMap(final Bitmap sMap) {
+        staticMap = sMap;
     }
 
     public List<Position> getUnitDestinations(GameField field) {
