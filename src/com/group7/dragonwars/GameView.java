@@ -52,11 +52,10 @@ import com.group7.dragonwars.engine.Unit;
  * we had scrolling and it's never caused a problem before)
  */
 @TargetApi(Build.VERSION_CODES.CUPCAKE)
-public class GameView extends SurfaceView implements SurfaceHolder.Callback,
-                                                     OnGestureListener,
-                                                     OnDoubleTapListener,
-                                                     DialogInterface.OnClickListener,
-                                                     OnClickListener {
+public final class GameView extends SurfaceView
+    implements SurfaceHolder.Callback, OnGestureListener, OnDoubleTapListener,
+               DialogInterface.OnClickListener, OnClickListener {
+
     private final String TAG = "GameView";
 
     private final int tilesize = 64;
@@ -87,7 +86,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         new HashMap<String, Map<String, Bitmap>>();
 
 
-    private enum MenuType {NONE, ACTION, BUILD, MENU};
+    private enum MenuType { NONE, ACTION, BUILD, MENU };
 
     private MenuType whichMenu = MenuType.NONE;
 
@@ -110,7 +109,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         cornerBoxTextPaint.setColor(Color.WHITE);
         cornerBoxTextPaint.setStyle(Paint.Style.FILL);
         cornerBoxTextPaint.setTextSize(15);
-        // cornerBoxTextPaint.setAntiAlias(true); /* uncomment for better text, worse fps */
+        /* uncomment for better text, worse fps */
+        // cornerBoxTextPaint.setAntiAlias(true);
 
         cornerBoxBackPaint = new Paint();
         cornerBoxBackPaint.setARGB(150, 0, 0, 0);
@@ -140,15 +140,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     }
 
-    public void setState(GameState state, GameActivity activity) {
-        this.state = state;
-        this.map = state.getMap();
-        this.logic = state.getLogic();
-        this.activity = activity;
+    public void setState(final GameState stateS, final GameActivity activityS) {
+        state = stateS;
+        map = state.getMap();
+        logic = state.getLogic();
+        activity = activityS;
 
-        /* Load and colour all the sprites we'll need
-         * Because we no longer do this in GameActivity.onCreate, everything is better
-         */
+        /* Load and colour all the sprites we'll need */
         Log.d(TAG, "Initialising graphics.");
         initialiseGraphics();
         Log.d(TAG, "Done initalising graphics.");
@@ -192,8 +190,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
             /* All possible units */
             Map<String, Bitmap> personalUnits = new HashMap<String, Bitmap>();
-            for (Map.Entry<String, Bitmap> uGfx :
-                     graphics.get("Units").entrySet()) {
+            for (Map.Entry<String, Bitmap> uGfx
+                     : graphics.get("Units").entrySet()) {
                 Bitmap uBmap = uGfx.getValue();
                 Bitmap personal = BitmapChanger.changeColour(
                     uBmap, DEAD_COLOUR, p.getColour());
@@ -266,9 +264,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
         for (String b : borderList) {
             for (Integer i = 1; i <= 4; i++) {
-                graphics.get("Fields").get(String.format("border %s %d", b, i)).recycle();
-                graphics.get("Fields").get(String.format("corner %s %d", b, i)).recycle();
-                graphics.get("Fields").get(String.format("fullcorner %s %d", b, i)).recycle();
+                graphics.get("Fields").get(
+                    String.format("border %s %d", b, i)).recycle();
+                graphics.get("Fields").get(
+                    String.format("corner %s %d", b, i)).recycle();
+                graphics.get("Fields").get(
+                    String.format("fullcorner %s %d", b, i)).recycle();
             }
         }
     }
@@ -305,7 +306,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         return true;
     }
 
-    public RectF getSquare(final float x, final float y, final float length) {
+    public RectF getSquare(final float x, final float y,
+                                 final float length) {
         return new RectF(x, y, x + length, y + length);
     }
 
@@ -313,12 +315,17 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         state.startFrame();
 
         if (map == null || state.isGameFinished()) {
-            return; // don't bother drawing until map != null or when the game is over
+            return; /* don't bother drawing */
         }
 
         canvas.drawColor(Color.BLACK);
 
-        GameField selectedField = map.isValidField(selected) ? map.getField(selected) : map.getField(0, 0);
+        GameField selectedField;
+        if (map.isValidField(selected)) {
+            selectedField = map.getField(selected);
+        } else {
+            selectedField = map.getField(0, 0);
+        }
 
         List<Position> unitDests = state.getUnitDestinations(selectedField);
 
@@ -339,7 +346,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
                 if (gf.hostsBuilding()) {
                     Player owner = gf.getBuilding().getOwner();
-                    if (owner.getName().equals("Gaia")) { /* TODO proper Gaia handling */
+                    /* TODO proper Gaia handling */
+                    if (owner.getName().equals("Gaia")) {
                         canvas.drawBitmap(graphics.get("Misc").get("flag"),
                                           null, dest, null);
                     } else {
@@ -353,15 +361,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
                     String un = unit.toString();
                     Player owner = unit.getOwner();
-                    if (owner.getName().equals("Gaia")) { /* TODO proper Gaia handling */
+                    /* TODO proper Gaia handling */
+                    if (owner.getName().equals("Gaia")) {
                         canvas.drawBitmap(graphics.get("Units").get(un),
                                           null, dest, null);
                     } else {
                         Bitmap unitGfx = owner.getUnitSprite(un);
                         canvas.drawBitmap(unitGfx, null, dest, null);
                         String healthText = decformat.format(unit.getHealth());
-                        canvas.drawText(healthText, dest.right, dest.bottom, unitHealthOutlinePaint);
-                        canvas.drawText(healthText, dest.right, dest.bottom, unitHealthPaint);
+                        canvas.drawText(healthText, dest.right, dest.bottom,
+                                        unitHealthOutlinePaint);
+                        canvas.drawText(healthText, dest.right, dest.bottom,
+                                        unitHealthPaint);
                     }
                 }
             }
@@ -372,28 +383,36 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
             Long currentTime = System.currentTimeMillis();
             if (damageTimeEnd > currentTime) {
 
-                if (showDamageAttacker != null && !showDamageAttacker.isDead()) {
+                if (showDamageAttacker != null
+                    && !showDamageAttacker.isDead()) {
+                    Position atkPos = showDamageAttacker.getPosition();
                     RectF dest = getSquare(
-                        tilesize * showDamageAttacker.getPosition().getX() + scrollOffset.getX(),
-                        tilesize * showDamageAttacker.getPosition().getY() + scrollOffset.getY(),
+                        tilesize * atkPos.getX() + scrollOffset.getX(),
+                        tilesize * atkPos.getY() + scrollOffset.getY(),
                         tilesize);
-                    canvas.drawText(decformat.format(showDamageAttacker.getLastDamage()),
-                                    dest.right - (tilesize / 2), dest.top, showDamagePaint);
+                    canvas.drawText(
+                        decformat.format(showDamageAttacker.getLastDamage()),
+                        dest.right - (tilesize / 2), dest.top, showDamagePaint);
                 }
-                if (showDamageDefender != null && !showDamageDefender.isDead()) {
+                if (showDamageDefender != null
+                    && !showDamageDefender.isDead()) {
+                    Position defPos = showDamageDefender.getPosition();
                     RectF dest = getSquare(
-                        tilesize * showDamageDefender.getPosition().getX() + scrollOffset.getX(),
-                        tilesize * showDamageDefender.getPosition().getY() + scrollOffset.getY(),
+                        tilesize * defPos.getX() + scrollOffset.getX(),
+                        tilesize * defPos.getY() + scrollOffset.getY(),
                         tilesize);
-                    canvas.drawText(decformat.format(showDamageDefender.getLastDamage()),
-                                    dest.right - (tilesize / 2), dest.top, showDamagePaint);
+                    canvas.drawText(
+                        decformat.format(showDamageDefender.getLastDamage()),
+                        dest.right - (tilesize / 2), dest.top, showDamagePaint);
                 }
 
             } else {
                 showDamageAttacker = null;
                 showDamageDefender = null;
             }
-        } catch (IllegalArgumentException e) {} /* Why is this here? */
+        } catch (IllegalArgumentException e) {
+            Log.d(TAG, "IllegalArgumentException thrown at damage print: " + e);
+        } /* Why is this here? */
 
 
         highlightPositions(canvas, unitDests, "highlighter");
@@ -401,19 +420,20 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         highlightPositions(canvas, state.getAttackables(), "attackHighlighter");
 
 
-        RectF select_dest = getSquare(
+        RectF selectDest = getSquare(
             tilesize * selected.getX() + scrollOffset.getX(),
             tilesize * selected.getY() + scrollOffset.getY(),
             tilesize);
         canvas.drawBitmap(graphics.get("Highlighters").get("selector"),
-                          null, select_dest, null);
+                          null, selectDest, null);
 
-        double offsetTiles = -scrollOffset.getX() / (double)tilesize;
-        double tpw = canvas.getWidth() / (double)tilesize;
+        double offsetTiles = -scrollOffset.getX() / (double) tilesize;
+        double tpw = canvas.getWidth() / (double) tilesize;
         boolean infoLeft = (selected.getX() - offsetTiles) > (tpw / 2);
 
         if (selectedField.hostsUnit()) {
-            drawInfoBox(canvas, selectedField.getUnit(), selectedField, infoLeft);
+            drawInfoBox(canvas, selectedField.getUnit(),
+                        selectedField, infoLeft);
         } else {
             drawInfoBox(canvas, null, selectedField, infoLeft);
         }
@@ -421,7 +441,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         drawCornerBox(canvas, true, true, "Turn " + state.getTurns());
 
         String fpsS = decformat.format(state.getFps());
-        drawCornerBox(canvas, false, true, player.getName() + " - " + player.getGoldAmount() + " Gold"
+        drawCornerBox(canvas, false, true, player.getName() + " - "
+                      + player.getGoldAmount() + " Gold"
                       + "\nFPS: " + fpsS, true, playerPaint);
 
         state.endFrame();
@@ -463,12 +484,20 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         drawCornerBox(canvas, left, false, info);
     }
 
-    public void drawCornerBox(Canvas canvas, boolean left, boolean top, String text) {
+    public void drawCornerBox(final Canvas canvas, final boolean left,
+                              final boolean top, final String text) {
         drawCornerBox(canvas, left, top, text, false, null);
     }
 
-    public void drawCornerBox(Canvas canvas, boolean left, boolean top, String text, boolean box, Paint boxPaint) {
-        cornerBoxTextPaint.setTextAlign(left ? Paint.Align.LEFT : Paint.Align.RIGHT);
+    public void drawCornerBox(final Canvas canvas, final boolean left,
+                              final boolean top, final String text,
+                              final boolean box, final Paint boxPaint) {
+
+        if (left) {
+            cornerBoxTextPaint.setTextAlign(Paint.Align.LEFT);
+        } else {
+            cornerBoxTextPaint.setTextAlign(Paint.Align.RIGHT);
+        }
 
         String[] ss = text.split("\n");
         String longestLine = "";
@@ -489,16 +518,20 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                                  left ? boxWidth : canvas.getWidth(),
                                  top ? boxHeight : canvas.getHeight());
         float radius = 5f;
-        RectF backRectF = new RectF(backRect.left - radius - (box && !left ? radius + boxHeight : 0),
+        RectF backRectF = new RectF(backRect.left - radius
+                                    - (box && !left ? radius + boxHeight : 0),
                                     backRect.top - radius,
-                                    backRect.right + radius + (box && left ? radius + boxHeight : 0),
+                                    backRect.right + radius
+                                    + (box && left ? radius + boxHeight : 0),
                                     backRect.bottom + radius);
         canvas.drawRoundRect(backRectF, 5f, 5f, cornerBoxBackPaint);
 
         if (box) {
-            canvas.drawRect(new RectF(left ? backRect.right + radius : backRect.left - radius - boxHeight,
+            canvas.drawRect(new RectF(left ? backRect.right + radius
+                                      : backRect.left - radius - boxHeight,
                                       backRect.top,
-                                      left ? backRect.right + radius + boxHeight : backRect.left - radius,
+                                      left ? backRect.right + radius + boxHeight
+                                      : backRect.left - radius,
                                       backRect.top + boxHeight), boxPaint);
         }
 
@@ -555,7 +588,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         if (this.map.isValidField(touchX, touchY)) {
             whichMenu = MenuType.NONE;
             if (!state.getCurrentPlayer().isAI()) {
-                GameField newselected_field = map.getField(newselected);
+                GameField newselectedField = map.getField(newselected);
                 if (!state.getAttackables().contains(newselected)) {
                     if (map.getField(selected).hostsUnit()) {
                         //Log.d(TAG, "A unit is selected!");
@@ -565,27 +598,30 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                          */
                         GameField selected_field = map.getField(selected);
                         Unit unit = selected_field.getUnit();
-                        if (unit.getOwner().equals(state.getCurrentPlayer()) &&
-                            !unit.hasFinishedTurn() &&
-                            (!map.getField(newselected).hostsUnit() ||
-                             selected.equals(newselected))) {
+                        if (unit.getOwner().equals(state.getCurrentPlayer())
+                            && !unit.hasFinishedTurn()
+                            && (!map.getField(newselected).hostsUnit()
+                                || selected.equals(newselected))) {
                             List<Position> unit_destinations =
                                 state.getUnitDestinations(selected_field);
 
-                            if (unit_destinations.contains(newselected) ||
-                                    selected.equals(newselected)) {
-                                if (state.getCurrentPath().contains(newselected)) {
+                            if (unit_destinations.contains(newselected)
+                                || selected.equals(newselected)) {
+                                if (state.getCurrentPath()
+                                    .contains(newselected)) {
                                     state.move(unit, newselected);
                                 } else {
-                                    state.setPath(logic.findPath(map, unit, newselected));
+                                    state.setPath(logic.findPath(map, unit,
+                                                                 newselected));
                                     newselected = selected;
                                 }
                             }
                         }
-                    } else if (!newselected_field.hostsUnit() &&
-                               newselected_field.hostsBuilding()) {
+                    } else if (!newselectedField.hostsUnit()
+                               && newselectedField.hostsBuilding()) {
                         state.setPath(null);
-                        Building building = map.getField(newselected).getBuilding();
+                        Building building =
+                            map.getField(newselected).getBuilding();
                         if (building.getOwner().equals(state.getCurrentPlayer())
                             && building.canProduceUnits()) {
                             AlertDialog.Builder buildmenu_builder
@@ -593,11 +629,17 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                             buildmenu_builder.setTitle("Build");
 
                             List<Unit> units = building.getProducibleUnits();
-                            String[] buildable_names = new String[units.size() + 1];
+                            String[] buildable_names
+                                = new String[units.size() + 1];
                             for (int i = 0; i < units.size(); ++i) {
-                                buildable_names[i] = units.get(i).toString() + " - "
-                                    + units.get(i).getProductionCost() + " Gold";
+                                Unit cU = units.get(i);
+                                buildable_names[i] =
+                                    String.format("%s - %s Gold",
+                                                  cU.toString(),
+                                                  cU.getProductionCost());
+
                             }
+
                             buildable_names[units.size()] = "Cancel";
                             buildmenu_builder.setItems(buildable_names, this);
                             buildmenu_builder.create().show();
@@ -618,7 +660,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                     showDamageAttacker = attacker;
                     showDamageDefender = defender;
 
-                    damageTimeEnd = showDamageSeconds * 1000 + System.currentTimeMillis();
+                    damageTimeEnd = showDamageSeconds * 1000
+                        + System.currentTimeMillis();
                 }
             }
             selected = newselected;
@@ -662,9 +705,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         case BUILD:
             GameField field = map.getField(selected);
 
-            if (field.hostsBuilding() &&
-                (field.getBuilding().getProducibleUnits().size() > which) &&
-                state.getCurrentPlayer().equals(
+            if (field.hostsBuilding()
+                && (field.getBuilding().getProducibleUnits().size() > which)
+                &&  state.getCurrentPlayer().equals(
                     field.getBuilding().getOwner())) {
                 Unit unit = map.getField(selected)
                     .getBuilding().getProducibleUnits().get(which);
@@ -693,8 +736,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                                    String.format("%s's turn!",
                                                  state.getCurrentPlayer()),
                                    Toast.LENGTH_LONG).show();
-                }
-                catch (GameFinishedException e) {
+                } catch (GameFinishedException e) {
                     Player winner = e.getWinner();
                     Toast.makeText(context,
                                    String.format("%s has won the game!",
@@ -712,24 +754,24 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         whichMenu = MenuType.NONE;
     }
 
-    private void alertMessage(String text) {
+    private void alertMessage(final String text) {
         new AlertDialog.Builder(context).setMessage(text)
             .setPositiveButton("OK", null).show();
     }
 
     @Override
-    public void onClick(View arg0) {
+    public void onClick(final View arg0) {
         // This onClick is for the Menu button
         showMenu();
     }
 
     public void showMenu() {
-        AlertDialog.Builder menu_builder
+        AlertDialog.Builder menuBuilder
             = new AlertDialog.Builder(this.getContext());
-        menu_builder.setTitle("Menu");
+        menuBuilder.setTitle("Menu");
         String[] actions = {"End Turn", "Cancel"};
-        menu_builder.setItems(actions, this);
-        menu_builder.create().show();
+        menuBuilder.setItems(actions, this);
+        menuBuilder.create().show();
         whichMenu = MenuType.MENU;
     }
 }
