@@ -77,7 +77,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
     private Paint unitHealthOutlinePaint;
 
     private Paint showDamagePaint;
-    private int showDamageTimeout = 0;
+    private Long damageTimeEnd = 0L;
     private Unit showDamageAttacker = null;
     private Unit showDamageDefender = null;
     private int showDamageSeconds = 4;
@@ -374,27 +374,29 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
             }
         }
         try {
-            if (showDamageTimeout > 0) {
-                Log.d(TAG, "showDamageTimeout " + showDamageTimeout);
+            Long currentTime = System.currentTimeMillis();
+            if (damageTimeEnd > currentTime) {
+
                 if (showDamageAttacker != null && !showDamageAttacker.isDead()) {
                     RectF dest = getSquare(
                         tilesize * showDamageAttacker.getPosition().getX() + scrollOffset.getX(),
                         tilesize * showDamageAttacker.getPosition().getY() + scrollOffset.getY(),
                         tilesize);
-                    canvas.drawText(decformat.format(showDamageAttacker.getLastDamage()), dest.right - (tilesize / 2), dest.top, showDamagePaint);
+                    canvas.drawText(decformat.format(showDamageAttacker.getLastDamage()),
+                                    dest.right - (tilesize / 2), dest.top, showDamagePaint);
                 }
                 if (showDamageDefender != null && !showDamageDefender.isDead()) {
                     RectF dest = getSquare(
                         tilesize * showDamageDefender.getPosition().getX() + scrollOffset.getX(),
                         tilesize * showDamageDefender.getPosition().getY() + scrollOffset.getY(),
                         tilesize);
-                    canvas.drawText(decformat.format(showDamageDefender.getLastDamage()), dest.right - (tilesize / 2), dest.top, showDamagePaint);
+                    canvas.drawText(decformat.format(showDamageDefender.getLastDamage()),
+                                    dest.right - (tilesize / 2), dest.top, showDamagePaint);
                 }
-                --showDamageTimeout;
-                if (showDamageTimeout == 0) {
-                    showDamageAttacker = null;
-                    showDamageDefender = null;
-                }
+
+            } else {
+                showDamageAttacker = null;
+                showDamageDefender = null;
             }
         } catch (IllegalArgumentException e) {}
 
@@ -622,12 +624,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                     state.attack(attacker, defender);
                     attacker.setFinishedTurn(true);
 
-                    // please, someone find a better way to do this
-                    /* Oh God, what the fuck; protip: the FPS counter is inaccurate */
                     showDamageAttacker = attacker;
                     showDamageDefender = defender;
-                    showDamageTimeout = state.getFps().intValue() * showDamageSeconds;
-                    // basically it uses fps to calculate how many frames it needs to show the damage for
+
+                    damageTimeEnd = showDamageSeconds * 1000 + System.currentTimeMillis();
                 }
             }
             selected = newselected;
