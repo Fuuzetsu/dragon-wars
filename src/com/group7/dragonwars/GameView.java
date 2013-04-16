@@ -99,7 +99,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 
     public GameView(final Context ctx, final AttributeSet attrset) {
         super(ctx, attrset);
-        Log.d(TAG, "GameView ctor");
 
         context = ctx;
         SurfaceHolder holder = getHolder();
@@ -164,7 +163,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         putGroup("Fields", map.getGameFieldMap());
         putGroup("Units", map.getUnitMap());
         putGroup("Buildings", map.getBuildingMap());
-        putResource("Misc", "flag", "drawable", "com.group7.dragonwars", "flag");
+        putResource("Misc", "flag", "drawable",
+                    "com.group7.dragonwars", "flag");
+
 
         /* Load selector and highlighters */
         putResource("Highlighters", "selector", "drawable",
@@ -177,7 +178,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
                     "com.group7.dragonwars", "attackHighlighter");
 
         loadBorders();
-
 
 
         /* Prerender combined map */
@@ -221,22 +221,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
     private void putResource(final String category, final String resName,
                              final String resDir, final String resPack,
                              final String regName) {
-        Bitmap bMap = getResource(resName, resDir, resPack);
-        if (!graphics.containsKey(category)) {
-            graphics.put(category, new HashMap<String, Bitmap>());
-        }
-
-        graphics.get(category).put(regName, bMap);
-    }
-
-    private Bitmap getResource(final String resName, final String resDir,
-                               final String resPack) {
         Integer resourceID = getResources().getIdentifier(resName, resDir,
                                                           resPack);
         Bitmap bMap = BitmapFactory.decodeResource(context.getResources(),
                                                    resourceID);
 
-        return bMap;
+        if (!graphics.containsKey(category)) {
+            graphics.put(category, new HashMap<String, Bitmap>());
+        }
+
+        graphics.get(category).put(regName, bMap);
     }
 
     /* Helper for loadBorders() */
@@ -251,6 +245,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
         borderList.add("sand");
         borderList.add("grass");
         borderList.add("lava");
+
 
         for (String b : borderList) {
             for (Integer i = 1; i <= 4; i++) {
@@ -317,10 +312,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
     }
 
     public void doDraw(final Canvas canvas) {
-        if (map == null || state.isGameFinished()) {
+        state.startFrame();
+
+        if (state.getMap() == null || state.isGameFinished()) {
             return; // don't bother drawing until map != null or when the game is over
         }
-        state.startFrame();
 
         canvas.drawColor(Color.BLACK);
 
