@@ -9,9 +9,6 @@ import android.database.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
-
 public class Database
 {
 	class Entry extends Object
