@@ -290,6 +290,7 @@ public class GameState {
 
                 player.setGoldAmount(player.getGoldAmount() - unit.getProductionCost());
                 player.addUnit(newUnit);
+                newUnit.setFinishedTurn(true);
             	field.setUnit(newUnit);
                 stats.increaseStatistic("Units produced");
                 return true;
