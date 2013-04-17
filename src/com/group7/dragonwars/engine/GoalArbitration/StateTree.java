@@ -51,7 +51,6 @@ public class StateTree {
 
                     if (damageRatio < 0)		// In enemy's favour
                         continue;
-
                     /*List<Position> path = logic.findPath(gameState.getMap(), playerUnit, dmgpos.getRight());
 
                     calculate direction to move or attack
@@ -81,6 +80,14 @@ public class StateTree {
                 base.AddChildNode(bestValue, currentBest);
             }
 
+        }
+        
+        for (Building building : gameState.getMap().entrySet()) {
+            if (!building.getOwner().equals(stateTreeOwner)) {
+                continue;
+		int bestBuildable = getBestBuildableUnit(building);
+            }
+            
         }
 
         actions = base.getActions();
@@ -123,4 +130,8 @@ public class StateTree {
             return new Pair<Pair<Double, Double>, Position>(bestRatioDamage, movePos);
         }
     }
+
+    private int getBestBuildableUnit(Building building) {
+        ArrayList<Unit> buildable = building.getProducibleUnits();
+        
 }
