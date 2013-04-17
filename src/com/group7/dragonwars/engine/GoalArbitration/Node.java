@@ -20,6 +20,7 @@ public class Node {
         nodeParent = parent;
         nodeDepth = depth;
         currentValue = currentvalue;
+        children = new ArrayList<Node>();
     }
 
     public List<AtomicAction> getActions() {
