@@ -13,20 +13,26 @@ public class Database
 {
 	class Entry extends Object
 	{
-		public String 	GAMENAME;
-		public String 	PLAYER1NAME;
-		public String 	PLAYER2NAME;
-		public int 	SCORE;
-
+        public int GAMETIME;
+        public float DAMAGEDEALT;
+        public float DAMAGERECEIVED;
+        public float DISTANCETRAVELED;
+        public int GOLDCOLLECTED;
+        public int UNITSKILLED;
+        public int UNITSMADE;
 	}
+
 	private static final String DATABASE_CREATE =
-			"create table high_scores(" +
-			" GAMENAME VARCHAR (20) NOT NULL," +
-			" PLAYER1NAME VARCHAR (20) NOT NULL," +
-			" PLAYER2NAME VARCHAR (20) NOT NULL," +
-			" SCORE INT NOT NULL," +
-			" PRIMARY KEY(GAMENAME)" +
-			");";
+        "create table high_scores(" +
+        " GAMETIME INT NOT NULL," +
+        " DAMAGEDEALT FLOAT NOT NULL," +
+        " DAMAGERECEIVED FLOAT NOT NULL," +
+        " DISTANCETRAVELED FLOAT NOT NULL," +
+        " GOLDCOLLECTED INT NOT NULL," +
+        " UNITSKILLED INT NOT NULL," +
+        " UNITSMADE INT NOT NULL," +
+        " PRIMARY KEY(GAMENAME)" +
+        ");";
 
 	private static final String DATABASE_NAME =	"dw_high_scores";
 
@@ -60,15 +66,19 @@ public class Database
 	}
 
 	//use to add a new high score to the database
-	public void AddEntry(String gamename, String player1, String player2, int score)
+	public void AddEntry(float damageDealt, float damageReceived, float distanceTraveled,
+                         int goldCollected, int unitsKilled, int unitsMade)
 	{
 		//create content values
 		ContentValues values = new ContentValues();
 
-		values.put("GAMENAME", gamename);
-		values.put("PLAYER1NAME", player1);
-		values.put("PLAYER2NAME", player2);
-		values.put("SCORE", score);
+		values.put("GAMETIME", System.currentTimeMillis());
+        values.put("DAMAGEDEALT", damageDealt);
+        values.put("DAMAGERECEIVED", damageReceived);
+        values.put("DISTANCETRAVELED", distanceTraveled);
+        values.put("GOLDCOLLECTED", goldCollected);
+        values.put("UNITSKILLED", unitsKilled);
+        values.put("UNITSMADE", unitsMade);
 
 		//add content values as a row
 		database.insert(DATABASE_TABLE_NAME, null, values);
@@ -80,10 +90,12 @@ public class Database
 		List<Entry> entries = new ArrayList<Entry>();
 
 		//get cursor to DB from query
-        String[] tmp = new String[] {"GAMENAME", "PLAYER1NAME", "PLAYER2NAME", "SCORE"};
+        String[] query = {"GAMETIME", "DAMAGEDEALT", "DAMAGERECEIVED", "DISTANCETRAVELED",
+                          "GOLDCOLLECTED", "UNITSKILLED", "UNITSMADE"};
+
 		Cursor cursor = database.query(
             DATABASE_TABLE_NAME,
-            tmp,
+            query,
             null, null, null, null, null);
 
 		//count the number of entries
@@ -92,13 +104,17 @@ public class Database
 		for(int entry = 0; entry < numberOfEntries; entry++)
 		{
 			Entry record = new Entry();
-			record.GAMENAME	 	= cursor.getString(0);
-			record.PLAYER1NAME	= cursor.getString(1);
-			record.PLAYER1NAME	= cursor.getString(2);
-			record.SCORE		= cursor.getInt(3);
+			record.GAMETIME	 	    = cursor.getInt(0);
+			record.DAMAGEDEALT	    = cursor.getFloat(1);
+			record.DAMAGERECEIVED	= cursor.getFloat(2);
+			record.DISTANCETRAVELED	= cursor.getFloat(3);
+            record.GOLDCOLLECTED	= cursor.getInt(4);
+            record.UNITSKILLED		= cursor.getInt(5);
+            record.UNITSMADE        = cursor.getInt(6);
             entries.add(record);
             cursor.moveToNext();
 		}
+
         return entries;
 	}
 }
