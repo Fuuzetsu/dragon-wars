@@ -1,125 +1,107 @@
 package com.group7.dragonwars.engine.Database;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.ResultSet;
+import android.content.Context;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.SQLException;
+
+import java.util.ArrayList;
 import java.util.List;
+
+
+
 
 public class Database
 {
-	//Database Name "dw_high_scores"
-	//Table Name 	"high_scores"
-	//UserName		"Player"
-	//Password		"Password"
-	
-	//User name for DB
-	private String uName = "Player";
-	
-	//user password for DB
-	private String uPass = "Password";
-	
-	//DB connection
-	private Connection conn;
-	
-	//SQL statement
-	Statement statement;
-	
-	//Query result
-	ResultSet result;
-	
-	List<String> scores;
-	
-	public Database(String dbhost) throws SQLException
+	class Entry extends Object
 	{
-		try
+		public String 	GAMENAME;
+		public String 	PLAYER1NAME;
+		public String 	PLAYER2NAME;
+		public int 	SCORE;
+
+	}
+	private static final String DATABASE_CREATE =
+			"create table high_scores(" +
+			" GAMENAME VARCHAR (20) NOT NULL," +
+			" PLAYER1NAME VARCHAR (20) NOT NULL," +
+			" PLAYER2NAME VARCHAR (20) NOT NULL," +
+			" SCORE INT NOT NULL," +
+			" PRIMARY KEY(GAMENAME)" +
+			");";
+
+	private static final String DATABASE_NAME =	"dw_high_scores";
+
+	private static final String DATABASE_TABLE_NAME = "high_scores";
+
+	private static final int DATABASE_VERSION = 1;
+
+	private SQLiteDatabase database;
+
+	public Database(Context con)
+	{
+		//open the database if it exists else, creates a new data base with that name
+		database = con.openOrCreateDatabase(DATABASE_NAME, 0, null);
+	}
+
+	public void CreateTable()
+	{
+		//creates the high_scores table
+		database.execSQL(DATABASE_CREATE);
+	}
+
+	public void DeleteTable()
+	{
+		Close();
+	}
+
+	//should be called when the DB is no longer needed
+	public void Close()
+	{
+		database.close();
+	}
+
+	//use to add a new high score to the database
+	public void AddEntry(String gamename, String player1, String player2, int score)
+	{
+		//create content values
+		ContentValues values = new ContentValues();
+
+		values.put("GAMENAME", gamename);
+		values.put("PLAYER1NAME", player1);
+		values.put("PLAYER2NAME", player2);
+		values.put("SCORE", score);
+
+		//add content values as a row
+		database.insert(DATABASE_TABLE_NAME, null, values);
+	}
+
+	public List<Entry> GetEntries()
+	{
+		//gets all entries from the high scores table
+		List<Entry> entries = new ArrayList<Entry>();
+
+		//get cursor to DB from query
+        String[] tmp = new String[] {"GAMENAME", "PLAYER1NAME", "PLAYER2NAME", "SCORE"};
+		Cursor cursor = database.query(
+            DATABASE_TABLE_NAME,
+            tmp,
+            null, null, null, null, null);
+
+		//count the number of entries
+		int numberOfEntries = cursor.getCount();
+		cursor.moveToFirst();
+		for(int entry = 0; entry < numberOfEntries; entry++)
 		{
-			String host = "jdbc:derby://localhost:1527/dw_high_scores"; //this is an example of where the DB may be hosted.
-			
-			conn = DriverManager.getConnection( dbhost, uName, uPass);  //connect to DB
-			
-			Statement statement = conn.createStatement( );
+			Entry record = new Entry();
+			record.GAMENAME	 	= cursor.getString(0);
+			record.PLAYER1NAME	= cursor.getString(1);
+			record.PLAYER1NAME	= cursor.getString(2);
+			record.SCORE		= cursor.getInt(3);
+            entries.add(record);
+            cursor.moveToNext();
 		}
-		catch(Exception e)
-		{
-			System.out.println("DB offline.\n High score functionality unavailable");
-			throw new SQLException();
-		}
-	}
-	
-	public void deleteLocalScores()
-	{
-		//delete local copy of scores
-		scores.clear();
-	}
-	
-	public void ResetScores() throws SQLException
-	{
-		//delete the local copy of scores
-		deleteLocalScores();
-		
-		//Delete table "high_scores"
-		String SQL = "DROP TABLE high_scores";
-		result = statement.executeQuery( SQL );
-		
-		
-		/*
-		 * CREATE TABLE dw_high_scores(
-		   column1 datatype,
-		   ...
-		   columnN datatype,
-		   PRIMARY KEY( the primary key )
-		   );
-		 */
-		
-		//Create table "dw_high_scores"; (gamename, player1name, player2name, score, set gamename as primary key)
-		SQL = "CREATE TABLE high_scores( GAMENAME VARCHAR (20) NOT NULL, PLAYER1NAME VARCHAR (20) NOT NULL, PLAYER2NAME VARCHAR (20) NOT NULL, SCORE INT NOT NULL, PRIMARY KEY (GAMENAME));";
-		result = statement.executeQuery( SQL );
-	}
-	
-	public void AddHighScore(String gamename, String player1name, String player2name, int score) throws SQLException
-	{
-		//Add local high score
-		scores.add("'"+ gamename +"', '"+ player1name + "', '" + player2name + "', " + score);
-		
-		//Add high score to table by using INSERT
-		String SQL = "INSERT INTO high_score VALUES ('"+ gamename +"', '"+ player1name + "', '" + player2name + "', " + score + ")";
-		result = statement.executeQuery( SQL );
-	}
-	
-	public void PullHighscores() throws SQLException
-	{
-		//delete the local copy of scores
-		deleteLocalScores();
-		
-		//get all rows from the table
-		String SQL = "select * from high_scores";
-		result = statement.executeQuery( SQL );
-		
-		
-		//get metadata, used to parse row
-		//ResultSetMetaData metadata = result.getMetaData();
-		
-		//get number of rows in the table
-		int numRows = result.getFetchSize();
-		
-		for(int rowNum = 1; rowNum <= numRows; rowNum++)
-		{
-			//set current row
-			result.absolute(rowNum);
-			
-			//get row column by column 
-			String rowData = "";
-			
-			for(int column = 1; column <= 4; column++)
-			{
-				rowData += result.getString(column);
-			}
-			
-			//add the row to the set of scores ready for printing
-			scores.add(rowData);
-		}
+        return entries;
 	}
 }
-
