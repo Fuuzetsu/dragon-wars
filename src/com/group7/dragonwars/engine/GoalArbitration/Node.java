@@ -1,6 +1,8 @@
 package com.group7.dragonwars.engine.GoalArbitration;
 
 import java.util.*;
+import android.util.Log;
+
 
 public class Node {
     private AtomicAction nodeAction;
@@ -28,11 +30,15 @@ public class Node {
 
         //explore tree recursively up to a defined depth
         for (Node child : children) {
-            nodes.addAll((List<AtomicAction>)child.getActions());
+            nodes.addAll(child.getActions());
         }
 
         if (children.size() == 0) {
-            nodes.add(this.nodeAction);
+            if (this.nodeAction != null) {
+                nodes.add(this.nodeAction);
+            } else {
+                Log.d("Node", "The only action we had was null.");
+            }
         }
 
         return nodes;
