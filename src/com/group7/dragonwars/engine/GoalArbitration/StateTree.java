@@ -9,6 +9,7 @@ import com.group7.dragonwars.engine.Player;
 import com.group7.dragonwars.engine.Position;
 import com.group7.dragonwars.engine.Unit;
 
+
 public class StateTree {
     private int maxSize = 200;
     private GameState gameState;
@@ -74,8 +75,9 @@ public class StateTree {
 
         }
 
-        base.Collapse();
         actions = base.getActions();
+        base.Collapse();
+
     }
 
     public List<AtomicAction> getActions() {
