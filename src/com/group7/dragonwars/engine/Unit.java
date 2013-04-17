@@ -51,6 +51,7 @@ public class Unit extends DrawableMapObject {
 
         this.maxHealth = unit.getMaxHealth();
         this.health = this.maxHealth;
+        this.lastDamage = 0.0;
 
         this.maxMovement = unit.getMaxMovement();
         this.movement = this.maxMovement;
