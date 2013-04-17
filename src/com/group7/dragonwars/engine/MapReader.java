@@ -41,8 +41,13 @@ public class MapReader {
 
         /* Make a fake player list for now */
         List<Player> playerList = new ArrayList<Player>();
-        for (Integer i = 0; i < players; ++i)
-            playerList.add(new Player("Player " + (i + 1), playerColours.getInt(i)));
+        for (Integer i = 0; i < players; ++i) {
+            if (i >= 1) {
+                playerList.add(new PlayerAI("AIPlayer " + (i + 1), playerColours.getInt(i)));
+            } else {
+                playerList.add(new Player("Player " + (i + 1), playerColours.getInt(i)));
+            }
+        }
 
         /* Fill in a HashMap for look-up */
         HashMap<Character, JSONObject> fields = new HashMap<Character, JSONObject>();

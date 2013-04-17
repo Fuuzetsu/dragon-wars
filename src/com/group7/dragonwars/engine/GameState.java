@@ -24,6 +24,12 @@ public class GameState {
         this.logic = logic;
         this.players = players;
         this.info = new InformationState(this);
+
+        for (Player p : players) {
+            if (p.isAI()) {
+                p.setState(this);
+            }
+        }
     }
 
     public List<Position> getUnitDestinations(GameField field) {
@@ -197,6 +203,11 @@ public class GameState {
             playerIndex = 0;
             advanceTurn();
         }
+
+        if (getCurrentPlayer().isAI()) {
+            getCurrentPlayer().takeTurn();
+            nextPlayer();
+        }
     }
 
     private void advanceTurn() {
@@ -250,7 +261,7 @@ public class GameState {
     public boolean isGameFinished() {
         return gameFinished;
     }
-    
+
     public void setGameFinished(boolean gameFinished) {
         this.gameFinished = gameFinished;
     }

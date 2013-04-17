@@ -6,7 +6,7 @@ import com.group7.dragonwars.engine.GoalArbitration.AtomicAction;
 import com.group7.dragonwars.engine.GoalArbitration.StateTree;
 
 public class PlayerAI extends Player {
-    GameState gameState;
+    private GameState gameState;
     //Evaluator evaluator;
     List<AtomicAction> actions;
 
@@ -14,7 +14,11 @@ public class PlayerAI extends Player {
         super(name, colour);
         gameState = gamestate;
     }
-    
+
+    public PlayerAI(final String name, final Integer colour) {
+        super(name, colour);
+    }
+
     public boolean isAI() {
         return true;
         /* this is to be used to determine whether the user should be
@@ -23,6 +27,12 @@ public class PlayerAI extends Player {
          */
     }
 
+    @Override
+    public void setState(final GameState state) {
+        gameState = state;
+    }
+
+    @Override
     public void takeTurn() {
         UpdateActions();
 

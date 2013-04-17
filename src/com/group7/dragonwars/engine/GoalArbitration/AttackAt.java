@@ -1,18 +1,31 @@
 package com.group7.dragonwars.engine.GoalArbitration;
 
 import com.group7.dragonwars.engine.GameState;
+import com.group7.dragonwars.engine.Position;
 import com.group7.dragonwars.engine.Unit;
 
-public class AttackAt extends AtomicAction {
-    Unit targetUnit;
 
-    public AttackAt(GameState gameState, Unit unit, Unit target, float value) {
+public class AttackAt extends AtomicAction {
+    private Unit targetUnit;
+    private Position moveTo;
+
+    public AttackAt(GameState gameState, Unit unit, Unit target,
+                    float value, Position moveTo) {
         super(gameState,unit,value);
         targetUnit = target;
+        this.moveTo = moveTo;
     }
 
     @Override
     public void Perform() {
-        super.gameState.attack(super.getUnit(), targetUnit);
+        Boolean moved = true;
+        if (moveTo != null) {
+            super.gameState.move(getUnit(), moveTo);
+        }
+
+        /* Only attack if we managed to move (or pretended to) */
+        if (moved) {
+            super.gameState.attack(getUnit(), targetUnit);
+        }
     }
 }

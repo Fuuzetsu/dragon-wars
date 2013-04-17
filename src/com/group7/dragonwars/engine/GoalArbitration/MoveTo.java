@@ -14,6 +14,6 @@ public class MoveTo extends AtomicAction {
 
     @Override
     public void Perform() {
-        getUnit().setPosition(destination);
+        super.gameState.move(getUnit(), destination);
     }
 }
