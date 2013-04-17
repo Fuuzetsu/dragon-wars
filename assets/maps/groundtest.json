@@ -1,0 +1,68 @@
+{
+    "mapName": "Small Ground",
+    "sizeX": 3,
+    "sizeY": 3,
+    "players": 2,
+    "playerColours": [ -16776961, -256 ],
+    "fields": {
+        "G": {
+            "name": "Grass",
+            "file": "grass",
+            "dir": "drawable",
+            "package": "com.group7.dragonwars",
+            "movementModifier": 1.0,
+            "attackModifier": 1.0,
+            "defenseModifier": 1.1,
+            "accessible": true,
+            "flightOnly": false
+        },
+        "S": {
+            "name": "Sand",
+            "file": "sand",
+            "dir": "drawable",
+            "package": "com.group7.dragonwars",
+            "movementModifier": 0.5,
+            "attackModifier": 1.0,
+            "defenseModifier": 1.1,
+            "accessible": true,
+            "flightOnly": false
+        }
+    },
+    "units": {
+        "S": {
+            "name": "Soldier",
+            "file": "soldier",
+            "dir": "drawable",
+            "package": "com.group7.dragonwars",
+            "ranged": false,
+            "flying": false,
+            "maxHealth": 10,
+            "maxMovement": 5,
+            "attack": 2.0,
+            "meleeDefense": 1.0,
+            "rangeDefense": 1.0,
+            "productionCost": 5
+        }
+    },
+    "buildings": {
+    },
+    "terrain": [
+        "SSS",
+        "GSG",
+        "SSS"
+    ],
+    "startingBuildingPos": [
+    ],
+    "startingUnitPos": [
+        {"unit": "S",
+         "posX": 1,
+         "posY": 1,
+         "owner": 1
+        },
+        {"unit": "S",
+         "posX": 0,
+         "posY": 1,
+         "owner": 2
+        }
+    ]
+}
