@@ -87,8 +87,12 @@ public class StateTree {
                 continue;
             }
 	    Unit bestBuildable = getBestBuildableUnit(building);
-            
-            
+            if (bestBuildable == null) {
+                continue;
+            }
+            AtomicAction bestAction = new BuildUnit(gameState, bestBuildable, 0f);
+	    base.AddChildNode(0f, bestAction);
+            // TODO: is this correct? What are the two values (that I've put as 0f for now)? 
         }
 
         actions = base.getActions();
