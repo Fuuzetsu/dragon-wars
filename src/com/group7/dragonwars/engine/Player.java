@@ -107,4 +107,9 @@ public class Player {
     public void takeTurn() {
         return; /* Regular players do nothing here */
     }
+
+    /* For AI to override */
+    public void setState(final GameState gs) {
+
+    }
 }
