@@ -656,7 +656,6 @@ public final class GameView extends SurfaceView
                           + " attacks " + defender);
                     state.attack(attacker, defender);
                     attacker.setFinishedTurn(true);
-
                 }
             }
             selected = newselected;

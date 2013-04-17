@@ -13,15 +13,26 @@ import android.widget.Button;
 
 public class MainMenuActivity extends Activity implements OnClickListener {
 
-    private Button btnBattle;
+    private Button btnBattle, btnStats, btnQuit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
         setContentView(R.layout.activity_main_menu);
         this.btnBattle = (Button)this.findViewById(R.id.btnBattle);
         this.btnBattle.setOnClickListener(this);
+
+        this.btnStats = (Button)this.findViewById(R.id.btnStats);
+        this.btnStats.setOnClickListener(this);
+
+        /* Until the DB is ported to Android */
+        this.btnStats.setClickable(false);
+        this.btnStats.setEnabled(false);
+
+        this.btnQuit = (Button)this.findViewById(R.id.btnQuit);
+        this.btnQuit.setOnClickListener(this);
+
     }
 
     @Override
@@ -35,7 +46,7 @@ public class MainMenuActivity extends Activity implements OnClickListener {
         // 6. onDestroy (state lost)
         //Toast.makeText(getApplicationContext(), "If the user had a game in progress when they quit the app (without properly saving and exiting), we will offer to resume it now (we are nice like that)", Toast.LENGTH_LONG).show();
         super.onStart();
-        
+
         AssetManager ass = getAssets();
         try {
             String[] files = ass.list("maps");
@@ -54,6 +65,16 @@ public class MainMenuActivity extends Activity implements OnClickListener {
             Intent intent = new Intent(this, MapSelectActivity.class);
             startActivity(intent);
             finish();
+        }
+
+        if (v == this.btnStats) {
+            setContentView(R.layout.loading_screen);
+            Intent intent = new Intent(this, StatisticsActivity.class);
+            startActivity(intent);
+        }
+
+        if (v == this.btnQuit) {
+            System.exit(0);
         }
     }
 }
