@@ -17,6 +17,7 @@ public class Player {
 
     List<Unit> ownedUnits = new ArrayList<Unit>();
     List<Building> ownedBuildings = new ArrayList<Building>();
+    private boolean isAi = false;
 
     public Player(String name, final Integer colour) {
         this.name = name;
@@ -100,7 +101,11 @@ public class Player {
         unitSprites = sprites;
     }
     
-    public boolean isAI() {
-        return false;
+    public boolean isAi() {
+        return this.isAi ;
+    }
+    
+    public void setIsAi(boolean isAi) {
+        this.isAi = isAi;
     }
 }

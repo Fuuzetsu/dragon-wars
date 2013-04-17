@@ -97,7 +97,7 @@ public class MapReader {
 
     }
 
-    public static String getBasicMapInformation(final String filename,
+    public static BasicMapInfo getBasicMapInformation(final String filename,
                                                 final Activity activity) throws JSONException {
         String jsonSource = "";
 
@@ -111,10 +111,10 @@ public class MapReader {
         Integer sizeY = m.getInt("sizeY");
         Integer players = m.getInt("players");
 
-        String result = String.format("%s - %dx%d - %d Players", mapName,
+        String desc = String.format("%s - %dx%d - %d Players", mapName,
                                       sizeX, sizeY, players);
-        return result;
-
+        
+        return new BasicMapInfo(mapName, desc, filename, players);
     }
 
     public static GameMap readMapFromFile(final String filename,
@@ -340,3 +340,4 @@ public class MapReader {
         }
     }
 }
+
