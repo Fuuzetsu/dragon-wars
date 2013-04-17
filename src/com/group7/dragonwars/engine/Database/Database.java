@@ -34,7 +34,7 @@ public class Database
         " GOLDCOLLECTED INT NOT NULL," +
         " UNITSKILLED INT NOT NULL," +
         " UNITSMADE INT NOT NULL," +
-        " PRIMARY KEY(GAMENAME)" +
+        " PRIMARY KEY(GAMETIME)" +
         ");";
 
 
