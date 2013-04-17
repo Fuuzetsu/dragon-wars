@@ -14,7 +14,7 @@ public class PlayerAI extends Player {
         super(name, colour);
         gameState = gamestate;
     }
-    
+
     public boolean isAI() {
         return true;
         /* this is to be used to determine whether the user should be
@@ -23,6 +23,7 @@ public class PlayerAI extends Player {
          */
     }
 
+    @Override
     public void takeTurn() {
         UpdateActions();
 

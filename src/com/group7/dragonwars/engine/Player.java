@@ -99,8 +99,12 @@ public class Player {
     public void setUnitSprites(final  Map<String, Bitmap> sprites) {
         unitSprites = sprites;
     }
-    
+
     public boolean isAI() {
         return false;
+    }
+
+    public void takeTurn() {
+        return; /* Regular players do nothing here */
     }
 }

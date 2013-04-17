@@ -197,6 +197,11 @@ public class GameState {
             playerIndex = 0;
             advanceTurn();
         }
+
+        if (currentPlayer.isAI()) {
+            getCurrentPlayer().takeTurn();
+            nextPlayer();
+        }
     }
 
     private void advanceTurn() {
@@ -250,7 +255,7 @@ public class GameState {
     public boolean isGameFinished() {
         return gameFinished;
     }
-    
+
     public void setGameFinished(boolean gameFinished) {
         this.gameFinished = gameFinished;
     }
