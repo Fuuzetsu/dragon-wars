@@ -66,9 +66,9 @@ public class GameActivity extends Activity {
             System.exit(1);
         }
 
-        state = new GameState(map, new Logic(), map.getPlayers());
         setContentView(R.layout.activity_game);
         GameView gameView = (GameView) this.findViewById(R.id.gameView);
+        state = new GameState(map, new Logic(), map.getPlayers(), gameView);
         Button menuButton = (Button) this.findViewById(R.id.menuButton);
         menuButton.setOnClickListener(gameView);
         gameView.setState(state, this);
