@@ -56,7 +56,9 @@ public class PlayerSelectActivity extends Activity implements OnClickListener {
         if (v == this.backButton) {
             Intent intent = new Intent(this, MapSelectActivity.class);
             startActivity(intent);
+            finish();
         } else if (v == this.beginButton) {
+            setContentView(R.layout.loading_screen);
             Intent intent = new Intent(this, GameActivity.class);
             for (int i = 0; i < numPlayers; ++i) {
                 isAi[i] = players[i].isAi();
