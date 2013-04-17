@@ -36,6 +36,7 @@ public class StatisticsActivity extends Activity implements OnClickListener {
         String[] statsEntries = new String[6];
 
         Database.Entry entry = db.GetSummedEntries();
+        db.Close();
 
         statsEntries[0] = String.format("Damage dealt: %f", entry.DAMAGEDEALT);
         statsEntries[1] = String.format("Damage received: %f", entry.DAMAGERECEIVED);
