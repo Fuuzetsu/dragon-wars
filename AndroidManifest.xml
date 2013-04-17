@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.group7.dragonwars.MainMenuActivity"
+            android:name=".MainMenuActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,11 +23,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.group7.dragonwars.SettingsActivity"
+            android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" >
         </activity>
         <activity
-            android:name="com.group7.dragonwars.GameActivity"
+            android:name=".GameActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_game"
             android:theme="@style/FullscreenTheme" >
@@ -36,15 +36,15 @@
         <uses-library android:name="android.test.runner" />
 
         <activity
-            android:name="com.group7.dragonwars.MapSelectActivity"
+            android:name=".MapSelectActivity"
             android:label="@string/title_activity_map_select" >
         </activity>
         <activity
-            android:name="com.group7.dragonwars.Results"
+            android:name=".Results"
             android:label="@string/title_activity_results" >
         </activity>
         <activity
-            android:name="com.group7.dragonwars.PlayerSelectActivity"
+            android:name=".PlayerSelectActivity"
             android:label="@string/title_activity_player_select" >
         </activity>
     </application>
