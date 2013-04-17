@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import com.group7.dragonwars.GameView;
+
 import android.util.Log;
 
 public class GameState {
@@ -18,17 +20,17 @@ public class GameState {
     private Boolean gameFinished = false;
     private Statistics stats = new Statistics();
     private InformationState info;
+    private GameView gvCallback;
 
-    public GameState(GameMap map, Logic logic, List<Player> players) {
+    public GameState(GameMap map, Logic logic, List<Player> players, GameView gv) {
         this.map = map;
         this.logic = logic;
         this.players = players;
         this.info = new InformationState(this);
+        this.gvCallback = gv;
 
         for (Player p : players) {
-            if (p.isAI()) {
-                p.setState(this);
-            }
+            p.setGameState(this);
         }
     }
 
@@ -79,7 +81,7 @@ public class GameState {
         Log.v(null, "Dmg to atckr: " + damage.getRight() + " Dmg to dfndr: " + damage.getLeft());
 
         defender.reduceHealth(damage.getLeft());
-
+        gvCallback.addDamagedUnit(defender, damage.getLeft());
         Boolean died = removeUnitIfDead(defender);
         stats.increaseStatistic("Damage dealt", damage.getLeft());
 
@@ -89,6 +91,7 @@ public class GameState {
 
         /* Possibly counter */
         attacker.reduceHealth(damage.getRight());
+        gvCallback.addDamagedUnit(attacker, damage.getRight());
         removeUnitIfDead(attacker);
 
         stats.increaseStatistic("Damage received", damage.getRight());
@@ -204,7 +207,7 @@ public class GameState {
             advanceTurn();
         }
 
-        if (getCurrentPlayer().isAI()) {
+        if (getCurrentPlayer().isAi()) {
             getCurrentPlayer().takeTurn();
             nextPlayer();
         }

@@ -24,10 +24,16 @@
                 android:text="Start Battle" />
 
             <Button
-                android:id="@+id/btnNop"
+                android:id="@+id/btnStats"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="NOP" />
+                android:text="Show statistics" />
+
+            <Button
+                android:id="@+id/btnQuit"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Quit" />
 
         </LinearLayout>
 
