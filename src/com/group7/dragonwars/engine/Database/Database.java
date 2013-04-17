@@ -11,12 +11,11 @@ import java.util.List;
 
 public class Database
 {
-	class Entry extends Object
+	public class Entry
 	{
-        public int GAMETIME;
         public float DAMAGEDEALT;
         public float DAMAGERECEIVED;
-        public float DISTANCETRAVELED;
+        public float DISTANCETRAVELLED;
         public int GOLDCOLLECTED;
         public int UNITSKILLED;
         public int UNITSMADE;
@@ -27,7 +26,7 @@ public class Database
         " GAMETIME INT NOT NULL," +
         " DAMAGEDEALT FLOAT NOT NULL," +
         " DAMAGERECEIVED FLOAT NOT NULL," +
-        " DISTANCETRAVELED FLOAT NOT NULL," +
+        " DISTANCETRAVELLED FLOAT NOT NULL," +
         " GOLDCOLLECTED INT NOT NULL," +
         " UNITSKILLED INT NOT NULL," +
         " UNITSMADE INT NOT NULL," +
@@ -66,7 +65,7 @@ public class Database
 	}
 
 	//use to add a new high score to the database
-	public void AddEntry(float damageDealt, float damageReceived, float distanceTraveled,
+	public void AddEntry(float damageDealt, float damageReceived, float distanceTravelled,
                          int goldCollected, int unitsKilled, int unitsMade)
 	{
 		//create content values
@@ -75,7 +74,7 @@ public class Database
 		values.put("GAMETIME", System.currentTimeMillis());
         values.put("DAMAGEDEALT", damageDealt);
         values.put("DAMAGERECEIVED", damageReceived);
-        values.put("DISTANCETRAVELED", distanceTraveled);
+        values.put("DISTANCETRAVELLED", distanceTravelled);
         values.put("GOLDCOLLECTED", goldCollected);
         values.put("UNITSKILLED", unitsKilled);
         values.put("UNITSMADE", unitsMade);
@@ -90,7 +89,7 @@ public class Database
 		List<Entry> entries = new ArrayList<Entry>();
 
 		//get cursor to DB from query
-        String[] query = {"GAMETIME", "DAMAGEDEALT", "DAMAGERECEIVED", "DISTANCETRAVELED",
+        String[] query = {"GAMETIME", "DAMAGEDEALT", "DAMAGERECEIVED", "DISTANCETRAVELLED",
                           "GOLDCOLLECTED", "UNITSKILLED", "UNITSMADE"};
 
 		Cursor cursor = database.query(
@@ -104,10 +103,10 @@ public class Database
 		for(int entry = 0; entry < numberOfEntries; entry++)
 		{
 			Entry record = new Entry();
-			record.GAMETIME	 	    = cursor.getInt(0);
+            /* We don't care about the game time */
 			record.DAMAGEDEALT	    = cursor.getFloat(1);
 			record.DAMAGERECEIVED	= cursor.getFloat(2);
-			record.DISTANCETRAVELED	= cursor.getFloat(3);
+			record.DISTANCETRAVELLED	= cursor.getFloat(3);
             record.GOLDCOLLECTED	= cursor.getInt(4);
             record.UNITSKILLED		= cursor.getInt(5);
             record.UNITSMADE        = cursor.getInt(6);
@@ -117,4 +116,25 @@ public class Database
 
         return entries;
 	}
+
+    public Entry GetSummedEntries() {
+        List<Entry> entries = GetEntries();
+        Entry rec = new Entry();
+        rec.DAMAGEDEALT	     = 0f;
+        rec.DAMAGERECEIVED	 = 0f;
+        rec.DISTANCETRAVELLED = 0f;
+        rec.GOLDCOLLECTED	 = 0;
+        rec.UNITSKILLED		 = 0;
+        rec.UNITSMADE        = 0;
+        for (Entry ent : entries) {
+            rec.DAMAGEDEALT	     += ent.DAMAGEDEALT;
+            rec.DAMAGERECEIVED	 += ent.DAMAGERECEIVED;
+            rec.DISTANCETRAVELLED += ent.DISTANCETRAVELLED;
+            rec.GOLDCOLLECTED	 += ent.GOLDCOLLECTED;
+            rec.UNITSKILLED		 += ent.UNITSKILLED;
+            rec.UNITSMADE        += ent.UNITSMADE;
+        }
+
+        return rec;
+    }
 }

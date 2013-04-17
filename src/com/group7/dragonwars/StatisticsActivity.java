@@ -30,19 +30,19 @@ public class StatisticsActivity extends Activity implements OnClickListener {
     @Override
     protected void onStart() {
         super.onStart();
-        Database db;
-        try {
-            db = new Database("jdbc:derby://localhost:1527/dw_high_scores");
-        } catch (SQLException e) {
-            Log.d("Statistics", "Failed to open the database!");
-            finish();
-        }
-        String[] statsKeys = {"Damage dealt", "Damage received", "Distance travelled",
-                              "Gold received", "Units killed", "Units produced"};
+        Database db = new Database(getApplicationContext());
+
         String[] statsEntries = new String[statsKeys.length];
-        for (int i = 0; i < statsKeys.length; ++i) {
-            statsEntries[i] = statsKeys[i] + ": 0";
-        }
+
+        Database.Entry entry = db.GetSummedEntries();
+
+        statsEntries[0] = String.format("Damage dealt: %f", entry.DAMAGEDEALT);
+        statsEntries[1] = String.format("Damage received: %f", entry.DAMAGERECEIVED);
+        statsEntries[2] = String.format("Distance travelled: %f", entry.DISTANCETRAVELLED);
+        statsEntries[3] = String.format("Gold collected: %d", entry.GOLDCOLLECTED);
+        statsEntries[4] = String.format("Units killed: %d", entry.UNITSKILLED);
+        statsEntries[5] = String.format("Units produced: %d", entry.UNITSMADE);
+
         ArrayAdapter<String> adapter =
             new ArrayAdapter<String>(getBaseContext(),
                                      android.R.layout.simple_list_item_1, statsEntries);
