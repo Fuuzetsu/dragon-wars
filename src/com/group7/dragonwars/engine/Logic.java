@@ -123,7 +123,8 @@ public class Logic {
                         (attacker.getHealth()/attacker.getMaxHealth()));
 
         Double finalDamage = damage - (((fieldDefense * damage) / 2) + ((unitDefense * damage) / 2));
-        Log.v(null, "finalDamage: " + finalDamage + " damage: " + damage + " unitDefense: " + unitDefense + " fieldDefense: " + fieldDefense);
+        Log.d("Logic", "finalDamage: " + finalDamage + " damage: " + damage
+              + " unitDefense: " + unitDefense + " fieldDefense: " + fieldDefense);
         return (attacker.getHealth() > 0.0 ? finalDamage : 0.0);
 
         /*Double attackerMod = attackerField.getAttackModifier();
@@ -160,7 +161,8 @@ public class Logic {
                         (atkHealth/attacker.getMaxHealth()));
 
         double finalDamage = damage - (((fieldDefense * damage) / 2) + ((unitDefense * damage) / 2));
-        Log.v(null, "finalDamage: " + finalDamage + " damage: " + damage + " unitDefense: " + unitDefense + " fieldDefense: " + fieldDefense);
+        Log.d("Logic", "finalDamage: " + finalDamage + " damage: " + damage
+              + " unitDefense: " + unitDefense + " fieldDefense: " + fieldDefense);
 
         return attacker.getHealth() > 0 ? finalDamage : 0;
 
