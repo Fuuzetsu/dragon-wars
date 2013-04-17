@@ -10,12 +10,18 @@ public class PlayerAI extends Player {
     //Evaluator evaluator;
     List<AtomicAction> actions;
 
-    public PlayerAI(String name, Integer colour, GameState gamestate) {
+    public PlayerAI(String name, Integer colour, GameState gameState) {
         super(name, colour);
-        gameState = gamestate;
+        this.gameState = gameState;
     }
     
-    public boolean isAI() {
+    @Override
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
+    }
+    
+    @Override
+    public boolean isAi() {
         return true;
         /* this is to be used to determine whether the user should be
          * allowed to control the current player's units' actions via

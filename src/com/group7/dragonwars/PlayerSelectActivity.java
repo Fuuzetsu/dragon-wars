@@ -24,7 +24,9 @@ public class PlayerSelectActivity extends Activity implements OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player_select);
         backButton = (Button) findViewById(R.id.backButton);
+        backButton.setOnClickListener(this);
         beginButton = (Button) findViewById(R.id.beginButton);
+        beginButton.setOnClickListener(this);
     }
     
     @Override
@@ -60,6 +62,7 @@ public class PlayerSelectActivity extends Activity implements OnClickListener {
                 isAi[i] = players[i].isAi();
             }
             bundle.putBooleanArray("isAi", isAi);
+            intent.putExtras(bundle);
             startActivity(intent);
             finish();
         }

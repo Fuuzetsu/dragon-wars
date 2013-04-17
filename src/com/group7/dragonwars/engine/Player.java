@@ -108,4 +108,8 @@ public class Player {
     public void setIsAi(boolean isAi) {
         this.isAi = isAi;
     }
+
+    public void setGameState(GameState gameState) {
+        // just here for the polymorphism
+    }
 }

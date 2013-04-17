@@ -18,7 +18,7 @@ import org.json.*;
 public class MapReader {
     final private static String TAG = "MapReader";
 
-    public static GameMap readMap(List<String> mapLines) throws JSONException {
+    public static GameMap readMap(List<String> mapLines, boolean[] isAi) throws JSONException {
         String jsonSource = "";
 
         for (String s : mapLines)
@@ -41,9 +41,14 @@ public class MapReader {
 
         /* Make a fake player list for now */
         List<Player> playerList = new ArrayList<Player>();
-        for (Integer i = 0; i < players; ++i)
-            playerList.add(new Player("Player " + (i + 1), playerColours.getInt(i)));
-
+        for (Integer i = 0; i < players; ++i) {
+            if (isAi[i]) {
+                playerList.add(new PlayerAI("Player" + (i + 1), playerColours.getInt(i), null));
+                // null because we haven't got a GameState to give to it yet
+            } else {
+                playerList.add(new Player("Player " + (i + 1), playerColours.getInt(i)));
+            }
+        }
         /* Fill in a HashMap for look-up */
         HashMap<Character, JSONObject> fields = new HashMap<Character, JSONObject>();
         Iterator<?> iter = fs.keys();
@@ -118,8 +123,8 @@ public class MapReader {
     }
 
     public static GameMap readMapFromFile(final String filename,
-                                          final Activity activity) throws JSONException {
-        return MapReader.readMap(MapReader.readFile(filename, activity));
+                                          final Activity activity, boolean[] isAi) throws JSONException {
+        return MapReader.readMap(MapReader.readFile(filename, activity), isAi);
     }
 
     private static List<String> readFile(final String filename,
