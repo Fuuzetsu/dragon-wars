@@ -18,6 +18,14 @@ public class Pair<L, R> {
         return this.right;
     }
 
+    public void setLeft(L l) {
+        this.left = l;
+    }
+
+    public void setRight(R r) {
+        this.right = r;
+    }
+
     public String toString() {
         return String.format("(%s, %s)", left, right);
     }
