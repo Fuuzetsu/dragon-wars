@@ -16,6 +16,7 @@ import com.group7.dragonwars.engine.Logic;
 import com.group7.dragonwars.engine.MapReader;
 import com.group7.dragonwars.engine.Player;
 import com.group7.dragonwars.engine.Statistics;
+import com.group7.dragonwars.engine.Database.Database;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -91,6 +92,18 @@ public class GameActivity extends Activity {
         b.putString("winnerName", state.getWinner().getName());
         b.putInt("turns", state.getTurns());
         Statistics stats = state.getStatistics();
+        Double damageDealt = stats.getStatistic("Damage dealt");
+        Double damageReceived = stats.getStatistic("Damage received");
+        Double distanceTravelled = stats.getStatistic("Distance travelled");
+        Integer goldCollected = stats.getStatistic("Gold received").intValue();
+        Integer unitsKilled = stats.getStatistic("Units killed").intValue();
+        Integer unitsMade = stats.getStatistic("Units produced").intValue();
+
+        Database db = new Database(getApplicationContext());
+        db.AddEntry(damageDealt, damageReceived, distanceTravelled,
+                    goldCollected, unitsKilled, unitsMade);
+        db.Close();
+
         for (Map.Entry<String, Double> ent : stats.getEntrySet()) {
             b.putDouble(ent.getKey(), ent.getValue().doubleValue());
         }

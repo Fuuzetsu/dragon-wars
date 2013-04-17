@@ -26,9 +26,10 @@ public class MainMenuActivity extends Activity implements OnClickListener {
         this.btnStats = (Button)this.findViewById(R.id.btnStats);
         this.btnStats.setOnClickListener(this);
 
-        /* Until the DB is ported to Android */
-        this.btnStats.setClickable(false);
-        this.btnStats.setEnabled(false);
+        /*
+          this.btnStats.setClickable(false);
+          this.btnStats.setEnabled(false);
+        */
 
         this.btnQuit = (Button)this.findViewById(R.id.btnQuit);
         this.btnQuit.setOnClickListener(this);
