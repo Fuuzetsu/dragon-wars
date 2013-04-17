@@ -85,8 +85,9 @@ public class StateTree {
         for (Building building : gameState.getMap().entrySet()) {
             if (!building.getOwner().equals(stateTreeOwner)) {
                 continue;
-		int bestBuildable = getBestBuildableUnit(building);
             }
+	    Unit bestBuildable = getBestBuildableUnit(building);
+            
             
         }
 
@@ -131,7 +132,23 @@ public class StateTree {
         }
     }
 
-    private int getBestBuildableUnit(Building building) {
+    private Unit getBestBuildableUnit(Building building) {
         ArrayList<Unit> buildable = building.getProducibleUnits();
-        
+        if (buildable.size() == 0) {
+            return null;
+        }
+        bestUnit = buildable.get(0);
+        for (Unit unit : buildable) {
+	    cost = unit.getProductionCost();
+            if (cost <= stateTreeOwner.getGoldAmount() && cost > bestUnit.getProductionCost) {
+                bestUnit = unit;
+            }
+        }
+        if (bestUnit.getProductionCost() > stateTreeOwner.getGoldAmount()) {
+            return null;
+        } else {
+            return bestUnit;
+        }
+    }
 }
+
