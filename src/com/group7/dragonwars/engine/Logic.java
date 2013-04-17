@@ -9,6 +9,25 @@ public class Logic {
 
     private final static String TAG = "Logic";
 
+    public List<Position> findValidFieldsNextToUnit(final GameMap map, final Unit attackerUnit,
+                                                    final Unit targetUnit) {
+        List<Position> potential = getValidNeighbours(map, targetUnit.getPosition());
+        List<Position> dests = destinations(map, attackerUnit);
+        Iterator<Position> iter = potential.iterator();
+        /* Remove positions we can't reach anyway */
+        while (iter.hasNext()) {
+            Position p = iter.next();
+            GameField gf = map.getField(p);
+
+            if ((gf.hostsUnit() && !gf.getUnit().equals(attackerUnit))
+                || !dests.contains(p)) {
+                iter.remove();
+            }
+        }
+
+        return potential;
+    }
+
     public List<Position> findPath(GameMap map, Unit unit, Position destination) {
         return AStar(map, unit, destination);
     }
@@ -104,6 +123,18 @@ public class Logic {
     }
 
 
+    /* Returns damage as if the attacker was standing on a different position */
+    public Pair<Double, Double> calculateDamageFrom(final GameMap map, final Unit attacker,
+                                                    final Unit defender, final Position position) {
+        /* We can cheat and temporarily set a unit's position to the fake one */
+        Position originalPosition = attacker.getPosition();
+        attacker.setPosition(position);
+        Pair<Double, Double> damage = calculateDamage(map, attacker, defender);
+        attacker.setPosition(originalPosition);
+
+        return damage;
+    }
+
 
     public Pair<Double, Double> calculateDamage(GameMap map, Unit attacker,
             Unit defender) {
@@ -111,6 +142,7 @@ public class Logic {
                (calculateRawDamage(map, attacker, defender),
                 calculateCounterDamage(map, attacker, defender));
     }
+
 
     public Double calculateRawDamage(GameMap map, Unit attacker, Unit defender) {
         GameField defenderField = map.getField(defender.getPosition());
@@ -127,17 +159,6 @@ public class Logic {
               + " unitDefense: " + unitDefense + " fieldDefense: " + fieldDefense);
         return (attacker.getHealth() > 0.0 ? finalDamage : 0.0);
 
-        /*Double attackerMod = attackerField.getAttackModifier();
-        Double defenderMod = defenderField.getDefenseModifier();
-
-        Double defense = defender.getHealth() * (defenderMod / 100);
-        defense *= DEFENDER_DISADVANTAGE;
-
-        Double rawDamage = attacker.getHealth() * (attackerMod / 100);
-
-        Double damage = rawDamage - defense;
-
-        return (defense < 0) ? 0 : damage;*/
     }
 
     public Double calculateCounterDamage(GameMap map, Unit attacker, Unit defender) {
@@ -165,20 +186,6 @@ public class Logic {
               + " unitDefense: " + unitDefense + " fieldDefense: " + fieldDefense);
 
         return attacker.getHealth() > 0 ? finalDamage : 0;
-
-        /*
-        // No defense disadvantage on a counter.
-        Double attackerMod = attackerField.getAttackModifier();
-        Double defenderMod = defenderField.getDefenseModifier();
-
-        Double defense = defender.getHealth() * (defenderMod / 100);
-
-        Double rawDamage = atkHealth * (attackerMod / 100);
-
-        Double damage = rawDamage - defense;
-
-        return (defense < 0) ? 0 : damage;
-        */
     }
 
     private List<Position> AStar(GameMap map, Unit unit, Position destination) {
