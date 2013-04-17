@@ -14,13 +14,13 @@ public class Unit extends DrawableMapObject {
     private Player owner;
     private Boolean isFlying;
     private Integer productionCost;
-    
+
     private static DecimalFormat decformat;
-    
+
     static {
         decformat = new DecimalFormat("#.##");
     }
-    
+
     public Unit(String name, Double maxHealth, Integer maxMovement,
                 Double attack, Double meleeDefense, Double rangeDefense,
                 Boolean isFlying, Integer productionCost, String spriteLocation,
@@ -76,7 +76,7 @@ public class Unit extends DrawableMapObject {
     public Double getMaxHealth() {
         return this.maxHealth;
     }
-    
+
     public Double getLastDamage() {
         return this.lastDamage;
     }
@@ -114,7 +114,7 @@ public class Unit extends DrawableMapObject {
     }
 
     public void reduceHealth(Double damage) {
-        this.lastDamage = -damage;
+        this.lastDamage += -damage;
         this.health -= damage;
 
         if (this.health < 0) {
@@ -149,6 +149,10 @@ public class Unit extends DrawableMapObject {
 
     public Boolean isFlying() {
         return this.isFlying;
+    }
+
+    public void resetLastDamage() {
+        this.lastDamage = 0.0;
     }
 
     public Boolean reduceMovement(Integer amount) {

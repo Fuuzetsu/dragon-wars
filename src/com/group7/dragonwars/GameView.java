@@ -42,6 +42,7 @@ import com.group7.dragonwars.engine.GameFinishedException;
 import com.group7.dragonwars.engine.GameMap;
 import com.group7.dragonwars.engine.GameState;
 import com.group7.dragonwars.engine.Logic;
+import com.group7.dragonwars.engine.Pair;
 import com.group7.dragonwars.engine.Player;
 import com.group7.dragonwars.engine.Position;
 import com.group7.dragonwars.engine.Unit;
@@ -77,9 +78,7 @@ public final class GameView extends SurfaceView
     private Paint unitHealthOutlinePaint;
 
     private Paint showDamagePaint;
-    private Long damageTimeEnd = 0L;
-    private Unit showDamageAttacker = null;
-    private Unit showDamageDefender = null;
+    private List<Pair<Unit, Long>> damagedUnits = new ArrayList<Pair<Unit, Long>>();
     private int showDamageSeconds = 4;
 
     private Context context;
@@ -151,6 +150,17 @@ public final class GameView extends SurfaceView
         Log.d(TAG, "Initialising graphics.");
         initialiseGraphics();
         Log.d(TAG, "Done initalising graphics.");
+    }
+
+    public void addDamagedUnit(Unit unit) {
+        for (Pair<Unit, Long> uPair : damagedUnits) {
+            if (uPair.getLeft().equals(unit)) {
+                /* Update time */
+                uPair.setRight(System.currentTimeMillis());
+                return;
+            }
+        }
+        damagedUnits.add(new Pair<Unit, Long>(unit, System.currentTimeMillis()));
     }
 
     private void initialiseGraphics() {
@@ -377,43 +387,32 @@ public final class GameView extends SurfaceView
         }
 
 
-        //try {
-            Long currentTime = System.currentTimeMillis();
-            if (damageTimeEnd > currentTime) {
 
-                if (showDamageAttacker != null
-                    && !showDamageAttacker.isDead()) {
-                    Position atkPos = showDamageAttacker.getPosition();
-                    RectF dest = getSquare(
-                        tilesize * atkPos.getX() + scrollOffset.getX(),
-                        tilesize * atkPos.getY() + scrollOffset.getY(),
-                        tilesize);
-                    canvas.drawText(
-                        decformat.format(showDamageAttacker.getLastDamage()),
-                        dest.right - (tilesize / 2), dest.top, showDamagePaint);
-                }
-                if (showDamageDefender != null
-                    && !showDamageDefender.isDead()) {
-                    Position defPos = showDamageDefender.getPosition();
-                    RectF dest = getSquare(
-                        tilesize * defPos.getX() + scrollOffset.getX(),
-                        tilesize * defPos.getY() + scrollOffset.getY(),
-                        tilesize);
-                    canvas.drawText(
-                        decformat.format(showDamageDefender.getLastDamage()),
-                        dest.right - (tilesize / 2), dest.top, showDamagePaint);
-                }
-
-            } else {
-                showDamageAttacker = null;
-                showDamageDefender = null;
+        Long currentTime = System.currentTimeMillis();
+        Iterator<Pair<Unit, Long>> iter = damagedUnits.iterator();
+        while (iter.hasNext()) {
+            Pair<Unit, Long> uPair = iter.next();
+            Unit currentUnit = uPair.getLeft();
+            if (currentUnit == null || currentUnit.isDead()) {
+                iter.remove();
+                continue;
             }
-        //} catch (IllegalArgumentException e) {
-        //    Log.d(TAG, "IllegalArgumentException thrown at damage print: " + e);
-        //} /* Why is this here? */
-        /* FIXME: If it turns out that commenting this try doesn't cause any problems, then
-         * remove it totally
-         */
+
+            if (uPair.getRight() + showDamageSeconds * 1000 < currentTime) {
+                currentUnit.resetLastDamage();
+                iter.remove();
+                continue;
+            }
+
+            Position atkPos = currentUnit.getPosition();
+            RectF dest = getSquare(
+                tilesize * atkPos.getX() + scrollOffset.getX(),
+                tilesize * atkPos.getY() + scrollOffset.getY(),
+                tilesize);
+            canvas.drawText(
+                decformat.format(currentUnit.getLastDamage()),
+                dest.right - (tilesize / 2), dest.top, showDamagePaint);
+        }
 
         highlightPositions(canvas, unitDests, "highlighter");
         highlightPositions(canvas, state.getCurrentPath(), "pathHighlighter");
@@ -657,11 +656,6 @@ public final class GameView extends SurfaceView
                     state.attack(attacker, defender);
                     attacker.setFinishedTurn(true);
 
-                    showDamageAttacker = attacker;
-                    showDamageDefender = defender;
-
-                    damageTimeEnd = showDamageSeconds * 1000
-                        + System.currentTimeMillis();
                 }
             }
             selected = newselected;

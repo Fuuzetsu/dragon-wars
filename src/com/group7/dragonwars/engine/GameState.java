@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import com.group7.dragonwars.GameView;
+
 import android.util.Log;
 
 public class GameState {
@@ -18,12 +20,14 @@ public class GameState {
     private Boolean gameFinished = false;
     private Statistics stats = new Statistics();
     private InformationState info;
+    private GameView gvCallback;
 
-    public GameState(GameMap map, Logic logic, List<Player> players) {
+    public GameState(GameMap map, Logic logic, List<Player> players, GameView gv) {
         this.map = map;
         this.logic = logic;
         this.players = players;
         this.info = new InformationState(this);
+        this.gvCallback = gv;
 
         for (Player p : players) {
             p.setGameState(this);
