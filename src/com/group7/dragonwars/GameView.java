@@ -377,7 +377,7 @@ public final class GameView extends SurfaceView
         }
 
 
-        try {
+        //try {
             Long currentTime = System.currentTimeMillis();
             if (damageTimeEnd > currentTime) {
 
@@ -408,10 +408,12 @@ public final class GameView extends SurfaceView
                 showDamageAttacker = null;
                 showDamageDefender = null;
             }
-        } catch (IllegalArgumentException e) {
-            Log.d(TAG, "IllegalArgumentException thrown at damage print: " + e);
-        } /* Why is this here? */
-
+        //} catch (IllegalArgumentException e) {
+        //    Log.d(TAG, "IllegalArgumentException thrown at damage print: " + e);
+        //} /* Why is this here? */
+        /* FIXME: If it turns out that commenting this try doesn't cause any problems, then
+         * remove it totally
+         */
 
         highlightPositions(canvas, unitDests, "highlighter");
         highlightPositions(canvas, state.getCurrentPath(), "pathHighlighter");
@@ -585,7 +587,7 @@ public final class GameView extends SurfaceView
 
         if (this.map.isValidField(touchX, touchY)) {
             whichMenu = MenuType.NONE;
-            if (!state.getCurrentPlayer().isAI()) {
+            if (!state.getCurrentPlayer().isAi()) {
                 GameField newselectedField = map.getField(newselected);
                 if (!state.getAttackables().contains(newselected)) {
                     if (map.getField(selected).hostsUnit()) {

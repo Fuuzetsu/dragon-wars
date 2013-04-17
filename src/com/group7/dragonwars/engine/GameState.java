@@ -26,9 +26,7 @@ public class GameState {
         this.info = new InformationState(this);
 
         for (Player p : players) {
-            if (p.isAI()) {
-                p.setState(this);
-            }
+            p.setGameState(this);
         }
     }
 
@@ -204,7 +202,7 @@ public class GameState {
             advanceTurn();
         }
 
-        if (getCurrentPlayer().isAI()) {
+        if (getCurrentPlayer().isAi()) {
             getCurrentPlayer().takeTurn();
             nextPlayer();
         }

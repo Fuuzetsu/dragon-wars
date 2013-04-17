@@ -71,7 +71,7 @@ public class InformationState {
         }
 
         Unit u = field.getUnit();
-        if (containingState.getCurrentPlayer().isAI() || u.getOwner() != containingState.getCurrentPlayer() ||
+        if (containingState.getCurrentPlayer().isAi() || u.getOwner() != containingState.getCurrentPlayer() ||
             u.hasFinishedTurn()) {
             lastUnit = null;
             lastField = null;

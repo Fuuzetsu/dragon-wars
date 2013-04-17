@@ -17,6 +17,7 @@ public class Player {
 
     List<Unit> ownedUnits = new ArrayList<Unit>();
     List<Building> ownedBuildings = new ArrayList<Building>();
+    private boolean isAi = false;
 
     public Player(String name, final Integer colour) {
         this.name = name;
@@ -99,9 +100,17 @@ public class Player {
     public void setUnitSprites(final  Map<String, Bitmap> sprites) {
         unitSprites = sprites;
     }
+    
+    public boolean isAi() {
+        return this.isAi ;
+    }
+    
+    public void setIsAi(boolean isAi) {
+        this.isAi = isAi;
+    }
 
-    public boolean isAI() {
-        return false;
+    public void setGameState(GameState gameState) {
+        return;// just here for the polymorphism
     }
 
     public void takeTurn() {
@@ -110,6 +119,6 @@ public class Player {
 
     /* For AI to override */
     public void setState(final GameState gs) {
-
+        return;
     }
 }

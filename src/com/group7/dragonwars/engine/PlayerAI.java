@@ -10,26 +10,22 @@ public class PlayerAI extends Player {
     //Evaluator evaluator;
     List<AtomicAction> actions;
 
-    public PlayerAI(String name, Integer colour, GameState gamestate) {
-        super(name, colour);
-        gameState = gamestate;
-    }
-
     public PlayerAI(final String name, final Integer colour) {
         super(name, colour);
     }
-
-    public boolean isAI() {
+    
+    @Override
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
+    }
+    
+    @Override
+    public boolean isAi() {
         return true;
         /* this is to be used to determine whether the user should be
          * allowed to control the current player's units' actions via
          * the touchscreen
          */
-    }
-
-    @Override
-    public void setState(final GameState state) {
-        gameState = state;
     }
 
     @Override
