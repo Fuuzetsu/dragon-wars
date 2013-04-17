@@ -81,7 +81,7 @@ public class GameState {
         Log.v(null, "Dmg to atckr: " + damage.getRight() + " Dmg to dfndr: " + damage.getLeft());
 
         defender.reduceHealth(damage.getLeft());
-        gvCallback.addDamagedUnit(defender, damage.getLeft());
+        gvCallback.addDamagedUnit(defender);
         Boolean died = removeUnitIfDead(defender);
         stats.increaseStatistic("Damage dealt", damage.getLeft());
 
@@ -91,7 +91,7 @@ public class GameState {
 
         /* Possibly counter */
         attacker.reduceHealth(damage.getRight());
-        gvCallback.addDamagedUnit(attacker, damage.getRight());
+        gvCallback.addDamagedUnit(attacker);
         removeUnitIfDead(attacker);
 
         stats.increaseStatistic("Damage received", damage.getRight());
