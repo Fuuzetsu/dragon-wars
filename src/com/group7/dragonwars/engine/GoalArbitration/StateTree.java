@@ -52,27 +52,11 @@ public class StateTree {
                     if (damageRatio < 0)		// In enemy's favour
                         continue;
 
-                    /*List<Position> path = logic.findPath(gameState.getMap(), playerUnit, dmgpos.getRight());
 
-                    calculate direction to move or attack
-                    if (path.size() == 1) {
-                        //calculate whether this move is better than the current best
-                        if (damageRatio > bestValue) {
-                            currentBest = new AttackAt(gameState, playerUnit, unit, damageRatio, null);
-                            bestValue = damageRatio;
-                        }
-                    } else if (path.size() > 1) {
-                        currentBest =  new MoveTo(gameState, playerUnit,
-                                                     unit.getPosition(), damageRatio/path.size());
-
-                        //calculate whether this move is better than the current best
-                    if (damageRatio/path.size() > bestValue) { */
                     if (damageRatio > bestValue) {
                         currentBest = new AttackAt(gameState, playerUnit, unit, damageRatio, dmgpos.getRight());
-                        //bestValue = damageRatio/path.size();
                         bestValue = damageRatio;
                     }
-                    //}
                 }
 
                 if (base.getSize() >= maxSize)
