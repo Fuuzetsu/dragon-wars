@@ -18,7 +18,7 @@ import org.json.*;
 public class MapReader {
     final private static String TAG = "MapReader";
 
-    public static GameMap readMap(List<String> mapLines) throws JSONException {
+    public static GameMap readMap(List<String> mapLines, boolean[] isAi) throws JSONException {
         String jsonSource = "";
 
         for (String s : mapLines)
@@ -41,8 +41,13 @@ public class MapReader {
 
         /* Make a fake player list for now */
         List<Player> playerList = new ArrayList<Player>();
-        for (Integer i = 0; i < players; ++i)
-            playerList.add(new Player("Player " + (i + 1), playerColours.getInt(i)));
+        for (Integer i = 0; i < players; ++i) {
+            if (isAi[i]) {
+                playerList.add(new PlayerAI("AIPlayer " + (i + 1), playerColours.getInt(i)));
+            } else {
+                playerList.add(new Player("Player " + (i + 1), playerColours.getInt(i)));
+            }
+        }
 
         /* Fill in a HashMap for look-up */
         HashMap<Character, JSONObject> fields = new HashMap<Character, JSONObject>();
@@ -97,7 +102,7 @@ public class MapReader {
 
     }
 
-    public static String getBasicMapInformation(final String filename,
+    public static BasicMapInfo getBasicMapInformation(final String filename,
                                                 final Activity activity) throws JSONException {
         String jsonSource = "";
 
@@ -111,15 +116,15 @@ public class MapReader {
         Integer sizeY = m.getInt("sizeY");
         Integer players = m.getInt("players");
 
-        String result = String.format("%s - %dx%d - %d Players", mapName,
+        String desc = String.format("%s - %dx%d - %d Players", mapName,
                                       sizeX, sizeY, players);
-        return result;
-
+        
+        return new BasicMapInfo(mapName, desc, filename, players);
     }
 
     public static GameMap readMapFromFile(final String filename,
-                                          final Activity activity) throws JSONException {
-        return MapReader.readMap(MapReader.readFile(filename, activity));
+                                          final Activity activity, boolean[] isAi) throws JSONException {
+        return MapReader.readMap(MapReader.readFile(filename, activity), isAi);
     }
 
     private static List<String> readFile(final String filename,
@@ -340,3 +345,4 @@ public class MapReader {
         }
     }
 }
+

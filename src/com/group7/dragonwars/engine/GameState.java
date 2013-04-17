@@ -1,10 +1,11 @@
 package com.group7.dragonwars.engine;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import com.group7.dragonwars.GameView;
 
 import android.util.Log;
 
@@ -18,11 +19,48 @@ public class GameState {
     private Integer turns = 1;
     private Boolean gameFinished = false;
     private Statistics stats = new Statistics();
+    private InformationState info;
+    private GameView gvCallback;
 
-    public GameState(GameMap map, Logic logic, List<Player> players) {
+    public GameState(GameMap map, Logic logic, List<Player> players, GameView gv) {
         this.map = map;
         this.logic = logic;
         this.players = players;
+        this.info = new InformationState(this);
+        this.gvCallback = gv;
+
+        for (Player p : players) {
+            p.setGameState(this);
+        }
+    }
+
+    public List<Position> getUnitDestinations(GameField field) {
+        return info.getUnitDestinations(field);
+    }
+
+
+    public void startFrame() {
+        info.startFrame();
+    }
+
+    public void endFrame() {
+        info.endFrame();
+    }
+
+    public Double getFps() {
+        return info.getFps();
+    }
+
+    public List<Position> getCurrentPath() {
+        return info.getPath();
+    }
+
+    public void setPath(List<Position> path) {
+        info.setPath(path);
+    }
+
+    public Set<Position> getAttackables() {
+        return info.getAttackables();
     }
 
     public void attack(Unit attacker, Unit defender) {
@@ -43,7 +81,7 @@ public class GameState {
         Log.v(null, "Dmg to atckr: " + damage.getRight() + " Dmg to dfndr: " + damage.getLeft());
 
         defender.reduceHealth(damage.getLeft());
-
+        gvCallback.addDamagedUnit(defender);
         Boolean died = removeUnitIfDead(defender);
         stats.increaseStatistic("Damage dealt", damage.getLeft());
 
@@ -53,6 +91,7 @@ public class GameState {
 
         /* Possibly counter */
         attacker.reduceHealth(damage.getRight());
+        gvCallback.addDamagedUnit(attacker);
         removeUnitIfDead(attacker);
 
         stats.increaseStatistic("Damage received", damage.getRight());
@@ -167,6 +206,11 @@ public class GameState {
             playerIndex = 0;
             advanceTurn();
         }
+
+        if (getCurrentPlayer().isAi()) {
+            getCurrentPlayer().takeTurn();
+            nextPlayer();
+        }
     }
 
     private void advanceTurn() {
@@ -196,7 +240,7 @@ public class GameState {
     public GameMap getMap() {
         return this.map;
     }
-    
+
     public Logic getLogic() {
         return this.logic;
     }
@@ -212,13 +256,17 @@ public class GameState {
             return players.get(players.size() - 1);
         }
     }
-    
+
     public Player getWinner() {
         return this.winner;
     }
-    
+
     public boolean isGameFinished() {
         return gameFinished;
+    }
+
+    public void setGameFinished(boolean gameFinished) {
+        this.gameFinished = gameFinished;
     }
 
     public Boolean produceUnit(final GameField field, final Unit unit) {
@@ -242,6 +290,7 @@ public class GameState {
 
                 player.setGoldAmount(player.getGoldAmount() - unit.getProductionCost());
                 player.addUnit(newUnit);
+                newUnit.setFinishedTurn(true);
             	field.setUnit(newUnit);
                 stats.increaseStatistic("Units produced");
                 return true;

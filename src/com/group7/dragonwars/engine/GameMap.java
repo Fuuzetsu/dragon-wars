@@ -2,6 +2,8 @@ package com.group7.dragonwars.engine;
 
 import java.util.*;
 
+import android.graphics.Bitmap;
+
 public class GameMap implements Iterable<GameField> {
 
     private List<List<GameField>> fields;
@@ -9,6 +11,7 @@ public class GameMap implements Iterable<GameField> {
     private HashMap<Character, Unit> units;
     private HashMap<Character, Building> buildings;
     private HashMap<Character, GameField> gameFields;
+    private Bitmap ownImage;
 
 
     public GameMap(List<List<GameField>> fields, HashMap<Character, Unit> units,
@@ -32,6 +35,14 @@ public class GameMap implements Iterable<GameField> {
                 flat.add(gf);
 
         return flat.iterator();
+    }
+
+    public Bitmap getImage() {
+        return ownImage;
+    }
+
+    public void setImage(final Bitmap img) {
+        ownImage = img;
     }
 
     public Boolean isInstantiated() {

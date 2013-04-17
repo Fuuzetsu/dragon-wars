@@ -14,6 +14,7 @@ import com.group7.dragonwars.engine.GameMap;
 import com.group7.dragonwars.engine.GameState;
 import com.group7.dragonwars.engine.Logic;
 import com.group7.dragonwars.engine.MapReader;
+import com.group7.dragonwars.engine.Player;
 import com.group7.dragonwars.engine.Statistics;
 
 import android.app.Activity;
@@ -53,9 +54,10 @@ public class GameActivity extends Activity {
         super.onStart();
         Bundle b = getIntent().getExtras();
         String mapFileName = b.getString("mapFileName");
+        boolean[] isAi = b.getBooleanArray("isAi");
         GameMap map = null;
         try {
-            map = MapReader.readMapFromFile(mapFileName, this);
+            map = MapReader.readMapFromFile(mapFileName, this, isAi);
         } catch (JSONException e) {
             Log.d(TAG, "Failed to load the map: " + e.getMessage());
         }
@@ -64,9 +66,9 @@ public class GameActivity extends Activity {
             System.exit(1);
         }
 
-        state = new GameState(map, new Logic(), map.getPlayers());
         setContentView(R.layout.activity_game);
         GameView gameView = (GameView) this.findViewById(R.id.gameView);
+        state = new GameState(map, new Logic(), map.getPlayers(), gameView);
         Button menuButton = (Button) this.findViewById(R.id.menuButton);
         menuButton.setOnClickListener(gameView);
         gameView.setState(state, this);

@@ -6,16 +6,21 @@ import com.group7.dragonwars.engine.GoalArbitration.AtomicAction;
 import com.group7.dragonwars.engine.GoalArbitration.StateTree;
 
 public class PlayerAI extends Player {
-    GameState gameState;
+    private GameState gameState;
     //Evaluator evaluator;
     List<AtomicAction> actions;
 
-    public PlayerAI(String name, Integer colour, GameState gamestate) {
+    public PlayerAI(final String name, final Integer colour) {
         super(name, colour);
-        gameState = gamestate;
     }
     
-    public boolean isAI() {
+    @Override
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
+    }
+    
+    @Override
+    public boolean isAi() {
         return true;
         /* this is to be used to determine whether the user should be
          * allowed to control the current player's units' actions via
@@ -23,6 +28,7 @@ public class PlayerAI extends Player {
          */
     }
 
+    @Override
     public void takeTurn() {
         UpdateActions();
 
