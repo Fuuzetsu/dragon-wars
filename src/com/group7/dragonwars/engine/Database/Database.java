@@ -21,8 +21,12 @@ public class Database
         public Integer UNITSMADE;
 	}
 
+	private static final String DATABASE_NAME =	"dragonwars.db";
+	private static final String DATABASE_TABLE_NAME = "statistics";
+	private static final int DATABASE_VERSION = 1;
+
 	private static final String DATABASE_CREATE =
-        "create table high_scores(" +
+        "create table if not exists " + DATABASE_TABLE_NAME + " (" +
         " GAMETIME INT NOT NULL," +
         " DAMAGEDEALT DOUBLE NOT NULL," +
         " DAMAGERECEIVED DOUBLE NOT NULL," +
@@ -33,11 +37,6 @@ public class Database
         " PRIMARY KEY(GAMENAME)" +
         ");";
 
-	private static final String DATABASE_NAME =	"dw_high_scores";
-
-	private static final String DATABASE_TABLE_NAME = "high_scores";
-
-	private static final int DATABASE_VERSION = 1;
 
 	private SQLiteDatabase database;
 
@@ -45,6 +44,7 @@ public class Database
 	{
 		//open the database if it exists else, creates a new data base with that name
 		database = con.openOrCreateDatabase(DATABASE_NAME, 0, null);
+        CreateTable();
 	}
 
 	public void CreateTable()
