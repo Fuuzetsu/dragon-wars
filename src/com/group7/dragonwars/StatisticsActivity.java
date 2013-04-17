@@ -32,7 +32,8 @@ public class StatisticsActivity extends Activity implements OnClickListener {
         super.onStart();
         Database db = new Database(getApplicationContext());
 
-        String[] statsEntries = new String[statsKeys.length];
+        /* TODO do the Database.Entry class properly to avoid all this */
+        String[] statsEntries = new String[6];
 
         Database.Entry entry = db.GetSummedEntries();
 

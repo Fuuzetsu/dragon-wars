@@ -13,20 +13,20 @@ public class Database
 {
 	public class Entry
 	{
-        public float DAMAGEDEALT;
-        public float DAMAGERECEIVED;
-        public float DISTANCETRAVELLED;
-        public int GOLDCOLLECTED;
-        public int UNITSKILLED;
-        public int UNITSMADE;
+        public Double DAMAGEDEALT;
+        public Double DAMAGERECEIVED;
+        public Double DISTANCETRAVELLED;
+        public Integer GOLDCOLLECTED;
+        public Integer UNITSKILLED;
+        public Integer UNITSMADE;
 	}
 
 	private static final String DATABASE_CREATE =
         "create table high_scores(" +
         " GAMETIME INT NOT NULL," +
-        " DAMAGEDEALT FLOAT NOT NULL," +
-        " DAMAGERECEIVED FLOAT NOT NULL," +
-        " DISTANCETRAVELLED FLOAT NOT NULL," +
+        " DAMAGEDEALT DOUBLE NOT NULL," +
+        " DAMAGERECEIVED DOUBLE NOT NULL," +
+        " DISTANCETRAVELLED DOUBLE NOT NULL," +
         " GOLDCOLLECTED INT NOT NULL," +
         " UNITSKILLED INT NOT NULL," +
         " UNITSMADE INT NOT NULL," +
@@ -65,8 +65,8 @@ public class Database
 	}
 
 	//use to add a new high score to the database
-	public void AddEntry(float damageDealt, float damageReceived, float distanceTravelled,
-                         int goldCollected, int unitsKilled, int unitsMade)
+	public void AddEntry(Double damageDealt, Double damageReceived, Double distanceTravelled,
+                         Integer goldCollected, Integer unitsKilled, Integer unitsMade)
 	{
 		//create content values
 		ContentValues values = new ContentValues();
@@ -98,15 +98,15 @@ public class Database
             null, null, null, null, null);
 
 		//count the number of entries
-		int numberOfEntries = cursor.getCount();
+		Integer numberOfEntries = cursor.getCount();
 		cursor.moveToFirst();
-		for(int entry = 0; entry < numberOfEntries; entry++)
+		for(Integer entry = 0; entry < numberOfEntries; entry++)
 		{
 			Entry record = new Entry();
             /* We don't care about the game time */
-			record.DAMAGEDEALT	    = cursor.getFloat(1);
-			record.DAMAGERECEIVED	= cursor.getFloat(2);
-			record.DISTANCETRAVELLED	= cursor.getFloat(3);
+			record.DAMAGEDEALT	    = cursor.getDouble(1);
+			record.DAMAGERECEIVED	= cursor.getDouble(2);
+			record.DISTANCETRAVELLED	= cursor.getDouble(3);
             record.GOLDCOLLECTED	= cursor.getInt(4);
             record.UNITSKILLED		= cursor.getInt(5);
             record.UNITSMADE        = cursor.getInt(6);
@@ -120,9 +120,9 @@ public class Database
     public Entry GetSummedEntries() {
         List<Entry> entries = GetEntries();
         Entry rec = new Entry();
-        rec.DAMAGEDEALT	     = 0f;
-        rec.DAMAGERECEIVED	 = 0f;
-        rec.DISTANCETRAVELLED = 0f;
+        rec.DAMAGEDEALT	     = 0.0;;
+        rec.DAMAGERECEIVED	 = 0.0;;
+        rec.DISTANCETRAVELLED = 0.0;;
         rec.GOLDCOLLECTED	 = 0;
         rec.UNITSKILLED		 = 0;
         rec.UNITSMADE        = 0;

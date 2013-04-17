@@ -130,7 +130,7 @@ public class GameState {
         unit.setPosition(destination);
         unit.setMoved(true);
 
-        stats.increaseStatistic("Distance traveled", 1.0 * movementCost);
+        stats.increaseStatistic("Distance travelled", 1.0 * movementCost);
 
         return true;
 
