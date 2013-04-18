@@ -118,7 +118,7 @@ public class MapReader {
 
         String desc = String.format("%s - %dx%d - %d Players", mapName,
                                       sizeX, sizeY, players);
-        
+
         return new BasicMapInfo(mapName, desc, filename, players);
     }
 
@@ -177,6 +177,17 @@ public class MapReader {
                                      HashMap<Character, Building> buildings, JSONArray posInfo) throws JSONException {
         Log.d(TAG, "Running setBuildings");
         Log.d(TAG, "The list of players contains " + players);
+        for (int y = 0; y < grid.size(); ++y) {
+            String row = "";
+            for (int x = 0; x < grid.get(y).size(); ++x) {
+                if (grid.get(y).get(x) != null)
+                    row += grid.get(y).get(x).getName().charAt(0);
+                else
+                    row += "_";
+            }
+            Log.d(TAG, row);
+        }
+
         for (Integer i = 0; i < posInfo.length(); ++i) {
             Log.d(TAG, "Grabbing info for building number " + i);
             JSONObject buildingInfo = posInfo.getJSONObject(i);
@@ -203,7 +214,10 @@ public class MapReader {
                 p.addBuilding(building);
             }
 
+            Log.d(TAG, "Setting " + building.getName() + " at " + posX + "x" + posY);
+            Log.d(TAG, String.format("Grid size YxX: %dx%d", grid.size(), grid.get(0).size()));
             GameField gf = grid.get(posY).get(posX);
+            Log.d(TAG, "gf == null: " + (gf == null));
             building.setPosition(new Position(posX, posY));
             gf.setBuilding(building);
 
@@ -345,4 +359,3 @@ public class MapReader {
         }
     }
 }
-
