@@ -66,14 +66,21 @@ public class StateTree {
                 }
 
                 if (currentBest == null) { /* No unit to attack */
-                    List<Position> dests = logic.destinations(gameState.getMap(), playerUnit);
-                    for (Position p : dests) {
-                        GameField gf = gameState.getMap().getField(p);
-                        if (gf.hostsBuilding() && !gf.getBuilding().getOwner().equals(stateTreeOwner)
-                            && !gf.hostsUnit()) {
-                            /* Cost 1 as nothing else to do for the unit anyway */
-                            currentBest = new MoveTo(gameState, playerUnit, p, 1);
-                            break; /* Naive building picking */
+                    GameField curField = gameState.getMap().getField(playerUnit.getPosition());
+
+                    if (!(curField.hostsBuilding()
+                         && !curField.getBuilding().getOwner().equals(stateTreeOwner))) {
+                        /* We're standing on a building we don't own so don't move */
+                        List<Position> dests = logic.destinations(gameState.getMap(), playerUnit);
+
+                        for (Position p : dests) {
+                            GameField gf = gameState.getMap().getField(p);
+                            if (gf.hostsBuilding() && !gf.getBuilding().getOwner().equals(stateTreeOwner)
+                                && !gf.hostsUnit()) {
+                                /* Cost 1 as nothing else to do for the unit anyway */
+                                currentBest = new MoveTo(gameState, playerUnit, p, 1);
+                                break; /* Naive building picking */
+                            }
                         }
                     }
                 }
