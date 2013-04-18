@@ -87,26 +87,18 @@ public class StateTree {
         }
 
         int goldAmount = stateTreeOwner.getGoldAmount();
-        for (GameField field: gameState.getMap()) {
-            if (!field.hostsBuilding()) {
-                continue;
-            }
-            Building building = field.getBuilding();
-            if (!building.hasOwner()) {
-                Log.d("BL1", building.toString());
-                continue;
-            }
-            if (building.getOwner().equals(stateTreeOwner)
-                && !field.hostsUnit()) {
-                Log.d("BL2", building.toString());
+        for (Building building : stateTreeOwner.getOwnedBuildings()) {
+            Position p = building.getPosition();
+            if (!gameState.getMap().getField(p).hostsUnit()) {
+                Log.d("StateTree", "Trying to build at " + building.getName());
                 Unit bestBuildable = getBestBuildableUnit(building, goldAmount);
                 if (bestBuildable == null) {
                     continue;
                 }
                 goldAmount -= bestBuildable.getProductionCost();
-                AtomicAction bestAction = new BuildUnit(gameState, bestBuildable, building.getPosition(), bestBuildable.getProductionCost());
+                AtomicAction bestAction = new BuildUnit(gameState, bestBuildable, building.getPosition(),
+                                                        bestBuildable.getProductionCost());
                 base.AddChildNode(bestBuildable.getProductionCost(), bestAction);
-                // TODO: is this correct? What are the two values (that I've put as the prod cost for now) supposed to be?
             }
         }
 
