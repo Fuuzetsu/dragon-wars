@@ -209,6 +209,12 @@ public class GameState {
 
         if (getCurrentPlayer().isAi()) {
             getCurrentPlayer().takeTurn();
+            /* Uh oh, dirty hack for concurrent mod 9h before presentation. */
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                /* Just let it slide and pray for the best */
+            }
             nextPlayer();
         }
     }

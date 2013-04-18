@@ -58,10 +58,23 @@ public class StateTree {
 
                     if (damageRatio < 0)		// In enemy's favour
                         continue;
-                    
+
                     if (damageRatio > bestValue) {
                         currentBest = new AttackAt(gameState, playerUnit, unit, damageRatio, dmgpos.getRight());
                         bestValue = damageRatio;
+                    }
+                }
+
+                if (currentBest == null) { /* No unit to attack */
+                    List<Position> dests = logic.destinations(gameState.getMap(), playerUnit);
+                    for (Position p : dests) {
+                        GameField gf = gameState.getMap().getField(p);
+                        if (gf.hostsBuilding() && !gf.getBuilding().getOwner().equals(stateTreeOwner)
+                            && !gf.hostsUnit()) {
+                            /* Cost 1 as nothing else to do for the unit anyway */
+                            currentBest = new MoveTo(gameState, playerUnit, p, 1);
+                            break; /* Naive building picking */
+                        }
                     }
                 }
 
@@ -72,7 +85,7 @@ public class StateTree {
             }
 
         }
-        
+
         int goldAmount = stateTreeOwner.getGoldAmount();
         for (GameField field: gameState.getMap()) {
             if (!field.hostsBuilding()) {
@@ -83,7 +96,8 @@ public class StateTree {
                 Log.d("BL1", building.toString());
                 continue;
             }
-            if (building.getOwner().equals(stateTreeOwner)) {
+            if (building.getOwner().equals(stateTreeOwner)
+                && !field.hostsUnit()) {
                 Log.d("BL2", building.toString());
                 Unit bestBuildable = getBestBuildableUnit(building, goldAmount);
                 if (bestBuildable == null) {
@@ -138,7 +152,7 @@ public class StateTree {
     }
 
     private Unit getBestBuildableUnit(Building building, int goldAmount) {
-        
+
         List<Unit> buildable = building.getProducibleUnits();
         if (buildable.size() == 0) {
             return null;
@@ -157,4 +171,3 @@ public class StateTree {
         }
     }
 }
-
