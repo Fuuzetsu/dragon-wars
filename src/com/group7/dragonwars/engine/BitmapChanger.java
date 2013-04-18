@@ -127,6 +127,9 @@ public class BitmapChanger {
         List<String> liquid = new ArrayList<String>();
         liquid.add("water");
         liquid.add("lava");
+        liquid.add("bridge_horizontal");
+        liquid.add("bridge_vertical");
+
         if (liquid.contains(gfn)) {
 
             if (land.contains(s)) {
