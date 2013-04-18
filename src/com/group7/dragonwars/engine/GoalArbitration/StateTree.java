@@ -58,10 +58,30 @@ public class StateTree {
 
                     if (damageRatio < 0)		// In enemy's favour
                         continue;
-                    
+
                     if (damageRatio > bestValue) {
                         currentBest = new AttackAt(gameState, playerUnit, unit, damageRatio, dmgpos.getRight());
                         bestValue = damageRatio;
+                    }
+                }
+
+                if (currentBest == null) { /* No unit to attack */
+                    GameField curField = gameState.getMap().getField(playerUnit.getPosition());
+
+                    if (!(curField.hostsBuilding()
+                         && !curField.getBuilding().getOwner().equals(stateTreeOwner))) {
+                        /* We're standing on a building we don't own so don't move */
+                        List<Position> dests = logic.destinations(gameState.getMap(), playerUnit);
+
+                        for (Position p : dests) {
+                            GameField gf = gameState.getMap().getField(p);
+                            if (gf.hostsBuilding() && !gf.getBuilding().getOwner().equals(stateTreeOwner)
+                                && !gf.hostsUnit()) {
+                                /* Cost 1 as nothing else to do for the unit anyway */
+                                currentBest = new MoveTo(gameState, playerUnit, p, 1);
+                                break; /* Naive building picking */
+                            }
+                        }
                     }
                 }
 
@@ -72,27 +92,20 @@ public class StateTree {
             }
 
         }
-        
+
         int goldAmount = stateTreeOwner.getGoldAmount();
-        for (GameField field: gameState.getMap()) {
-            if (!field.hostsBuilding()) {
-                continue;
-            }
-            Building building = field.getBuilding();
-            if (!building.hasOwner()) {
-                Log.d("BL1", building.toString());
-                continue;
-            }
-            if (building.getOwner().equals(stateTreeOwner)) {
-                Log.d("BL2", building.toString());
+        for (Building building : stateTreeOwner.getOwnedBuildings()) {
+            Position p = building.getPosition();
+            if (!gameState.getMap().getField(p).hostsUnit()) {
+                Log.d("StateTree", "Trying to build at " + building.getName());
                 Unit bestBuildable = getBestBuildableUnit(building, goldAmount);
                 if (bestBuildable == null) {
                     continue;
                 }
                 goldAmount -= bestBuildable.getProductionCost();
-                AtomicAction bestAction = new BuildUnit(gameState, bestBuildable, building.getPosition(), bestBuildable.getProductionCost());
+                AtomicAction bestAction = new BuildUnit(gameState, bestBuildable, building.getPosition(),
+                                                        bestBuildable.getProductionCost());
                 base.AddChildNode(bestBuildable.getProductionCost(), bestAction);
-                // TODO: is this correct? What are the two values (that I've put as the prod cost for now) supposed to be?
             }
         }
 
@@ -138,7 +151,7 @@ public class StateTree {
     }
 
     private Unit getBestBuildableUnit(Building building, int goldAmount) {
-        
+
         List<Unit> buildable = building.getProducibleUnits();
         if (buildable.size() == 0) {
             return null;
@@ -157,4 +170,3 @@ public class StateTree {
         }
     }
 }
-
