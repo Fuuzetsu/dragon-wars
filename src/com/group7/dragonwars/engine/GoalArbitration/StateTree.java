@@ -1,7 +1,14 @@
 package com.group7.dragonwars.engine.GoalArbitration;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import android.util.Log;
+
+import com.group7.dragonwars.engine.Building;
+import com.group7.dragonwars.engine.GameField;
 import com.group7.dragonwars.engine.GameMap;
 import com.group7.dragonwars.engine.GameState;
 import com.group7.dragonwars.engine.Logic;
@@ -51,8 +58,7 @@ public class StateTree {
 
                     if (damageRatio < 0)		// In enemy's favour
                         continue;
-
-
+                    
                     if (damageRatio > bestValue) {
                         currentBest = new AttackAt(gameState, playerUnit, unit, damageRatio, dmgpos.getRight());
                         bestValue = damageRatio;
@@ -65,6 +71,29 @@ public class StateTree {
                 base.AddChildNode(bestValue, currentBest);
             }
 
+        }
+        
+        int goldAmount = stateTreeOwner.getGoldAmount();
+        for (GameField field: gameState.getMap()) {
+            if (!field.hostsBuilding()) {
+                continue;
+            }
+            Building building = field.getBuilding();
+            if (!building.hasOwner()) {
+                Log.d("BL1", building.toString());
+                continue;
+            }
+            if (building.getOwner().equals(stateTreeOwner)) {
+                Log.d("BL2", building.toString());
+                Unit bestBuildable = getBestBuildableUnit(building, goldAmount);
+                if (bestBuildable == null) {
+                    continue;
+                }
+                goldAmount -= bestBuildable.getProductionCost();
+                AtomicAction bestAction = new BuildUnit(gameState, bestBuildable, building.getPosition(), bestBuildable.getProductionCost());
+                base.AddChildNode(bestBuildable.getProductionCost(), bestAction);
+                // TODO: is this correct? What are the two values (that I've put as the prod cost for now) supposed to be?
+            }
         }
 
         actions = base.getActions();
@@ -107,4 +136,25 @@ public class StateTree {
             return new Pair<Pair<Double, Double>, Position>(bestRatioDamage, movePos);
         }
     }
+
+    private Unit getBestBuildableUnit(Building building, int goldAmount) {
+        
+        List<Unit> buildable = building.getProducibleUnits();
+        if (buildable.size() == 0) {
+            return null;
+        }
+        Unit bestUnit = buildable.get(0);
+        for (Unit unit : buildable) {
+	    int cost = unit.getProductionCost();
+            if (cost <= goldAmount && cost > bestUnit.getProductionCost()) {
+                bestUnit = unit;
+            }
+        }
+        if (bestUnit.getProductionCost() > goldAmount) {
+            return null;
+        } else {
+            return bestUnit;
+        }
+    }
 }
+

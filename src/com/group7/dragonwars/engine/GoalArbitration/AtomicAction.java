@@ -10,7 +10,7 @@ import com.group7.dragonwars.engine.Unit;
 public abstract class AtomicAction {
     private float actionValue = 0;
     protected GameState gameState;
-    private Unit actionUnit;
+    protected Unit actionUnit;
 
     public AtomicAction(GameState gamestate, Unit unit, float value) {
         actionValue = value;

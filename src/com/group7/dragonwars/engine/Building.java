@@ -7,7 +7,7 @@ public class Building extends DrawableMapObject {
     private Integer captureWorth;
     private Integer captureDifficulty, remainingCaptureTime;
     private Double attackBonus, defenseBonus;
-    private Player owner;
+    private Player owner = null;
     private Boolean goalBuilding;
     private Player lastCapturer;
     private List<Unit> producibleUnits = new ArrayList<Unit>();
