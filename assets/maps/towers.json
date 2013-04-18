@@ -209,25 +209,25 @@
          "posX": 6,
          "posY": 5,
          "owner": 1,
-         "produces": ["S", "A", "D"],
+         "produces": ["S", "A", "D"]
         },
         {"building": "C",
          "posX": 18,
          "posY": 5,
          "owner": 2,
-         "produces": ["S", "A", "D"],
+         "produces": ["S", "A", "D"]
         },
         {"building": "W",
          "posX": 9,
          "posY": 4,
          "owner": 0,
-         "produces": ["S", "A"],
+         "produces": ["S", "A"]
         },
         {"building": "W",
          "posX": 15,
          "posY": 6,
          "owner": 0,
-         "produces": ["S", "A"],
+         "produces": ["S", "A"]
         }
 
     ],
