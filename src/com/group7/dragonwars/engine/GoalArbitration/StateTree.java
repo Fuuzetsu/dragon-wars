@@ -1,7 +1,14 @@
 package com.group7.dragonwars.engine.GoalArbitration;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import android.util.Log;
+
+import com.group7.dragonwars.engine.Building;
+import com.group7.dragonwars.engine.GameField;
 import com.group7.dragonwars.engine.GameMap;
 import com.group7.dragonwars.engine.GameState;
 import com.group7.dragonwars.engine.Logic;
@@ -82,17 +89,25 @@ public class StateTree {
 
         }
         
-        for (Building building : gameState.getMap().entrySet()) {
-            if (!building.getOwner().equals(stateTreeOwner)) {
+        for (GameField field: gameState.getMap()) {
+            if (!field.hostsBuilding()) {
                 continue;
             }
-	    Unit bestBuildable = getBestBuildableUnit(building);
-            if (bestBuildable == null) {
+            Building building = field.getBuilding();
+            if (!building.hasOwner()) {
+                Log.d("BL1", building.toString());
                 continue;
             }
-            AtomicAction bestAction = new BuildUnit(gameState, bestBuildable, 0f);
-	    base.AddChildNode(0f, bestAction);
-            // TODO: is this correct? What are the two values (that I've put as 0f for now)? 
+            if (building.getOwner().equals(stateTreeOwner)) {
+                Log.d("BL2", building.toString());
+                Unit bestBuildable = getBestBuildableUnit(building);
+                if (bestBuildable == null) {
+                    continue;
+                }
+                AtomicAction bestAction = new BuildUnit(gameState, bestBuildable, building.getPosition(), bestBuildable.getProductionCost());
+                base.AddChildNode(bestBuildable.getProductionCost(), bestAction);
+                // TODO: is this correct? What are the two values (that I've put as the prod cost for now) supposed to be?
+            }
         }
 
         actions = base.getActions();
@@ -137,17 +152,19 @@ public class StateTree {
     }
 
     private Unit getBestBuildableUnit(Building building) {
-        ArrayList<Unit> buildable = building.getProducibleUnits();
+        
+        List<Unit> buildable = building.getProducibleUnits();
         if (buildable.size() == 0) {
             return null;
         }
-        bestUnit = buildable.get(0);
+        Unit bestUnit = buildable.get(0);
         for (Unit unit : buildable) {
-	    cost = unit.getProductionCost();
-            if (cost <= stateTreeOwner.getGoldAmount() && cost > bestUnit.getProductionCost) {
+	    int cost = unit.getProductionCost();
+            if (cost <= stateTreeOwner.getGoldAmount() && cost > bestUnit.getProductionCost()) {
                 bestUnit = unit;
             }
         }
+        Log.d("BBU", bestUnit.toString());
         if (bestUnit.getProductionCost() > stateTreeOwner.getGoldAmount()) {
             return null;
         } else {
