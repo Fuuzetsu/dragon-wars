@@ -89,6 +89,7 @@ public class StateTree {
 
         }
         
+        int goldAmount = stateTreeOwner.getGoldAmount();
         for (GameField field: gameState.getMap()) {
             if (!field.hostsBuilding()) {
                 continue;
@@ -100,10 +101,11 @@ public class StateTree {
             }
             if (building.getOwner().equals(stateTreeOwner)) {
                 Log.d("BL2", building.toString());
-                Unit bestBuildable = getBestBuildableUnit(building);
+                Unit bestBuildable = getBestBuildableUnit(building, goldAmount);
                 if (bestBuildable == null) {
                     continue;
                 }
+                goldAmount -= bestBuildable.getProductionCost();
                 AtomicAction bestAction = new BuildUnit(gameState, bestBuildable, building.getPosition(), bestBuildable.getProductionCost());
                 base.AddChildNode(bestBuildable.getProductionCost(), bestAction);
                 // TODO: is this correct? What are the two values (that I've put as the prod cost for now) supposed to be?
@@ -151,7 +153,7 @@ public class StateTree {
         }
     }
 
-    private Unit getBestBuildableUnit(Building building) {
+    private Unit getBestBuildableUnit(Building building, int goldAmount) {
         
         List<Unit> buildable = building.getProducibleUnits();
         if (buildable.size() == 0) {
@@ -160,12 +162,11 @@ public class StateTree {
         Unit bestUnit = buildable.get(0);
         for (Unit unit : buildable) {
 	    int cost = unit.getProductionCost();
-            if (cost <= stateTreeOwner.getGoldAmount() && cost > bestUnit.getProductionCost()) {
+            if (cost <= goldAmount && cost > bestUnit.getProductionCost()) {
                 bestUnit = unit;
             }
         }
-        Log.d("BBU", bestUnit.toString());
-        if (bestUnit.getProductionCost() > stateTreeOwner.getGoldAmount()) {
+        if (bestUnit.getProductionCost() > goldAmount) {
             return null;
         } else {
             return bestUnit;
