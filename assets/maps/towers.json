@@ -1,0 +1,256 @@
+{
+    "mapName": "Four towers",
+    "sizeX": 25,
+    "sizeY": 11,
+    "players": 2,
+    "playerColours": [ -16776961, -256 ],
+    "fields": {
+        "G": {
+            "name": "Grass",
+            "file": "grass",
+            "dir": "drawable",
+            "package": "com.group7.dragonwars",
+            "movementModifier": 1.0,
+            "attackModifier": 1.0,
+            "defenseModifier": 1.1,
+            "accessible": true,
+            "flightOnly": false
+        },
+        "S": {
+            "name": "Sand",
+            "file": "sand",
+            "dir": "drawable",
+            "package": "com.group7.dragonwars",
+            "movementModifier": 2.0,
+            "attackModifier": 0.9,
+            "defenseModifier": 1.3,
+            "accessible": true,
+            "flightOnly": false
+        },
+        "W": {
+            "name": "Water",
+            "file": "water",
+            "dir": "drawable",
+            "package": "com.group7.dragonwars",
+            "movementModifier": 1.0,
+            "attackModifier": 1.0,
+            "defenseModifier": 1.0,
+            "accessible": false,
+            "flightOnly": true
+        },
+        "B": {
+            "name": "Bridge",
+            "file": "bridge_horizontal",
+            "dir": "drawable",
+            "package": "com.group7.dragonwars",
+            "movementModifier": 1.5,
+            "attackModifier": 1.3,
+            "defenseModifier": 0.8,
+            "accessible": true,
+            "flightOnly": false
+        }
+    },
+    "units": {
+        "S": {
+            "name": "Soldier",
+            "file": "soldier",
+            "dir": "drawable",
+            "package": "com.group7.dragonwars",
+            "ranged": false,
+            "flying": false,
+            "maxHealth": 5,
+            "maxMovement": 3,
+            "attack": 1.5,
+            "meleeDefense": 1.0,
+            "rangeDefense": 1.0,
+            "productionCost": 7
+        },
+        "D": {
+            "name": "Dragon",
+            "file": "small_dragon",
+            "dir": "drawable",
+            "package": "com.group7.dragonwars",
+            "ranged": false,
+            "flying": true,
+            "maxHealth": 12,
+            "maxMovement": 5,
+            "attack": 2.3,
+            "meleeDefense": 1.6,
+            "rangeDefense": 1.4,
+            "productionCost": 15
+        },
+        "A": {
+            "name": "Armed soldier",
+            "file": "armed_soldier",
+            "dir": "drawable",
+            "package": "com.group7.dragonwars",
+            "ranged": false,
+            "flying": false,
+            "maxHealth": 7,
+            "maxMovement": 2,
+            "attack": 1.7,
+            "meleeDefense": 1.2,
+            "rangeDefense": 1.2,
+            "productionCost": 9
+        },
+        "K": {
+            "name": "Knight",
+            "file": "knight",
+            "dir": "drawable",
+            "package": "com.group7.dragonwars",
+            "ranged": false,
+            "flying": false,
+            "maxHealth": 9,
+            "maxMovement": 4,
+            "attack": 2.0,
+            "meleeDefense": 1.8,
+            "rangeDefense": 0.9,
+            "productionCost": 12
+        }
+    },
+    "buildings": {
+        "C": {
+            "name": "Castle",
+            "file": "castle",
+            "dir": "drawable",
+            "package": "com.group7.dragonwars",
+            "captureDifficulty": 25,
+            "attackBonus": 2.5,
+            "defenseBonus": 1.8,
+            "goalBuilding": true,
+            "captureWorth": 8
+        },
+        "V": {
+            "name": "Village",
+            "file": "village",
+            "dir": "drawable",
+            "package": "com.group7.dragonwars",
+            "captureDifficulty": 12,
+            "attackBonus": 1.5,
+            "defenseBonus": 1.2,
+            "goalBuilding": false,
+            "captureWorth": 3
+        },
+        "T": {
+            "name": "Tower",
+            "file": "tower",
+            "dir": "drawable",
+            "package": "com.group7.dragonwars",
+            "captureDifficulty": 17,
+            "attackBonus": 1.8,
+            "defenseBonus": 1.2,
+            "goalBuilding": false,
+            "captureWorth": 5
+        },
+        "W": {
+            "name": "Workshop",
+            "file": "workshop",
+            "dir": "drawable",
+            "package": "com.group7.dragonwars",
+            "captureDifficulty": 15,
+            "attackBonus": 1.3,
+            "defenseBonus": 1.1,
+            "goalBuilding": false,
+            "captureWorth": 7
+        }
+
+    },
+    "terrain": [
+        "WWWWWWWWWWWWWWWWWWWWWWWWW",
+        "WWWWWWWWWWWWWWWWWWWWWWWWW",
+        "WWGGGGGWWWWWWWWWWWSSSSSWW",
+        "WWGGGWWWWWWWWWWWWWWWSSSWW",
+        "WWGGGGGGGGWWWWWSSSSSSSSWW",
+        "WWWWWGGGGGGGBSSSSSSSWWWWW",
+        "WWGGGGGGGGWWWWWSSSSSSSSWW",
+        "WWGGGWWWWWWWWWWWWWWWSSSWW",
+        "WWGGGGGWWWWWWWWWWWSSSSSWW",
+        "WWWWWWWWWWWWWWWWWWWWWWWWW",
+        "WWWWWWWWWWWWWWWWWWWWWWWWW"
+    ],
+    "startingBuildingPos": [
+        {"building": "T",
+         "posX": 3,
+         "posY": 3,
+         "owner": 1,
+         "produces": ["S", "K"]
+        },
+        {"building": "T",
+         "posX": 3,
+         "posY": 7,
+         "owner": 1,
+         "produces": ["S", "K"]
+        },
+        {"building": "V",
+         "posX": 6,
+         "posY": 8,
+         "owner": 0,
+         "produces": ["S", "A"]
+        },
+        {"building": "V",
+         "posX": 18,
+         "posY": 2,
+         "owner": 0,
+         "produces": ["S", "A"]
+        },
+        {"building": "T",
+         "posX": 21,
+         "posY": 3,
+         "owner": 2,
+         "produces": ["S", "K"]
+        },
+        {"building": "T",
+         "posX": 21,
+         "posY": 7,
+         "owner": 2,
+         "produces": ["S", "K"]
+        },
+        {"building": "C",
+         "posX": 6,
+         "posY": 5,
+         "owner": 1,
+         "produces": ["S", "A", "D"],
+        },
+        {"building": "C",
+         "posX": 18,
+         "posY": 5,
+         "owner": 2,
+         "produces": ["S", "A", "D"],
+        },
+        {"building": "W",
+         "posX": 9,
+         "posY": 4,
+         "owner": 0,
+         "produces": ["S", "A"],
+        },
+        {"building": "W",
+         "posX": 15,
+         "posY": 6,
+         "owner": 0,
+         "produces": ["S", "A"],
+        }
+
+    ],
+    "startingUnitPos": [
+        {"unit": "S",
+         "posX": 6,
+         "posY": 6,
+         "owner": 1
+        },
+        {"unit": "S",
+         "posX": 6,
+         "posY": 4,
+         "owner": 1
+        },
+        {"unit": "S",
+         "posX": 18,
+         "posY": 6,
+         "owner": 2
+        },
+        {"unit": "S",
+         "posX": 18,
+         "posY": 4,
+         "owner": 2
+        }
+    ]
+}
