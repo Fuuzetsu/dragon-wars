@@ -1,12 +1,13 @@
 package com.group7.dragonwars.engine;
 
-public class BasicMapInfo {
+public final class BasicMapInfo {
     private String name;
     private String desc;
     private String path;
     private int players;
 
-    public BasicMapInfo(String name, String desc, String path, int players) {
+    public BasicMapInfo(final String name, final String desc,
+                        final String path, final int players) {
         this.name = name;
         this.setDesc(desc);
         this.path = path;
@@ -17,7 +18,7 @@ public class BasicMapInfo {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -25,7 +26,7 @@ public class BasicMapInfo {
         return path;
     }
 
-    public void setPath(String path) {
+    public void setPath(final String path) {
         this.path = path;
     }
 
@@ -33,7 +34,7 @@ public class BasicMapInfo {
         return players;
     }
 
-    public void setPlayers(int players) {
+    public void setPlayers(final int players) {
         this.players = players;
     }
 
@@ -41,7 +42,7 @@ public class BasicMapInfo {
         return desc;
     }
 
-    public void setDesc(String desc) {
+    public void setDesc(final String desc) {
         this.desc = desc;
     }
 }

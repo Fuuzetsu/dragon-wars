@@ -9,7 +9,7 @@ import android.database.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Database {
+public final class Database {
     public class Entry {
         public Double DAMAGEDEALT;
         public Double DAMAGERECEIVED;
@@ -38,8 +38,7 @@ public class Database {
 
     private SQLiteDatabase database;
 
-    public Database(Context con) {
-        //open the database if it exists else, creates a new data base with that name
+    public Database(final Context con) {
         database = con.openOrCreateDatabase(DATABASE_NAME, 0, null);
         CreateTable();
     }
@@ -59,8 +58,10 @@ public class Database {
     }
 
     //use to add a new high score to the database
-    public void AddEntry(Double damageDealt, Double damageReceived, Double distanceTravelled,
-                         Integer goldCollected, Integer unitsKilled, Integer unitsMade) {
+    public void AddEntry(final Double damageDealt, final Double damageReceived,
+                         final Double distanceTravelled,
+                         final Integer goldCollected, final Integer unitsKilled,
+                         final Integer unitsMade) {
         //create content values
         ContentValues values = new ContentValues();
 
@@ -81,8 +82,9 @@ public class Database {
         List<Entry> entries = new ArrayList<Entry>();
 
         //get cursor to DB from query
-        String[] query = {"GAMETIME", "DAMAGEDEALT", "DAMAGERECEIVED", "DISTANCETRAVELLED",
-                          "GOLDCOLLECTED", "UNITSKILLED", "UNITSMADE"
+        String[] query = {"GAMETIME", "DAMAGEDEALT", "DAMAGERECEIVED",
+                          "DISTANCETRAVELLED", "GOLDCOLLECTED",
+                          "UNITSKILLED", "UNITSMADE"
                          };
 
         Cursor cursor = database.query(
@@ -97,12 +99,12 @@ public class Database {
         for(Integer entry = 0; entry < numberOfEntries; entry++) {
             Entry record = new Entry();
             /* We don't care about the game time */
-            record.DAMAGEDEALT      = cursor.getDouble(1);
-            record.DAMAGERECEIVED   = cursor.getDouble(2);
-            record.DISTANCETRAVELLED    = cursor.getDouble(3);
-            record.GOLDCOLLECTED    = cursor.getInt(4);
-            record.UNITSKILLED      = cursor.getInt(5);
-            record.UNITSMADE        = cursor.getInt(6);
+            record.DAMAGEDEALT       = cursor.getDouble(1);
+            record.DAMAGERECEIVED    = cursor.getDouble(2);
+            record.DISTANCETRAVELLED = cursor.getDouble(3);
+            record.GOLDCOLLECTED     = cursor.getInt(4);
+            record.UNITSKILLED       = cursor.getInt(5);
+            record.UNITSMADE         = cursor.getInt(6);
             entries.add(record);
             cursor.moveToNext();
         }

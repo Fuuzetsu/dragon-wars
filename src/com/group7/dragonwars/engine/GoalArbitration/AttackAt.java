@@ -9,8 +9,9 @@ public class AttackAt extends AtomicAction {
     private Unit targetUnit;
     private Position moveTo;
 
-    public AttackAt(GameState gameState, Unit unit, Unit target,
-                    float value, Position moveTo) {
+    public AttackAt(final GameState gameState, final Unit unit,
+                    final Unit target, final float value,
+                    final Position moveTo) {
         super(gameState, unit, value);
         targetUnit = target;
         this.moveTo = moveTo;

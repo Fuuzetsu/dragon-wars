@@ -9,7 +9,7 @@ import java.util.Set;
  * Used by GameState to provide data to GameView in a transparent fashion.
  * All the logic of whether to recalculate something or not will be moved here.
  */
-public class InformationState {
+public final class InformationState {
 
     private GameState containingState;
     private GameField currentlySelected;
@@ -25,21 +25,21 @@ public class InformationState {
     private Logic logic = new Logic();
 
 
-    public InformationState(GameState state) {
+    public InformationState(final GameState state) {
         containingState = state;
     }
 
 
     public List<Position> getPath() {
-        if (path == null || lastDestinations == null ||
-                lastDestinations.size() == 0) {
+        if (path == null || lastDestinations == null
+            || lastDestinations.size() == 0) {
             return new ArrayList<Position>(0);
         }
 
         return path;
     }
 
-    public void setPath(List<Position> path) {
+    public void setPath(final List<Position> path) {
         this.path = path;
     }
 
@@ -55,10 +55,10 @@ public class InformationState {
         return getUnitDestinations(currentlySelected);
     }
 
-    public List<Position> getUnitDestinations(GameField field) {
+    public List<Position> getUnitDestinations(final GameField field) {
         List<Position> unitDests =  new ArrayList<Position>(0);
 
-        if (field == null) { // || !containingState.getMap().isValidField(field)) {
+        if (field == null) {
             return unitDests;
         }
 
@@ -72,8 +72,8 @@ public class InformationState {
 
         Unit u = field.getUnit();
 
-        if (containingState.getCurrentPlayer().isAi() || u.getOwner() != containingState.getCurrentPlayer() ||
-                u.hasFinishedTurn()) {
+        if (containingState.getCurrentPlayer().isAi() || u.getOwner()
+            != containingState.getCurrentPlayer() || u.hasFinishedTurn()) {
             lastUnit = null;
             lastField = null;
             path = null;
@@ -86,17 +86,19 @@ public class InformationState {
             lastUnit = null;
             lastField = null;
             path = null;
-            lastAttackables = logic.getAttackableUnitPositions(containingState.getMap(), u);
+            lastAttackables
+                = logic.getAttackableUnitPositions(containingState.getMap(), u);
             return unitDests;
         }
 
-        if (lastDestinations == null || lastUnit == null || lastField == null ||
-                lastAttackables == null) {
+        if (lastDestinations == null || lastUnit == null || lastField == null
+            || lastAttackables == null) {
             lastUnit = u;
             lastField = field;
             unitDests = logic.destinations(containingState.getMap(), u);
             lastDestinations = unitDests;
-            lastAttackables = logic.getAttackableUnitPositions(containingState.getMap(), u);
+            lastAttackables
+                = logic.getAttackableUnitPositions(containingState.getMap(), u);
             path = null;
             return unitDests;
         }

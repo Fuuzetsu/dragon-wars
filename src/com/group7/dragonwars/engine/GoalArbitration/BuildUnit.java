@@ -9,7 +9,8 @@ import com.group7.dragonwars.engine.Unit;
 public class BuildUnit extends AtomicAction {
     Position destination;
 
-    public BuildUnit(GameState gameState, Unit unit, Position destin, float value) {
+    public BuildUnit(final GameState gameState, final Unit unit,
+                     final Position destin, final float value) {
         super(gameState, unit, value);
         destination = destin;
     }
@@ -17,7 +18,7 @@ public class BuildUnit extends AtomicAction {
     @Override
     public void Perform() {
         Log.d("BU", "Unit being built");
-        super.gameState.produceUnit(gameState.getMap().getField(destination), actionUnit);
+        super.gameState.produceUnit(gameState.getMap().getField(destination),
+                                    actionUnit);
     }
 }
-

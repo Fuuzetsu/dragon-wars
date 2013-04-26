@@ -1,6 +1,6 @@
 package com.group7.dragonwars.engine;
 
-import java.util.*;
+import java.util.List;
 
 import com.group7.dragonwars.engine.GoalArbitration.AtomicAction;
 import com.group7.dragonwars.engine.GoalArbitration.StateTree;
@@ -15,7 +15,7 @@ public class PlayerAI extends Player {
     }
 
     @Override
-    public void setGameState(GameState gameState) {
+    public void setGameState(final GameState gameState) {
         this.gameState = gameState;
     }
 

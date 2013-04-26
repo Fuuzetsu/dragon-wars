@@ -1,15 +1,17 @@
 package com.group7.dragonwars.engine.GoalArbitration;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
 import android.util.Log;
 
 
-public class Node {
+public final class Node {
     private AtomicAction nodeAction;
     private Node nodeParent;
     private List<Node> children;
-    private int min = -1,                       //Min child node index defaults to -1
-                max = -1;                       //Max child node index defaults to -1
+    private int min = -1,
+                max = -1;
     private float minValue = Float.MAX_VALUE;   //Min child node value
     private float maxValue = Float.MIN_VALUE;   //Max child node value
     private int nodeDepth;
@@ -17,7 +19,8 @@ public class Node {
     private static int size = 1;                        //Tree size thus far
     private static int maxSize = 300;                   //Max tree size
 
-    public Node(Node parent, int depth, float currentvalue, AtomicAction action) {
+    public Node(final Node parent, final int depth,
+                final float currentvalue, final AtomicAction action) {
         nodeAction = action;
         nodeParent = parent;
         nodeDepth = depth;
@@ -79,7 +82,7 @@ public class Node {
         return value;
     }
 
-    public void AddChildNode(float value, AtomicAction action) {
+    public void AddChildNode(final float value, final AtomicAction action) {
         children.add(new Node(this, nodeDepth + 1, value, action));
 
         if (children.size() > 0) {
@@ -118,7 +121,7 @@ public class Node {
         return nodeDepth % 2 == 0;
     }
 
-    public void setSize(int newSize) {
+    public void setSize(final int newSize) {
         size = newSize;
     }
 

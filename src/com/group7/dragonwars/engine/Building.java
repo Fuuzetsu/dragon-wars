@@ -1,8 +1,9 @@
 package com.group7.dragonwars.engine;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Building extends DrawableMapObject {
+public final class Building extends DrawableMapObject {
 
     private Integer captureWorth;
     private Integer captureDifficulty, remainingCaptureTime;
@@ -14,9 +15,11 @@ public class Building extends DrawableMapObject {
     private Position position;
 
 
-    public Building(String name, Integer captureDifficulty, Double attackBonus,
-                    Double defenseBonus, Boolean goalBuilding, Integer captureWorth,
-                    String spriteLocation, String spriteDir, String spritePack) {
+    public Building(final String name, final Integer captureDifficulty,
+                    final Double attackBonus, final Double defenseBonus,
+                    final Boolean goalBuilding, final Integer captureWorth,
+                    final String spriteLocation, final String spriteDir,
+                    final String spritePack) {
         super(name, spriteLocation, spriteDir, spritePack);
 
         this.captureDifficulty = captureDifficulty;
@@ -32,7 +35,7 @@ public class Building extends DrawableMapObject {
 
     }
 
-    public Building(Building building) {
+    public Building(final Building building) {
         super(building.getName(), building.getSpriteLocation(),
               building.getSpriteDir(), building.getSpritePack());
 
@@ -45,7 +48,7 @@ public class Building extends DrawableMapObject {
         this.goalBuilding = building.isGoalBuilding();
         this.captureWorth = building.getCaptureWorth();
 
-        this.info = building.info;
+        setInfo(building.getInfo());
 
     }
 
@@ -53,9 +56,9 @@ public class Building extends DrawableMapObject {
         return !this.producibleUnits.isEmpty();
     }
 
-    public void addProducibleUnit(Unit unit) {
+    public void addProducibleUnit(final Unit unit) {
         this.producibleUnits.add(unit);
-        this.generateInfo(); // Info has changed since producible units have changed
+        this.generateInfo();
     }
 
     public List<Unit> getProducibleUnits() {
@@ -70,7 +73,7 @@ public class Building extends DrawableMapObject {
         return this.lastCapturer;
     }
 
-    public void setLastCapturer(Player player) {
+    public void setLastCapturer(final Player player) {
         this.lastCapturer = player;
     }
 
@@ -98,7 +101,7 @@ public class Building extends DrawableMapObject {
         return this.owner;
     }
 
-    public void setOwner(Player player) {
+    public void setOwner(final Player player) {
         this.owner = player;
     }
 
@@ -106,7 +109,7 @@ public class Building extends DrawableMapObject {
         return this.goalBuilding;
     }
 
-    public void reduceCaptureTime(Integer captureAmount) {
+    public void reduceCaptureTime(final Integer captureAmount) {
         this.remainingCaptureTime -= captureAmount;
 
         if (this.remainingCaptureTime <= 0) {
@@ -125,14 +128,15 @@ public class Building extends DrawableMapObject {
         return this.position;
     }
 
-    public void setPosition(Position position) {
-        this.position = position;
+    public void setPosition(final Position pos) {
+        this.position = pos;
     }
 
     public Integer getCaptureWorth() {
         return this.captureWorth;
     }
 
+    @Override
     public String getInfo() {
         String r = getName();
 
@@ -142,9 +146,10 @@ public class Building extends DrawableMapObject {
 
         r += "\n";
 
-        return r + this.info;
+        return r + getInfo();
     }
 
+    @Override
     public void generateInfo() {
         String r = "";
 
@@ -157,7 +162,7 @@ public class Building extends DrawableMapObject {
             }
         }
 
-        this.info = r;
+        setInfo(r);
 
     }
 }

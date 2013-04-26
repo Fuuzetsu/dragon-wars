@@ -26,7 +26,8 @@ public class StateTree {
     private Logic logic = new Logic();
     private List<AtomicAction> actions;
 
-    public StateTree(GameState gamestate, int maxsize, Player owner) {
+    public StateTree(final GameState gamestate, final int maxsize,
+                     final Player owner) {
         gameState = gamestate;
         stateTreeOwner = owner;
     }
@@ -50,41 +51,51 @@ public class StateTree {
                     }
 
                     //Evaluate cost and gain, don't add if below threshold
-                    List<Position> vfs = logic.findValidFieldsNextToUnit(gameState.getMap(), playerUnit, unit);
+                    List<Position> vfs = logic.findValidFieldsNextToUnit(
+                        gameState.getMap(), playerUnit, unit);
 
                     if (vfs.isEmpty()) {
                         continue;
                     }
 
-                    Pair<Pair<Double, Double>, Position> dmgpos = getBestAttackPosition(
-                                gameState.getMap(), playerUnit, unit, vfs);
-                    float damageRatio = (float)(dmgpos.getLeft().getLeft() / dmgpos.getLeft().getRight());
+                    Pair<Pair<Double, Double>, Position> dmgpos
+                        = getBestAttackPosition(gameState.getMap(), playerUnit,
+                                                unit, vfs);
+                    float damageRatio = (float)(dmgpos.getLeft().getLeft()
+                                                / dmgpos.getLeft().getRight());
 
                     if (damageRatio < 0) {      // In enemy's favour
                         continue;
                     }
 
                     if (damageRatio > bestValue) {
-                        currentBest = new AttackAt(gameState, playerUnit, unit, damageRatio, dmgpos.getRight());
+                        currentBest =
+                            new AttackAt(gameState, playerUnit, unit,
+                                         damageRatio, dmgpos.getRight());
                         bestValue = damageRatio;
                     }
                 }
 
                 if (currentBest == null) { /* No unit to attack */
-                    GameField curField = gameState.getMap().getField(playerUnit.getPosition());
+                    GameField curField
+                        = gameState.getMap().getField(playerUnit.getPosition());
 
                     if (!(curField.hostsBuilding()
-                            && !curField.getBuilding().getOwner().equals(stateTreeOwner))) {
-                        /* We're standing on a building we don't own so don't move */
-                        List<Position> dests = logic.destinations(gameState.getMap(), playerUnit);
+                            && !curField.getBuilding().getOwner()
+                          .equals(stateTreeOwner))) {
+                        /* We're standing on a building we don't own */
+                        List<Position> dests
+                            = logic.destinations(gameState.getMap(),
+                                                 playerUnit);
 
                         for (Position p : dests) {
                             GameField gf = gameState.getMap().getField(p);
 
-                            if (gf.hostsBuilding() && !gf.getBuilding().getOwner().equals(stateTreeOwner)
-                                    && !gf.hostsUnit()) {
-                                /* Cost 1 as nothing else to do for the unit anyway */
-                                currentBest = new MoveTo(gameState, playerUnit, p, 1);
+                            if (gf.hostsBuilding() && !gf.getBuilding()
+                                .getOwner().equals(stateTreeOwner)
+                                && !gf.hostsUnit()) {
+                                currentBest = new MoveTo(gameState,
+                                                         playerUnit, p, 1);
                                 break; /* Naive building picking */
                             }
                         }
@@ -114,9 +125,12 @@ public class StateTree {
                 }
 
                 goldAmount -= bestBuildable.getProductionCost();
-                AtomicAction bestAction = new BuildUnit(gameState, bestBuildable, building.getPosition(),
-                                                        bestBuildable.getProductionCost());
-                base.AddChildNode(bestBuildable.getProductionCost(), bestAction);
+                AtomicAction bestAction =
+                    new BuildUnit(gameState, bestBuildable,
+                                  building.getPosition(),
+                                  bestBuildable.getProductionCost());
+                base.AddChildNode(bestBuildable.getProductionCost(),
+                                  bestAction);
             }
         }
 
@@ -131,7 +145,8 @@ public class StateTree {
     }
 
     private Pair<Pair<Double, Double>, Position>
-    getBestAttackPosition(final GameMap map, final Unit attacker, final Unit defender,
+    getBestAttackPosition(final GameMap map, final Unit attacker,
+                          final Unit defender,
                           final List<Position> validPositions) {
         if (validPositions.size() == 1) {
             Position p = validPositions.get(0);
@@ -145,9 +160,11 @@ public class StateTree {
             for (Position p : validPositions) {
                 Pair<Double, Double> damageExchange =
                     logic.calculateDamageFrom(map, attacker, defender, p);
-                Double pRatio = damageExchange.getLeft() / damageExchange.getRight();
+                Double pRatio
+                    = damageExchange.getLeft() / damageExchange.getRight();
 
-                if (pRatio == null || bestRatioDamage == null || movePos == null) {
+                if (pRatio == null || bestRatioDamage == null
+                    || movePos == null) {
                     ratio = pRatio;
                     bestRatioDamage = damageExchange;
                     movePos = p;
@@ -159,11 +176,13 @@ public class StateTree {
                 }
             }
 
-            return new Pair<Pair<Double, Double>, Position>(bestRatioDamage, movePos);
+            return new Pair<Pair<Double, Double>, Position>(bestRatioDamage,
+                                                            movePos);
         }
     }
 
-    private Unit getBestBuildableUnit(Building building, int goldAmount) {
+    private Unit getBestBuildableUnit(final Building building,
+                                      final int goldAmount) {
 
         List<Unit> buildable = building.getProducibleUnits();
 

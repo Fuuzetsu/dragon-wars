@@ -1,10 +1,10 @@
 package com.group7.dragonwars.engine;
 
-public class Position {
+public final class Position {
 
     private Pair<Integer, Integer> pair;
 
-    public Position(Integer x, Integer y) {
+    public Position(final Integer x, final Integer y) {
         this.pair = new Pair<Integer, Integer>(x, y);
     }
 

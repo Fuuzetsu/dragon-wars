@@ -63,7 +63,7 @@ public class Unit extends DrawableMapObject {
         this.owner = unit.getOwner();
         this.isFlying = unit.isFlying();
         this.productionCost = unit.getProductionCost();
-        this.info = unit.info;
+        setInfo(unit.getInfo());
     }
 
     public Boolean isDead() {
@@ -183,18 +183,20 @@ public class Unit extends DrawableMapObject {
         return this.productionCost;
     }
 
-    public String getInfo() {
+    @Override
+    public final String getInfo() {
         String r = getName() + " ~ " + this.getOwner().getName() + "\n";
         r += "Health: " + decformat.format(getHealth());
-        return r + this.info;
+        return r + getInfo();
     }
 
+    @Override
     public void generateInfo() {
         String  r =  "/"  + decformat.format(getMaxHealth()) + "\n";
         r += "Attack: " + decformat.format(getAttack()) + "\n";
         r += "Defense: " + decformat.format(getMeleeDefense()) + " (Melee) "
              + decformat.format(getRangeDefense()) + " (Ranged)\n";
 
-        this.info = r;
+        setInfo(r);
     }
 }
