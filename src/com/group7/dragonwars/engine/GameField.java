@@ -91,7 +91,7 @@ public final class GameField extends DrawableMapObject {
         this.hostedBuilding = building;
     }
 
-    public void setUnit(Unit unit) {
+    public void setUnit(final Unit unit) {
         this.hostedUnit = unit;
     }
 
@@ -105,6 +105,6 @@ public final class GameField extends DrawableMapObject {
         r += "Attack: " + decformat.format(getAttackModifier())
              + " Defense: " + decformat.format(getDefenseModifier())
              + " Move: " + decformat.format(getMovementModifier()) + "\n";
-        setInfo(r);
+        this.info = r;
     }
 }

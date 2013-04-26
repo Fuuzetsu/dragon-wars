@@ -6,7 +6,7 @@ public abstract class DrawableMapObject {
     private String spriteLocation;
     private String spriteDir;
     private String spritePack;
-    private String info;
+    protected String info;
 
     public DrawableMapObject(final String name, final String spriteLocation,
                              final String spriteDir, final String spritePack) {

@@ -15,16 +15,14 @@ public class Unit extends DrawableMapObject {
     private Boolean isFlying;
     private Integer productionCost;
 
-    private static DecimalFormat decformat;
+    private static DecimalFormat decformat = new DecimalFormat("#.##");
 
-    static {
-        decformat = new DecimalFormat("#.##");
-    }
-
-    public Unit(String name, Double maxHealth, Integer maxMovement,
-                Double attack, Double meleeDefense, Double rangeDefense,
-                Boolean isFlying, Integer productionCost, String spriteLocation,
-                String spriteDir, String spritePack) {
+    public Unit(final String name, final Double maxHealth,
+                final Integer maxMovement, final Double attack,
+                final Double meleeDefense, final Double rangeDefense,
+                final Boolean isFlying, final Integer productionCost,
+                final String spriteLocation,
+                final String spriteDir, final String spritePack) {
         super(name, spriteLocation, spriteDir, spritePack);
 
         this.maxHealth = maxHealth;
@@ -45,7 +43,7 @@ public class Unit extends DrawableMapObject {
     }
 
     /* Used for copying the unit template */
-    public Unit(Unit unit) {
+    public Unit(final Unit unit) {
         super(unit.getName(), unit.getSpriteLocation(),
               unit.getSpriteDir(), unit.getSpritePack());
 
@@ -63,7 +61,7 @@ public class Unit extends DrawableMapObject {
         this.owner = unit.getOwner();
         this.isFlying = unit.isFlying();
         this.productionCost = unit.getProductionCost();
-        setInfo(unit.getInfo());
+        this.info = unit.info;
     }
 
     public Boolean isDead() {
@@ -110,11 +108,11 @@ public class Unit extends DrawableMapObject {
         return this.owner;
     }
 
-    public void setOwner(Player player) {
+    public void setOwner(final Player player) {
         this.owner = player;
     }
 
-    public void reduceHealth(Double damage) {
+    public void reduceHealth(final Double damage) {
         this.lastDamage += -damage;
         this.health -= damage;
 
@@ -123,11 +121,11 @@ public class Unit extends DrawableMapObject {
         }
     }
 
-    public void setPosition(Position position) {
+    public void setPosition(final Position position) {
         this.position = position;
     }
 
-    public void restoreHealth(Double heal) {
+    public void restoreHealth(final Double heal) {
         Double newHealth = this.health + heal;
         this.health = (newHealth <= maxHealth) ? newHealth : maxHealth;
     }
@@ -136,7 +134,7 @@ public class Unit extends DrawableMapObject {
         return this.hasFinishedTurn;
     }
 
-    public void setFinishedTurn(Boolean b) {
+    public void setFinishedTurn(final Boolean b) {
         this.hasFinishedTurn = b;
     }
 
@@ -156,7 +154,7 @@ public class Unit extends DrawableMapObject {
         this.lastDamage = 0.0;
     }
 
-    public Boolean reduceMovement(Integer amount) {
+    public Boolean reduceMovement(final Integer amount) {
         if (this.movement - amount < 0) {
             return false;
         }
@@ -187,7 +185,7 @@ public class Unit extends DrawableMapObject {
     public final String getInfo() {
         String r = getName() + " ~ " + this.getOwner().getName() + "\n";
         r += "Health: " + decformat.format(getHealth());
-        return r + getInfo();
+        return r + this.info;
     }
 
     @Override
@@ -197,6 +195,6 @@ public class Unit extends DrawableMapObject {
         r += "Defense: " + decformat.format(getMeleeDefense()) + " (Melee) "
              + decformat.format(getRangeDefense()) + " (Ranged)\n";
 
-        setInfo(r);
+        this.info = r;
     }
 }

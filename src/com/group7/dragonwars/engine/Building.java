@@ -48,7 +48,7 @@ public final class Building extends DrawableMapObject {
         this.goalBuilding = building.isGoalBuilding();
         this.captureWorth = building.getCaptureWorth();
 
-        setInfo(building.getInfo());
+        this.info = building.info;
 
     }
 
@@ -146,7 +146,7 @@ public final class Building extends DrawableMapObject {
 
         r += "\n";
 
-        return r + getInfo();
+        return r + this.info;
     }
 
     @Override
@@ -162,7 +162,7 @@ public final class Building extends DrawableMapObject {
             }
         }
 
-        setInfo(r);
+        this.info = r;
 
     }
 }
