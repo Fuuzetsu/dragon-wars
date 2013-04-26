@@ -38,22 +38,22 @@ public class StatisticsActivity extends Activity implements OnClickListener {
         db.Close();
 
         statsEntries[0] =
-            String.format("Damage dealt: %f",
+            String.format("Damage dealt: %s",
                           decformat.format(entry.DAMAGEDEALT));
         statsEntries[1] =
-            String.format("Damage received: %f",
+            String.format("Damage received: %s",
                           decformat.format(entry.DAMAGERECEIVED));
         statsEntries[2] =
-            String.format("Distance travelled: %f",
+            String.format("Distance travelled: %s",
                           decformat.format(entry.DISTANCETRAVELLED));
         statsEntries[3] =
-            String.format("Gold collected: %d",
+            String.format("Gold collected: %s",
                           decformat.format(entry.GOLDCOLLECTED));
         statsEntries[4] =
-            String.format("Units killed: %d",
+            String.format("Units killed: %s",
                           decformat.format(entry.UNITSKILLED));
         statsEntries[5] =
-            String.format("Units produced: %d",
+            String.format("Units produced: %s",
                           decformat.format(entry.UNITSMADE));
 
         ArrayAdapter<String> adapter =
