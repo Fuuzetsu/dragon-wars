@@ -135,9 +135,11 @@ public class Building extends DrawableMapObject {
 
     public String getInfo() {
         String r = getName();
+
         if (hasOwner()) {
             r += " ~ " + getOwner().getName();
         }
+
         r += "\n";
 
         return r + this.info;
@@ -145,11 +147,13 @@ public class Building extends DrawableMapObject {
 
     public void generateInfo() {
         String r = "";
+
         if (canProduceUnits()) {
             r += "Produces:\n";
+
             for (Unit u : getProducibleUnits()) {
                 r += " " + u + " - "
-                    + u.getProductionCost() + " Gold\n";
+                     + u.getProductionCost() + " Gold\n";
             }
         }
 

@@ -49,8 +49,10 @@ public class MainMenuActivity extends Activity implements OnClickListener {
         super.onStart();
 
         AssetManager ass = getAssets();
+
         try {
             String[] files = ass.list("maps");
+
             for (int i = 0; i < files.length; ++i) {
                 Log.v(null, "File " + i + " " + files[i]);
             }

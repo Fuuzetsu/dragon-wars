@@ -19,8 +19,9 @@ public class GameField extends DrawableMapObject {
     public Boolean doesAcceptUnit(Unit unit) {
         Boolean canStep = false;
 
-        if (this.flightOnly)
+        if (this.flightOnly) {
             canStep = unit.isFlying();
+        }
 
         return this.accessible || canStep;
     }
@@ -103,8 +104,8 @@ public class GameField extends DrawableMapObject {
     public void generateInfo() {
         String r = getName() + "\n";
         r += "Attack: " + decformat.format(getAttackModifier())
-            + " Defense: " + decformat.format(getDefenseModifier())
-            + " Move: " + decformat.format(getMovementModifier()) + "\n";
+             + " Defense: " + decformat.format(getDefenseModifier())
+             + " Move: " + decformat.format(getMovementModifier()) + "\n";
         this.info = r;
     }
 }

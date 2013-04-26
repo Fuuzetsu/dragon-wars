@@ -57,11 +57,13 @@ public class GameActivity extends Activity {
         String mapFileName = b.getString("mapFileName");
         boolean[] isAi = b.getBooleanArray("isAi");
         GameMap map = null;
+
         try {
             map = MapReader.readMapFromFile(mapFileName, this, isAi);
         } catch (JSONException e) {
             Log.d(TAG, "Failed to load the map: " + e.getMessage());
         }
+
         if (map == null) {
             Log.d(TAG, "map is null");
             System.exit(1);
@@ -82,6 +84,7 @@ public class GameActivity extends Activity {
             gameView.showMenu();
             return true;
         }
+
         return super.onKeyDown(keyCode, event);
     }
 
@@ -107,6 +110,7 @@ public class GameActivity extends Activity {
         for (Map.Entry<String, Double> ent : stats.getEntrySet()) {
             b.putDouble(ent.getKey(), ent.getValue().doubleValue());
         }
+
         intent.putExtras(b);
         startActivity(intent);
         finish();

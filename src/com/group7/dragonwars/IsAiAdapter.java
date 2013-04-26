@@ -18,9 +18,9 @@ import android.widget.ToggleButton;
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class IsAiAdapter extends ArrayAdapter<Player> implements OnCheckedChangeListener {
     Context context;
-    int layoutResourceId;   
+    int layoutResourceId;
     Player data[] = null;
-   
+
     public IsAiAdapter(Context context, int layoutResourceId, Player[] data) {
         super(context, layoutResourceId, data);
         this.layoutResourceId = layoutResourceId;
@@ -32,36 +32,32 @@ public class IsAiAdapter extends ArrayAdapter<Player> implements OnCheckedChange
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = convertView;
         IsAiHolder holder = null;
-       
-        if(row == null)
-        {
+
+        if(row == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            
-                    //((Activity)context).getLayoutInflater();
-            
+
+            //((Activity)context).getLayoutInflater();
+
             row = inflater.inflate(layoutResourceId, parent, false);
-           
+
             holder = new IsAiHolder();
             holder.playerName = (TextView)row.findViewById(R.id.playerName);
             holder.toggleAi = (ToggleButton)row.findViewById(R.id.toggleAI);
             holder.toggleAi.setOnCheckedChangeListener(this);
-           
+
             row.setTag(holder);
-        }
-        else
-        {
+        } else {
             holder = (IsAiHolder) row.getTag();
         }
-       
+
         Player player = data[position];
         holder.playerName.setText(player.getName());
         player.setIsAi(holder.toggleAi.isChecked());
-        
+
         return row;
     }
-   
-    static class IsAiHolder
-    {
+
+    static class IsAiHolder {
         TextView playerName;
         ToggleButton toggleAi;
     }

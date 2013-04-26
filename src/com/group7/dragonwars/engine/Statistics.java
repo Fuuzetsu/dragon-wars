@@ -43,7 +43,7 @@ public class Statistics {
         putIfNotPresent(stat);
         return sMap.get(stat);
     }
-    
+
     public Set<Entry<String, Double>> getEntrySet() {
         return sMap.entrySet();
     }
@@ -51,9 +51,11 @@ public class Statistics {
     @Override
     public String toString() {
         String r = "";
+
         for (Map.Entry<String, Double> ent : sMap.entrySet()) {
             r += ent.getKey() + ": "  + ent.getValue().doubleValue() + "\n";
         }
+
         return r;
     }
 

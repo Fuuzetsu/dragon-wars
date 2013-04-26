@@ -18,7 +18,7 @@ public class PlayerSelectActivity extends Activity implements OnClickListener {
     private Player[] players;
     private String[] playerNames;
     boolean[] isAi;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,12 +28,12 @@ public class PlayerSelectActivity extends Activity implements OnClickListener {
         beginButton = (Button) findViewById(R.id.beginButton);
         beginButton.setOnClickListener(this);
     }
-    
+
     @Override
     protected void onStart() {
         super.onStart();
         bundle = getIntent().getExtras();
-        
+
         numPlayers = bundle.getInt("numPlayers");
         players = new Player[numPlayers];
         playerNames = bundle.getStringArray("playerNames");
@@ -43,10 +43,10 @@ public class PlayerSelectActivity extends Activity implements OnClickListener {
             players[i] = new Player(playerNames[i], 0);
             players[i].setIsAi(isAi[i]);
         }
-        
+
         IsAiAdapter adapter = new IsAiAdapter(getBaseContext(),
-                    R.layout.listview_row_player_select, players);
-        
+                                              R.layout.listview_row_player_select, players);
+
         ListView playerList = (ListView) findViewById(R.id.playerList);
         playerList.setAdapter(adapter);
     }
@@ -60,9 +60,11 @@ public class PlayerSelectActivity extends Activity implements OnClickListener {
         } else if (v == this.beginButton) {
             setContentView(R.layout.loading_screen);
             Intent intent = new Intent(this, GameActivity.class);
+
             for (int i = 0; i < numPlayers; ++i) {
                 isAi[i] = players[i].isAi();
             }
+
             bundle.putBooleanArray("isAi", isAi);
             intent.putExtras(bundle);
             startActivity(intent);

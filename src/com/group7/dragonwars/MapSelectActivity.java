@@ -33,21 +33,26 @@ public class MapSelectActivity extends Activity implements OnItemClickListener {
     @Override
     protected void onStart() {
         super.onStart();
+
         if (mapInfo.size() == 0) {
             AssetManager assman = getAssets();
             ListView mapList = (ListView)this.findViewById(R.id.mapList);
+
             try {
                 String[] files = assman.list("maps");
-    
+
                 for (int i = 0; i < files.length; ++i) {
                     String path = "maps/" + files[i];
                     BasicMapInfo info = MapReader.getBasicMapInformation(path, this);
                     mapInfo.add(info);
                 }
+
                 String[] displayInfo = new String[mapInfo.size()];
+
                 for (Integer i = 0; i < mapInfo.size(); i++) {
                     displayInfo[i] = mapInfo.get(i).getDesc();
                 }
+
                 ArrayAdapter<String> adapter =
                     new ArrayAdapter<String>(this,
                                              android.R.layout.simple_list_item_1, displayInfo);
@@ -67,18 +72,21 @@ public class MapSelectActivity extends Activity implements OnItemClickListener {
             Bundle b = new Bundle();
             b.putString("mapFileName", mapInfo.get(position).getPath());
             b.putString("mapName", mapInfo.get(position).getName());
-            
+
             int numPlayers = mapInfo.get(position).getPlayers();
             b.putBooleanArray("isAi", new boolean[numPlayers]);
             // boolean defaults to false, what could possibly go wrong?
             b.putInt("numPlayers", numPlayers);
-            
+
             /* Make a fake player list for now, again */
             String[] playerNames = new String[numPlayers];
-            for (Integer i = 0; i < numPlayers; ++i)
+
+            for (Integer i = 0; i < numPlayers; ++i) {
                 playerNames[i] = ("Player " + (i + 1));
+            }
+
             b.putStringArray("playerNames", playerNames);
-            
+
             intent.putExtras(b);
             startActivity(intent);
             //finish();

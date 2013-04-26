@@ -32,7 +32,7 @@ public class InformationState {
 
     public List<Position> getPath() {
         if (path == null || lastDestinations == null ||
-            lastDestinations.size() == 0) {
+                lastDestinations.size() == 0) {
             return new ArrayList<Position>(0);
         }
 
@@ -71,8 +71,9 @@ public class InformationState {
         }
 
         Unit u = field.getUnit();
+
         if (containingState.getCurrentPlayer().isAi() || u.getOwner() != containingState.getCurrentPlayer() ||
-            u.hasFinishedTurn()) {
+                u.hasFinishedTurn()) {
             lastUnit = null;
             lastField = null;
             path = null;
@@ -90,7 +91,7 @@ public class InformationState {
         }
 
         if (lastDestinations == null || lastUnit == null || lastField == null ||
-            lastAttackables == null) {
+                lastAttackables == null) {
             lastUnit = u;
             lastField = field;
             unitDests = logic.destinations(containingState.getMap(), u);

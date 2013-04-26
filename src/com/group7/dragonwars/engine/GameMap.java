@@ -31,8 +31,9 @@ public class GameMap implements Iterable<GameField> {
         List<GameField> flat = new ArrayList<GameField>();
 
         for (List<GameField> row : this.fields)
-            for (GameField gf : row)
+            for (GameField gf : row) {
                 flat.add(gf);
+            }
 
         return flat.iterator();
     }

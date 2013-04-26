@@ -13,12 +13,12 @@ public class PlayerAI extends Player {
     public PlayerAI(final String name, final Integer colour) {
         super(name, colour);
     }
-    
+
     @Override
     public void setGameState(GameState gameState) {
         this.gameState = gameState;
     }
-    
+
     @Override
     public boolean isAi() {
         return true;

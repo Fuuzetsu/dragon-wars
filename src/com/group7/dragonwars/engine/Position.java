@@ -25,6 +25,7 @@ public class Position {
         if (!(other instanceof Position)) {
             return false;
         }
+
         Position that = (Position) other;
 
         return getX() == that.getX() && getY() == that.getY();
@@ -37,7 +38,7 @@ public class Position {
 
     public String toString() {
         return String.format("(%d, %d)", this.pair.getLeft(),
-                              this.pair.getRight());
+                             this.pair.getRight());
     }
 
 }

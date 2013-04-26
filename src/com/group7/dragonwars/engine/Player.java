@@ -35,8 +35,9 @@ public class Player {
 
     public Boolean hasMoveableUnits() {
         for (Unit u : ownedUnits)
-            if (!u.hasFinishedTurn())
+            if (!u.hasFinishedTurn()) {
                 return true;
+            }
 
         return false;
     }
@@ -100,11 +101,11 @@ public class Player {
     public void setUnitSprites(final  Map<String, Bitmap> sprites) {
         unitSprites = sprites;
     }
-    
+
     public boolean isAi() {
         return this.isAi ;
     }
-    
+
     public void setIsAi(boolean isAi) {
         this.isAi = isAi;
     }

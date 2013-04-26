@@ -70,11 +70,16 @@ public class GameState {
         //if (!attackable.contains(defender.getPosition()))
         //    return;
         boolean contains = false;
+
         for (Position pos : attackable) {
-            if (pos.equals(defender.getPosition()))
+            if (pos.equals(defender.getPosition())) {
                 contains = true;
+            }
         }
-        if (!contains) return;
+
+        if (!contains) {
+            return;
+        }
 
         Pair<Double, Double> damage = logic.calculateDamage(map, attacker,
                                       defender);
@@ -111,6 +116,7 @@ public class GameState {
         }
 
         GameField destField = map.getField(destination);
+
         if (destField.hostsUnit()) {
             return false;
         }
@@ -151,8 +157,9 @@ public class GameState {
         for (GameField gf : map) {
 
             /* No building. */
-            if (!gf.hostsBuilding())
+            if (!gf.hostsBuilding()) {
                 continue;
+            }
 
             Building b = gf.getBuilding();
 
@@ -173,10 +180,11 @@ public class GameState {
             }
             /* No unit on the building. */
             else {
-                if (b.hasOwner())
+                if (b.hasOwner()) {
                     continue;
-                else
+                } else {
                     b.resetCaptureTime();
+                }
             }
         }
     }
@@ -190,6 +198,7 @@ public class GameState {
 
         while (iter.hasNext()) {
             Player p = iter.next();
+
             if (p.hasLost()) {
                 iter.remove();
             }
@@ -202,6 +211,7 @@ public class GameState {
         }
 
         playerIndex++;
+
         if (playerIndex == players.size()) {
             playerIndex = 0;
             advanceTurn();
@@ -209,12 +219,14 @@ public class GameState {
 
         if (getCurrentPlayer().isAi()) {
             getCurrentPlayer().takeTurn();
+
             /* Uh oh, dirty hack for concurrent mod 9h before presentation. */
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
                 /* Just let it slide and pray for the best */
             }
+
             nextPlayer();
         }
     }
@@ -225,8 +237,10 @@ public class GameState {
         for (Player p : players) {
             Integer goldWorth = 0;
 
-            for (Building b : p.getOwnedBuildings())
+            for (Building b : p.getOwnedBuildings()) {
                 goldWorth += b.getCaptureWorth();
+            }
+
             p.setGoldAmount(goldWorth + p.getGoldAmount());
 
             stats.increaseStatistic("Gold received", 1.0 * goldWorth);
@@ -235,6 +249,7 @@ public class GameState {
                 u.resetTurnStatistics();
             }
         }
+
         ++this.turns;
         stats.increaseStatistic("Turns taken");
     }
@@ -276,19 +291,20 @@ public class GameState {
     }
 
     public Boolean produceUnit(final GameField field, final Unit unit) {
-    	// produces a unit "at" a building
-        if (!field.hostsBuilding() || field.hostsUnit())
+        // produces a unit "at" a building
+        if (!field.hostsBuilding() || field.hostsUnit()) {
             return false;
+        }
 
         Building building = field.getBuilding();
 
         for (Unit u : building.getProducibleUnits()) {
             if (u.getName().equals(unit.getName())) {
-            	Player player = building.getOwner();
+                Player player = building.getOwner();
 
-            	if (player.getGoldAmount() < u.getProductionCost()) {
+                if (player.getGoldAmount() < u.getProductionCost()) {
                     return false;
-            	}
+                }
 
                 Unit newUnit = new Unit(u);
                 newUnit.setPosition(building.getPosition());
@@ -297,7 +313,7 @@ public class GameState {
                 player.setGoldAmount(player.getGoldAmount() - unit.getProductionCost());
                 player.addUnit(newUnit);
                 newUnit.setFinishedTurn(true);
-            	field.setUnit(newUnit);
+                field.setUnit(newUnit);
                 stats.increaseStatistic("Units produced");
                 return true;
             }

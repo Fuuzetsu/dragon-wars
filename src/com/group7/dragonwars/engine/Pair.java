@@ -32,10 +32,10 @@ public class Pair<L, R> {
 
     @Override
     public int hashCode() {
-    	int hashFirst = left != null ? left.hashCode() : 0;
-    	int hashSecond = right != null ? right.hashCode() : 0;
+        int hashFirst = left != null ? left.hashCode() : 0;
+        int hashSecond = right != null ? right.hashCode() : 0;
 
-    	return (hashFirst + hashSecond) * hashSecond + hashFirst;
+        return (hashFirst + hashSecond) * hashSecond + hashFirst;
     }
 
     @Override

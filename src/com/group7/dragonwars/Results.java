@@ -11,7 +11,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class Results extends Activity implements OnClickListener {
-    
+
     private Button btnMenu;
 
     @Override
@@ -21,7 +21,7 @@ public class Results extends Activity implements OnClickListener {
         btnMenu = (Button)findViewById(R.id.btnMenu);
         btnMenu.setOnClickListener(this);
     }
-    
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -30,17 +30,19 @@ public class Results extends Activity implements OnClickListener {
         winnerNameText.setText(b.getString("winnerName"));
         TextView turnsText = (TextView) findViewById(R.id.turnsText);
         turnsText.setText(Integer.toString(b.getInt("turns")) + " turns");
-        
+
         String[] statsKeys = {"Damage dealt", "Damage received", "Distance travelled", "Gold received", "Units killed", "Units produced"};
         String[] statsEntries = new String[statsKeys.length];
+
         for (int i = 0; i < statsKeys.length; ++i) {
             statsEntries[i] = statsKeys[i] + ": " + b.getDouble(statsKeys[i]);
         }
+
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, statsEntries);
         ListView statsList = (ListView) findViewById(R.id.statsList);
         statsList.setAdapter(adapter);
     }
-    
+
     @Override
     public void onClick(View v) {
         if (v == this.btnMenu) {

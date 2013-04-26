@@ -157,8 +157,9 @@ public class Unit extends DrawableMapObject {
     }
 
     public Boolean reduceMovement(Integer amount) {
-        if (this.movement - amount < 0)
+        if (this.movement - amount < 0) {
             return false;
+        }
 
         this.movement -= amount;
         return true;
@@ -192,7 +193,7 @@ public class Unit extends DrawableMapObject {
         String  r =  "/"  + decformat.format(getMaxHealth()) + "\n";
         r += "Attack: " + decformat.format(getAttack()) + "\n";
         r += "Defense: " + decformat.format(getMeleeDefense()) + " (Melee) "
-            + decformat.format(getRangeDefense()) + " (Ranged)\n";
+             + decformat.format(getRangeDefense()) + " (Ranged)\n";
 
         this.info = r;
     }

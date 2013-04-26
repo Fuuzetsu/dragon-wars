@@ -11,7 +11,7 @@ public class AttackAt extends AtomicAction {
 
     public AttackAt(GameState gameState, Unit unit, Unit target,
                     float value, Position moveTo) {
-        super(gameState,unit,value);
+        super(gameState, unit, value);
         targetUnit = target;
         this.moveTo = moveTo;
     }
@@ -19,6 +19,7 @@ public class AttackAt extends AtomicAction {
     @Override
     public void Perform() {
         Boolean moved = true;
+
         if (moveTo != null) {
             super.gameState.move(getUnit(), moveTo);
         }

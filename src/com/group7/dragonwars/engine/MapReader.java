@@ -21,8 +21,9 @@ public class MapReader {
     public static GameMap readMap(List<String> mapLines, boolean[] isAi) throws JSONException {
         String jsonSource = "";
 
-        for (String s : mapLines)
+        for (String s : mapLines) {
             jsonSource += s + "\n";
+        }
 
         JSONObject m = new JSONObject(jsonSource);
         String mapName = m.getString("mapName");
@@ -41,6 +42,7 @@ public class MapReader {
 
         /* Make a fake player list for now */
         List<Player> playerList = new ArrayList<Player>();
+
         for (Integer i = 0; i < players; ++i) {
             if (isAi[i]) {
                 playerList.add(new PlayerAI("AIPlayer " + (i + 1), playerColours.getInt(i)));
@@ -103,7 +105,7 @@ public class MapReader {
     }
 
     public static BasicMapInfo getBasicMapInformation(final String filename,
-                                                final Activity activity) throws JSONException {
+            final Activity activity) throws JSONException {
         String jsonSource = "";
 
         for (String s : MapReader.readFile(filename, activity)) {
@@ -117,7 +119,7 @@ public class MapReader {
         Integer players = m.getInt("players");
 
         String desc = String.format("%s - %dx%d - %d Players", mapName,
-                                      sizeX, sizeY, players);
+                                    sizeX, sizeY, players);
 
         return new BasicMapInfo(mapName, desc, filename, players);
     }
@@ -149,6 +151,7 @@ public class MapReader {
             System.err.println("Couldn't read " + ioe.getMessage());
             System.exit(1);
         }
+
         return text;
     }
 
@@ -161,14 +164,16 @@ public class MapReader {
             String s = xs.getString(i);
             List<Character> t = new ArrayList<Character>();
 
-            for (Integer j = 0; j < s.length(); j++)
+            for (Integer j = 0; j < s.length(); j++) {
                 t.add(s.charAt(j));
+            }
 
             cs.add(t);
         }
 
-        for (List<Character> ys : cs)
+        for (List<Character> ys : cs) {
             v.add(map(f, ys));
+        }
 
         return v;
     }
@@ -177,14 +182,18 @@ public class MapReader {
                                      HashMap<Character, Building> buildings, JSONArray posInfo) throws JSONException {
         Log.d(TAG, "Running setBuildings");
         Log.d(TAG, "The list of players contains " + players);
+
         for (int y = 0; y < grid.size(); ++y) {
             String row = "";
+
             for (int x = 0; x < grid.get(y).size(); ++x) {
-                if (grid.get(y).get(x) != null)
+                if (grid.get(y).get(x) != null) {
                     row += grid.get(y).get(x).getName().charAt(0);
-                else
+                } else {
                     row += "_";
+                }
             }
+
             Log.d(TAG, row);
         }
 
@@ -206,9 +215,9 @@ public class MapReader {
             Log.d(TAG, "Cast all the values into Java types for building " + i);
 
             /* TODO proper choice of player */
-            if (playerOwner == 0)
+            if (playerOwner == 0) {
                 building.setOwner(new Player("Gaia", 0));
-            else {
+            } else {
                 Player p = players.get(playerOwner - 1);
                 building.setOwner(p);
                 p.addBuilding(building);
@@ -223,6 +232,7 @@ public class MapReader {
 
 
         }
+
         Log.d(TAG, "Leaving setBuildings");
 
     }
@@ -231,6 +241,7 @@ public class MapReader {
                                    HashMap<Character, Unit> units, JSONArray posInfo) throws JSONException {
         Log.d(TAG, "Running spawnUnits");
         Log.d(TAG, "The list of players contains " + players);
+
         for (Integer i = 0; i < posInfo.length(); ++i) {
             Log.d(TAG, "Grabbing info for unit number " + i);
             JSONObject unitInfo = posInfo.getJSONObject(i);
@@ -242,15 +253,16 @@ public class MapReader {
             Log.d(TAG, "Cast all the values into Java types for unit " + i);
 
             /* TODO proper choice of player */
-            if (playerOwner == 0)
+            if (playerOwner == 0) {
                 unit.setOwner(new Player("Gaia", 0));
-            else {
+            } else {
                 Log.d(TAG, "Getting player " + playerOwner);
                 Player p = players.get(playerOwner - 1);
                 Log.d(TAG, "That player has a name " + p);
                 unit.setOwner(p);
                 p.addUnit(unit);
             }
+
             Log.d(TAG, "Post setting owner.");
             Position pos = new Position(posX, posY);
             Log.d(TAG, "Grabbing GameField " + pos);
@@ -259,6 +271,7 @@ public class MapReader {
             gf.setUnit(unit);
 
         }
+
         Log.d(TAG, "Leaving spawnUnits");
 
     }
@@ -272,8 +285,9 @@ public class MapReader {
         }
 
         public Building apply(Character c) throws JSONException {
-            if (!this.map.containsKey(c))
-                return null; /* TODO throw MapException */
+            if (!this.map.containsKey(c)) {
+                return null;    /* TODO throw MapException */
+            }
 
             JSONObject f = this.map.get(c);
 
@@ -324,8 +338,9 @@ public class MapReader {
     private static <I, O, E extends Exception> List<O> map(FuncEx<I, O, E> f, List<I> ls) throws E {
         List<O> os = new ArrayList<O>();
 
-        for (I l : ls)
+        for (I l : ls) {
             os.add(f.apply(l));
+        }
 
         return os;
     }
@@ -339,8 +354,9 @@ public class MapReader {
         }
 
         public GameField apply(Character c) throws JSONException {
-            if (!this.map.containsKey(c))
-                return null; /* TODO throw MapException */
+            if (!this.map.containsKey(c)) {
+                return null;    /* TODO throw MapException */
+            }
 
             JSONObject f = this.map.get(c);
 
