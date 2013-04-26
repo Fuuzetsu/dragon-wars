@@ -30,7 +30,7 @@
                 android:text="Show statistics" />
 
             <Button
-                android:id="@+id/btnSHelp"
+                android:id="@+id/btnHelp"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="Help" />
