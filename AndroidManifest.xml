@@ -40,8 +40,12 @@
             android:label="@string/title_activity_map_select" >
         </activity>
         <activity
-            android:name="StatisticsActivity"
+            android:name=".StatisticsActivity"
             android:label="@string/title_activity_statistics" >
+        </activity>
+        <activity
+            android:name=".HelpActivity"
+            android:label="@string/title_activity_help" >
         </activity>
         <activity
             android:name=".Results"
