@@ -1,19 +1,17 @@
 package com.group7.dragonwars.engine;
 
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
-import android.graphics.Color;
 import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.graphics.RectF;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class BitmapChanger {
+public final class BitmapChanger {
 
-    private BitmapChanger() {}
+    private BitmapChanger() {
+    }
 
     public static Bitmap changeColour(final Bitmap templateBitmap,
                                       final Integer originalColour,
@@ -29,7 +27,7 @@ public class BitmapChanger {
         int[] allpixels = new int[allPxs];
 
         replacement.getPixels(allpixels, 0, replacement.getWidth(), 0, 0,
-                              replacement.getWidth(),replacement.getHeight());
+                              replacement.getWidth(), replacement.getHeight());
 
         for (Integer i = 0; i < allPxs; i++) {
             if (allpixels[i] == originalColour) {
@@ -43,8 +41,9 @@ public class BitmapChanger {
         return replacement;
     }
 
-    public static Bitmap combineMap(final GameMap map, final Integer tilesize,
-                                    final Map<String, Map<String, Bitmap>> graphics) {
+    public static Bitmap
+        combineMap(final GameMap map, final Integer tilesize,
+                   final Map<String, Map<String, Bitmap>> graphics) {
         Bitmap result = null;
         Integer width = map.getWidth() * tilesize;
         Integer height = map.getHeight() * tilesize;
@@ -58,7 +57,8 @@ public class BitmapChanger {
                 Position pos = new Position(i, j);
                 GameField gf = map.getField(i, j);
                 String gfn = gf.getName();
-                RectF dest = new RectF(tilesize * i, tilesize * j, tilesize * i + tilesize,
+                RectF dest = new RectF(tilesize * i, tilesize * j,
+                                       tilesize * i + tilesize,
                                        tilesize * j + tilesize);
                 combined.drawBitmap(graphics.get("Fields").get(gfn),
                                     null, dest, null);
@@ -77,13 +77,15 @@ public class BitmapChanger {
         return result;
     }
 
-    private static void drawBorder(final GameMap map, final Canvas canvas, final Position currentField,
-                                   final RectF dest, final Map<String, Map<String, Bitmap>> graphics) {
+    private static void
+        drawBorder(final GameMap map, final Canvas canvas,
+                   final Position currentField, final RectF dest,
+                   final Map<String, Map<String, Bitmap>> graphics) {
         /* TODO not hard-code this */
         Integer i = currentField.getX();
         Integer j = currentField.getY();
 
-        final String FAKE = "NoTaReAlTiL3";
+        final String NF = "NoTaReAlTiL3";
 
         String gfn = map.getField(currentField).getSpriteLocation();
 
@@ -102,17 +104,17 @@ public class BitmapChanger {
         sp = new Position(i, j + 1);
         swp = new Position(i - 1, j + 1);
 
-        ne = map.isValidField(nep) ? map.getField(nep).getSpriteLocation() : FAKE;
-        n = map.isValidField(np) ? map.getField(np).getSpriteLocation() : FAKE;
-        nw = map.isValidField(nwp) ? map.getField(nwp).getSpriteLocation() : FAKE;
+        ne = map.isValidField(nep) ? map.getField(nep).getSpriteLocation() : NF;
+        n = map.isValidField(np) ? map.getField(np).getSpriteLocation() : NF;
+        nw = map.isValidField(nwp) ? map.getField(nwp).getSpriteLocation() : NF;
 
-        e = map.isValidField(ep) ? map.getField(ep).getSpriteLocation() : FAKE;
-        c = map.isValidField(cp) ? map.getField(cp).getSpriteLocation() : FAKE;
-        w = map.isValidField(wp) ? map.getField(wp).getSpriteLocation() : FAKE;
+        e = map.isValidField(ep) ? map.getField(ep).getSpriteLocation() : NF;
+        c = map.isValidField(cp) ? map.getField(cp).getSpriteLocation() : NF;
+        w = map.isValidField(wp) ? map.getField(wp).getSpriteLocation() : NF;
 
-        se = map.isValidField(sep) ? map.getField(sep).getSpriteLocation() : FAKE;
-        s = map.isValidField(sp) ? map.getField(sp).getSpriteLocation() : FAKE;
-        sw = map.isValidField(swp) ? map.getField(swp).getSpriteLocation() : FAKE;
+        se = map.isValidField(sep) ? map.getField(sep).getSpriteLocation() : NF;
+        s = map.isValidField(sp) ? map.getField(sp).getSpriteLocation() : NF;
+        sw = map.isValidField(swp) ? map.getField(swp).getSpriteLocation() : NF;
 
         Func<String, Void> drawer = new Func<String, Void>() {
             public Void apply(String sprite) {

@@ -5,7 +5,7 @@ public class Pair<L, R> {
     private L left;
     private R right;
 
-    public Pair(L left, R right) {
+    public Pair(final L left, final R right) {
         this.left = left;
         this.right = right;
     }
@@ -18,11 +18,11 @@ public class Pair<L, R> {
         return this.right;
     }
 
-    public void setLeft(L l) {
+    public void setLeft(final L l) {
         this.left = l;
     }
 
-    public void setRight(R r) {
+    public void setRight(final R r) {
         this.right = r;
     }
 
@@ -32,10 +32,10 @@ public class Pair<L, R> {
 
     @Override
     public int hashCode() {
-    	int hashFirst = left != null ? left.hashCode() : 0;
-    	int hashSecond = right != null ? right.hashCode() : 0;
+        int hashFirst = left != null ? left.hashCode() : 0;
+        int hashSecond = right != null ? right.hashCode() : 0;
 
-    	return (hashFirst + hashSecond) * hashSecond + hashFirst;
+        return (hashFirst + hashSecond) * hashSecond + hashFirst;
     }
 
     @Override

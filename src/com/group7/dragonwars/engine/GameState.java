@@ -7,9 +7,7 @@ import java.util.Set;
 
 import com.group7.dragonwars.GameView;
 
-import android.util.Log;
-
-public class GameState {
+public final class GameState {
 
     private GameMap map;
     private Logic logic;
@@ -22,7 +20,8 @@ public class GameState {
     private InformationState info;
     private GameView gvCallback;
 
-    public GameState(GameMap map, Logic logic, List<Player> players, GameView gv) {
+    public GameState(final GameMap map, final Logic logic,
+                     final List<Player> players, final GameView gv) {
         this.map = map;
         this.logic = logic;
         this.players = players;
@@ -34,7 +33,7 @@ public class GameState {
         }
     }
 
-    public List<Position> getUnitDestinations(GameField field) {
+    public List<Position> getUnitDestinations(final GameField field) {
         return info.getUnitDestinations(field);
     }
 
@@ -55,7 +54,7 @@ public class GameState {
         return info.getPath();
     }
 
-    public void setPath(List<Position> path) {
+    public void setPath(final List<Position> path) {
         info.setPath(path);
     }
 
@@ -63,22 +62,26 @@ public class GameState {
         return info.getAttackables();
     }
 
-    public void attack(Unit attacker, Unit defender) {
+    public void attack(final Unit attacker, final Unit defender) {
         Set<Position> attackable = logic.getAttackableUnitPositions(map,
                                    attacker);
 
         //if (!attackable.contains(defender.getPosition()))
         //    return;
         boolean contains = false;
+
         for (Position pos : attackable) {
-            if (pos.equals(defender.getPosition()))
+            if (pos.equals(defender.getPosition())) {
                 contains = true;
+            }
         }
-        if (!contains) return;
+
+        if (!contains) {
+            return;
+        }
 
         Pair<Double, Double> damage = logic.calculateDamage(map, attacker,
                                       defender);
-        Log.v(null, "Dmg to atckr: " + damage.getRight() + " Dmg to dfndr: " + damage.getLeft());
 
         defender.reduceHealth(damage.getLeft());
         gvCallback.addDamagedUnit(defender);
@@ -98,7 +101,7 @@ public class GameState {
 
     }
 
-    public Boolean move(Unit unit, Position destination) {
+    public Boolean move(final Unit unit, final Position destination) {
         /* We are assuming that the destination was already
          * checked to be within this unit's reach
          */
@@ -111,6 +114,7 @@ public class GameState {
         }
 
         GameField destField = map.getField(destination);
+
         if (destField.hostsUnit()) {
             return false;
         }
@@ -136,7 +140,7 @@ public class GameState {
 
     }
 
-    private Boolean removeUnitIfDead(Unit unit) {
+    private Boolean removeUnitIfDead(final Unit unit) {
         if (unit.isDead()) {
             map.getField(unit.getPosition()).setUnit(null);
             unit.getOwner().removeUnit(unit);
@@ -151,8 +155,9 @@ public class GameState {
         for (GameField gf : map) {
 
             /* No building. */
-            if (!gf.hostsBuilding())
+            if (!gf.hostsBuilding()) {
                 continue;
+            }
 
             Building b = gf.getBuilding();
 
@@ -161,7 +166,7 @@ public class GameState {
                 Unit unit = gf.getUnit();
                 Integer turnReduce = unit.getHealth().intValue();
 
-                /* Unit already owns the building or is capturing for >1 turn. */
+                /* Unit already owns the building or is capturing. */
                 if (unit.getOwner().equals(b.getLastCapturer())) {
                     b.reduceCaptureTime(turnReduce);
                     continue;
@@ -170,13 +175,12 @@ public class GameState {
                     b.setLastCapturer(unit.getOwner());
                     b.reduceCaptureTime(turnReduce);
                 }
-            }
-            /* No unit on the building. */
-            else {
-                if (b.hasOwner())
+            } else { /* No unit on the building. */
+                if (b.hasOwner()) {
                     continue;
-                else
+                } else {
                     b.resetCaptureTime();
+                }
             }
         }
     }
@@ -190,6 +194,7 @@ public class GameState {
 
         while (iter.hasNext()) {
             Player p = iter.next();
+
             if (p.hasLost()) {
                 iter.remove();
             }
@@ -202,6 +207,7 @@ public class GameState {
         }
 
         playerIndex++;
+
         if (playerIndex == players.size()) {
             playerIndex = 0;
             advanceTurn();
@@ -209,12 +215,14 @@ public class GameState {
 
         if (getCurrentPlayer().isAi()) {
             getCurrentPlayer().takeTurn();
+
             /* Uh oh, dirty hack for concurrent mod 9h before presentation. */
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
                 /* Just let it slide and pray for the best */
             }
+
             nextPlayer();
         }
     }
@@ -225,8 +233,10 @@ public class GameState {
         for (Player p : players) {
             Integer goldWorth = 0;
 
-            for (Building b : p.getOwnedBuildings())
+            for (Building b : p.getOwnedBuildings()) {
                 goldWorth += b.getCaptureWorth();
+            }
+
             p.setGoldAmount(goldWorth + p.getGoldAmount());
 
             stats.increaseStatistic("Gold received", 1.0 * goldWorth);
@@ -235,6 +245,7 @@ public class GameState {
                 u.resetTurnStatistics();
             }
         }
+
         ++this.turns;
         stats.increaseStatistic("Turns taken");
     }
@@ -271,33 +282,35 @@ public class GameState {
         return gameFinished;
     }
 
-    public void setGameFinished(boolean gameFinished) {
+    public void setGameFinished(final boolean gameFinished) {
         this.gameFinished = gameFinished;
     }
 
     public Boolean produceUnit(final GameField field, final Unit unit) {
-    	// produces a unit "at" a building
-        if (!field.hostsBuilding() || field.hostsUnit())
+        // produces a unit "at" a building
+        if (!field.hostsBuilding() || field.hostsUnit()) {
             return false;
+        }
 
         Building building = field.getBuilding();
 
         for (Unit u : building.getProducibleUnits()) {
             if (u.getName().equals(unit.getName())) {
-            	Player player = building.getOwner();
+                Player player = building.getOwner();
 
-            	if (player.getGoldAmount() < u.getProductionCost()) {
+                if (player.getGoldAmount() < u.getProductionCost()) {
                     return false;
-            	}
+                }
 
                 Unit newUnit = new Unit(u);
                 newUnit.setPosition(building.getPosition());
                 newUnit.setOwner(player);
 
-                player.setGoldAmount(player.getGoldAmount() - unit.getProductionCost());
+                player.setGoldAmount(
+                    player.getGoldAmount() - unit.getProductionCost());
                 player.addUnit(newUnit);
                 newUnit.setFinishedTurn(true);
-            	field.setUnit(newUnit);
+                field.setUnit(newUnit);
                 stats.increaseStatistic("Units produced");
                 return true;
             }

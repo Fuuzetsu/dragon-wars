@@ -8,14 +8,14 @@ import android.view.SurfaceHolder;
 public class DrawingThread extends Thread {
     private boolean run;
     private Canvas canvas;
-    private SurfaceHolder surfaceholder;
-    private GameView gview;
+    private SurfaceHolder surfaceHolder;
+    private GameView gView;
 
-    public DrawingThread(final SurfaceHolder sholder,
+    public DrawingThread(final SurfaceHolder surfaceHolder,
                          final Context ctx, final GameView gv) {
-        surfaceholder = sholder;
+        this.surfaceHolder = surfaceHolder;
         run = false;
-        gview = gv;
+        gView = gv;
     }
 
     public void setRunning(final boolean newrun) {
@@ -27,11 +27,11 @@ public class DrawingThread extends Thread {
         super.run();
 
         while (run) {
-            canvas = surfaceholder.lockCanvas();
+            canvas = surfaceHolder.lockCanvas();
 
             if (canvas != null) {
-                gview.doDraw(canvas);
-                surfaceholder.unlockCanvasAndPost(canvas);
+                gView.doDraw(canvas);
+                surfaceHolder.unlockCanvasAndPost(canvas);
             }
         }
     }

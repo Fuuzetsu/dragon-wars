@@ -1,23 +1,26 @@
 package com.group7.dragonwars.engine.GoalArbitration;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
 import android.util.Log;
 
 
-public class Node {
+public final class Node {
     private AtomicAction nodeAction;
     private Node nodeParent;
     private List<Node> children;
-    private int min = -1,						//Min child node index defaults to -1
-                max = -1;						//Max child node index defaults to -1
-    private float minValue = Float.MAX_VALUE;	//Min child node value
-    private float maxValue = Float.MIN_VALUE;	//Max child node value
+    private int min = -1,
+                max = -1;
+    private float minValue = Float.MAX_VALUE;   //Min child node value
+    private float maxValue = Float.MIN_VALUE;   //Max child node value
     private int nodeDepth;
     private float currentValue;
-    private static int size = 1;						//Tree size thus far
-    private static int maxSize = 300; 					//Max tree size
+    private static int size = 1;                        //Tree size thus far
+    private static int maxSize = 300;                   //Max tree size
 
-    public Node(Node parent, int depth, float currentvalue, AtomicAction action) {
+    public Node(final Node parent, final int depth,
+                final float currentvalue, final AtomicAction action) {
         nodeAction = action;
         nodeParent = parent;
         nodeDepth = depth;
@@ -79,8 +82,8 @@ public class Node {
         return value;
     }
 
-    public void AddChildNode(float value, AtomicAction action) {
-        children.add(new Node(this, nodeDepth+1, value, action));
+    public void AddChildNode(final float value, final AtomicAction action) {
+        children.add(new Node(this, nodeDepth + 1, value, action));
 
         if (children.size() > 0) {
             if (value < minValue) {
@@ -99,11 +102,13 @@ public class Node {
         float totalValue = currentValue;
 
         //recursively calculates current node value;
-        if (nodeParent == null)
+        if (nodeParent == null) {
             return getCurrentValue();
+        }
 
-        if (nodeDepth > 0)
+        if (nodeDepth > 0) {
             totalValue += nodeParent.getTotalValue();
+        }
 
         return totalValue;
     }
@@ -113,10 +118,10 @@ public class Node {
     }
 
     public boolean getMiniMax() {
-        return nodeDepth%2 == 0;
+        return nodeDepth % 2 == 0;
     }
 
-    public void setSize(int newSize) {
+    public void setSize(final int newSize) {
         size = newSize;
     }
 

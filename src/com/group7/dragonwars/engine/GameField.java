@@ -2,7 +2,7 @@ package com.group7.dragonwars.engine;
 
 import java.text.DecimalFormat;
 
-public class GameField extends DrawableMapObject {
+public final class GameField extends DrawableMapObject {
 
     private Unit hostedUnit;
     private Building hostedBuilding;
@@ -10,24 +10,23 @@ public class GameField extends DrawableMapObject {
     private Double defenseModifier, attackModifier;
     private Boolean flightOnly, accessible;
 
-    private static DecimalFormat decformat;
-
-    static {
-        decformat = new DecimalFormat("#.##");
-    }
+    private static DecimalFormat decformat = new DecimalFormat("#.##");
 
     public Boolean doesAcceptUnit(Unit unit) {
         Boolean canStep = false;
 
-        if (this.flightOnly)
+        if (this.flightOnly) {
             canStep = unit.isFlying();
+        }
 
         return this.accessible || canStep;
     }
 
-    public GameField(String fieldName, Double movementModifier, Double attackModifier,
-                     Double defenseModifier, Boolean accessible, Boolean flightOnly,
-                     String spriteLocation, String spriteDir, String spritePack) {
+    public GameField(final String fieldName, final Double movementModifier,
+                     final Double attackModifier, final Double defenseModifier,
+                     final Boolean accessible, final Boolean flightOnly,
+                     final String spriteLocation, final String spriteDir,
+                     final String spritePack) {
         super(fieldName, spriteLocation, spriteDir, spritePack);
 
         this.hostedUnit = null;
@@ -88,11 +87,11 @@ public class GameField extends DrawableMapObject {
     }
 
     /* This will clobber old units/buildings as it is now. */
-    public void setBuilding(Building building) {
+    public void setBuilding(final Building building) {
         this.hostedBuilding = building;
     }
 
-    public void setUnit(Unit unit) {
+    public void setUnit(final Unit unit) {
         this.hostedUnit = unit;
     }
 
@@ -100,11 +99,12 @@ public class GameField extends DrawableMapObject {
         return getName();
     }
 
+    @Override
     public void generateInfo() {
         String r = getName() + "\n";
         r += "Attack: " + decformat.format(getAttackModifier())
-            + " Defense: " + decformat.format(getDefenseModifier())
-            + " Move: " + decformat.format(getMovementModifier()) + "\n";
+             + " Defense: " + decformat.format(getDefenseModifier())
+             + " Move: " + decformat.format(getMovementModifier()) + "\n";
         this.info = r;
     }
 }

@@ -1,6 +1,6 @@
 package com.group7.dragonwars.engine;
 
-public class FloatPair {
+public final class FloatPair {
     private Pair<Float, Float> pair;
 
     public FloatPair(final Float x, final Float y) {
@@ -28,7 +28,11 @@ public class FloatPair {
 
         FloatPair that = (FloatPair) other;
         return this.getX() == that.getX() && this.getY() == that.getY();
+    }
 
+    @Override
+    public int hashCode() {
+        return pair.hashCode();
     }
 
     public String toString() {

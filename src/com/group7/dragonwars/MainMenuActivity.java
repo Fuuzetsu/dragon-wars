@@ -16,14 +16,14 @@ public class MainMenuActivity extends Activity implements OnClickListener {
     private Button btnBattle, btnStats, btnQuit;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected final void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main_menu);
-        this.btnBattle = (Button)this.findViewById(R.id.btnBattle);
+        this.btnBattle = (Button) this.findViewById(R.id.btnBattle);
         this.btnBattle.setOnClickListener(this);
 
-        this.btnStats = (Button)this.findViewById(R.id.btnStats);
+        this.btnStats = (Button) this.findViewById(R.id.btnStats);
         this.btnStats.setOnClickListener(this);
 
         /*
@@ -31,26 +31,20 @@ public class MainMenuActivity extends Activity implements OnClickListener {
           this.btnStats.setEnabled(false);
         */
 
-        this.btnQuit = (Button)this.findViewById(R.id.btnQuit);
+        this.btnQuit = (Button) this.findViewById(R.id.btnQuit);
         this.btnQuit.setOnClickListener(this);
 
     }
 
     @Override
-    protected void onStart() {
-        // app lifecycle
-        // 1. onCreate
-        // 2. onStart
-        // 3. onResume (can interact now)
-        // 4. onPause (could -> onResume) (state not lost)
-        // 5. onStop (could -> onStart) (state not lost)
-        // 6. onDestroy (state lost)
-        //Toast.makeText(getApplicationContext(), "If the user had a game in progress when they quit the app (without properly saving and exiting), we will offer to resume it now (we are nice like that)", Toast.LENGTH_LONG).show();
+    protected final void onStart() {
         super.onStart();
 
         AssetManager ass = getAssets();
+
         try {
             String[] files = ass.list("maps");
+
             for (int i = 0; i < files.length; ++i) {
                 Log.v(null, "File " + i + " " + files[i]);
             }
@@ -61,7 +55,7 @@ public class MainMenuActivity extends Activity implements OnClickListener {
     }
 
     @Override
-    public void onClick(View v) {
+    public final void onClick(final View v) {
         if (v == this.btnBattle) {
             Intent intent = new Intent(this, MapSelectActivity.class);
             startActivity(intent);

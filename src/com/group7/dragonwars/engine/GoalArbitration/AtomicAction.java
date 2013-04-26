@@ -12,7 +12,8 @@ public abstract class AtomicAction {
     protected GameState gameState;
     protected Unit actionUnit;
 
-    public AtomicAction(GameState gamestate, Unit unit, float value) {
+    public AtomicAction(final GameState gamestate, final Unit unit,
+                        final float value) {
         actionValue = value;
         gameState = gamestate;
         actionUnit = unit;
