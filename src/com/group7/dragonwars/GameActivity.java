@@ -1,11 +1,5 @@
 package com.group7.dragonwars;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.json.JSONException;
@@ -14,13 +8,11 @@ import com.group7.dragonwars.engine.GameMap;
 import com.group7.dragonwars.engine.GameState;
 import com.group7.dragonwars.engine.Logic;
 import com.group7.dragonwars.engine.MapReader;
-import com.group7.dragonwars.engine.Player;
 import com.group7.dragonwars.engine.Statistics;
 import com.group7.dragonwars.engine.Database.Database;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -51,7 +43,7 @@ public class GameActivity extends Activity {
     }
 
     @Override
-    protected void onStart() {
+    protected final void onStart() {
         super.onStart();
         Bundle b = getIntent().getExtras();
         String mapFileName = b.getString("mapFileName");
@@ -78,7 +70,7 @@ public class GameActivity extends Activity {
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    public final boolean onKeyDown(final int keyCode, final KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_MENU) {
             GameView gameView = (GameView) this.findViewById(R.id.gameView);
             gameView.showMenu();
@@ -88,7 +80,7 @@ public class GameActivity extends Activity {
         return super.onKeyDown(keyCode, event);
     }
 
-    public void endGame() {
+    public final void endGame() {
         setContentView(R.layout.loading_screen);
         Intent intent = new Intent(this, Results.class);
         Bundle b = new Bundle();

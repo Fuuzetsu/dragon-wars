@@ -79,8 +79,9 @@ public final class GameView extends SurfaceView
     private Paint unitHealthOutlinePaint;
 
     private Paint showDamagePaint;
-    private List<Pair<Unit, Long>> damagedUnits = new ArrayList<Pair<Unit, Long>>();
-    private int showDamageSeconds = 4;
+    private List<Pair<Unit, Long>> damagedUnits
+        = new ArrayList<Pair<Unit, Long>>();
+    private final int showDamageSeconds = 4;
 
     private Context context;
     private Map<String, Map<String, Bitmap>> graphics =
@@ -153,7 +154,7 @@ public final class GameView extends SurfaceView
         Log.d(TAG, "Done initalising graphics.");
     }
 
-    public void addDamagedUnit(Unit unit) {
+    public void addDamagedUnit(final Unit unit) {
         for (Pair<Unit, Long> uPair : damagedUnits) {
             if (uPair.getLeft().equals(unit)) {
                 /* Update time */
@@ -162,7 +163,8 @@ public final class GameView extends SurfaceView
             }
         }
 
-        damagedUnits.add(new Pair<Unit, Long>(unit, System.currentTimeMillis()));
+        damagedUnits.add(new Pair<Unit, Long>(unit,
+                                              System.currentTimeMillis()));
     }
 
     private void initialiseGraphics() {
@@ -292,7 +294,8 @@ public final class GameView extends SurfaceView
 
     @Override
     public void surfaceChanged(final SurfaceHolder arg0, final int arg1,
-                               final int arg2, final int arg3) {}
+                               final int arg2, final int arg3) {
+    }
 
     @Override
     public void surfaceCreated(final SurfaceHolder arg0) {
@@ -609,17 +612,17 @@ public final class GameView extends SurfaceView
                          * selects a field that this unit could move to
                          * (and the unit has not finished it's turn)
                          */
-                        GameField selected_field = map.getField(selected);
-                        Unit unit = selected_field.getUnit();
+                        GameField selectedField = map.getField(selected);
+                        Unit unit = selectedField.getUnit();
 
                         if (unit.getOwner().equals(state.getCurrentPlayer())
                                 && !unit.hasFinishedTurn()
                                 && (!map.getField(newselected).hostsUnit()
                                     || selected.equals(newselected))) {
-                            List<Position> unit_destinations =
-                                state.getUnitDestinations(selected_field);
+                            List<Position> unitDestinations =
+                                state.getUnitDestinations(selectedField);
 
-                            if (unit_destinations.contains(newselected)
+                            if (unitDestinations.contains(newselected)
                                     || selected.equals(newselected)) {
                                 if (state.getCurrentPath()
                                         .contains(newselected)) {
@@ -639,26 +642,26 @@ public final class GameView extends SurfaceView
 
                         if (building.getOwner().equals(state.getCurrentPlayer())
                                 && building.canProduceUnits()) {
-                            AlertDialog.Builder buildmenu_builder
+                            AlertDialog.Builder buildmenuBuilder
                                 = new AlertDialog.Builder(this.getContext());
-                            buildmenu_builder.setTitle("Build");
+                            buildmenuBuilder.setTitle("Build");
 
                             List<Unit> units = building.getProducibleUnits();
-                            String[] buildable_names
+                            String[] buildableNames
                                 = new String[units.size() + 1];
 
                             for (int i = 0; i < units.size(); ++i) {
                                 Unit cU = units.get(i);
-                                buildable_names[i] =
+                                buildableNames[i] =
                                     String.format("%s - %s Gold",
                                                   cU.toString(),
                                                   cU.getProductionCost());
 
                             }
 
-                            buildable_names[units.size()] = "Cancel";
-                            buildmenu_builder.setItems(buildable_names, this);
-                            buildmenu_builder.create().show();
+                            buildableNames[units.size()] = "Cancel";
+                            buildmenuBuilder.setItems(buildableNames, this);
+                            buildmenuBuilder.create().show();
 
                             whichMenu = MenuType.BUILD;
                         } // build menu isn't shown if it isn't the user's turn
@@ -730,8 +733,8 @@ public final class GameView extends SurfaceView
 
                 if (!result) {
                     alertMessage(String.format(
-                                     "Could not build unit %s (Cost: %s Gold)", unit,
-                                     unit.getProductionCost()));
+                                     "Could not build unit %s (Cost: %s Gold)",
+                                     unit, unit.getProductionCost()));
                 }
             } else if (field.getBuilding().getProducibleUnits().size()
                        != which) {
@@ -766,7 +769,6 @@ public final class GameView extends SurfaceView
                 break;
 
             case 1: // Quit Game
-                // TODO: not just immediately quit the game
                 dt.setRunning(false);
                 state.setGameFinished(true);
                 Intent intent = new Intent(activity, MainMenuActivity.class);
