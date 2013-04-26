@@ -12,5 +12,6 @@
     <string name="title_activity_results">Results</string>
     <string name="title_activity_player_select">PlayerSelectActivity</string>
     <string name="title_activity_statistics">Statistics</string>
+    <string name="title_activity_help">Help</string>
 
 </resources>
