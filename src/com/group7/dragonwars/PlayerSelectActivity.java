@@ -17,10 +17,10 @@ public class PlayerSelectActivity extends Activity implements OnClickListener {
     private Bundle bundle;
     private Player[] players;
     private String[] playerNames;
-    boolean[] isAi;
+    private boolean[] isAi;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected final void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player_select);
         backButton = (Button) findViewById(R.id.backButton);
@@ -30,7 +30,7 @@ public class PlayerSelectActivity extends Activity implements OnClickListener {
     }
 
     @Override
-    protected void onStart() {
+    protected final void onStart() {
         super.onStart();
         bundle = getIntent().getExtras();
 
@@ -44,15 +44,15 @@ public class PlayerSelectActivity extends Activity implements OnClickListener {
             players[i].setIsAi(isAi[i]);
         }
 
-        IsAiAdapter adapter = new IsAiAdapter(getBaseContext(),
-                                              R.layout.listview_row_player_select, players);
+        IsAiAdapter adapter = new IsAiAdapter(
+            getBaseContext(), R.layout.listview_row_player_select, players);
 
         ListView playerList = (ListView) findViewById(R.id.playerList);
         playerList.setAdapter(adapter);
     }
 
     @Override
-    public void onClick(View v) {
+    public final void onClick(final View v) {
         if (v == this.backButton) {
             Intent intent = new Intent(this, MapSelectActivity.class);
             startActivity(intent);

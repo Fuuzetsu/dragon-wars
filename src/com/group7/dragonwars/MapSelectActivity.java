@@ -23,27 +23,28 @@ public class MapSelectActivity extends Activity implements OnItemClickListener {
     private List<BasicMapInfo> mapInfo = new ArrayList<BasicMapInfo>();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected final void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_select);
-        ListView mapList = (ListView)this.findViewById(R.id.mapList);
+        ListView mapList = (ListView) this.findViewById(R.id.mapList);
         mapList.setOnItemClickListener(this);
     }
 
     @Override
-    protected void onStart() {
+    protected final void onStart() {
         super.onStart();
 
         if (mapInfo.size() == 0) {
             AssetManager assman = getAssets();
-            ListView mapList = (ListView)this.findViewById(R.id.mapList);
+            ListView mapList = (ListView) this.findViewById(R.id.mapList);
 
             try {
                 String[] files = assman.list("maps");
 
                 for (int i = 0; i < files.length; ++i) {
                     String path = "maps/" + files[i];
-                    BasicMapInfo info = MapReader.getBasicMapInformation(path, this);
+                    BasicMapInfo info
+                        = MapReader.getBasicMapInformation(path, this);
                     mapInfo.add(info);
                 }
 
@@ -54,8 +55,8 @@ public class MapSelectActivity extends Activity implements OnItemClickListener {
                 }
 
                 ArrayAdapter<String> adapter =
-                    new ArrayAdapter<String>(this,
-                                             android.R.layout.simple_list_item_1, displayInfo);
+                    new ArrayAdapter<String>(
+                        this, android.R.layout.simple_list_item_1, displayInfo);
                 mapList.setAdapter(adapter);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -66,7 +67,8 @@ public class MapSelectActivity extends Activity implements OnItemClickListener {
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+    public final void onItemClick(final AdapterView<?> parent, final View v,
+                                  final int position, final long id) {
         if (position < mapInfo.size()) {
             Intent intent = new Intent(this, PlayerSelectActivity.class);
             Bundle b = new Bundle();
@@ -89,7 +91,6 @@ public class MapSelectActivity extends Activity implements OnItemClickListener {
 
             intent.putExtras(b);
             startActivity(intent);
-            //finish();
         }
     }
 
