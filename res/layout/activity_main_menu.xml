@@ -30,6 +30,12 @@
                 android:text="Show statistics" />
 
             <Button
+                android:id="@+id/btnSHelp"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Help" />
+
+            <Button
                 android:id="@+id/btnQuit"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
