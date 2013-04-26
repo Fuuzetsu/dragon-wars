@@ -1,0 +1,99 @@
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/goalTitleText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:text="Goal"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/goalHelpText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_above="@id/goalTitleText"
+            android:text="The goal of the game is to destroy all enemy units and to capture all enemy buildings. Buildings with gray flag are neutral and do not have to be captured to win."
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/moveTitleText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_above="@id/goalHelpText"
+            android:text="Movement"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/moveHelpText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_above="@id/moveTitleText"
+            android:text="To move, first select your unit. A blue area should come up if the unit is able to move. Clicking anywhere within this blue area will bring up a green path that the unit will take. Tap within the area of the path to move. Each unit can only move once per turn."
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/attackTitleText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_above="@id/moveHelpText"
+            android:text="Attacking"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/attackHelpText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_above="@id/attackTitleText"
+            android:text="To attack an enemy unit, select your own unit first. If the enemy unit is in range, it will be highlighted in red. Tapping on a highlighted unit will attack it. The unit can perform no more actions after attacking so make sure to move around first if you want to!"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/buildingTitleText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_above="@id/attackHelpText"
+            android:text="Buildings"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/buildingHelpText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_above="@id/buildingTitleText"
+            android:text="To capture a building, move your unit on top of it. The more health your unit has, the less turns you will have to spend capturing. Once you own a building, you can build units from it by selecting it. You can only build the units that you can afford. You earn gold after every turn. The amount earned depends on how many and what kind of buildings you own. Each building can produce different units so make sure to check them all!"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="15sp" />
+    </LinearLayout>
+</ScrollView>

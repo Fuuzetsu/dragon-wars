@@ -1,4 +1,4 @@
-package com.group7.dragonwars;
+ package com.group7.dragonwars;
 
 import java.io.IOException;
 
@@ -13,7 +13,7 @@ import android.widget.Button;
 
 public class MainMenuActivity extends Activity implements OnClickListener {
 
-    private Button btnBattle, btnStats, btnQuit;
+    private Button btnBattle, btnStats, btnQuit, btnHelp;
 
     @Override
     protected final void onCreate(final Bundle savedInstanceState) {
@@ -26,10 +26,8 @@ public class MainMenuActivity extends Activity implements OnClickListener {
         this.btnStats = (Button) this.findViewById(R.id.btnStats);
         this.btnStats.setOnClickListener(this);
 
-        /*
-          this.btnStats.setClickable(false);
-          this.btnStats.setEnabled(false);
-        */
+        this.btnHelp = (Button) this.findViewById(R.id.btnHelp);
+        this.btnHelp.setOnClickListener(this);
 
         this.btnQuit = (Button) this.findViewById(R.id.btnQuit);
         this.btnQuit.setOnClickListener(this);
@@ -65,6 +63,11 @@ public class MainMenuActivity extends Activity implements OnClickListener {
         if (v == this.btnStats) {
             setContentView(R.layout.loading_screen);
             Intent intent = new Intent(this, StatisticsActivity.class);
+            startActivity(intent);
+        }
+
+        if (v == this.btnHelp) {
+            Intent intent = new Intent(this, HelpActivity.class);
             startActivity(intent);
         }
 
